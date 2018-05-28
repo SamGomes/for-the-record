@@ -20,7 +20,14 @@ public static class GameProperties
         MEGA_HIT
     }
 
+    public enum PlayerAction
+    {
+        SPEND_TOKEN,
+        CHANGE_PREFERRED_INSTRUMENT
+    }
+
     public static int tokenValue = 1000;
+    public static int allowedPlayerActionsPerAlbum = 2;
 }
 
 public interface IUtilities

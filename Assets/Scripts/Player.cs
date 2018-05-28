@@ -2,17 +2,29 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Player{
+public abstract class Player
+{
     private string name;
     private int numTokens;
     private int money;
-    private Dictionary<GameProperties.Instrument,int> skillSet;
+    private GameProperties.Instrument preferredInstrument;
+    private Dictionary<GameProperties.Instrument, int> skillSet;
 
-	public Player(string name)
+    public Player(string name)
     {
         money = 0;
-        numTokens = 2;
+        numTokens = 0;
+        preferredInstrument = GameProperties.Instrument.BASS;
         skillSet = new Dictionary<GameProperties.Instrument, int>();
+    }
+
+    //main method
+    public abstract bool ExecuteActionRequest();
+
+    //aux methods
+    public void ChangePreferredInstrument(GameProperties.Instrument instrument)
+    {
+        this.preferredInstrument = instrument;
     }
 
     public bool SpendToken(GameProperties.Instrument instrument)
@@ -33,7 +45,6 @@ public class Player{
         }
         return true;
     }
-
     public bool ConvertTokensToMoney(int numTokensToConvert)
     {
         if (numTokens == 0)
@@ -47,16 +58,35 @@ public class Player{
         return true;
     }
 
-    public void ReceiveMoney(int money)
+    public void ReceiveMoney(int moneyToReceive)
     {
-        this.money += money;
+        this.money += moneyToReceive;
+    }
+    public void ReceiveTokens(int numTokensToReceive)
+    {
+        this.numTokens += numTokensToReceive;
     }
     public int GetMoney()
     {
         return this.money;
     }
+    public GameProperties.Instrument GetPreferredInstrument()
+    {
+        return this.preferredInstrument;
+    }
     public Dictionary<GameProperties.Instrument, int> GetSkillSet()
     {
         return this.skillSet;
+    }
+}
+
+
+public class GreedyPlayer : Player {
+
+    public GreedyPlayer(string name) : base(name) { }
+
+    public override bool ExecuteActionRequest()
+    {
+        return true;
     }
 }

@@ -11,6 +11,7 @@ public class GameManager : MonoBehaviour {
 
     private List<Player> players;
     int currPlayerIndex;
+    
 
 
     void Awake()
@@ -25,54 +26,71 @@ public class GameManager : MonoBehaviour {
         currPlayerIndex = 0;
         numRounds = 5;
         
-        players.Add(new Player("John"));
-        players.Add(new Player("Mike"));
-        players.Add(new Player("Bob"));
-	}
-	
-    void SimulateRound(int approachedPlayerIndex)
-    {
+        players.Add(new GreedyPlayer("John"));
+        players.Add(new GreedyPlayer("Mike"));
+        players.Add(new GreedyPlayer("Bob"));
 
-        gameUtilities.RollTheDice();
-        Debug.Log("simulateRound");
+        int numPlayers = players.Count;
+
+        for (int i = 0; i < numPlayers; i++)
+        {
+            Player currPlayer = players[i];
+            currPlayer.ReceiveTokens(2);
+
+            currPlayer.ExecuteActionRequest();
+        }
     }
 
 
 	// Update is called once per frame
 	void Update () {
+        //simulate round
         if (Input.GetKeyDown(KeyCode.Space)){
             Album newAlbum = new Album("a1");
             int numPlayers = players.Count;
 
-            for (int i = 0; i < numPlayers; i++)
+            for (int actionsTaken = 0; actionsTaken < GameProperties.allowedPlayerActionsPerAlbum; actionsTaken++)
             {
-                int approachedPlayerIndex = (currPlayerIndex + i) % numPlayers;
-                Player currPlayer = players[approachedPlayerIndex];
-
-                currPlayer.SpendToken(GameProperties.Instrument.GUITAR);
-                currPlayer.SpendToken(GameProperties.Instrument.MARKTING);
-
-                int albumValueIncrease = 0;
-                for(int j=0; j<currPlayer.GetSkillSet().Count; j++)
-                {
-                    albumValueIncrease += gameUtilities.RollTheDice(6);
-                }
-
-                newAlbum.SetValue(newAlbum.GetValue() + albumValueIncrease);
-            }
-
-            int marketValue = gameUtilities.RollTheDice(40);
-            if (newAlbum.GetValue() >= marketValue)
-            {
-                newAlbum.SetMarketingState(GameProperties.AlbumMarketingState.MEGA_HIT);
                 for (int i = 0; i < numPlayers; i++)
                 {
-                    players[i].ReceiveMoney()
-                }
-            }
-            else
-            {
+                    int approachedPlayerIndex = (currPlayerIndex + i) % numPlayers;
+                    Player currPlayer = players[approachedPlayerIndex];
 
+                    currPlayer.ExecuteActionRequest();
+
+                    var skillSet = currPlayer.GetSkillSet();
+                    List<GameProperties.Instrument> currPlayerKeys = new List<GameProperties.Instrument>(skillSet.Keys);
+                    for (int j = 0; j < currPlayerKeys.Count; j++)
+                    {
+                        GameProperties.Instrument currInstrument = currPlayerKeys[j];
+                        if (currInstrument == GameProperties.Instrument.MARKTING)
+                        {
+                            continue;
+                        }
+                        int newAlbumInstrumentValue = 0;
+
+                        int randomIncrease = gameUtilities.RollTheDice(6);
+                        newAlbumInstrumentValue += randomIncrease * skillSet[currInstrument];
+
+                        newAlbum.SetInstrumentValue(currPlayer.GetPreferredInstrument(), newAlbumInstrumentValue);
+                    }
+                    for (int j = 0; j < currPlayer.GetSkillSet()[GameProperties.Instrument.MARKTING]; j++)
+                    {
+                        currPlayer.ReceiveMoney(GameProperties.tokenValue * gameUtilities.RollTheDice(6));
+                    }
+                }
+
+                int marketValue = gameUtilities.RollTheDice(40);
+                int newAlbumValue = newAlbum.GetAlbumValue();
+                if (newAlbumValue >= marketValue)
+                {
+                    newAlbum.SetMarketingState(GameProperties.AlbumMarketingState.MEGA_HIT);
+                    for (int i = 0; i < numPlayers; i++)
+                    {
+                        players[i].ReceiveMoney(GameProperties.tokenValue * newAlbumValue);
+                    }
+
+                }
             }
 
         }
