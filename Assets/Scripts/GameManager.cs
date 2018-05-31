@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Threading;
+
 
 public class GameManager : MonoBehaviour {
 
@@ -17,8 +19,14 @@ public class GameManager : MonoBehaviour {
     public GameObject playerUIPrefab;
     public GameObject canvas;
 
+    Thread gameRoundThread;
+    ManualResetEvent gameRoundThreadResetEvent;
+
     void Awake()
     {
+        gameRoundThread = new Thread(PlayGameRound);
+        gameRoundThreadResetEvent = new ManualResetEvent(false);
+
         gameUtilities = new RandomUtilities();
         albums = new List<Album>(numRounds);
         players = new List<Player>();
@@ -37,13 +45,18 @@ public class GameManager : MonoBehaviour {
         InitGame();
     }
 
-    public void PauseGame()
+    private void PauseGameThread()
     {
-        this.isPaused = true;
+        gameRoundThreadResetEvent.WaitOne();
     }
-    public void ResumeGame()
+    private void ResumeGameThread()
     {
-        this.isPaused = false;
+        gameRoundThreadResetEvent.Set();
+    }
+
+    public void PlayerActionExecuted()
+    {
+        ResumeGameThread();
     }
 
     public void InitGame()
@@ -55,8 +68,10 @@ public class GameManager : MonoBehaviour {
             Player currPlayer = players[i];
             currPlayer.ReceiveTokens(2);
             currPlayer.ExecuteActionRequest();
+            PauseGameThread();
         }
     }
+    
     public void PlayGameRound()
     {
         Album newAlbum = new Album("a1");
@@ -71,6 +86,7 @@ public class GameManager : MonoBehaviour {
 
                 Debug.Log("waitingForPlayer...");
                 currPlayer.ExecuteActionRequest();
+                PauseGameThread();
                 Debug.Log("actionExecuted");
 
                 var skillSet = currPlayer.GetSkillSet();
@@ -112,15 +128,9 @@ public class GameManager : MonoBehaviour {
 
     // Update is called once per frame
     void Update () {
-
-        if (isPaused)
-        {
-            return;
-        }
-
         //simulate round
         if (Input.GetKeyDown(KeyCode.Space)){
-            PlayGameRound();
+            gameRoundThread.Start();
         }
 	}
 }

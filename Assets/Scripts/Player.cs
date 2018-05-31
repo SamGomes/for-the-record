@@ -1,11 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.UI;
 
 
 public abstract class Player
 {
+    GameManager gameManagerRef;
+
     private string name;
     private int numTokens;
     private int money;
@@ -23,8 +26,6 @@ public abstract class Player
     private Text UInumTokensValue;
     private Text UImoneyValue;
 
-    protected bool canExecuteAction;
-
 
     public enum PlayerAction
     {
@@ -39,11 +40,12 @@ public abstract class Player
 
         this.playerUI = Object.Instantiate(playerUIPrefab,canvas.transform);
 
-        this.canExecuteAction = false;
         this.money = 0;
         this.numTokens = 0;
         this.preferredInstrument = GameProperties.Instrument.BASS;
         this.skillSet = new Dictionary<GameProperties.Instrument, int>();
+
+        this.gameManagerRef = GameObject.Find("gameManager").gameObject.GetComponent<GameManager>();
 
         this.UIplayerActionDropdown = playerUI.transform.Find("playerActionSection/playerActionDropdown").gameObject.GetComponent<Dropdown>();
         this.UIplayerActionButton = playerUI.transform.Find("playerActionSection/playerActionButton").gameObject.GetComponent<Button>();
@@ -54,24 +56,20 @@ public abstract class Player
         this.UImoneyValue = playerUI.transform.Find("gameStateSection/moneyValue").gameObject.GetComponent<Text>();
 
         UInameText.text = this.name + " Stats:";
-        UIplayerActionButton.onClick.AddListener(delegate { UIplayerActionButtonOnClick(); });
+        UIplayerActionButton.onClick.AddListener(delegate { ExecuteAction(); });
 
         foreach(string playerActionText in System.Enum.GetNames(typeof(PlayerAction)))
         {
             UIplayerActionDropdown.options.Add(new Dropdown.OptionData(playerActionText));
         }
+
     }
 
     //main method
-    public void ExecuteActionRequest()
+    public void ExecuteActionRequest() //actions choosen
     {
-        while (this.canExecuteAction == false)
-        {
-            //do nothing    
-        }
-        PlayerAction action = ChooseAction();
-        UpdateUI(); //update ui after player chooses action
     }
+
     public abstract PlayerAction ChooseAction();
 
     //aux methods
@@ -81,9 +79,12 @@ public abstract class Player
         UInumTokensValue.text = numTokens.ToString();
     }
 
-    public void UIplayerActionButtonOnClick()
+    public void ExecuteAction() //actions choosen
     {
-        this.canExecuteAction = true;
+        //ask gameManager to resume game thread
+        PlayerAction action = ChooseAction();
+        UpdateUI(); //update ui after player chooses action
+        gameManagerRef.PlayerActionExecuted();
     }
 
     public void ChangePreferredInstrument(GameProperties.Instrument instrument)
