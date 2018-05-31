@@ -65,10 +65,14 @@ public abstract class Player
     //main method
     public void ExecuteActionRequest()
     {
-        PlayerAction action = ChooseAction().GetEnumerator().Current;
+        while (this.canExecuteAction == false)
+        {
+            //do nothing    
+        }
+        PlayerAction action = ChooseAction();
         UpdateUI(); //update ui after player chooses action
     }
-    public abstract IEnumerable<PlayerAction> ChooseAction();
+    public abstract PlayerAction ChooseAction();
 
     //aux methods
     public void UpdateUI()
@@ -145,11 +149,8 @@ public class HumanPlayer : Player {
 
     public HumanPlayer(string name, GameObject playerUIPrefab, GameObject canvas) : base(name, playerUIPrefab, canvas) { }
 
-    public override IEnumerable<PlayerAction> ChooseAction()
+    public override PlayerAction ChooseAction()
     {
-        while (this.canExecuteAction == false)
-        {
-            yield return (PlayerAction) this.UIplayerActionDropdown.value;
-        }
+        return (PlayerAction) this.UIplayerActionDropdown.value;
     }
 }
