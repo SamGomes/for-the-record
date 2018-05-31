@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public abstract class Player
 {
@@ -10,18 +11,58 @@ public abstract class Player
     private GameProperties.Instrument preferredInstrument;
     private Dictionary<GameProperties.Instrument, int> skillSet;
 
-    public Player(string name)
+
+    //UI stuff
+    private GameObject playerUI;
+
+    private Dropdown UIplayerActionDropdown;
+    private Button UIplayerActionButton;
+
+    private Text UInameText;
+    private Text UInumTokensValue;
+    private Text UImoneyValue;
+
+    protected bool canExecuteAction;
+
+    public Player(string name, GameObject playerUIPrefab, GameObject canvas)
     {
-        money = 0;
-        numTokens = 0;
-        preferredInstrument = GameProperties.Instrument.BASS;
-        skillSet = new Dictionary<GameProperties.Instrument, int>();
+        this.name = name;
+
+        this.playerUI = Object.Instantiate(playerUIPrefab,canvas.transform);
+
+        this.canExecuteAction = false;
+        this.money = 0;
+        this.numTokens = 0;
+        this.preferredInstrument = GameProperties.Instrument.BASS;
+        this.skillSet = new Dictionary<GameProperties.Instrument, int>();
+
+        this.UIplayerActionDropdown = playerUI.transform.Find("playerActionSection/playerActionDropdown").gameObject.GetComponent<Dropdown>();
+        this.UIplayerActionButton = playerUI.transform.Find("playerActionSection/playerActionButton").gameObject.GetComponent<Button>();
+
+        this.UInameText = playerUI.transform.Find("nameText").gameObject.GetComponent<Text>();
+
+        this.UInumTokensValue = playerUI.transform.Find("gameStateSection/numTokensValue").gameObject.GetComponent<Text>();
+        this.UImoneyValue = playerUI.transform.Find("gameStateSection/moneyValue").gameObject.GetComponent<Text>();
+
+        this.UInameText.text = this.name + " Stats:";
+        this.UIplayerActionButton.onClick.AddListener(delegate { UIplayerActionButtonOnClick(); });
     }
 
     //main method
-    public abstract bool ExecuteActionRequest();
+    public abstract IEnumerator ExecuteActionRequest();
 
     //aux methods
+    public void UpdateUI()
+    {
+        UImoneyValue.text = money.ToString();
+        UInumTokensValue.text = numTokens.ToString();
+    }
+
+    public void UIplayerActionButtonOnClick()
+    {
+        this.canExecuteAction = true;
+    }
+
     public void ChangePreferredInstrument(GameProperties.Instrument instrument)
     {
         this.preferredInstrument = instrument;
@@ -81,12 +122,15 @@ public abstract class Player
 }
 
 
-public class GreedyPlayer : Player {
+public class HumanPlayer : Player {
 
-    public GreedyPlayer(string name) : base(name) { }
+    public HumanPlayer(string name, GameObject playerUIPrefab, GameObject canvas) : base(name, playerUIPrefab, canvas) { }
 
-    public override bool ExecuteActionRequest()
+    public override IEnumerator ExecuteActionRequest()
     {
-        return true;
+        while (this.canExecuteAction == false)
+        {
+            yield return true;
+        }
     }
 }
