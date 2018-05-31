@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+
 public abstract class Player
 {
     private string name;
@@ -15,7 +16,7 @@ public abstract class Player
     //UI stuff
     private GameObject playerUI;
 
-    private Dropdown UIplayerActionDropdown;
+    protected Dropdown UIplayerActionDropdown;
     private Button UIplayerActionButton;
 
     private Text UInameText;
@@ -23,6 +24,14 @@ public abstract class Player
     private Text UImoneyValue;
 
     protected bool canExecuteAction;
+
+
+    public enum PlayerAction
+    {
+        SPEND_TOKEN,
+        CONVERT_TOKEN_TO_MONEY
+    }
+
 
     public Player(string name, GameObject playerUIPrefab, GameObject canvas)
     {
@@ -44,12 +53,22 @@ public abstract class Player
         this.UInumTokensValue = playerUI.transform.Find("gameStateSection/numTokensValue").gameObject.GetComponent<Text>();
         this.UImoneyValue = playerUI.transform.Find("gameStateSection/moneyValue").gameObject.GetComponent<Text>();
 
-        this.UInameText.text = this.name + " Stats:";
-        this.UIplayerActionButton.onClick.AddListener(delegate { UIplayerActionButtonOnClick(); });
+        UInameText.text = this.name + " Stats:";
+        UIplayerActionButton.onClick.AddListener(delegate { UIplayerActionButtonOnClick(); });
+
+        foreach(string playerActionText in System.Enum.GetNames(typeof(PlayerAction)))
+        {
+            UIplayerActionDropdown.options.Add(new Dropdown.OptionData(playerActionText));
+        }
     }
 
     //main method
-    public abstract IEnumerator ExecuteActionRequest();
+    public void ExecuteActionRequest()
+    {
+        PlayerAction action = ChooseAction().GetEnumerator().Current;
+        UpdateUI(); //update ui after player chooses action
+    }
+    public abstract IEnumerable<PlayerAction> ChooseAction();
 
     //aux methods
     public void UpdateUI()
@@ -126,11 +145,11 @@ public class HumanPlayer : Player {
 
     public HumanPlayer(string name, GameObject playerUIPrefab, GameObject canvas) : base(name, playerUIPrefab, canvas) { }
 
-    public override IEnumerator ExecuteActionRequest()
+    public override IEnumerable<PlayerAction> ChooseAction()
     {
         while (this.canExecuteAction == false)
         {
-            yield return true;
+            yield return (PlayerAction) this.UIplayerActionDropdown.value;
         }
     }
 }
