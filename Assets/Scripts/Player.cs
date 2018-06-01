@@ -15,6 +15,8 @@ public abstract class Player
     private GameProperties.Instrument preferredInstrument;
     private Dictionary<GameProperties.Instrument, int> skillSet;
 
+    private bool canExecuteAction;
+
 
     //UI stuff
     private GameObject playerUI;
@@ -25,6 +27,9 @@ public abstract class Player
     private Text UInameText;
     private Text UInumTokensValue;
     private Text UImoneyValue;
+
+    private Text UISkillTexts;
+    private Text UISkillTokens;
 
 
     public enum PlayerAction
@@ -45,15 +50,28 @@ public abstract class Player
         this.preferredInstrument = GameProperties.Instrument.BASS;
         this.skillSet = new Dictionary<GameProperties.Instrument, int>();
 
-        this.gameManagerRef = GameObject.Find("gameManager").gameObject.GetComponent<GameManager>();
+        this.canExecuteAction = false;
+
+        //add values to the dictionary
+        foreach (GameProperties.Instrument instrument in System.Enum.GetValues(typeof(GameProperties.Instrument)))
+        {
+            skillSet[instrument] = 0;
+        }
+
+        this.gameManagerRef = GameObject.Find("GameManager").gameObject.GetComponent<GameManager>();
 
         this.UIplayerActionDropdown = playerUI.transform.Find("playerActionSection/playerActionDropdown").gameObject.GetComponent<Dropdown>();
-        this.UIplayerActionButton = playerUI.transform.Find("playerActionSection/playerActionButton").gameObject.GetComponent<Button>();
+        this.UIplayerActionButton = playerUI.transform.Find("playerActionButton").gameObject.GetComponent<Button>();
 
         this.UInameText = playerUI.transform.Find("nameText").gameObject.GetComponent<Text>();
 
         this.UInumTokensValue = playerUI.transform.Find("gameStateSection/numTokensValue").gameObject.GetComponent<Text>();
         this.UImoneyValue = playerUI.transform.Find("gameStateSection/moneyValue").gameObject.GetComponent<Text>();
+
+
+        this.UISkillTexts = playerUI.transform.Find("skillTable/skillTexts").gameObject.GetComponent<Text>();
+        this.UISkillTokens = playerUI.transform.Find("skillTable/skillTokens").gameObject.GetComponent<Text>();
+
 
         UInameText.text = this.name + " Stats:";
         UIplayerActionButton.onClick.AddListener(delegate { ExecuteAction(); });
@@ -65,9 +83,15 @@ public abstract class Player
 
     }
 
+    public GameObject GetPlayerUI()
+    {
+        return this.playerUI;
+    }
+
     //main method
     public void ExecuteActionRequest() //actions choosen
     {
+        this.canExecuteAction = true;
     }
 
     public abstract PlayerAction ChooseAction();
@@ -77,14 +101,44 @@ public abstract class Player
     {
         UImoneyValue.text = money.ToString();
         UInumTokensValue.text = numTokens.ToString();
+
+        UISkillTexts.text = "";
+        UISkillTokens.text = "";
+        foreach (GameProperties.Instrument instrument in skillSet.Keys)
+        {
+            UISkillTexts.text += " " + instrument.ToString();
+            for (int i=0; i < instrument.ToString().Length; i++)
+            {
+                UISkillTokens.text += "   ";
+            }
+            UISkillTokens.text += skillSet[instrument].ToString();
+        }
     }
 
     public void ExecuteAction() //actions choosen
     {
+        if (!canExecuteAction)
+        {
+            return;
+        }
         //ask gameManager to resume game thread
         PlayerAction action = ChooseAction();
+
+        switch (action)
+        {
+            case PlayerAction.CONVERT_TOKEN_TO_MONEY:
+                ConvertTokensToMoney(1);
+                break;
+            
+            case PlayerAction.SPEND_TOKEN:
+                SpendToken(GameProperties.Instrument.BASS);
+                break;
+        }
+
         UpdateUI(); //update ui after player chooses action
         gameManagerRef.PlayerActionExecuted();
+
+        canExecuteAction = false;
     }
 
     public void ChangePreferredInstrument(GameProperties.Instrument instrument)
@@ -100,14 +154,8 @@ public abstract class Player
         }
 
         numTokens--;
-        if (skillSet.ContainsKey(instrument))
-        {
-            skillSet.Add(instrument, 1);
-        }
-        else
-        {
-            skillSet[instrument]++;
-        }
+        skillSet[instrument]++;
+        
         return true;
     }
     public bool ConvertTokensToMoney(int numTokensToConvert)

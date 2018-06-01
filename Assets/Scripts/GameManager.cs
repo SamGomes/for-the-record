@@ -13,8 +13,7 @@ public class GameManager : MonoBehaviour {
 
     private List<Player> players;
     int currPlayerIndex;
-
-    bool isPaused;
+ 
 
     public GameObject playerUIPrefab;
     public GameObject canvas;
@@ -24,9 +23,6 @@ public class GameManager : MonoBehaviour {
 
     void Awake()
     {
-        gameRoundThread = new Thread(PlayGameRound);
-        gameRoundThreadResetEvent = new ManualResetEvent(false);
-
         gameUtilities = new RandomUtilities();
         albums = new List<Album>(numRounds);
         players = new List<Player>();
@@ -34,7 +30,6 @@ public class GameManager : MonoBehaviour {
     }
 
     void Start () {
-        isPaused = false;
         currPlayerIndex = 0;
         numRounds = 5;
         
@@ -42,7 +37,7 @@ public class GameManager : MonoBehaviour {
         players.Add(new HumanPlayer("Mike", playerUIPrefab, canvas));
         players.Add(new HumanPlayer("Bob", playerUIPrefab, canvas));
 
-        InitGame();
+        gameRoundThread = new Thread(InitGame);
     }
 
     private void PauseGameThread()
@@ -67,11 +62,29 @@ public class GameManager : MonoBehaviour {
         {
             Player currPlayer = players[i];
             currPlayer.ReceiveTokens(2);
-            currPlayer.ExecuteActionRequest();
-            PauseGameThread();
+            //currPlayer.ExecuteActionRequest();
+            //PauseGameThread();
+
+            currPlayer.UpdateUI();
         }
     }
-    
+
+    public void ChangeActivePlayerUI(int playerIndex)
+    {
+        int numPlayers = players.Count;
+        for (int i = 0; i < numPlayers; i++)
+        {
+            if (i == playerIndex)
+            {
+                continue;
+            }
+            Player currPlayer = players[i];
+            currPlayer.GetPlayerUI().SetActive(false);
+        }
+
+        players[playerIndex].GetPlayerUI().SetActive(true);
+    }
+
     public void PlayGameRound()
     {
         Album newAlbum = new Album("a1");
@@ -81,6 +94,8 @@ public class GameManager : MonoBehaviour {
         {
             for (int i = 0; i < numPlayers; i++)
             {
+                //ChangeActivePlayerUI(i);
+
                 int approachedPlayerIndex = (currPlayerIndex + i) % numPlayers;
                 Player currPlayer = players[approachedPlayerIndex];
 
@@ -123,14 +138,17 @@ public class GameManager : MonoBehaviour {
 
             }
         }
+        albums.Add(newAlbum);
     }
 
 
     // Update is called once per frame
     void Update () {
         //simulate round
-        if (Input.GetKeyDown(KeyCode.Space)){
-            gameRoundThread.Start();
+        if (Input.GetKeyDown(KeyCode.N)){
+            gameRoundThread = new Thread(PlayGameRound);
+            gameRoundThreadResetEvent = new ManualResetEvent(false);
+            gameRoundThread.Start(); //fork main thread on round start
         }
 	}
 }

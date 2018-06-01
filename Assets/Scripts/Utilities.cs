@@ -36,9 +36,11 @@ public interface IUtilities
 }
 
 public class RandomUtilities: IUtilities{
+    private System.Random random = new System.Random();
+
     public int RollTheDice(int diceNumbers)
     {
-        return UnityEngine.Random.Range(1, diceNumbers + 1);
+        return random.Next(diceNumbers-1) + 1;
     }
 }
 
