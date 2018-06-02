@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System.Threading;
+using UnityEngine.UI;
 
 
 public class GameManager : MonoBehaviour {
@@ -16,10 +16,13 @@ public class GameManager : MonoBehaviour {
  
 
     public GameObject playerUIPrefab;
+    public GameObject albumUIPrefab;
     public GameObject canvas;
 
-    Thread gameRoundThread;
-    ManualResetEvent gameRoundThreadResetEvent;
+    public Button showCurrAlbumUIButton;
+    private bool showingCurrAlbumUI;
+
+    private int numPlaysToBeDoneOnCurrRound;
 
     void Awake()
     {
@@ -30,6 +33,7 @@ public class GameManager : MonoBehaviour {
     }
 
     void Start () {
+        numPlaysToBeDoneOnCurrRound = -1;
         currPlayerIndex = 0;
         numRounds = 5;
         
@@ -37,22 +41,13 @@ public class GameManager : MonoBehaviour {
         players.Add(new HumanPlayer("Mike", playerUIPrefab, canvas));
         players.Add(new HumanPlayer("Bob", playerUIPrefab, canvas));
 
-        gameRoundThread = new Thread(InitGame);
-    }
+        InitGame();
 
-    private void PauseGameThread()
-    {
-        gameRoundThreadResetEvent.WaitOne();
-    }
-    private void ResumeGameThread()
-    {
-        gameRoundThreadResetEvent.Set();
-    }
 
-    public void PlayerActionExecuted()
-    {
-        ResumeGameThread();
+        showCurrAlbumUIButton.onClick.AddListener(delegate { ShowHideCurrAlbumUI(); });
+        showingCurrAlbumUI = false;
     }
+    
 
     public void InitGame()
     {
@@ -62,83 +57,104 @@ public class GameManager : MonoBehaviour {
         {
             Player currPlayer = players[i];
             currPlayer.ReceiveTokens(2);
-            //currPlayer.ExecuteActionRequest();
-            //PauseGameThread();
-
             currPlayer.UpdateUI();
         }
     }
 
-    public void ChangeActivePlayerUI(int playerIndex)
+    public void ChangeActivePlayerUI(Player player)
     {
         int numPlayers = players.Count;
         for (int i = 0; i < numPlayers; i++)
         {
-            if (i == playerIndex)
+            if (players[i] == player)
             {
+                player.GetPlayerUI().SetActive(true);
                 continue;
             }
             Player currPlayer = players[i];
             currPlayer.GetPlayerUI().SetActive(false);
         }
-
-        players[playerIndex].GetPlayerUI().SetActive(true);
     }
 
-    public void PlayGameRound()
+    
+
+    public void StartGameRoundForAllPlayers()
     {
-        Album newAlbum = new Album("a1");
         int numPlayers = players.Count;
 
+        numPlaysToBeDoneOnCurrRound = 0;
         for (int actionsTaken = 0; actionsTaken < GameProperties.allowedPlayerActionsPerAlbum; actionsTaken++)
         {
             for (int i = 0; i < numPlayers; i++)
             {
-                //ChangeActivePlayerUI(i);
-
                 int approachedPlayerIndex = (currPlayerIndex + i) % numPlayers;
                 Player currPlayer = players[approachedPlayerIndex];
 
-                Debug.Log("waitingForPlayer...");
+                Debug.Log("StartGameRoundForThisPlayers...");
                 currPlayer.ExecuteActionRequest();
-                PauseGameThread();
-                Debug.Log("actionExecuted");
-
-                var skillSet = currPlayer.GetSkillSet();
-                List<GameProperties.Instrument> currPlayerKeys = new List<GameProperties.Instrument>(skillSet.Keys);
-                for (int j = 0; j < currPlayerKeys.Count; j++)
-                {
-                    GameProperties.Instrument currInstrument = currPlayerKeys[j];
-                    if (currInstrument == GameProperties.Instrument.MARKTING)
-                    {
-                        continue;
-                    }
-                    int newAlbumInstrumentValue = 0;
-
-                    int randomIncrease = gameUtilities.RollTheDice(6);
-                    newAlbumInstrumentValue += randomIncrease * skillSet[currInstrument];
-
-                    newAlbum.SetInstrumentValue(currPlayer.GetPreferredInstrument(), newAlbumInstrumentValue);
-                }
-                for (int j = 0; j < currPlayer.GetSkillSet()[GameProperties.Instrument.MARKTING]; j++)
-                {
-                    currPlayer.ReceiveMoney(GameProperties.tokenValue * gameUtilities.RollTheDice(6));
-                }
-            }
-
-            int marketValue = gameUtilities.RollTheDice(40);
-            int newAlbumValue = newAlbum.GetAlbumValue();
-            if (newAlbumValue >= marketValue)
-            {
-                newAlbum.SetMarketingState(GameProperties.AlbumMarketingState.MEGA_HIT);
-                for (int i = 0; i < numPlayers; i++)
-                {
-                    players[i].ReceiveMoney(GameProperties.tokenValue * newAlbumValue);
-                }
-
+                numPlaysToBeDoneOnCurrRound++;
             }
         }
-        albums.Add(newAlbum);
+    }
+    public void RollDicesForInstrumentsAndMarketing(Player currPlayer)
+    {
+        Debug.Log("RollDicesForInstrumentsAndMarketing");
+        Album currAlbum = albums[albums.Count - 1];
+
+        var skillSet = currPlayer.GetSkillSet();
+        List<GameProperties.Instrument> currPlayerKeys = new List<GameProperties.Instrument>(skillSet.Keys);
+        for (int j = 0; j < currPlayerKeys.Count; j++)
+        {
+            GameProperties.Instrument currInstrument = currPlayerKeys[j];
+            if (currInstrument == GameProperties.Instrument.MARKTING)
+            {
+                continue;
+            }
+            int newAlbumInstrumentValue = 0;
+
+            int randomIncrease = gameUtilities.RollTheDice(6);
+            newAlbumInstrumentValue += randomIncrease * skillSet[currInstrument];
+
+            currAlbum.SetInstrumentValue(currPlayer.GetPreferredInstrument(), newAlbumInstrumentValue);
+        }
+        for (int j = 0; j < currPlayer.GetSkillSet()[GameProperties.Instrument.MARKTING]; j++)
+        {
+            currPlayer.ReceiveMoney(GameProperties.tokenValue * gameUtilities.RollTheDice(6));
+        }
+
+
+    }
+    public void CheckAlbumResult()
+    {
+        Debug.Log("CheckAlbumResult");
+        Album currAlbum = albums[albums.Count - 1];
+
+        int numPlayers = players.Count;
+        int marketValue = gameUtilities.RollTheDice(40);
+        int newAlbumValue = currAlbum.GetAlbumValue();
+        if (newAlbumValue >= marketValue)
+        {
+            currAlbum.SetMarketingState(GameProperties.AlbumMarketingState.MEGA_HIT);
+            for (int i = 0; i < numPlayers; i++)
+            {
+                players[i].ReceiveMoney(GameProperties.tokenValue * newAlbumValue);
+            }
+
+        }
+    }
+
+    public void CurrPlayerActionExecuted(Player invoker)
+    {
+        RollDicesForInstrumentsAndMarketing(invoker);
+        ChangeActivePlayerUI(players[(players.IndexOf(invoker) +1) % players.Count]); //compute next player
+        numPlaysToBeDoneOnCurrRound--;
+    }
+
+    public void ShowHideCurrAlbumUI()
+    {
+        GameObject currAlbumUI = albums[albums.Count - 1].GetAlbumUI();
+        currAlbumUI.SetActive(!showingCurrAlbumUI);
+        showingCurrAlbumUI = !showingCurrAlbumUI;
     }
 
 
@@ -146,9 +162,17 @@ public class GameManager : MonoBehaviour {
     void Update () {
         //simulate round
         if (Input.GetKeyDown(KeyCode.N)){
-            gameRoundThread = new Thread(PlayGameRound);
-            gameRoundThreadResetEvent = new ManualResetEvent(false);
-            gameRoundThread.Start(); //fork main thread on round start
+            Album newAlbum = new Album("newAlbum", albumUIPrefab, canvas);
+            newAlbum.GetAlbumUI().SetActive(false);
+            albums.Add(newAlbum);
+
+            StartGameRoundForAllPlayers();
         }
-	}
+
+        if (numPlaysToBeDoneOnCurrRound == 0)
+        {
+            CheckAlbumResult();
+            numPlaysToBeDoneOnCurrRound = -1;
+        }
+    }
 }

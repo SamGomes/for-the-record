@@ -109,7 +109,7 @@ public abstract class Player
             UISkillTexts.text += " " + instrument.ToString();
             for (int i=0; i < instrument.ToString().Length; i++)
             {
-                UISkillTokens.text += "   ";
+                UISkillTokens.text += " ";
             }
             UISkillTokens.text += skillSet[instrument].ToString();
         }
@@ -119,11 +119,13 @@ public abstract class Player
     {
         if (!canExecuteAction)
         {
+            //UIplayerActionButton.enabled = false;
             return;
         }
+        //UIplayerActionButton.enabled = true;
+
         //ask gameManager to resume game thread
         PlayerAction action = ChooseAction();
-
         switch (action)
         {
             case PlayerAction.CONVERT_TOKEN_TO_MONEY:
@@ -136,7 +138,7 @@ public abstract class Player
         }
 
         UpdateUI(); //update ui after player chooses action
-        gameManagerRef.PlayerActionExecuted();
+        gameManagerRef.CurrPlayerActionExecuted(this);
 
         canExecuteAction = false;
     }
