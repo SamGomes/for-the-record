@@ -19,7 +19,10 @@ public class GameManager : MonoBehaviour {
     public GameObject albumUIPrefab;
     public GameObject canvas;
 
-    public Button showCurrAlbumUIButton;
+    public Text UIcurrMarketValueText;
+    private int currMarketValue;
+
+    public Button UIshowCurrAlbumButton;
     private bool showingCurrAlbumUI;
 
     private int numPlaysToBeDoneOnCurrRound;
@@ -43,8 +46,7 @@ public class GameManager : MonoBehaviour {
 
         InitGame();
 
-
-        showCurrAlbumUIButton.onClick.AddListener(delegate { ShowHideCurrAlbumUI(); });
+        UIshowCurrAlbumButton.onClick.AddListener(delegate { ShowHideCurrAlbumUI(); });
         showingCurrAlbumUI = false;
     }
     
@@ -81,7 +83,6 @@ public class GameManager : MonoBehaviour {
     public void StartGameRoundForAllPlayers()
     {
         int numPlayers = players.Count;
-
         numPlaysToBeDoneOnCurrRound = 0;
         for (int actionsTaken = 0; actionsTaken < GameProperties.allowedPlayerActionsPerAlbum; actionsTaken++)
         {
@@ -112,8 +113,14 @@ public class GameManager : MonoBehaviour {
             }
             int newAlbumInstrumentValue = 0;
 
-            int randomIncrease = gameUtilities.RollTheDice(6);
-            newAlbumInstrumentValue += randomIncrease * skillSet[currInstrument];
+            int numTokensForInstrument = skillSet[currInstrument];
+
+            for(int i=0; i<numTokensForInstrument; i++)
+            {
+                int randomIncrease = gameUtilities.RollTheDice(6);
+                newAlbumInstrumentValue += randomIncrease;
+            }
+            currPlayer.SetAlbumContribution(currInstrument, newAlbumInstrumentValue);
 
             currAlbum.SetInstrumentValue(currPlayer.GetPreferredInstrument(), newAlbumInstrumentValue);
         }
@@ -124,6 +131,12 @@ public class GameManager : MonoBehaviour {
 
 
     }
+
+    IEnumerator hideObjectAfterAWhile(GameObject obj, float time)
+    {
+        yield return new WaitForSeconds(time);
+        obj.SetActive(false);
+    }
     public void CheckAlbumResult()
     {
         Debug.Log("CheckAlbumResult");
@@ -131,27 +144,51 @@ public class GameManager : MonoBehaviour {
 
         int numPlayers = players.Count;
         int marketValue = gameUtilities.RollTheDice(40);
+        UIcurrMarketValueText.text = marketValue.ToString();
         int newAlbumValue = currAlbum.GetAlbumValue();
+        
         if (newAlbumValue >= marketValue)
         {
             currAlbum.SetMarketingState(GameProperties.AlbumMarketingState.MEGA_HIT);
-            for (int i = 0; i < numPlayers; i++)
+        }
+        else
+        {
+            currAlbum.SetMarketingState(GameProperties.AlbumMarketingState.FAIL);
+        }
+
+        for (int i = 0; i < numPlayers; i++)
+        {
+            if(currAlbum.GetMarketingState()== GameProperties.AlbumMarketingState.MEGA_HIT)
             {
                 players[i].ReceiveMoney(GameProperties.tokenValue * newAlbumValue);
             }
-
+            else
+            {
+                players[i].ReceiveMoney(GameProperties.tokenValue);
+            }
+            players[i].ReceiveTokens(2);
         }
+
+        //display album ui on round end
+        GameObject currAlbumUI = albums[albums.Count - 1].GetAlbumUI();
+        currAlbumUI.SetActive(true);
+        StartCoroutine(hideObjectAfterAWhile(currAlbumUI, 5.0f));
     }
 
     public void CurrPlayerActionExecuted(Player invoker)
     {
         RollDicesForInstrumentsAndMarketing(invoker);
-        ChangeActivePlayerUI(players[(players.IndexOf(invoker) +1) % players.Count]); //compute next player
+        Debug.Log((players.IndexOf(invoker) + 1) % players.Count);
+        ChangeActivePlayerUI(players[(players.IndexOf(invoker) + 1) % players.Count]); //compute next player
         numPlaysToBeDoneOnCurrRound--;
     }
 
     public void ShowHideCurrAlbumUI()
     {
+        if (albums.Count == 0)
+        {
+            return;
+        }
         GameObject currAlbumUI = albums[albums.Count - 1].GetAlbumUI();
         currAlbumUI.SetActive(!showingCurrAlbumUI);
         showingCurrAlbumUI = !showingCurrAlbumUI;

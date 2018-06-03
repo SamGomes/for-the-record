@@ -18,9 +18,20 @@ public class Album{
 
     public Album(string name, GameObject albumUIPrefab, GameObject canvas)
     {
+        this.albumUI = Object.Instantiate(albumUIPrefab, canvas.transform);
+        this.UInameText = albumUI.transform.Find("albumName").GetComponent<Text>();
+        this.UIvalueText = albumUI.transform.Find("albumValueText").GetComponent<Text>();
+        this.UImarketingStateText = albumUI.transform.Find("albumMarketingStateText").GetComponent<Text>();
+
         this.marketingState = GameProperties.AlbumMarketingState.NON_PUBLISHED;
+        UImarketingStateText.text = marketingState.ToString();
+
         this.name = name;
+        this.UInameText.text = name;
+
         this.value = 0;
+        this.UIvalueText.text = value.ToString();
+
         instrumentValues = new Dictionary<GameProperties.Instrument, int>();
 
         //add values to the dictionary
@@ -29,10 +40,6 @@ public class Album{
             instrumentValues[instrument] = 0;
         }
 
-        this.albumUI = Object.Instantiate(albumUIPrefab, canvas.transform);
-        this.UInameText = albumUI.transform.Find("albumName").GetComponent<Text>();
-        this.UIvalueText = albumUI.transform.Find("albumValue").GetComponent<Text>();
-        this.UImarketingStateText = albumUI.transform.Find("albumMarketingState").GetComponent<Text>();
     }
 
     public GameProperties.AlbumMarketingState GetMarketingState()
@@ -52,12 +59,16 @@ public class Album{
     public void SetInstrumentValue(GameProperties.Instrument instrument, int value)
     {
         int valueDiff = value - instrumentValues[instrument];
+
         this.value += valueDiff;
+        UIvalueText.text = value.ToString();
+
         instrumentValues[instrument] = value;
     }
     public void SetMarketingState(GameProperties.AlbumMarketingState marketingState)
     {
         this.marketingState = marketingState;
+        UImarketingStateText.text = marketingState.ToString();
     }
 
 }
