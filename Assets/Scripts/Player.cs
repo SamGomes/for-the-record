@@ -31,6 +31,13 @@ public abstract class Player
     private Text UITokensTexts;
     private Text UIContributionsTexts;
 
+    protected GameObject UIinstrumentSelection;
+    protected Dropdown UIinstrumentDropdown;
+
+    protected GameObject UImoneyConversionSelection;
+    protected Text UImoneyConversionValue;
+
+
 
     public enum PlayerAction
     {
@@ -74,6 +81,24 @@ public abstract class Player
         this.UIContributionsTexts = playerUI.transform.Find("skillTable/albumContributionsTexts").gameObject.GetComponent<Text>();
 
 
+        this.UISkillTexts = playerUI.transform.Find("skillTable/skillTexts").gameObject.GetComponent<Text>();
+        this.UITokensTexts = playerUI.transform.Find("skillTable/tokensTexts").gameObject.GetComponent<Text>();
+        this.UIContributionsTexts = playerUI.transform.Find("skillTable/albumContributionsTexts").gameObject.GetComponent<Text>();
+
+
+        this.UIinstrumentSelection = playerUI.transform.Find("playerActionSection/instrumentSelection").gameObject;
+        this.UIinstrumentDropdown = UIinstrumentSelection.transform.Find("instrumentDropdown").gameObject.GetComponent<Dropdown>();
+
+
+        this.UImoneyConversionSelection = playerUI.transform.Find("playerActionSection/moneyConversionSelection").gameObject;
+        this.UImoneyConversionValue = UImoneyConversionSelection.transform.Find("moneyConversionValue/Text").gameObject.GetComponent<Text>();
+
+
+        foreach (string instrumentText in System.Enum.GetNames(typeof(GameProperties.Instrument)))
+        {
+            UIinstrumentDropdown.options.Add(new Dropdown.OptionData(instrumentText));
+        }
+
         UInameText.text = this.name + " Stats:";
         UIplayerActionButton.onClick.AddListener(delegate { ExecuteAction(); });
 
@@ -81,6 +106,11 @@ public abstract class Player
         {
             UIplayerActionDropdown.options.Add(new Dropdown.OptionData(playerActionText));
         }
+        UIplayerActionDropdown.onValueChanged.AddListener(delegate { SpawnActionSpecificScreens((PlayerAction) UIplayerActionDropdown.value); });
+
+
+        this.UIinstrumentSelection.SetActive(true);
+        this.UImoneyConversionSelection.SetActive(false);
 
     }
 
@@ -113,23 +143,42 @@ public abstract class Player
         }
     }
 
+    public void SpawnActionSpecificScreens(Player.PlayerAction action)
+    {
+        this.UIinstrumentSelection.SetActive(false);
+        this.UImoneyConversionSelection.SetActive(false);
+
+        switch (action)
+        {
+            case PlayerAction.CONVERT_MONEY_TO_TOKEN:
+                this.UImoneyConversionSelection.SetActive(true);
+                break;
+
+            case PlayerAction.SPEND_TOKEN:
+                this.UIinstrumentSelection.SetActive(true);
+                break;
+        }
+    }
+
     public void ExecuteAction() //actions choosen
     {
+        ChangePreferredInstrument((GameProperties.Instrument) UIinstrumentDropdown.value);
+
         //ask gameManager to resume game thread
         PlayerAction action = ChooseAction();
         switch (action)
         {
             case PlayerAction.CONVERT_MONEY_TO_TOKEN:
-                ConvertMoneyToTokens(1);
+                ConvertMoneyToTokens(int.Parse(UImoneyConversionValue.text));
                 break;
             
             case PlayerAction.SPEND_TOKEN:
-                SpendToken(GameProperties.Instrument.BASS);
+                SpendToken(this.preferredInstrument);
                 break;
         }
 
-        UpdateUI(); //update ui after player chooses action
         gameManagerRef.CurrPlayerActionExecuted(this);
+        UpdateUI(); //update ui after player chooses action
     }
 
     public void ChangePreferredInstrument(GameProperties.Instrument instrument)
