@@ -14,7 +14,7 @@ public abstract class Player
     private int money;
     private GameProperties.Instrument preferredInstrument;
     private Dictionary<GameProperties.Instrument, int> skillSet;
-    private Dictionary<GameProperties.Instrument, int> albumContribution;
+    private Dictionary<GameProperties.Instrument, int> albumContributions;
 
 
     //UI stuff
@@ -56,13 +56,13 @@ public abstract class Player
         this.numTokens = 0;
         this.preferredInstrument = GameProperties.Instrument.BASS;
         this.skillSet = new Dictionary<GameProperties.Instrument, int>();
-        this.albumContribution = new Dictionary<GameProperties.Instrument, int>();
+        this.albumContributions = new Dictionary<GameProperties.Instrument, int>();
 
         //add values to the dictionary
         foreach (GameProperties.Instrument instrument in System.Enum.GetValues(typeof(GameProperties.Instrument)))
         {
             skillSet[instrument] = 0;
-            albumContribution[instrument] = 0;
+            albumContributions[instrument] = 0;
         }
 
         this.gameManagerRef = GameObject.Find("GameManager").gameObject.GetComponent<GameManager>();
@@ -139,7 +139,7 @@ public abstract class Player
         {
             UISkillTexts.text += " " + instrument.ToString()[0];
             UITokensTexts.text += " " + skillSet[instrument].ToString();
-            UIContributionsTexts.text += " " + albumContribution[instrument].ToString();
+            UIContributionsTexts.text += " " + albumContributions[instrument].ToString();
         }
     }
 
@@ -178,7 +178,6 @@ public abstract class Player
         }
 
         gameManagerRef.CurrPlayerActionExecuted(this);
-        UpdateUI(); //update ui after player chooses action
     }
 
     public void ChangePreferredInstrument(GameProperties.Instrument instrument)
@@ -195,7 +194,8 @@ public abstract class Player
 
         numTokens--;
         skillSet[instrument]++;
-        
+        UpdateUI(); 
+
         return true;
     }
     public bool ConvertTokensToMoney(int numTokensToConvert)
@@ -207,6 +207,7 @@ public abstract class Player
 
         numTokens-=numTokensToConvert;
         money += numTokensToConvert * GameProperties.tokenValue;
+        UpdateUI();
 
         return true;
     }
@@ -219,6 +220,8 @@ public abstract class Player
 
         money -= moneyToConvert;
         numTokens += (int) (moneyToConvert / GameProperties.tokenValue);
+        UpdateUI();
+
         return true;
     }
 
@@ -226,11 +229,13 @@ public abstract class Player
     {
         this.money += moneyToReceive;
         UImoneyValue.text = money.ToString();
+        UpdateUI();
     }
     public void ReceiveTokens(int numTokensToReceive)
     {
         this.numTokens += numTokensToReceive;
         UInumTokensValue.text = numTokens.ToString();
+        UpdateUI();
     }
     public int GetMoney()
     {
@@ -240,18 +245,34 @@ public abstract class Player
     {
         return this.preferredInstrument;
     }
+
+
     public Dictionary<GameProperties.Instrument, int> GetSkillSet()
     {
         return this.skillSet;
     }
 
+    public void SetAlbumContributions(Dictionary<GameProperties.Instrument, int>  albumContributions)
+    {
+        this.albumContributions = albumContributions;
+        UpdateUI();
+    }
+    public void InitAlbumContributions()
+    {
+        foreach (GameProperties.Instrument instrument in System.Enum.GetValues(typeof(GameProperties.Instrument)))
+        {
+            albumContributions[instrument] = 0;
+        }
+        UpdateUI(); 
+    }
     public void SetAlbumContribution(GameProperties.Instrument instrument, int value)
     {
-        this.albumContribution[instrument] = value;
+        this.albumContributions[instrument] = value;
+        UpdateUI();
     }
-    public Dictionary<GameProperties.Instrument, int> GetAlbumContribution()
+    public Dictionary<GameProperties.Instrument, int> GetAlbumContributions()
     {
-        return this.albumContribution;
+        return this.albumContributions;
     }
 
 }

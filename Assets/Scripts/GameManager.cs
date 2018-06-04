@@ -95,12 +95,17 @@ public class GameManager : MonoBehaviour {
 
     public void StartGameRoundForAllPlayers(string albumName)
     {
-
         Album newAlbum = new Album(albumName, albumUIPrefab, canvas);
         newAlbum.GetAlbumUI().SetActive(false);
         albums.Add(newAlbum);
 
         int numPlayers = players.Count;
+        for (int i = 0; i < numPlayers; i++)
+        {
+            Player currPlayer = players[i];
+            currPlayer.InitAlbumContributions();
+        }
+
         numPlaysToBeDoneOnCurrRound = 0;
         for (int actionsTaken = 0; actionsTaken < GameProperties.allowedPlayerActionsPerAlbum; actionsTaken++)
         {
