@@ -120,28 +120,23 @@ public class GameManager : MonoBehaviour {
             }
         }
     }
-    public void RollDicesForInstrumentsAndMarketing(Player currPlayer)
+    public void RollDicesForInstrument(Player currPlayer,GameProperties.Instrument instrument)
     {
         Debug.Log("RollDicesForInstrumentsAndMarketing");
         Album currAlbum = albums[albums.Count - 1];
 
         var skillSet = currPlayer.GetSkillSet();
-        List<GameProperties.Instrument> currPlayerKeys = new List<GameProperties.Instrument>(skillSet.Keys);
-        for (int j = 0; j < currPlayerKeys.Count; j++)
+
+
+        int newAlbumInstrumentValue = 0;
+        int numTokensForInstrument = skillSet[instrument];
+        for(int i=0; i<numTokensForInstrument; i++)
         {
-            GameProperties.Instrument currInstrument = currPlayerKeys[j];
-            int newAlbumInstrumentValue = 0;
-
-            int numTokensForInstrument = skillSet[currInstrument];
-
-            for(int i=0; i<numTokensForInstrument; i++)
-            {
-                int randomIncrease = gameUtilities.RollTheDice(6);
-                newAlbumInstrumentValue += randomIncrease;
-            }
-            currPlayer.SetAlbumContribution(currInstrument, newAlbumInstrumentValue);
-            currAlbum.SetInstrumentValue(currPlayer.GetPreferredInstrument(), newAlbumInstrumentValue);
+            int randomIncrease = gameUtilities.RollTheDice(6);
+            newAlbumInstrumentValue += randomIncrease;
         }
+        currPlayer.SetAlbumContribution(instrument, newAlbumInstrumentValue);
+        currAlbum.SetInstrumentValue(currPlayer.GetDiceRollInstrument(), newAlbumInstrumentValue);
     }
 
     private IEnumerator HideObjectAfterAWhile(GameObject obj, float time)
@@ -157,7 +152,7 @@ public class GameManager : MonoBehaviour {
         int numPlayers = players.Count;
         int marketValue = gameUtilities.RollTheDice(40);
         UIcurrMarketValueText.text = marketValue.ToString();
-        int newAlbumValue = currAlbum.GetAlbumValue();
+        int newAlbumValue = currAlbum.CalcAlbumValue();
         
         if (newAlbumValue >= marketValue)
         {
@@ -170,12 +165,23 @@ public class GameManager : MonoBehaviour {
 
         for (int i = 0; i < numPlayers; i++)
         {
-            if(currAlbum.GetMarketingState()== GameProperties.AlbumMarketingState.MEGA_HIT)
+            if (currAlbum.GetMarketingState() == GameProperties.AlbumMarketingState.MEGA_HIT)
             {
-                players[i].ReceiveMoney(GameProperties.tokenValue * players[i].GetSkillSet()[GameProperties.Instrument.MARKTING]);
+                //roll dices for markting
+                int marktingValue = 0;
+                for (int k = 0; k < players[i].GetSkillSet()[GameProperties.Instrument.MARKTING]; k++)
+                {
+                    int randomIncrease = gameUtilities.RollTheDice(6);
+                    marktingValue += randomIncrease;
+                }
+                players[i].ReceiveMoney(GameProperties.tokenValue * marktingValue);
+                
+                ////receive 3000
+                //players[i].ReceiveMoney(GameProperties.tokenValue * 3);
             }
             else
             {
+                //receive 1000
                 players[i].ReceiveMoney(GameProperties.tokenValue);
             }
             players[i].ReceiveTokens(2);
@@ -189,7 +195,8 @@ public class GameManager : MonoBehaviour {
 
     public void CurrPlayerActionExecuted(Player invoker)
     {
-        RollDicesForInstrumentsAndMarketing(invoker);
+        GameProperties.Instrument preferredInstrument = invoker.GetDiceRollInstrument();
+        RollDicesForInstrument(invoker, preferredInstrument);
         Player nextPlayer = players[(players.IndexOf(invoker) + 1) % players.Count];
         StartCoroutine(ChangeActivePlayerUI(nextPlayer, 2.0f)); 
 

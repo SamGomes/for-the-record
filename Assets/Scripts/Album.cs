@@ -47,8 +47,13 @@ public class Album{
         return this.marketingState;
     }
 
-    public int GetAlbumValue()
+    public int CalcAlbumValue()
     {
+        foreach (GameProperties.Instrument instrument in System.Enum.GetValues(typeof(GameProperties.Instrument)))
+        {
+            this.value += instrumentValues[instrument];
+        }
+        UIvalueText.text = value.ToString();
         return this.value;
     }
     public GameObject GetAlbumUI()
@@ -58,11 +63,6 @@ public class Album{
 
     public void SetInstrumentValue(GameProperties.Instrument instrument, int value)
     {
-        int valueDiff = value - instrumentValues[instrument];
-
-        this.value += valueDiff;
-        UIvalueText.text = value.ToString();
-
         instrumentValues[instrument] = value;
     }
     public void SetMarketingState(GameProperties.AlbumMarketingState marketingState)

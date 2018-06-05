@@ -12,7 +12,10 @@ public abstract class Player
     private string name;
     private int numTokens;
     private int money;
-    private GameProperties.Instrument preferredInstrument;
+
+    private GameProperties.Instrument diceRollInstrument;
+    private GameProperties.Instrument toBeTokenedInstrument;
+
     private Dictionary<GameProperties.Instrument, int> skillSet;
     private Dictionary<GameProperties.Instrument, int> albumContributions;
 
@@ -37,6 +40,7 @@ public abstract class Player
     protected GameObject UImoneyConversionSelection;
     protected Text UImoneyConversionValue;
 
+    public Dropdown UIrollDicesForDropdown;
 
 
     public enum PlayerAction
@@ -54,7 +58,8 @@ public abstract class Player
 
         this.money = 0;
         this.numTokens = 0;
-        this.preferredInstrument = GameProperties.Instrument.BASS;
+        this.diceRollInstrument = GameProperties.Instrument.GUITAR;
+        this.toBeTokenedInstrument = GameProperties.Instrument.GUITAR;
         this.skillSet = new Dictionary<GameProperties.Instrument, int>();
         this.albumContributions = new Dictionary<GameProperties.Instrument, int>();
 
@@ -93,11 +98,16 @@ public abstract class Player
         this.UImoneyConversionSelection = playerUI.transform.Find("playerActionSection/moneyConversionSelection").gameObject;
         this.UImoneyConversionValue = UImoneyConversionSelection.transform.Find("moneyConversionValue/Text").gameObject.GetComponent<Text>();
 
+        this.UIrollDicesForDropdown = playerUI.transform.Find("playerActionSection/rollDicesForSelection/rollDicesForDropdown").gameObject.GetComponent<Dropdown>();
 
-        foreach (string instrumentText in System.Enum.GetNames(typeof(GameProperties.Instrument)))
+
+        foreach (GameProperties.Instrument instrument in System.Enum.GetValues(typeof(GameProperties.Instrument)))
         {
-            UIinstrumentDropdown.options.Add(new Dropdown.OptionData(instrumentText));
+            UIinstrumentDropdown.options.Add(new Dropdown.OptionData(instrument.ToString()));
         }
+        UIinstrumentDropdown.onValueChanged.AddListener(delegate { ChangeToBeTokenedInstrument((GameProperties.Instrument)UIinstrumentDropdown.value); });
+        UIrollDicesForDropdown.onValueChanged.AddListener(delegate { ChangeDiceRollInstrument((GameProperties.Instrument)UIrollDicesForDropdown.value); });
+
 
         UInameText.text = this.name + " Stats:";
         UIplayerActionButton.onClick.AddListener(delegate { ExecuteAction(); });
@@ -139,8 +149,22 @@ public abstract class Player
         {
             UISkillTexts.text += " " + instrument.ToString()[0];
             UITokensTexts.text += " " + skillSet[instrument].ToString();
-            UIContributionsTexts.text += " " + albumContributions[instrument].ToString();
+
+            int currAlbumContribution = albumContributions[instrument];
+            UIContributionsTexts.text +=  (currAlbumContribution == 0)?  " _" : " " + currAlbumContribution.ToString();
         }
+
+        List<GameProperties.Instrument> skillSetKeys = new List<GameProperties.Instrument> (skillSet.Keys);
+        UIrollDicesForDropdown.options.Clear();
+        for (int i=0; i< skillSetKeys.Count; i++)
+        {
+            GameProperties.Instrument currInstrument = skillSetKeys[i];
+            if (skillSet[currInstrument] > 0 || this.toBeTokenedInstrument == currInstrument)
+            {
+                UIrollDicesForDropdown.options.Add(new Dropdown.OptionData(currInstrument.ToString()));
+            }
+        }
+        UIrollDicesForDropdown.RefreshShownValue();
     }
 
     public void SpawnActionSpecificScreens(Player.PlayerAction action)
@@ -162,8 +186,6 @@ public abstract class Player
 
     public void ExecuteAction() //actions choosen
     {
-        ChangePreferredInstrument((GameProperties.Instrument) UIinstrumentDropdown.value);
-
         //ask gameManager to resume game thread
         PlayerAction action = ChooseAction();
         switch (action)
@@ -173,16 +195,25 @@ public abstract class Player
                 break;
             
             case PlayerAction.SPEND_TOKEN:
-                SpendToken(this.preferredInstrument);
+                GameProperties.Instrument selectedInstrument = (GameProperties.Instrument)this.UIinstrumentDropdown.value;
+                SpendToken(selectedInstrument);
                 break;
         }
 
         gameManagerRef.CurrPlayerActionExecuted(this);
     }
 
-    public void ChangePreferredInstrument(GameProperties.Instrument instrument)
+    public void ChangeDiceRollInstrument(GameProperties.Instrument instrument)
     {
-        this.preferredInstrument = instrument;
+        this.diceRollInstrument = instrument;
+        UpdateUI();
+
+    }
+    public void ChangeToBeTokenedInstrument(GameProperties.Instrument instrument)
+    {
+        this.toBeTokenedInstrument = instrument;
+        UpdateUI();
+
     }
 
     public bool SpendToken(GameProperties.Instrument instrument)
@@ -241,9 +272,9 @@ public abstract class Player
     {
         return this.money;
     }
-    public GameProperties.Instrument GetPreferredInstrument()
+    public GameProperties.Instrument GetDiceRollInstrument()
     {
-        return this.preferredInstrument;
+        return this.diceRollInstrument;
     }
 
 
