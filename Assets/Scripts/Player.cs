@@ -105,8 +105,12 @@ public abstract class Player
         {
             UIinstrumentDropdown.options.Add(new Dropdown.OptionData(instrument.ToString()));
         }
-        UIinstrumentDropdown.onValueChanged.AddListener(delegate { ChangeToBeTokenedInstrument((GameProperties.Instrument)UIinstrumentDropdown.value); });
-        UIrollDicesForDropdown.onValueChanged.AddListener(delegate { ChangeDiceRollInstrument((GameProperties.Instrument)UIrollDicesForDropdown.value); });
+        UIinstrumentDropdown.onValueChanged.AddListener(delegate {
+            ChangeToBeTokenedInstrument((GameProperties.Instrument)UIinstrumentDropdown.value);
+        });
+        UIrollDicesForDropdown.onValueChanged.AddListener(delegate {
+            ChangeDiceRollInstrument((GameProperties.Instrument)UIrollDicesForDropdown.value);
+        });
 
 
         UInameText.text = this.name + " Stats:";
@@ -155,7 +159,7 @@ public abstract class Player
         }
 
         List<GameProperties.Instrument> skillSetKeys = new List<GameProperties.Instrument> (skillSet.Keys);
-        UIrollDicesForDropdown.options.Clear();
+        UIrollDicesForDropdown.ClearOptions();
         for (int i=0; i< skillSetKeys.Count; i++)
         {
             GameProperties.Instrument currInstrument = skillSetKeys[i];
@@ -207,7 +211,6 @@ public abstract class Player
     {
         this.diceRollInstrument = instrument;
         UpdateUI();
-
     }
     public void ChangeToBeTokenedInstrument(GameProperties.Instrument instrument)
     {
