@@ -19,7 +19,7 @@ public abstract class Player
     private Dictionary<GameProperties.Instrument, int> skillSet;
     private Dictionary<GameProperties.Instrument, int> albumContributions;
 
-    private int tokensBoughtOnCurrRound;
+    public int tokensBoughtOnCurrRound;
 
     //UI stuff
     private GameObject playerUI;
@@ -34,12 +34,15 @@ public abstract class Player
     private Text UITokensTexts;
     private Text UIContributionsTexts;
 
+    private GameObject UILevelUpPhase;
+    private GameObject UIPlayForInstrument;
+
     protected Dropdown UIspendTokenDropdown;
     protected Button UIspendTokenButton;
 
     protected Button UIbuyTokenButton;
 
-    public Dropdown UIrollDicesForDropdown;
+    protected Dropdown UIrollDicesForDropdown;
 
 
     public enum PlayerAction
@@ -91,7 +94,11 @@ public abstract class Player
         this.UIContributionsTexts = playerUI.transform.Find("skillTable/albumContributionsTexts").gameObject.GetComponent<Text>();
 
 
-        GameObject UIinstrumentSelection = playerUI.transform.Find("playerActionSection/levelUpPhaseUI/spendTokenSelection").gameObject;
+        UILevelUpPhase = playerUI.transform.Find("playerActionSection/levelUpPhaseUI").gameObject;
+        UIPlayForInstrument = playerUI.transform.Find("playerActionSection/playForInstrumentUI").gameObject;
+
+
+        GameObject UIinstrumentSelection = UILevelUpPhase.transform.Find("spendTokenSelection").gameObject;
         this.UIspendTokenDropdown = UIinstrumentSelection.transform.Find("spendTokenDropdown").gameObject.GetComponent<Dropdown>();
         this.UIspendTokenButton = UIinstrumentSelection.transform.Find("spendTokenButton").gameObject.GetComponent<Button>();
         UIspendTokenButton.onClick.AddListener(delegate {
@@ -156,13 +163,13 @@ public abstract class Player
 
         List<GameProperties.Instrument> skillSetKeys = new List<GameProperties.Instrument> (skillSet.Keys);
         UIrollDicesForDropdown.ClearOptions();
-        int firstInstrumentInDropdown=0;
-        for (int i=0; i< skillSetKeys.Count; i++)
+        int firstInstrumentInDropdown=-1;
+        for (int i=0; i< skillSetKeys.Count-1; i++)
         {
             GameProperties.Instrument currInstrument = skillSetKeys[i];
             if (skillSet[currInstrument] > 0 || this.toBeTokenedInstrument == currInstrument)
             {
-                if (firstInstrumentInDropdown == 0)
+                if (firstInstrumentInDropdown == -1)
                 {
                     firstInstrumentInDropdown = i;
                 }
@@ -176,11 +183,15 @@ public abstract class Player
 
     public void LevelUpRequest()
     {
+        UILevelUpPhase.SetActive(true);
+        UIPlayForInstrument.SetActive(false);
         UIplayerActionButton.onClick.RemoveAllListeners();
         UIplayerActionButton.onClick.AddListener(delegate { SendLevelUpResponse(); });
     }
     public void PlayForInstrumentRequest()
     {
+        UILevelUpPhase.SetActive(false);
+        UIPlayForInstrument.SetActive(true);
         UIplayerActionButton.onClick.RemoveAllListeners();
         UIplayerActionButton.onClick.AddListener(delegate { SendPlayForInstrumentResponse(); });
     }

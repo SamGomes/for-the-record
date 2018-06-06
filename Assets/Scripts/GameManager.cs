@@ -27,7 +27,6 @@ public class GameManager : MonoBehaviour {
     public Text UIalbumNameText;
 
     public Text UIcurrMarketValueText;
-    private int currMarketValue;
 
 
     void Awake()
@@ -68,7 +67,6 @@ public class GameManager : MonoBehaviour {
 
     void Start()
     {
-        
         numRounds = 5;
 
         players.Add(new HumanPlayer("John", playerUIPrefab, canvas));
@@ -103,6 +101,7 @@ public class GameManager : MonoBehaviour {
         {
             Player currPlayer = players[i];
             currPlayer.InitAlbumContributions();
+            currPlayer.tokensBoughtOnCurrRound = 0;
         }
 
         StartLevelingUpPhase();
@@ -170,17 +169,17 @@ public class GameManager : MonoBehaviour {
         {
             if (currAlbum.GetMarketingState() == GameProperties.AlbumMarketingState.MEGA_HIT)
             {
-                //roll dices for markting
-                int marktingValue = 0;
-                for (int k = 0; k < players[i].GetSkillSet()[GameProperties.Instrument.MARKTING]; k++)
-                {
-                    int randomIncrease = gameUtilities.RollTheDice(6);
-                    marktingValue += randomIncrease;
-                }
-                players[i].ReceiveMoney(GameProperties.tokenValue * marktingValue);
-                
-                ////receive 3000
-                //players[i].ReceiveMoney(GameProperties.tokenValue * 3);
+                ////roll dices for markting
+                //int marktingValue = 0;
+                //for (int k = 0; k < players[i].GetSkillSet()[GameProperties.Instrument.MARKTING]; k++)
+                //{
+                //    int randomIncrease = gameUtilities.RollTheDice(6);
+                //    marktingValue += randomIncrease;
+                //}
+                //players[i].ReceiveMoney(GameProperties.tokenValue * marktingValue);
+
+                //receive 3000
+                players[i].ReceiveMoney(GameProperties.tokenValue * 3);
             }
             else
             {
@@ -191,7 +190,7 @@ public class GameManager : MonoBehaviour {
     }
 
 
-    private IEnumerator showScreenWithDelay(GameObject screen, float delay)
+    private IEnumerator ShowScreenWithDelay(GameObject screen, float delay)
     {
         yield return new WaitForSeconds(delay);
         screen.SetActive(true);
@@ -209,7 +208,7 @@ public class GameManager : MonoBehaviour {
         if (numPlayersToPlayForInstrument == 0)
         {
             CheckAlbumResult();
-            StartCoroutine(showScreenWithDelay(UInewRoundScreen, 2.0f));
+            StartCoroutine(ShowScreenWithDelay(UInewRoundScreen, 2.0f));
 
             numPlayersToPlayForInstrument = players.Count;
         }

@@ -67,6 +67,14 @@ public class Album{
     }
     public void SetMarketingState(GameProperties.AlbumMarketingState marketingState)
     {
+        if (marketingState == GameProperties.AlbumMarketingState.MEGA_HIT)
+        {
+            this.albumUI.transform.GetChild(0).GetComponent<Image>().color = Color.green;
+        }
+        else if(marketingState == GameProperties.AlbumMarketingState.FAIL)
+        {
+            this.albumUI.transform.GetChild(0).GetComponent<Image>().color = Color.red;
+        }
         this.marketingState = marketingState;
         UImarketingStateText.text = marketingState.ToString();
     }
