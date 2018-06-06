@@ -187,7 +187,6 @@ public class GameManager : MonoBehaviour {
                 //receive 1000
                 players[i].ReceiveMoney(GameProperties.tokenValue);
             }
-            players[i].ReceiveTokens(2);
         }
     }
 

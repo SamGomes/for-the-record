@@ -28,6 +28,7 @@ public static class GameProperties
 
     public static int tokenValue = 1000;
     public static int allowedPlayerActionsPerAlbum = 2;
+    public static int allowedPlayerTokenBuysPerRound = 1;
 }
 
 public interface IUtilities

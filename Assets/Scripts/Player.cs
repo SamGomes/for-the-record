@@ -19,8 +19,7 @@ public abstract class Player
     private Dictionary<GameProperties.Instrument, int> skillSet;
     private Dictionary<GameProperties.Instrument, int> albumContributions;
 
-    private PlayerAction currPlayerAction;
-
+    private int tokensBoughtOnCurrRound;
 
     //UI stuff
     private GameObject playerUI;
@@ -37,7 +36,8 @@ public abstract class Player
 
     protected Dropdown UIspendTokenDropdown;
     protected Button UIspendTokenButton;
-    protected Text UImoneyConversionValue;
+
+    protected Button UIbuyTokenButton;
 
     public Dropdown UIrollDicesForDropdown;
 
@@ -54,6 +54,8 @@ public abstract class Player
         this.name = name;
 
         this.playerUI = Object.Instantiate(playerUIPrefab,canvas.transform);
+
+        this.tokensBoughtOnCurrRound = 0;
 
         this.money = 0;
         this.numTokens = 0;
@@ -97,9 +99,15 @@ public abstract class Player
             SpendToken(selectedInstrument);
         });
 
-        GameObject UImoneyConversionSelection = playerUI.transform.Find("playerActionSection/levelUpPhaseUI/moneyConversionSelection").gameObject;
-        GameObject UImoneyConversion = UImoneyConversionSelection.transform.Find("moneyConversionValue").gameObject;
-        this.UImoneyConversionValue = UImoneyConversion.transform.Find("Text").GetComponent<Text>();
+        GameObject UIbuyTokenSelection = playerUI.transform.Find("playerActionSection/levelUpPhaseUI/buyTokenSelection").gameObject;
+        this.UIbuyTokenButton = UIbuyTokenSelection.transform.Find("buyTokenButton").GetComponent<Button>();
+        UIbuyTokenButton.onClick.AddListener(delegate {
+            if (tokensBoughtOnCurrRound < GameProperties.allowedPlayerTokenBuysPerRound)
+            {
+                BuyTokens(1);
+                tokensBoughtOnCurrRound++;
+            }
+        });
 
         this.UIrollDicesForDropdown = playerUI.transform.Find("playerActionSection/playForInstrumentUI/rollDicesForSelection/rollDicesForDropdown").gameObject.GetComponent<Dropdown>();
 
@@ -154,8 +162,10 @@ public abstract class Player
             GameProperties.Instrument currInstrument = skillSetKeys[i];
             if (skillSet[currInstrument] > 0 || this.toBeTokenedInstrument == currInstrument)
             {
-                
-                firstInstrumentInDropdown = i;
+                if (firstInstrumentInDropdown == 0)
+                {
+                    firstInstrumentInDropdown = i;
+                }
                 UIrollDicesForDropdown.options.Add(new Dropdown.OptionData(currInstrument.ToString()));
             }
         }
@@ -177,8 +187,6 @@ public abstract class Player
 
     public void SendLevelUpResponse()
     {
-        ConvertMoneyToTokens(int.Parse(UImoneyConversionValue.text));
-        //button spends tokens on demand
         gameManagerRef.LevelUpResponse(this);
     }
     public void SendPlayForInstrumentResponse()
@@ -221,15 +229,16 @@ public abstract class Player
 
         return true;
     }
-    public bool ConvertMoneyToTokens(int moneyToConvert)
+    public bool BuyTokens(int numTokensToBuy)
     {
-        if (moneyToConvert <= 0)
+        int moneyToSpend = numTokensToBuy * GameProperties.tokenValue;
+        if (money <= moneyToSpend)
         {
             return false;
         }
 
-        money -= moneyToConvert;
-        numTokens += (int) (moneyToConvert / GameProperties.tokenValue);
+        money -= moneyToSpend;
+        numTokens += numTokensToBuy;
         UpdateUI();
 
         return true;
