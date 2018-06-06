@@ -19,11 +19,12 @@ public abstract class Player
     private Dictionary<GameProperties.Instrument, int> skillSet;
     private Dictionary<GameProperties.Instrument, int> albumContributions;
 
+    private PlayerAction currPlayerAction;
+
 
     //UI stuff
     private GameObject playerUI;
-
-    protected Dropdown UIplayerActionDropdown;
+    
     private Button UIplayerActionButton;
 
     private Text UInameText;
@@ -34,10 +35,8 @@ public abstract class Player
     private Text UITokensTexts;
     private Text UIContributionsTexts;
 
-    protected GameObject UIinstrumentSelection;
-    protected Dropdown UIinstrumentDropdown;
-
-    protected GameObject UImoneyConversionSelection;
+    protected Dropdown UIspendTokenDropdown;
+    protected Button UIspendTokenButton;
     protected Text UImoneyConversionValue;
 
     public Dropdown UIrollDicesForDropdown;
@@ -72,7 +71,6 @@ public abstract class Player
 
         this.gameManagerRef = GameObject.Find("GameManager").gameObject.GetComponent<GameManager>();
 
-        this.UIplayerActionDropdown = playerUI.transform.Find("playerActionSection/playerActionDropdown").gameObject.GetComponent<Dropdown>();
         this.UIplayerActionButton = playerUI.transform.Find("playerActionButton").gameObject.GetComponent<Button>();
 
         this.UInameText = playerUI.transform.Find("nameText").gameObject.GetComponent<Text>();
@@ -91,51 +89,39 @@ public abstract class Player
         this.UIContributionsTexts = playerUI.transform.Find("skillTable/albumContributionsTexts").gameObject.GetComponent<Text>();
 
 
-        this.UIinstrumentSelection = playerUI.transform.Find("playerActionSection/instrumentSelection").gameObject;
-        this.UIinstrumentDropdown = UIinstrumentSelection.transform.Find("instrumentDropdown").gameObject.GetComponent<Dropdown>();
+        GameObject UIinstrumentSelection = playerUI.transform.Find("playerActionSection/levelUpPhaseUI/spendTokenSelection").gameObject;
+        this.UIspendTokenDropdown = UIinstrumentSelection.transform.Find("spendTokenDropdown").gameObject.GetComponent<Dropdown>();
+        this.UIspendTokenButton = UIinstrumentSelection.transform.Find("spendTokenButton").gameObject.GetComponent<Button>();
+        UIspendTokenButton.onClick.AddListener(delegate {
+            GameProperties.Instrument selectedInstrument = (GameProperties.Instrument)this.UIspendTokenDropdown.value;
+            SpendToken(selectedInstrument);
+        });
 
+        GameObject UImoneyConversionSelection = playerUI.transform.Find("playerActionSection/levelUpPhaseUI/moneyConversionSelection").gameObject;
+        GameObject UImoneyConversion = UImoneyConversionSelection.transform.Find("moneyConversionValue").gameObject;
+        this.UImoneyConversionValue = UImoneyConversion.transform.Find("Text").GetComponent<Text>();
+        this.UImoneyConversionValue.text = "0";
 
-        this.UImoneyConversionSelection = playerUI.transform.Find("playerActionSection/moneyConversionSelection").gameObject;
-        this.UImoneyConversionValue = UImoneyConversionSelection.transform.Find("moneyConversionValue/Text").gameObject.GetComponent<Text>();
-
-        this.UIrollDicesForDropdown = playerUI.transform.Find("playerActionSection/rollDicesForSelection/rollDicesForDropdown").gameObject.GetComponent<Dropdown>();
+        this.UIrollDicesForDropdown = playerUI.transform.Find("playerActionSection/playForInstrumentUI/rollDicesForSelection/rollDicesForDropdown").gameObject.GetComponent<Dropdown>();
 
 
         foreach (GameProperties.Instrument instrument in System.Enum.GetValues(typeof(GameProperties.Instrument)))
         {
-            UIinstrumentDropdown.options.Add(new Dropdown.OptionData(instrument.ToString()));
+            UIspendTokenDropdown.options.Add(new Dropdown.OptionData(instrument.ToString()));
         }
-        UIinstrumentDropdown.onValueChanged.AddListener(delegate {
-            ChangeToBeTokenedInstrument((GameProperties.Instrument)UIinstrumentDropdown.value);
+        UIspendTokenDropdown.onValueChanged.AddListener(delegate {
+            ChangeToBeTokenedInstrument((GameProperties.Instrument)UIspendTokenDropdown.value);
         });
         UIrollDicesForDropdown.onValueChanged.AddListener(delegate {
             ChangeDiceRollInstrument((GameProperties.Instrument)UIrollDicesForDropdown.value);
         });
-
-
+        
         UInameText.text = this.name + " Stats:";
-        UIplayerActionButton.onClick.AddListener(delegate { ExecuteAction(); });
-
-        foreach(string playerActionText in System.Enum.GetNames(typeof(PlayerAction)))
-        {
-            UIplayerActionDropdown.options.Add(new Dropdown.OptionData(playerActionText));
-        }
-        UIplayerActionDropdown.onValueChanged.AddListener(delegate { SpawnActionSpecificScreens((PlayerAction) UIplayerActionDropdown.value); });
-
-
-        this.UIinstrumentSelection.SetActive(true);
-        this.UImoneyConversionSelection.SetActive(false);
-
     }
 
     public GameObject GetPlayerUI()
     {
         return this.playerUI;
-    }
-
-    //main method
-    public void ExecuteActionRequest() //actions choosen
-    {
     }
 
     public abstract PlayerAction ChooseAction();
@@ -170,42 +156,32 @@ public abstract class Player
         }
         UIrollDicesForDropdown.RefreshShownValue();
     }
+    
 
-    public void SpawnActionSpecificScreens(Player.PlayerAction action)
+    public void LevelUpRequest()
     {
-        this.UIinstrumentSelection.SetActive(false);
-        this.UImoneyConversionSelection.SetActive(false);
-
-        switch (action)
-        {
-            case PlayerAction.CONVERT_MONEY_TO_TOKEN:
-                this.UImoneyConversionSelection.SetActive(true);
-                break;
-
-            case PlayerAction.SPEND_TOKEN:
-                this.UIinstrumentSelection.SetActive(true);
-                break;
-        }
+        UIplayerActionButton.onClick.RemoveAllListeners();
+        UIplayerActionButton.onClick.AddListener(delegate { SendLevelUpResponse(); });
+    }
+    public void PlayForInstrumentRequest()
+    {
+        UIplayerActionButton.onClick.RemoveAllListeners();
+        UIplayerActionButton.onClick.AddListener(delegate { SendPlayForInstrumentResponse(); });
     }
 
-    public void ExecuteAction() //actions choosen
+    public void SendLevelUpResponse()
     {
-        //ask gameManager to resume game thread
-        PlayerAction action = ChooseAction();
-        switch (action)
-        {
-            case PlayerAction.CONVERT_MONEY_TO_TOKEN:
-                ConvertMoneyToTokens(int.Parse(UImoneyConversionValue.text));
-                break;
-            
-            case PlayerAction.SPEND_TOKEN:
-                GameProperties.Instrument selectedInstrument = (GameProperties.Instrument)this.UIinstrumentDropdown.value;
-                SpendToken(selectedInstrument);
-                break;
-        }
-
-        gameManagerRef.CurrPlayerActionExecuted(this);
+        ConvertMoneyToTokens(int.Parse(UImoneyConversionValue.text));
+        //button spends tokens on demand
+        gameManagerRef.LevelUpResponse(this);
     }
+    public void SendPlayForInstrumentResponse()
+    {
+        GameProperties.Instrument selectedRollDiceInstrument = (GameProperties.Instrument)this.UIrollDicesForDropdown.value;
+        ChangeDiceRollInstrument(selectedRollDiceInstrument);
+        gameManagerRef.PlayerPlayForInstrumentResponse(this);
+    }
+
 
     public void ChangeDiceRollInstrument(GameProperties.Instrument instrument)
     {
@@ -247,7 +223,7 @@ public abstract class Player
     }
     public bool ConvertMoneyToTokens(int moneyToConvert)
     {
-        if (numTokens == 0)
+        if (moneyToConvert <= 0)
         {
             return false;
         }
@@ -318,6 +294,6 @@ public class HumanPlayer : Player {
 
     public override PlayerAction ChooseAction()
     {
-        return (PlayerAction) this.UIplayerActionDropdown.value;
+        return (PlayerAction) 0;
     }
 }

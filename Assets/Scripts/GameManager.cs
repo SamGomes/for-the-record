@@ -12,15 +12,15 @@ public class GameManager : MonoBehaviour {
     private List<Album> albums;
 
     private List<Player> players;
-    int currPlayerIndex;
- 
 
     public GameObject playerUIPrefab;
     public GameObject albumUIPrefab;
     public GameObject canvas;
 
-    private int numPlaysToBeDoneOnCurrRound;
+    private int numPlayersToLevelUp;
+    private int numPlayersToPlayForInstrument;
 
+    //------------ UI -----------------------------
 
     public GameObject UInewRoundScreen;
     public Button UIstartNewRoundButton;
@@ -40,29 +40,7 @@ public class GameManager : MonoBehaviour {
         players = new List<Player>();
 
     }
-
-    void Start () {
-        numPlaysToBeDoneOnCurrRound = -1;
-        currPlayerIndex = 0;
-        numRounds = 5;
-        
-        players.Add(new HumanPlayer("John", playerUIPrefab, canvas));
-        players.Add(new HumanPlayer("Mike", playerUIPrefab, canvas));
-        players.Add(new HumanPlayer("Bob", playerUIPrefab, canvas));
-
-        InitGame();
-
-        UIshowCurrAlbumButton.onClick.AddListener(delegate() { ShowHideCurrAlbumUI(); });
-        showingCurrAlbumUI = false;
-
-        UIstartNewRoundButton.onClick.AddListener(delegate () {
-            UInewRoundScreen.SetActive(false);
-            StartGameRoundForAllPlayers(UIalbumNameText.text);
-        });
-
-    }
     
-
     public void InitGame()
     {
         int numPlayers = players.Count;
@@ -91,7 +69,28 @@ public class GameManager : MonoBehaviour {
         }
     }
 
-    
+    void Start()
+    {
+        
+        numRounds = 5;
+
+        players.Add(new HumanPlayer("John", playerUIPrefab, canvas));
+        players.Add(new HumanPlayer("Mike", playerUIPrefab, canvas));
+        players.Add(new HumanPlayer("Bob", playerUIPrefab, canvas));
+
+        InitGame();
+
+        UIshowCurrAlbumButton.onClick.AddListener(delegate () { ShowHideCurrAlbumUI(); });
+        showingCurrAlbumUI = false;
+
+        UIstartNewRoundButton.onClick.AddListener(delegate () {
+            UInewRoundScreen.SetActive(false);
+            StartGameRoundForAllPlayers(UIalbumNameText.text);
+        });
+
+        numPlayersToLevelUp = players.Count;
+        numPlayersToPlayForInstrument = players.Count;
+    }
 
     public void StartGameRoundForAllPlayers(string albumName)
     {
@@ -106,20 +105,23 @@ public class GameManager : MonoBehaviour {
             currPlayer.InitAlbumContributions();
         }
 
-        numPlaysToBeDoneOnCurrRound = 0;
-        for (int actionsTaken = 0; actionsTaken < GameProperties.allowedPlayerActionsPerAlbum; actionsTaken++)
-        {
-            for (int i = 0; i < numPlayers; i++)
-            {
-                int approachedPlayerIndex = (currPlayerIndex + i) % numPlayers;
-                Player currPlayer = players[approachedPlayerIndex];
+        StartLevelingUpPhase();
+        //for (int actionsTaken = 0; actionsTaken < GameProperties.allowedPlayerActionsPerAlbum; actionsTaken++)
+        //{
+        //    for (int i = 0; i < numPlayers; i++)
+        //    {
+        //        int approachedPlayerIndex = (currPlayerIndex + i) % numPlayers;
+        //        Player currPlayer = players[approachedPlayerIndex];
 
-                Debug.Log("StartGameRoundForThisPlayers...");
-                currPlayer.ExecuteActionRequest();
-                numPlaysToBeDoneOnCurrRound++;
-            }
-        }
+        //        Debug.Log("StartGameRoundForThisPlayers...");
+        //        LevelingUpPhase();
+        //        numPlaysToBeDoneOnCurrRound++;
+        //    }
+        //}
     }
+
+   
+
     public void RollDicesForInstrument(Player currPlayer,GameProperties.Instrument instrument)
     {
         Debug.Log("RollDicesForInstrumentsAndMarketing");
@@ -144,6 +146,17 @@ public class GameManager : MonoBehaviour {
         yield return new WaitForSeconds(time);
         obj.SetActive(false);
     }
+    public void ShowHideCurrAlbumUI()
+    {
+        if (albums.Count == 0)
+        {
+            return;
+        }
+        GameObject currAlbumUI = albums[albums.Count - 1].GetAlbumUI();
+        currAlbumUI.SetActive(!showingCurrAlbumUI);
+        showingCurrAlbumUI = !showingCurrAlbumUI;
+    }
+
     public void CheckAlbumResult()
     {
         Debug.Log("CheckAlbumResult");
@@ -193,35 +206,61 @@ public class GameManager : MonoBehaviour {
         StartCoroutine(HideObjectAfterAWhile(currAlbumUI, 5.0f));
     }
 
-    public void CurrPlayerActionExecuted(Player invoker)
-    {
-        GameProperties.Instrument preferredInstrument = invoker.GetDiceRollInstrument();
-        RollDicesForInstrument(invoker, preferredInstrument);
-        Player nextPlayer = players[(players.IndexOf(invoker) + 1) % players.Count];
-        StartCoroutine(ChangeActivePlayerUI(nextPlayer, 2.0f)); 
-
-        numPlaysToBeDoneOnCurrRound--;
-    }
-
-    public void ShowHideCurrAlbumUI()
-    {
-        if (albums.Count == 0)
-        {
-            return;
-        }
-        GameObject currAlbumUI = albums[albums.Count - 1].GetAlbumUI();
-        currAlbumUI.SetActive(!showingCurrAlbumUI);
-        showingCurrAlbumUI = !showingCurrAlbumUI;
-    }
-
-
-    // Update is called once per frame
+    
+    // wait for all players to exit one phase and start other phase
     void Update () {
-        if (numPlaysToBeDoneOnCurrRound == 0)
+        //end of first phase; trigger second phase
+        if (numPlayersToLevelUp == 0)
+        {
+            StartPlayForInstrumentPhase();
+            numPlayersToLevelUp = players.Count;
+        }
+        //end of second phase; trigger album result
+        if (numPlayersToPlayForInstrument == 0)
         {
             CheckAlbumResult();
             UInewRoundScreen.SetActive(true);
-            numPlaysToBeDoneOnCurrRound = -1;
+
+            numPlayersToPlayForInstrument = players.Count;
         }
+    }
+
+
+    public void StartLevelingUpPhase()
+    {
+        int numPlayers = players.Count;
+        for (int i = 0; i < numPlayers; i++)
+        {
+            Player currPlayer = players[i];
+            currPlayer.LevelUpRequest();
+        }
+    }
+    public void StartPlayForInstrumentPhase()
+    {
+        int numPlayers = players.Count;
+        for (int i = 0; i < numPlayers; i++)
+        {
+            Player currPlayer = players[i];
+            currPlayer.PlayForInstrumentRequest();
+        }
+    }
+    public void LevelUpResponse(Player invoker)
+    {
+        ChangeToNextPlayer(invoker);
+        numPlayersToLevelUp--;
+    }
+    public void PlayerPlayForInstrumentResponse(Player invoker)
+    {
+        GameProperties.Instrument rollDiceInstrument = invoker.GetDiceRollInstrument();
+        RollDicesForInstrument(invoker, rollDiceInstrument);
+
+        ChangeToNextPlayer(invoker);
+        numPlayersToPlayForInstrument--;
+    }
+
+    public void ChangeToNextPlayer(Player currPlayer)
+    {
+        Player nextPlayer = players[(players.IndexOf(currPlayer) + 1) % players.Count];
+        StartCoroutine(ChangeActivePlayerUI(nextPlayer, 2.0f));
     }
 }
