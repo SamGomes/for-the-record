@@ -29,9 +29,6 @@ public class GameManager : MonoBehaviour {
     public Text UIcurrMarketValueText;
     private int currMarketValue;
 
-    public Button UIshowCurrAlbumButton;
-    private bool showingCurrAlbumUI;
-
 
     void Awake()
     {
@@ -80,9 +77,6 @@ public class GameManager : MonoBehaviour {
 
         InitGame();
 
-        UIshowCurrAlbumButton.onClick.AddListener(delegate () { ShowHideCurrAlbumUI(); });
-        showingCurrAlbumUI = false;
-
         UIstartNewRoundButton.onClick.AddListener(delegate () {
             UInewRoundScreen.SetActive(false);
             StartGameRoundForAllPlayers(UIalbumNameText.text);
@@ -94,8 +88,14 @@ public class GameManager : MonoBehaviour {
 
     public void StartGameRoundForAllPlayers(string albumName)
     {
+        if (albums.Count > 0)
+        {
+            GameObject currAlbumUI = albums[albums.Count - 1].GetAlbumUI();
+            currAlbumUI.SetActive(false);
+        }
+
         Album newAlbum = new Album(albumName, albumUIPrefab, canvas);
-        newAlbum.GetAlbumUI().SetActive(false);
+        newAlbum.GetAlbumUI().SetActive(true);
         albums.Add(newAlbum);
 
         int numPlayers = players.Count;
@@ -146,16 +146,6 @@ public class GameManager : MonoBehaviour {
         yield return new WaitForSeconds(time);
         obj.SetActive(false);
     }
-    public void ShowHideCurrAlbumUI()
-    {
-        if (albums.Count == 0)
-        {
-            return;
-        }
-        GameObject currAlbumUI = albums[albums.Count - 1].GetAlbumUI();
-        currAlbumUI.SetActive(!showingCurrAlbumUI);
-        showingCurrAlbumUI = !showingCurrAlbumUI;
-    }
 
     public void CheckAlbumResult()
     {
@@ -199,14 +189,15 @@ public class GameManager : MonoBehaviour {
             }
             players[i].ReceiveTokens(2);
         }
-
-        //display album ui on round end
-        GameObject currAlbumUI = albums[albums.Count - 1].GetAlbumUI();
-        currAlbumUI.SetActive(true);
-        StartCoroutine(HideObjectAfterAWhile(currAlbumUI, 5.0f));
     }
 
-    
+
+    private IEnumerator showScreenWithDelay(GameObject screen, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        screen.SetActive(true);
+    }
+
     // wait for all players to exit one phase and start other phase
     void Update () {
         //end of first phase; trigger second phase
@@ -219,7 +210,7 @@ public class GameManager : MonoBehaviour {
         if (numPlayersToPlayForInstrument == 0)
         {
             CheckAlbumResult();
-            UInewRoundScreen.SetActive(true);
+            StartCoroutine(showScreenWithDelay(UInewRoundScreen, 2.0f));
 
             numPlayersToPlayForInstrument = players.Count;
         }

@@ -100,7 +100,6 @@ public abstract class Player
         GameObject UImoneyConversionSelection = playerUI.transform.Find("playerActionSection/levelUpPhaseUI/moneyConversionSelection").gameObject;
         GameObject UImoneyConversion = UImoneyConversionSelection.transform.Find("moneyConversionValue").gameObject;
         this.UImoneyConversionValue = UImoneyConversion.transform.Find("Text").GetComponent<Text>();
-        this.UImoneyConversionValue.text = "0";
 
         this.UIrollDicesForDropdown = playerUI.transform.Find("playerActionSection/playForInstrumentUI/rollDicesForSelection/rollDicesForDropdown").gameObject.GetComponent<Dropdown>();
 
@@ -113,10 +112,13 @@ public abstract class Player
             ChangeToBeTokenedInstrument((GameProperties.Instrument)UIspendTokenDropdown.value);
         });
         UIrollDicesForDropdown.onValueChanged.AddListener(delegate {
-            ChangeDiceRollInstrument((GameProperties.Instrument)UIrollDicesForDropdown.value);
+            List<string> instrumentNames = new List<string>(System.Enum.GetNames(typeof(GameProperties.Instrument)));
+            int instrIndex = instrumentNames.IndexOf(UIrollDicesForDropdown.options[UIrollDicesForDropdown.value].text);
+            Debug.Log(instrumentNames.ToArray().ToString());
+            ChangeDiceRollInstrument((GameProperties.Instrument) instrIndex);
         });
         
-        UInameText.text = this.name + " Stats:";
+        UInameText.text = this.name + " Turn:";
     }
 
     public GameObject GetPlayerUI()
@@ -146,14 +148,18 @@ public abstract class Player
 
         List<GameProperties.Instrument> skillSetKeys = new List<GameProperties.Instrument> (skillSet.Keys);
         UIrollDicesForDropdown.ClearOptions();
+        int firstInstrumentInDropdown=0;
         for (int i=0; i< skillSetKeys.Count; i++)
         {
             GameProperties.Instrument currInstrument = skillSetKeys[i];
             if (skillSet[currInstrument] > 0 || this.toBeTokenedInstrument == currInstrument)
             {
+                
+                firstInstrumentInDropdown = i;
                 UIrollDicesForDropdown.options.Add(new Dropdown.OptionData(currInstrument.ToString()));
             }
         }
+        ChangeDiceRollInstrument((GameProperties.Instrument)firstInstrumentInDropdown);
         UIrollDicesForDropdown.RefreshShownValue();
     }
     
@@ -177,22 +183,16 @@ public abstract class Player
     }
     public void SendPlayForInstrumentResponse()
     {
-        GameProperties.Instrument selectedRollDiceInstrument = (GameProperties.Instrument)this.UIrollDicesForDropdown.value;
-        ChangeDiceRollInstrument(selectedRollDiceInstrument);
         gameManagerRef.PlayerPlayForInstrumentResponse(this);
     }
-
 
     public void ChangeDiceRollInstrument(GameProperties.Instrument instrument)
     {
         this.diceRollInstrument = instrument;
-        UpdateUI();
     }
     public void ChangeToBeTokenedInstrument(GameProperties.Instrument instrument)
     {
         this.toBeTokenedInstrument = instrument;
-        UpdateUI();
-
     }
 
     public bool SpendToken(GameProperties.Instrument instrument)
