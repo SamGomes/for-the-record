@@ -9,7 +9,7 @@ public class GameManager : MonoBehaviour {
     private IUtilities gameUtilities;
 
     private int numRounds;
-    private List<Album> albums;
+    public static List<Album> albums;
 
     private List<Player> players;
 
@@ -198,6 +198,10 @@ public class GameManager : MonoBehaviour {
 
     // wait for all players to exit one phase and start other phase
     void Update () {
+        if (albums.Count == 3)
+        {
+            GameSceneManager.LoadEndScene();
+        }
         //end of first phase; trigger second phase
         if (numPlayersToLevelUp == 0)
         {
