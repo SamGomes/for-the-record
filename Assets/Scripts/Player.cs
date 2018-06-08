@@ -34,8 +34,17 @@ public abstract class Player
     private Text UITokensTexts;
     private Text UIContributionsTexts;
 
-    private GameObject UILevelUpPhase;
-    private GameObject UIPlayForInstrument;
+    private GameObject UILevelUpScreen;
+    private GameObject UIPlayForInstrumentScreen;
+    private GameObject UILastDecisionsScreen;
+
+    private GameObject UILastDecisionsMegaHitScreen;
+    protected Button UIReceiveMegaHitButton;
+    protected Button UIStickWithMarktingMegaHitButton;
+
+    private GameObject UILastDecisionsFailScreen;
+    protected Button UIReceiveFailButton;
+
 
     protected Dropdown UIspendTokenDropdown;
     protected Button UIspendTokenButton;
@@ -89,16 +98,16 @@ public abstract class Player
         this.UIContributionsTexts = playerUI.transform.Find("skillTable/albumContributionsTexts").gameObject.GetComponent<Text>();
 
 
-        this.UISkillTexts = playerUI.transform.Find("skillTable/skillTexts").gameObject.GetComponent<Text>();
-        this.UITokensTexts = playerUI.transform.Find("skillTable/tokensTexts").gameObject.GetComponent<Text>();
-        this.UIContributionsTexts = playerUI.transform.Find("skillTable/albumContributionsTexts").gameObject.GetComponent<Text>();
+        this.UILevelUpScreen = playerUI.transform.Find("playerActionSection/levelUpPhaseUI").gameObject;
+        this.UIPlayForInstrumentScreen = playerUI.transform.Find("playerActionSection/playForInstrumentUI").gameObject;
+
+        this.UILastDecisionsScreen = playerUI.transform.Find("playerActionSection/lastDecisionsUI").gameObject;
+        this.UILastDecisionsMegaHitScreen = UILastDecisionsScreen.transform.Find("earnMoneyQuestion/megaHitQuestion").gameObject;
+        this.UILastDecisionsFailScreen = UILastDecisionsScreen.transform.Find("earnMoneyQuestion/failQuestion").gameObject;
 
 
-        UILevelUpPhase = playerUI.transform.Find("playerActionSection/levelUpPhaseUI").gameObject;
-        UIPlayForInstrument = playerUI.transform.Find("playerActionSection/playForInstrumentUI").gameObject;
 
-
-        GameObject UIinstrumentSelection = UILevelUpPhase.transform.Find("spendTokenSelection").gameObject;
+        GameObject UIinstrumentSelection = UILevelUpScreen.transform.Find("spendTokenSelection").gameObject;
         this.UIspendTokenDropdown = UIinstrumentSelection.transform.Find("spendTokenDropdown").gameObject.GetComponent<Dropdown>();
         this.UIspendTokenButton = UIinstrumentSelection.transform.Find("spendTokenButton").gameObject.GetComponent<Button>();
         UIspendTokenButton.onClick.AddListener(delegate {
@@ -164,6 +173,7 @@ public abstract class Player
         List<GameProperties.Instrument> skillSetKeys = new List<GameProperties.Instrument> (skillSet.Keys);
         UIrollDicesForDropdown.ClearOptions();
         int firstInstrumentInDropdown=-1;
+        UIrollDicesForDropdown.options.Add(new Dropdown.OptionData("(Do not role dice)"));
         for (int i=0; i< skillSetKeys.Count-1; i++)
         {
             GameProperties.Instrument currInstrument = skillSetKeys[i];
@@ -183,17 +193,41 @@ public abstract class Player
 
     public void LevelUpRequest()
     {
-        UILevelUpPhase.SetActive(true);
-        UIPlayForInstrument.SetActive(false);
+        UILevelUpScreen.SetActive(true);
+        UIPlayForInstrumentScreen.SetActive(false);
+        UILastDecisionsScreen.SetActive(false);
+
         UIplayerActionButton.onClick.RemoveAllListeners();
         UIplayerActionButton.onClick.AddListener(delegate { SendLevelUpResponse(); });
     }
     public void PlayForInstrumentRequest()
     {
-        UILevelUpPhase.SetActive(false);
-        UIPlayForInstrument.SetActive(true);
+        UILevelUpScreen.SetActive(false);
+        UIPlayForInstrumentScreen.SetActive(true);
+        UILastDecisionsScreen.SetActive(false);
+
         UIplayerActionButton.onClick.RemoveAllListeners();
         UIplayerActionButton.onClick.AddListener(delegate { SendPlayForInstrumentResponse(); });
+    }
+    public void LastDecisionsPhaseRequest(Album currAlbum)
+    {
+        UILevelUpScreen.SetActive(false);
+        UIPlayForInstrumentScreen.SetActive(false);
+        UILastDecisionsScreen.SetActive(true);
+
+        if (currAlbum.GetMarketingState() == GameProperties.AlbumMarketingState.MEGA_HIT)
+        {
+            UILastDecisionsMegaHitScreen.SetActive(true);
+            UILastDecisionsFailScreen.SetActive(false);
+        }
+        if (currAlbum.GetMarketingState() == GameProperties.AlbumMarketingState.FAIL)
+        {
+            UILastDecisionsFailScreen.SetActive(true);
+            UILastDecisionsMegaHitScreen.SetActive(false);
+        }
+        UIReceiveMegaHitButton.onClick.AddListener(delegate { SendLastDecisionsPhaseResponse(); });
+        UIStickWithMarktingMegaHitButton.onClick.AddListener(delegate { SendLastDecisionsPhaseResponse(); });
+        UIReceiveFailButton.onClick.AddListener(delegate { SendLastDecisionsPhaseResponse(); });
     }
 
     public void SendLevelUpResponse()
@@ -203,6 +237,10 @@ public abstract class Player
     public void SendPlayForInstrumentResponse()
     {
         gameManagerRef.PlayerPlayForInstrumentResponse(this);
+    }
+    public void SendLastDecisionsPhaseResponse()
+    {
+        gameManagerRef.LastDecisionsPhaseResponse(this);
     }
 
     public void ChangeDiceRollInstrument(GameProperties.Instrument instrument)

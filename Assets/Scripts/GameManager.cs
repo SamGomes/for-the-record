@@ -19,6 +19,7 @@ public class GameManager : MonoBehaviour {
 
     private int numPlayersToLevelUp;
     private int numPlayersToPlayForInstrument;
+    private int numPlayersToStartLastDecisions;
 
     //------------ UI -----------------------------
 
@@ -82,6 +83,7 @@ public class GameManager : MonoBehaviour {
 
         numPlayersToLevelUp = players.Count;
         numPlayersToPlayForInstrument = players.Count;
+        numPlayersToStartLastDecisions = players.Count;
     }
 
     public void StartGameRoundForAllPlayers(string albumName)
@@ -216,6 +218,14 @@ public class GameManager : MonoBehaviour {
 
             numPlayersToPlayForInstrument = players.Count;
         }
+        //end of second phase; trigger album result
+        if (numPlayersToStartLastDecisions == 0)
+        {
+            StartLastDecisionsPhase();
+            StartCoroutine(ShowScreenWithDelay(UInewRoundScreen, 2.0f));
+
+            numPlayersToPlayForInstrument = players.Count;
+        }
     }
 
 
@@ -237,6 +247,17 @@ public class GameManager : MonoBehaviour {
             currPlayer.PlayForInstrumentRequest();
         }
     }
+    public void StartLastDecisionsPhase()
+    {
+        Album currAlbum = albums[albums.Count - 1];
+        int numPlayers = players.Count;
+        for (int i = 0; i < numPlayers; i++)
+        {
+            Player currPlayer = players[i];
+            currPlayer.LastDecisionsPhaseRequest(currAlbum);
+        }
+    }
+
     public void LevelUpResponse(Player invoker)
     {
         ChangeToNextPlayer(invoker);
@@ -245,10 +266,16 @@ public class GameManager : MonoBehaviour {
     public void PlayerPlayForInstrumentResponse(Player invoker)
     {
         GameProperties.Instrument rollDiceInstrument = invoker.GetDiceRollInstrument();
-        RollDicesForInstrument(invoker, rollDiceInstrument);
-
+        if (rollDiceInstrument != (GameProperties.Instrument) (-1)) //if there is a roll dice instrument
+        {
+            RollDicesForInstrument(invoker, rollDiceInstrument);
+        }
         ChangeToNextPlayer(invoker);
         numPlayersToPlayForInstrument--;
+    }
+    public void LastDecisionsPhaseResponse(Player invoker)
+    {
+        numPlayersToStartLastDecisions--;
     }
 
     public void ChangeToNextPlayer(Player currPlayer)
