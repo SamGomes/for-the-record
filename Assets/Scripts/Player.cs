@@ -52,15 +52,7 @@ public abstract class Player
     protected Button UIbuyTokenButton;
 
     protected Dropdown UIrollDicesForDropdown;
-
-
-    public enum PlayerAction
-    {
-        SPEND_TOKEN,
-        CONVERT_MONEY_TO_TOKEN
-    }
-
-
+    
     public Player(string name, GameObject playerUIPrefab, GameObject canvas)
     {
         this.name = name;
@@ -101,10 +93,16 @@ public abstract class Player
         this.UILevelUpScreen = playerUI.transform.Find("playerActionSection/levelUpPhaseUI").gameObject;
         this.UIPlayForInstrumentScreen = playerUI.transform.Find("playerActionSection/playForInstrumentUI").gameObject;
 
+
+
         this.UILastDecisionsScreen = playerUI.transform.Find("playerActionSection/lastDecisionsUI").gameObject;
         this.UILastDecisionsMegaHitScreen = UILastDecisionsScreen.transform.Find("earnMoneyQuestion/megaHitQuestion").gameObject;
         this.UILastDecisionsFailScreen = UILastDecisionsScreen.transform.Find("earnMoneyQuestion/failQuestion").gameObject;
 
+        this.UIReceiveMegaHitButton = UILastDecisionsMegaHitScreen.transform.Find("receiveButton").gameObject.GetComponent<Button>();
+        this.UIStickWithMarktingMegaHitButton = UILastDecisionsMegaHitScreen.transform.Find("stickWithMarkting").gameObject.GetComponent<Button>();
+
+        this.UIReceiveFailButton = UILastDecisionsFailScreen.transform.Find("receiveButton").gameObject.GetComponent<Button>();
 
 
         GameObject UIinstrumentSelection = UILevelUpScreen.transform.Find("spendTokenSelection").gameObject;
@@ -150,7 +148,7 @@ public abstract class Player
         return this.playerUI;
     }
 
-    public abstract PlayerAction ChooseAction();
+    //public abstract PlayerAction ChooseAction();
 
     //aux methods
     public void UpdateUI()
@@ -193,6 +191,7 @@ public abstract class Player
 
     public void LevelUpRequest()
     {
+        UIplayerActionButton.gameObject.SetActive(true);
         UILevelUpScreen.SetActive(true);
         UIPlayForInstrumentScreen.SetActive(false);
         UILastDecisionsScreen.SetActive(false);
@@ -202,6 +201,7 @@ public abstract class Player
     }
     public void PlayForInstrumentRequest()
     {
+        UIplayerActionButton.gameObject.SetActive(true);
         UILevelUpScreen.SetActive(false);
         UIPlayForInstrumentScreen.SetActive(true);
         UILastDecisionsScreen.SetActive(false);
@@ -211,6 +211,7 @@ public abstract class Player
     }
     public void LastDecisionsPhaseRequest(Album currAlbum)
     {
+        UIplayerActionButton.gameObject.SetActive(false);
         UILevelUpScreen.SetActive(false);
         UIPlayForInstrumentScreen.SetActive(false);
         UILastDecisionsScreen.SetActive(true);
@@ -225,9 +226,9 @@ public abstract class Player
             UILastDecisionsFailScreen.SetActive(true);
             UILastDecisionsMegaHitScreen.SetActive(false);
         }
-        UIReceiveMegaHitButton.onClick.AddListener(delegate { SendLastDecisionsPhaseResponse(); });
-        UIStickWithMarktingMegaHitButton.onClick.AddListener(delegate { SendLastDecisionsPhaseResponse(); });
-        UIReceiveFailButton.onClick.AddListener(delegate { SendLastDecisionsPhaseResponse(); });
+        UIReceiveMegaHitButton.onClick.AddListener(delegate { SendLastDecisionsPhaseResponse(0); });
+        UIStickWithMarktingMegaHitButton.onClick.AddListener(delegate { SendLastDecisionsPhaseResponse(1); });
+        UIReceiveFailButton.onClick.AddListener(delegate { SendLastDecisionsPhaseResponse(2); });
     }
 
     public void SendLevelUpResponse()
@@ -238,9 +239,20 @@ public abstract class Player
     {
         gameManagerRef.PlayerPlayForInstrumentResponse(this);
     }
-    public void SendLastDecisionsPhaseResponse()
+    public void SendLastDecisionsPhaseResponse(int condition)
     {
-        gameManagerRef.LastDecisionsPhaseResponse(this);
+        switch (condition)
+        {
+            case 0:
+                gameManagerRef.LastDecisionsPhaseGet3000Response(this);
+                break;
+            case 1:
+                gameManagerRef.LastDecisionsPhaseGetMarktingResponse(this);
+                break;
+            case 2:
+                gameManagerRef.LastDecisionsPhaseGet1000Response(this);
+                break;
+        }
     }
 
     public void ChangeDiceRollInstrument(GameProperties.Instrument instrument)
@@ -281,7 +293,7 @@ public abstract class Player
     public bool BuyTokens(int numTokensToBuy)
     {
         int moneyToSpend = numTokensToBuy * GameProperties.tokenValue;
-        if (money <= moneyToSpend)
+        if (money < moneyToSpend)
         {
             return false;
         }
@@ -350,8 +362,8 @@ public class HumanPlayer : Player {
 
     public HumanPlayer(string name, GameObject playerUIPrefab, GameObject canvas) : base(name, playerUIPrefab, canvas) { }
 
-    public override PlayerAction ChooseAction()
-    {
-        return (PlayerAction) 0;
-    }
+    //public override PlayerAction ChooseAction()
+    //{
+    //    return (PlayerAction) 0;
+    //}
 }

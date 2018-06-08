@@ -166,29 +166,7 @@ public class GameManager : MonoBehaviour {
         {
             currAlbum.SetMarketingState(GameProperties.AlbumMarketingState.FAIL);
         }
-
-        for (int i = 0; i < numPlayers; i++)
-        {
-            if (currAlbum.GetMarketingState() == GameProperties.AlbumMarketingState.MEGA_HIT)
-            {
-                ////roll dices for markting
-                //int marktingValue = 0;
-                //for (int k = 0; k < players[i].GetSkillSet()[GameProperties.Instrument.MARKTING]; k++)
-                //{
-                //    int randomIncrease = gameUtilities.RollTheDice(6);
-                //    marktingValue += randomIncrease;
-                //}
-                //players[i].ReceiveMoney(GameProperties.tokenValue * marktingValue);
-
-                //receive 3000
-                players[i].ReceiveMoney(GameProperties.tokenValue * 3);
-            }
-            else
-            {
-                //receive 1000
-                players[i].ReceiveMoney(GameProperties.tokenValue);
-            }
-        }
+        
     }
 
 
@@ -214,17 +192,15 @@ public class GameManager : MonoBehaviour {
         if (numPlayersToPlayForInstrument == 0)
         {
             CheckAlbumResult();
-            StartCoroutine(ShowScreenWithDelay(UInewRoundScreen, 2.0f));
+            StartLastDecisionsPhase();
 
             numPlayersToPlayForInstrument = players.Count;
         }
         //end of second phase; trigger album result
         if (numPlayersToStartLastDecisions == 0)
         {
-            StartLastDecisionsPhase();
             StartCoroutine(ShowScreenWithDelay(UInewRoundScreen, 2.0f));
-
-            numPlayersToPlayForInstrument = players.Count;
+            numPlayersToStartLastDecisions = players.Count;
         }
     }
 
@@ -273,10 +249,36 @@ public class GameManager : MonoBehaviour {
         ChangeToNextPlayer(invoker);
         numPlayersToPlayForInstrument--;
     }
-    public void LastDecisionsPhaseResponse(Player invoker)
+    public void LastDecisionsPhaseGet1000Response(Player invoker)
     {
+        //receive 1000
+        invoker.ReceiveMoney(GameProperties.tokenValue);
+        ChangeToNextPlayer(invoker);
         numPlayersToStartLastDecisions--;
     }
+    public void LastDecisionsPhaseGet3000Response(Player invoker)
+    {
+        //receive 3000
+        invoker.ReceiveMoney(GameProperties.tokenValue*3);
+        ChangeToNextPlayer(invoker);
+        numPlayersToStartLastDecisions--;
+    }
+    public void LastDecisionsPhaseGetMarktingResponse(Player invoker)
+    {
+        //roll dices for markting
+        int marktingValue = 0;
+        for (int k = 0; k < invoker.GetSkillSet()[GameProperties.Instrument.MARKTING]; k++)
+        {
+            int randomIncrease = gameUtilities.RollTheDice(6);
+            marktingValue += randomIncrease;
+        }
+        invoker.SetAlbumContribution(GameProperties.Instrument.MARKTING, marktingValue);
+        invoker.ReceiveMoney(GameProperties.tokenValue * marktingValue);
+        ChangeToNextPlayer(invoker);
+        numPlayersToStartLastDecisions--;
+    }
+
+
 
     public void ChangeToNextPlayer(Player currPlayer)
     {
