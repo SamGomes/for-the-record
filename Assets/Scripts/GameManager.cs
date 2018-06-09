@@ -46,11 +46,11 @@ public class GameManager : MonoBehaviour {
         {
             Player currPlayer = players[i];
             currPlayer.ReceiveTokens(2);
-            currPlayer.UpdateUI();
         }
     }
 
-    private IEnumerator ChangeActivePlayerUI(Player player, float delay)
+    //warning: works only when using human players!
+    private IEnumerator ChangeActivePlayerUI(UIPlayer player, float delay)
     {
         yield return new WaitForSeconds(delay);
         int numPlayers = players.Count;
@@ -61,7 +61,7 @@ public class GameManager : MonoBehaviour {
                 player.GetPlayerUI().SetActive(true);
                 continue;
             }
-            Player currPlayer = players[i];
+            UIPlayer currPlayer = (UIPlayer) players[i];
             currPlayer.GetPlayerUI().SetActive(false);
         }
     }
@@ -70,9 +70,18 @@ public class GameManager : MonoBehaviour {
     {
         numRounds = 5;
 
-        players.Add(new HumanPlayer("John", playerUIPrefab, canvas));
-        players.Add(new HumanPlayer("Mike", playerUIPrefab, canvas));
-        players.Add(new HumanPlayer("Bob", playerUIPrefab, canvas));
+        if (!GameProperties.isSimulation)
+        {
+            players.Add(new UIPlayer("John", playerUIPrefab, canvas));
+            players.Add(new UIPlayer("Mike", playerUIPrefab, canvas));
+            players.Add(new UIPlayer("Bob", playerUIPrefab, canvas));
+        }
+        else
+        {
+            players.Add(new SimPlayer("SimPL1"));
+            players.Add(new SimPlayer("SimPL2"));
+            players.Add(new SimPlayer("SimPL3"));
+        }
 
         InitGame();
 
@@ -84,6 +93,11 @@ public class GameManager : MonoBehaviour {
         numPlayersToLevelUp = players.Count;
         numPlayersToPlayForInstrument = players.Count;
         numPlayersToStartLastDecisions = players.Count;
+
+        if (GameProperties.isSimulation) //start imidiately in simulation
+        {
+            StartGameRoundForAllPlayers("SimAlbum");
+        }
     }
 
     public void StartGameRoundForAllPlayers(string albumName)
@@ -107,18 +121,6 @@ public class GameManager : MonoBehaviour {
         }
 
         StartLevelingUpPhase();
-        //for (int actionsTaken = 0; actionsTaken < GameProperties.allowedPlayerActionsPerAlbum; actionsTaken++)
-        //{
-        //    for (int i = 0; i < numPlayers; i++)
-        //    {
-        //        int approachedPlayerIndex = (currPlayerIndex + i) % numPlayers;
-        //        Player currPlayer = players[approachedPlayerIndex];
-
-        //        Debug.Log("StartGameRoundForThisPlayers...");
-        //        LevelingUpPhase();
-        //        numPlaysToBeDoneOnCurrRound++;
-        //    }
-        //}
     }
 
    
@@ -178,10 +180,6 @@ public class GameManager : MonoBehaviour {
 
     // wait for all players to exit one phase and start other phase
     void Update () {
-        if (albums.Count == 3)
-        {
-            GameSceneManager.LoadEndScene();
-        }
         //end of first phase; trigger second phase
         if (numPlayersToLevelUp == 0)
         {
@@ -199,8 +197,20 @@ public class GameManager : MonoBehaviour {
         //end of second phase; trigger album result
         if (numPlayersToStartLastDecisions == 0)
         {
-            StartCoroutine(ShowScreenWithDelay(UInewRoundScreen, 2.0f));
+            if (!GameProperties.isSimulation) //if human player update his/her UI, start imidiately otherwise
+            {
+                StartCoroutine(ShowScreenWithDelay(UInewRoundScreen, 2.0f));
+            }
+            else
+            {
+                StartGameRoundForAllPlayers("SimAlbum");
+            }
             numPlayersToStartLastDecisions = players.Count;
+        }
+
+        if (albums.Count == GameProperties.numberOfAlbumsPerGame)
+        {
+            GameSceneManager.LoadEndScene();
         }
     }
 
@@ -283,6 +293,10 @@ public class GameManager : MonoBehaviour {
     public void ChangeToNextPlayer(Player currPlayer)
     {
         Player nextPlayer = players[(players.IndexOf(currPlayer) + 1) % players.Count];
-        StartCoroutine(ChangeActivePlayerUI(nextPlayer, 2.0f));
+
+        if (!GameProperties.isSimulation)
+        {
+            StartCoroutine(ChangeActivePlayerUI((UIPlayer) nextPlayer, 2.0f));
+        }
     }
 }

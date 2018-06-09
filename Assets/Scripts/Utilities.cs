@@ -29,6 +29,13 @@ public static class GameProperties
     public static int tokenValue = 1000;
     public static int allowedPlayerActionsPerAlbum = 2;
     public static int allowedPlayerTokenBuysPerRound = 1;
+
+    public static int numberOfAlbumsPerGame = 3;
+
+
+    //------------ Simulation --------------------
+    public static bool isSimulation = true;
+    public static int numGamesToSimulate = 10;
 }
 
 public interface IUtilities

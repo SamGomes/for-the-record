@@ -12,17 +12,27 @@ public class EndScreenFunctionalities : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        UIRestartGameButton.onClick.AddListener(delegate () { GameSceneManager.LoadMainScene(); });
-        foreach(Album album in GameManager.albums)
+        if (!(GameProperties.isSimulation && GameProperties.numGamesToSimulate > 0))
         {
-            album.GetAlbumUI().gameObject.transform.parent = UIRestartGameButton.gameObject.transform;
+            UIRestartGameButton.onClick.AddListener(delegate () { GameSceneManager.LoadMainScene(); });
+            //foreach (Album album in GameManager.albums)
+            //{
+            //    album.GetAlbumUI().gameObject.transform.parent = UIRestartGameButton.gameObject.transform;
+            //}
+        }
+        else
+        {
+            GameSceneManager.LoadMainScene();
+            FileManager.WriteGameResultsToLog();
+            Debug.Log("numGamesToSimulate: " + GameProperties.numGamesToSimulate);
+
+            if (GameProperties.numGamesToSimulate==1)
+            {
+                FileManager.CloseWriter();
+            }
+            GameProperties.numGamesToSimulate--;
         }
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }
+    
 
