@@ -9,18 +9,32 @@ public static class FileManager{
 
     static public void InitWriter()
     {
-        gameLogFileWritter.WriteLine("albumId;albumMState");
+        for (int i = 0; i < GameProperties.numberOfAlbumsPerGame; i++)
+        {
+            if (i > 0)
+            {
+                gameLogFileWritter.Write(";");
+            }
+            gameLogFileWritter.Write("\"album_\""+i+"\"_MState\"");
+        }
+        gameLogFileWritter.WriteLine();
     }
 
     // Use this for initialization
     static public void WriteGameResultsToLog() {
 
-        for (int i =0; i < GameManager.albums.Count; i++)
+        for (int i = 0; i < GameProperties.numberOfAlbumsPerGame; i++)
         {
             Album currAlbum = GameManager.albums[i];
-            gameLogFileWritter.WriteLine(i+";"+System.Enum.GetNames(typeof(GameProperties.AlbumMarketingState))[(int)currAlbum.GetMarketingState()]);
+            if (i > 0)
+            {
+                gameLogFileWritter.Write(";");
+            }
+            gameLogFileWritter.Write("\""+System.Enum.GetNames(typeof(GameProperties.AlbumMarketingState))[(int)currAlbum.GetMarketingState()]+"\"");
         }
+        gameLogFileWritter.WriteLine();
     }
+
     static public void CloseWriter()
     {
         gameLogFileWritter.Close();

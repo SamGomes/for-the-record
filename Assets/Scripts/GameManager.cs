@@ -180,6 +180,9 @@ public class GameManager : MonoBehaviour {
 
     // wait for all players to exit one phase and start other phase
     void Update () {
+
+        
+
         //end of first phase; trigger second phase
         if (numPlayersToLevelUp == 0)
         {
@@ -197,6 +200,12 @@ public class GameManager : MonoBehaviour {
         //end of second phase; trigger album result
         if (numPlayersToStartLastDecisions == 0)
         {
+            if (albums.Count >= GameProperties.numberOfAlbumsPerGame)
+            {
+                GameSceneManager.LoadEndScene();
+                return;
+            }
+
             if (!GameProperties.isSimulation) //if human player update his/her UI, start imidiately otherwise
             {
                 StartCoroutine(ShowScreenWithDelay(UInewRoundScreen, 2.0f));
@@ -208,10 +217,6 @@ public class GameManager : MonoBehaviour {
             numPlayersToStartLastDecisions = players.Count;
         }
 
-        if (albums.Count == GameProperties.numberOfAlbumsPerGame)
-        {
-            GameSceneManager.LoadEndScene();
-        }
     }
 
 
