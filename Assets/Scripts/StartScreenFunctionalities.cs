@@ -5,17 +5,34 @@ using UnityEngine.UI;
 
 public class StartScreenFunctionalities : MonoBehaviour {
 
-    public Button UIStartGameButton;
+    private Button UIStartGameButton;
     
+    private void InitGameGlobals()
+    {
+        GameGlobals.albums = new List<Album>(GameProperties.numberOfAlbumsPerGame);
+        GameGlobals.players = new List<Player>(GameProperties.numberOfPlayersPerGame);
+    }
+
+    private void StartGame()
+    {
+        InitGameGlobals();
+        if (GameProperties.currGameId == 0)
+        {
+            FileManager.InitWriter();
+        }
+        GameProperties.currGameId++;
+        GameSceneManager.LoadPlayersSetupScene();
+    }
+
 	void Start () {
+        this.UIStartGameButton = GameObject.Find("Canvas/StartScreen/startGameButton").gameObject.GetComponent<Button>();
         if (!GameProperties.isSimulation)
         {
-            UIStartGameButton.onClick.AddListener(delegate () { GameSceneManager.LoadMainScene(); });
+            UIStartGameButton.onClick.AddListener(delegate () { StartGame(); });
         }
         else
         {
-            GameSceneManager.LoadMainScene();
-            FileManager.InitWriter();
+            StartGame();
         }
 	}
 }

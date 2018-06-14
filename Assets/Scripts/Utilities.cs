@@ -1,6 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 
+public static class GameGlobals
+{
+    public static List<Album> albums;
+    public static List<Player> players;
+}
 
 public static class GameProperties
 {
@@ -31,11 +36,14 @@ public static class GameProperties
     public static int allowedPlayerTokenBuysPerRound = 1;
 
     public static int numberOfAlbumsPerGame = 3;
+    public static int numberOfPlayersPerGame = 3;
 
 
     //------------ Simulation --------------------
     public static bool isSimulation = true;
     public static int numGamesToSimulate = 10;
+
+    public static int currGameId = 0;
 }
 
 public interface IUtilities

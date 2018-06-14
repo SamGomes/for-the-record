@@ -8,11 +8,6 @@ public class GameManager : MonoBehaviour {
 
     private IUtilities gameUtilities;
 
-    private int numRounds;
-    public static List<Album> albums;
-
-    private List<Player> players;
-
     public GameObject playerUIPrefab;
     public GameObject albumUIPrefab;
     public GameObject canvas;
@@ -33,56 +28,44 @@ public class GameManager : MonoBehaviour {
     void Awake()
     {
         gameUtilities = new RandomUtilities();
-        albums = new List<Album>(numRounds);
-        players = new List<Player>();
-
     }
     
     public void InitGame()
     {
-        int numPlayers = players.Count;
+        int numPlayers = GameGlobals.players.Count;
 
         for (int i = 0; i < numPlayers; i++)
         {
-            Player currPlayer = players[i];
+            Player currPlayer = GameGlobals.players[i];
+            currPlayer.InitGameData();
+            if (currPlayer.GetType() == typeof(UIPlayer))
+            {
+                ((UIPlayer)currPlayer).InitUI(playerUIPrefab, canvas);
+            }
             currPlayer.ReceiveTokens(2);
         }
+
     }
 
     //warning: works only when using human players!
     private IEnumerator ChangeActivePlayerUI(UIPlayer player, float delay)
     {
         yield return new WaitForSeconds(delay);
-        int numPlayers = players.Count;
+        int numPlayers = GameGlobals.players.Count;
         for (int i = 0; i < numPlayers; i++)
         {
-            if (players[i] == player)
+            if (GameGlobals.players[i] == player)
             {
                 player.GetPlayerUI().SetActive(true);
                 continue;
             }
-            UIPlayer currPlayer = (UIPlayer) players[i];
+            UIPlayer currPlayer = (UIPlayer)GameGlobals.players[i];
             currPlayer.GetPlayerUI().SetActive(false);
         }
     }
 
     void Start()
     {
-        numRounds = 5;
-
-        if (!GameProperties.isSimulation)
-        {
-            players.Add(new UIPlayer("John", playerUIPrefab, canvas));
-            players.Add(new UIPlayer("Mike", playerUIPrefab, canvas));
-            players.Add(new UIPlayer("Bob", playerUIPrefab, canvas));
-        }
-        else
-        {
-            players.Add(new SimPlayer("SimPL1"));
-            players.Add(new SimPlayer("SimPL2"));
-            players.Add(new SimPlayer("SimPL3"));
-        }
-
         InitGame();
 
         UIstartNewRoundButton.onClick.AddListener(delegate () {
@@ -90,9 +73,9 @@ public class GameManager : MonoBehaviour {
             StartGameRoundForAllPlayers(UIalbumNameText.text);
         });
 
-        numPlayersToLevelUp = players.Count;
-        numPlayersToPlayForInstrument = players.Count;
-        numPlayersToStartLastDecisions = players.Count;
+        numPlayersToLevelUp = GameGlobals.players.Count;
+        numPlayersToPlayForInstrument = GameGlobals.players.Count;
+        numPlayersToStartLastDecisions = GameGlobals.players.Count;
 
         if (GameProperties.isSimulation) //start imidiately in simulation
         {
@@ -102,20 +85,20 @@ public class GameManager : MonoBehaviour {
 
     public void StartGameRoundForAllPlayers(string albumName)
     {
-        if (albums.Count > 0)
+        if (GameGlobals.albums.Count > 0)
         {
-            GameObject currAlbumUI = albums[albums.Count - 1].GetAlbumUI();
+            GameObject currAlbumUI = GameGlobals.albums[GameGlobals.albums.Count - 1].GetAlbumUI();
             currAlbumUI.SetActive(false);
         }
 
         Album newAlbum = new Album(albumName, albumUIPrefab, canvas);
         newAlbum.GetAlbumUI().SetActive(true);
-        albums.Add(newAlbum);
+        GameGlobals.albums.Add(newAlbum);
 
-        int numPlayers = players.Count;
+        int numPlayers = GameGlobals.players.Count;
         for (int i = 0; i < numPlayers; i++)
         {
-            Player currPlayer = players[i];
+            Player currPlayer = GameGlobals.players[i];
             currPlayer.InitAlbumContributions();
             currPlayer.tokensBoughtOnCurrRound = 0;
         }
@@ -128,7 +111,7 @@ public class GameManager : MonoBehaviour {
     public void RollDicesForInstrument(Player currPlayer,GameProperties.Instrument instrument)
     {
         Debug.Log("RollDicesForInstrumentsAndMarketing");
-        Album currAlbum = albums[albums.Count - 1];
+        Album currAlbum = GameGlobals.albums[GameGlobals.albums.Count - 1];
 
         var skillSet = currPlayer.GetSkillSet();
 
@@ -153,9 +136,9 @@ public class GameManager : MonoBehaviour {
     public void CheckAlbumResult()
     {
         Debug.Log("CheckAlbumResult");
-        Album currAlbum = albums[albums.Count - 1];
+        Album currAlbum = GameGlobals.albums[GameGlobals.albums.Count - 1];
 
-        int numPlayers = players.Count;
+        int numPlayers = GameGlobals.players.Count;
         int marketValue = gameUtilities.RollTheDice(40);
         UIcurrMarketValueText.text = marketValue.ToString();
         int newAlbumValue = currAlbum.CalcAlbumValue();
@@ -187,7 +170,7 @@ public class GameManager : MonoBehaviour {
         if (numPlayersToLevelUp == 0)
         {
             StartPlayForInstrumentPhase();
-            numPlayersToLevelUp = players.Count;
+            numPlayersToLevelUp = GameGlobals.players.Count;
         }
         //end of second phase; trigger album result
         if (numPlayersToPlayForInstrument == 0)
@@ -195,12 +178,12 @@ public class GameManager : MonoBehaviour {
             CheckAlbumResult();
             StartLastDecisionsPhase();
 
-            numPlayersToPlayForInstrument = players.Count;
+            numPlayersToPlayForInstrument = GameGlobals.players.Count;
         }
         //end of second phase; trigger album result
         if (numPlayersToStartLastDecisions == 0)
         {
-            if (albums.Count >= GameProperties.numberOfAlbumsPerGame)
+            if (GameGlobals.albums.Count >= GameProperties.numberOfAlbumsPerGame)
             {
                 GameSceneManager.LoadEndScene();
                 return;
@@ -214,7 +197,7 @@ public class GameManager : MonoBehaviour {
             {
                 StartGameRoundForAllPlayers("SimAlbum");
             }
-            numPlayersToStartLastDecisions = players.Count;
+            numPlayersToStartLastDecisions = GameGlobals.players.Count;
         }
 
     }
@@ -222,29 +205,29 @@ public class GameManager : MonoBehaviour {
 
     public void StartLevelingUpPhase()
     {
-        int numPlayers = players.Count;
+        int numPlayers = GameGlobals.players.Count;
         for (int i = 0; i < numPlayers; i++)
         {
-            Player currPlayer = players[i];
+            Player currPlayer = GameGlobals.players[i];
             currPlayer.LevelUpRequest();
         }
     }
     public void StartPlayForInstrumentPhase()
     {
-        int numPlayers = players.Count;
+        int numPlayers = GameGlobals.players.Count;
         for (int i = 0; i < numPlayers; i++)
         {
-            Player currPlayer = players[i];
+            Player currPlayer = GameGlobals.players[i];
             currPlayer.PlayForInstrumentRequest();
         }
     }
     public void StartLastDecisionsPhase()
     {
-        Album currAlbum = albums[albums.Count - 1];
-        int numPlayers = players.Count;
+        Album currAlbum = GameGlobals.albums[GameGlobals.albums.Count - 1];
+        int numPlayers = GameGlobals.players.Count;
         for (int i = 0; i < numPlayers; i++)
         {
-            Player currPlayer = players[i];
+            Player currPlayer = GameGlobals.players[i];
             currPlayer.LastDecisionsPhaseRequest(currAlbum);
         }
     }
@@ -297,7 +280,7 @@ public class GameManager : MonoBehaviour {
 
     public void ChangeToNextPlayer(Player currPlayer)
     {
-        Player nextPlayer = players[(players.IndexOf(currPlayer) + 1) % players.Count];
+        Player nextPlayer = GameGlobals.players[(GameGlobals.players.IndexOf(currPlayer) + 1) % GameGlobals.players.Count];
 
         if (!GameProperties.isSimulation)
         {

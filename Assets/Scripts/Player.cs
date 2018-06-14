@@ -7,6 +7,8 @@ using UnityEngine.UI;
 
 public abstract class Player
 {
+    private string actionLog;
+
     GameManager gameManagerRef;
 
     protected string name;
@@ -40,14 +42,34 @@ public abstract class Player
             skillSet[instrument] = 0;
             albumContributions[instrument] = 0;
         }
-
-        this.gameManagerRef = GameObject.Find("GameManager").gameObject.GetComponent<GameManager>();
-
     }
 
-    public abstract void LevelUpRequest();
-    public abstract void PlayForInstrumentRequest();
-    public abstract void LastDecisionsPhaseRequest(Album currAlbum);
+    public void InitGameData()
+    {
+        this.gameManagerRef = GameObject.Find("GameManager").gameObject.GetComponent<GameManager>();
+    }
+
+    public abstract void LevelUp();
+    public abstract void PlayForInstrument();
+    public abstract void LastDecisionsPhase(Album currAlbum);
+
+    public string GetName()
+    {
+        return this.name;
+    }
+
+    public void LevelUpRequest()
+    {
+        LevelUp();
+    }
+    public void PlayForInstrumentRequest()
+    {
+        PlayForInstrument();
+    }
+    public void LastDecisionsPhaseRequest(Album currAlbum)
+    {
+        LastDecisionsPhase(currAlbum);
+    }
 
 
     public void SendLevelUpResponse()
@@ -93,6 +115,7 @@ public abstract class Player
         numTokens--;
         skillSet[instrument]++;
 
+        FileManager.WritePlayerActionToLog(GameProperties.currGameId.ToString(), this.name,"SPENT_TOKEN", instrument.ToString() , "-");
         return true;
     }
     public bool ConvertTokensToMoney(int numTokensToConvert)
@@ -105,6 +128,7 @@ public abstract class Player
         numTokens-=numTokensToConvert;
         money += numTokensToConvert * GameProperties.tokenValue;
 
+        FileManager.WritePlayerActionToLog(GameProperties.currGameId.ToString(), this.name,"CONVERTED_TOKENS", "-" , numTokensToConvert.ToString());
         return true;
     }
     public bool BuyTokens(int numTokensToBuy)
@@ -119,12 +143,14 @@ public abstract class Player
         numTokens += numTokensToBuy;
 
         tokensBoughtOnCurrRound+=numTokensToBuy;
+        FileManager.WritePlayerActionToLog(GameProperties.currGameId.ToString(), this.name,"BOUGHT_TOKENS", "-" , numTokensToBuy.ToString());
         return true;
     }
 
     public void ReceiveMoney(int moneyToReceive)
     {
         this.money += moneyToReceive;
+        FileManager.WritePlayerActionToLog(GameProperties.currGameId.ToString(), this.name,"RECEIVED_MONEY", "-" , moneyToReceive.ToString());
     }
     public void ReceiveTokens(int numTokensToReceive)
     {
@@ -159,10 +185,21 @@ public abstract class Player
     public void SetAlbumContribution(GameProperties.Instrument instrument, int value)
     {
         this.albumContributions[instrument] = value;
+        FileManager.WritePlayerActionToLog(GameProperties.currGameId.ToString(), this.name,"INSTRUMENT_VALUE_CHANGED", instrument.ToString(), value.ToString());
     }
     public Dictionary<GameProperties.Instrument, int> GetAlbumContributions()
     {
         return this.albumContributions;
+    }
+
+
+    public void WriteToActionLog(string newAtomicContent)
+    {
+        actionLog += "\n"+newAtomicContent;
+    }
+    public string GetActionLog()
+    {
+        return this.actionLog;
     }
 
 }
@@ -202,8 +239,18 @@ public class UIPlayer : Player {
     protected Dropdown UIrollDicesForDropdown;
 
 
-    public UIPlayer(string name, GameObject playerUIPrefab, GameObject canvas) : base(name) {
+    public UIPlayer(string name) : base(name) {
+    }
 
+
+    public GameObject GetPlayerUI()
+    {
+        return this.playerUI;
+    }
+
+
+    public void InitUI(GameObject playerUIPrefab, GameObject canvas)
+    {
 
         this.playerUI = Object.Instantiate(playerUIPrefab, canvas.transform);
 
@@ -278,11 +325,6 @@ public class UIPlayer : Player {
     }
 
 
-    public GameObject GetPlayerUI()
-    {
-        return this.playerUI;
-    }
-    
     public void UpdateUI()
     {
         UImoneyValue.text = money.ToString();
@@ -321,7 +363,7 @@ public class UIPlayer : Player {
     }
 
 
-    public override void LevelUpRequest()
+    public override void LevelUp()
     {
         UIplayerActionButton.gameObject.SetActive(true);
         UILevelUpScreen.SetActive(true);
@@ -332,7 +374,7 @@ public class UIPlayer : Player {
         UIplayerActionButton.onClick.AddListener(delegate { SendLevelUpResponse(); UpdateUI(); });
         UpdateUI();
     }
-    public override void PlayForInstrumentRequest()
+    public override void PlayForInstrument()
     {
         UIplayerActionButton.gameObject.SetActive(true);
         UILevelUpScreen.SetActive(false);
@@ -343,7 +385,7 @@ public class UIPlayer : Player {
         UIplayerActionButton.onClick.AddListener(delegate { SendPlayForInstrumentResponse(); UpdateUI(); });
         UpdateUI();
     }
-    public override void LastDecisionsPhaseRequest(Album currAlbum)
+    public override void LastDecisionsPhase(Album currAlbum)
     {
         UIplayerActionButton.gameObject.SetActive(false);
         UILevelUpScreen.SetActive(false);
@@ -376,20 +418,20 @@ public class SimPlayer : Player
     }
 
 
-    public override void LevelUpRequest()
+    public override void LevelUp()
     {
         SpendToken(GameProperties.Instrument.GUITAR);
         SpendToken(GameProperties.Instrument.GUITAR);
         SendLevelUpResponse();
     }
 
-    public override void PlayForInstrumentRequest()
+    public override void PlayForInstrument()
     {
         ChangeDiceRollInstrument(GameProperties.Instrument.GUITAR);
         SendPlayForInstrumentResponse();
     }
 
-    public override void LastDecisionsPhaseRequest(Album currAlbum)
+    public override void LastDecisionsPhase(Album currAlbum)
     {
         if (currAlbum.GetMarketingState() == GameProperties.AlbumMarketingState.MEGA_HIT)
         {
