@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class PlayersSetupSceneFunctionalities : MonoBehaviour {
 
-    private Text UINameSelectionInputBox;
+    private InputField UINameSelectionInputBox;
     private Button UIStartGameButton;
     private Button UIAddPlayerButton;
 
@@ -13,7 +13,7 @@ public class PlayersSetupSceneFunctionalities : MonoBehaviour {
     {
         if (!GameProperties.isSimulation)
         {
-            this.UINameSelectionInputBox = GameObject.Find("Canvas/SetupScreen/nameSelectionInputBox/Text").gameObject.GetComponent<Text>();
+            this.UINameSelectionInputBox = GameObject.Find("Canvas/SetupScreen/nameSelectionInputBox").gameObject.GetComponent<InputField>();
             this.UIStartGameButton = GameObject.Find("Canvas/SetupScreen/startGameButton").gameObject.GetComponent<Button>();
             this.UIAddPlayerButton = GameObject.Find("Canvas/SetupScreen/addPlayerGameButton").gameObject.GetComponent<Button>();
 
@@ -24,11 +24,13 @@ public class PlayersSetupSceneFunctionalities : MonoBehaviour {
             UIAddPlayerButton.onClick.AddListener(delegate
             {
                 AddUIPlayer(UINameSelectionInputBox.text);
+                UINameSelectionInputBox.text = "";
                 Debug.Log(GameGlobals.players.Count);
                 if (GameGlobals.players.Count == GameProperties.numberOfPlayersPerGame)
                 {
                     UIStartGameButton.gameObject.SetActive(true);
                     UIAddPlayerButton.gameObject.SetActive(false);
+                    UINameSelectionInputBox.gameObject.SetActive(false);
                 }
             });
         }

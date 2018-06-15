@@ -327,6 +327,9 @@ public class UIPlayer : Player {
 
     public void UpdateUI()
     {
+
+
+
         UImoneyValue.text = money.ToString();
         UInumTokensValue.text = numTokens.ToString();
 
@@ -360,6 +363,7 @@ public class UIPlayer : Player {
         }
         ChangeDiceRollInstrument((GameProperties.Instrument)firstInstrumentInDropdown);
         UIrollDicesForDropdown.RefreshShownValue();
+
     }
 
 
@@ -402,6 +406,10 @@ public class UIPlayer : Player {
             UILastDecisionsFailScreen.SetActive(true);
             UILastDecisionsMegaHitScreen.SetActive(false);
         }
+
+        UIReceiveMegaHitButton.onClick.RemoveAllListeners();
+        UIStickWithMarktingMegaHitButton.onClick.RemoveAllListeners();
+        UIReceiveFailButton.onClick.RemoveAllListeners();
         UIReceiveMegaHitButton.onClick.AddListener(delegate { SendLastDecisionsPhaseResponse(0); UpdateUI(); });
         UIStickWithMarktingMegaHitButton.onClick.AddListener(delegate { SendLastDecisionsPhaseResponse(1); UpdateUI(); });
         UIReceiveFailButton.onClick.AddListener(delegate { SendLastDecisionsPhaseResponse(2); UpdateUI(); });

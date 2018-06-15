@@ -36,7 +36,6 @@ public static class FileManager{
     static public void WritePlayerActionToLog(string currGameId, string playerName, string eventType, string instrument, string coins)
     {
         playersLogFileWritter.WriteLine(currGameId + ";" + playerName + ";" + eventType + ";"+ instrument + ";"+ coins);
-
     }
 
     static public void WriteAlbumResultsToLog() {

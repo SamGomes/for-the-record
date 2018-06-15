@@ -27,7 +27,9 @@ public class EndScreenFunctionalities : MonoBehaviour
     {
         if (!(GameProperties.isSimulation && GameProperties.numGamesToSimulate > 0))
         {
-            UIRestartGameButton.onClick.AddListener(delegate () { RestartGame(); });
+            UIRestartGameButton.onClick.AddListener(delegate () {
+                RestartGame();
+            });
         }
         else
         {

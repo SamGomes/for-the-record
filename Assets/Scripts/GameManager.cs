@@ -164,8 +164,6 @@ public class GameManager : MonoBehaviour {
     // wait for all players to exit one phase and start other phase
     void Update () {
 
-        
-
         //end of first phase; trigger second phase
         if (numPlayersToLevelUp == 0)
         {
@@ -179,6 +177,10 @@ public class GameManager : MonoBehaviour {
             StartLastDecisionsPhase();
 
             numPlayersToPlayForInstrument = GameGlobals.players.Count;
+        }
+        if(numPlayersToStartLastDecisions == 0)
+        {
+            Debug.Log(0);
         }
         //end of second phase; trigger album result
         if (numPlayersToStartLastDecisions == 0)
