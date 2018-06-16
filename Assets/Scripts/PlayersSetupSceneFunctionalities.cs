@@ -36,9 +36,9 @@ public class PlayersSetupSceneFunctionalities : MonoBehaviour {
         }
         else
         {
-            AddSimPlayer("PL1");
-            AddSimPlayer("PL2");
-            AddSimPlayer("PL3");
+            GameGlobals.players.Add(new SimPlayerCoopStrategy("PL1"));
+            GameGlobals.players.Add(new SimPlayerCoopStrategy("PL2"));
+            GameGlobals.players.Add(new SimPlayerCoopStrategy("PL3"));
             StartGame();
         }
     }
@@ -51,10 +51,5 @@ public class PlayersSetupSceneFunctionalities : MonoBehaviour {
     void AddUIPlayer(string name)
     {
         GameGlobals.players.Add(new UIPlayer(name));
-    }
-
-    void AddSimPlayer(string name)
-    {
-        GameGlobals.players.Add(new SimPlayer(name));
     }
 }

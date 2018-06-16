@@ -24,6 +24,7 @@ public class GameManager : MonoBehaviour {
 
     public Text UIcurrMarketValueText;
 
+    private int currGameRound;
 
     void Awake()
     {
@@ -45,6 +46,12 @@ public class GameManager : MonoBehaviour {
             currPlayer.ReceiveTokens(2);
         }
 
+        currGameRound = 0; //first round
+    }
+
+    public int GetCurrGameRound()
+    {
+        return this.currGameRound;
     }
 
     //warning: works only when using human players!
@@ -187,6 +194,7 @@ public class GameManager : MonoBehaviour {
         {
             if (GameGlobals.albums.Count >= GameProperties.numberOfAlbumsPerGame)
             {
+                currGameRound=0;
                 GameSceneManager.LoadEndScene();
                 return;
             }
@@ -200,6 +208,7 @@ public class GameManager : MonoBehaviour {
                 StartGameRoundForAllPlayers("SimAlbum");
             }
             numPlayersToStartLastDecisions = GameGlobals.players.Count;
+            currGameRound++;
         }
 
     }
