@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class AIPlayerSimple : Player
 {
-    public SimPlayerSimple(string name) : base(name)
+    public AIPlayerSimple(string name) : base(name)
     {
     }
 
@@ -42,30 +42,40 @@ public class AIPlayerCoopStrategy : Player
     GameProperties.Instrument preferredInstrument;
 
 
-    public SimPlayerCoopStrategy(string name) : base(name)
+    public AIPlayerCoopStrategy(string name) : base(name)
     {
     }
 
 
     public override void LevelUp()
     {
-        //this strategy always plays for instruments
+        //this strategy always plays for instruments, not for markting
         GameProperties.Instrument smallestInstrumentOverall = GameProperties.Instrument.BASS;
-        int smallestValue = -1;
-        for (int i=0; i < GameGlobals.players.Count; i++)
+        int smallestValuForInstrumenteOverall = -1;
+        
+        List<GameProperties.Instrument> playerSkillSetKeys = new List<GameProperties.Instrument>(this.GetSkillSet().Keys);
+        for (int j = 0 ; j < (playerSkillSetKeys.Count - 1) ; j++) //exclude markting, thats why the (playerSkillSetKeys.Count - 1)
         {
-            Player currPlayer = GameGlobals.players[i];
-            Dictionary<GameProperties.Instrument, int> playerSkillSet = currPlayer.GetSkillSet();
-            List<GameProperties.Instrument> playerSkillSetKeys = new List<GameProperties.Instrument>(playerSkillSet.Keys);
-            for (int j = 0 ; j < playerSkillSetKeys.Count ; j++)
+            GameProperties.Instrument currInstrument = playerSkillSetKeys[j];
+            int biggestValueForInstrument = -1;
+            for (int i=0; i < GameGlobals.players.Count; i++)
             {
-                GameProperties.Instrument currInstrument = playerSkillSetKeys[j];
-                int currValue = playerSkillSet[playerSkillSetKeys[j]];
-                if(smallestValue==-1 || currValue < smallestValue)
+                Player currPlayer = GameGlobals.players[i];
+                if (this == currPlayer)
                 {
-                    smallestInstrumentOverall = currInstrument;
-                    smallestValue = currValue;
+                    continue;
                 }
+            
+                int currValue = currPlayer.GetSkillSet()[playerSkillSetKeys[j]];
+                if(biggestValueForInstrument == -1 || currValue > biggestValueForInstrument)
+                {
+                    biggestValueForInstrument = currValue;
+                }
+            }
+            if(smallestValuForInstrumenteOverall == -1 || biggestValueForInstrument < smallestValuForInstrumenteOverall)
+            {
+                smallestValuForInstrumenteOverall = biggestValueForInstrument;
+                smallestInstrumentOverall = currInstrument;
             }
         }
         preferredInstrument = smallestInstrumentOverall;
@@ -97,32 +107,41 @@ public class AIPlayerGreedyStrategy : Player
 {
     GameProperties.Instrument preferredInstrument;
 
-
     public AIPlayerGreedyStrategy(string name) : base(name)
     {
     }
 
     public override void LevelUp()
     {
-        //this strategy always plays for markting except in the first play
+        //this strategy always plays for markting except in the first play where it plays cooperatively
         if (gameManagerRef.GetCurrGameRound() == 0)
         {
             GameProperties.Instrument smallestInstrumentOverall = GameProperties.Instrument.BASS;
-            int smallestValue = -1;
-            for (int i = 0; i < GameGlobals.players.Count; i++)
+            int smallestValuForInstrumenteOverall = -1;
+
+            List<GameProperties.Instrument> playerSkillSetKeys = new List<GameProperties.Instrument>(this.GetSkillSet().Keys);
+            for (int j = 0; j < (playerSkillSetKeys.Count - 1); j++) //exclude markting, thats why the (playerSkillSetKeys.Count - 1)
             {
-                Player currPlayer = GameGlobals.players[i];
-                Dictionary<GameProperties.Instrument, int> playerSkillSet = currPlayer.GetSkillSet();
-                List<GameProperties.Instrument> playerSkillSetKeys = new List<GameProperties.Instrument>(playerSkillSet.Keys);
-                for (int j = 0; j < playerSkillSetKeys.Count; j++)
+                GameProperties.Instrument currInstrument = playerSkillSetKeys[j];
+                int biggestValueForInstrument = -1;
+                for (int i = 0; i < GameGlobals.players.Count; i++)
                 {
-                    GameProperties.Instrument currInstrument = playerSkillSetKeys[j];
-                    int currValue = playerSkillSet[playerSkillSetKeys[j]];
-                    if (smallestValue == -1 || currValue < smallestValue)
+                    Player currPlayer = GameGlobals.players[i];
+                    if (this == currPlayer)
                     {
-                        smallestInstrumentOverall = currInstrument;
-                        smallestValue = currValue;
+                        continue;
                     }
+
+                    int currValue = currPlayer.GetSkillSet()[playerSkillSetKeys[j]];
+                    if (biggestValueForInstrument == -1 || currValue > biggestValueForInstrument)
+                    {
+                        biggestValueForInstrument = currValue;
+                    }
+                }
+                if (smallestValuForInstrumenteOverall == -1 || biggestValueForInstrument < smallestValuForInstrumenteOverall)
+                {
+                    smallestValuForInstrumenteOverall = biggestValueForInstrument;
+                    smallestInstrumentOverall = currInstrument;
                 }
             }
             preferredInstrument = smallestInstrumentOverall;
@@ -145,7 +164,7 @@ public class AIPlayerGreedyStrategy : Player
     {
         if (currAlbum.GetMarketingState() == GameProperties.AlbumMarketingState.MEGA_HIT)
         {
-            SendLastDecisionsPhaseResponse(0);
+            SendLastDecisionsPhaseResponse(1);
         }
         if (currAlbum.GetMarketingState() == GameProperties.AlbumMarketingState.FAIL)
         {

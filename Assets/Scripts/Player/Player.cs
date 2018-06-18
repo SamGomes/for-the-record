@@ -7,6 +7,8 @@ using UnityEngine.UI;
 
 public abstract class Player
 {
+    private int id;
+
     private string actionLog;
 
     protected GameManager gameManagerRef;
@@ -25,6 +27,8 @@ public abstract class Player
    
     public Player(string name)
     {
+
+        this.id = GameGlobals.playerIdCount++;
         this.name = name;
 
         this.tokensBoughtOnCurrRound = 0;
@@ -53,6 +57,10 @@ public abstract class Player
     public abstract void PlayForInstrument();
     public abstract void LastDecisionsPhase(Album currAlbum);
 
+    public int GetId()
+    {
+        return this.id;
+    }
     public string GetName()
     {
         return this.name;
@@ -115,7 +123,7 @@ public abstract class Player
         numTokens--;
         skillSet[instrument]++;
 
-        FileManager.WritePlayerActionToLog(GameProperties.currGameId.ToString(), this.name,"SPENT_TOKEN", instrument.ToString() , "-");
+        FileManager.WritePlayerActionToLog(GameGlobals.currGameId.ToString(), gameManagerRef.GetCurrGameRound().ToString(), this.id.ToString(), this.name,"SPENT_TOKEN", instrument.ToString() , "-");
         return true;
     }
     public bool ConvertTokensToMoney(int numTokensToConvert)
@@ -128,7 +136,7 @@ public abstract class Player
         numTokens-=numTokensToConvert;
         money += numTokensToConvert * GameProperties.tokenValue;
 
-        FileManager.WritePlayerActionToLog(GameProperties.currGameId.ToString(), this.name,"CONVERTED_TOKENS", "-" , numTokensToConvert.ToString());
+        FileManager.WritePlayerActionToLog(GameGlobals.currGameId.ToString(), gameManagerRef.GetCurrGameRound().ToString(), this.id.ToString(), this.name,"CONVERTED_TOKENS", "-" , numTokensToConvert.ToString());
         return true;
     }
     public bool BuyTokens(int numTokensToBuy)
@@ -143,14 +151,14 @@ public abstract class Player
         numTokens += numTokensToBuy;
 
         tokensBoughtOnCurrRound+=numTokensToBuy;
-        FileManager.WritePlayerActionToLog(GameProperties.currGameId.ToString(), this.name,"BOUGHT_TOKENS", "-" , numTokensToBuy.ToString());
+        FileManager.WritePlayerActionToLog(GameGlobals.currGameId.ToString(), gameManagerRef.GetCurrGameRound().ToString(), this.id.ToString(), this.name,"BOUGHT_TOKENS", "-" , numTokensToBuy.ToString());
         return true;
     }
 
     public void ReceiveMoney(int moneyToReceive)
     {
         this.money += moneyToReceive;
-        FileManager.WritePlayerActionToLog(GameProperties.currGameId.ToString(), this.name,"RECEIVED_MONEY", "-" , moneyToReceive.ToString());
+        FileManager.WritePlayerActionToLog(GameGlobals.currGameId.ToString(), gameManagerRef.GetCurrGameRound().ToString(), this.id.ToString(), this.name,"RECEIVED_MONEY", "-" , moneyToReceive.ToString());
     }
     public void ReceiveTokens(int numTokensToReceive)
     {
@@ -185,7 +193,7 @@ public abstract class Player
     public void SetAlbumContribution(GameProperties.Instrument instrument, int value)
     {
         this.albumContributions[instrument] = value;
-        FileManager.WritePlayerActionToLog(GameProperties.currGameId.ToString(), this.name,"INSTRUMENT_VALUE_CHANGED", instrument.ToString(), value.ToString());
+        FileManager.WritePlayerActionToLog(GameGlobals.currGameId.ToString(), gameManagerRef.GetCurrGameRound().ToString(), this.id.ToString(), this.name,"INSTRUMENT_VALUE_CHANGED", instrument.ToString(), value.ToString());
     }
     public Dictionary<GameProperties.Instrument, int> GetAlbumContributions()
     {

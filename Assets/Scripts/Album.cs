@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 public class Album{
 
+    private int id;
+
     private int value;
     private string name;
     private Dictionary<GameProperties.Instrument, int> instrumentValues;
@@ -18,6 +20,9 @@ public class Album{
 
     public Album(string name, GameObject albumUIPrefab, GameObject canvas)
     {
+
+        this.id = GameGlobals.albumIdCount++;
+
         this.albumUI = Object.Instantiate(albumUIPrefab, canvas.transform);
         this.UInameText = albumUI.transform.Find("albumName").GetComponent<Text>();
         this.UIvalueText = albumUI.transform.Find("albumValueText").GetComponent<Text>();
@@ -41,6 +46,17 @@ public class Album{
         }
 
     }
+
+    public string GetName()
+    {
+        return this.name;
+    }
+    public int GetId()
+    {
+        return this.id;
+    }
+
+
 
     public GameProperties.AlbumMarketingState GetMarketingState()
     {

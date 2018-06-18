@@ -5,6 +5,11 @@ public static class GameGlobals
 {
     public static List<Album> albums;
     public static List<Player> players;
+
+    public static int currGameId = 0;
+
+    public static int albumIdCount = 0;
+    public static int playerIdCount = 0;
 }
 
 public static class GameProperties
@@ -42,8 +47,6 @@ public static class GameProperties
     //------------ Simulation --------------------
     public static bool isSimulation = true;
     public static int numGamesToSimulate = 10;
-
-    public static int currGameId = 0;
 }
 
 public interface IUtilities

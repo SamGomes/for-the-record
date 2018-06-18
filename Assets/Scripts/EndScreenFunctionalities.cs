@@ -12,7 +12,6 @@ public class EndScreenFunctionalities : MonoBehaviour
     private void RestartGame()
     {
         GameSceneManager.LoadStartScene();
-        FileManager.WriteAlbumResultsToLog();
         Debug.Log("numGamesToSimulate: " + GameProperties.numGamesToSimulate);
 
         GameProperties.numGamesToSimulate--;

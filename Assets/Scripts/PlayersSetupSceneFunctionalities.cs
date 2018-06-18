@@ -36,9 +36,9 @@ public class PlayersSetupSceneFunctionalities : MonoBehaviour {
         }
         else
         {
-            GameGlobals.players.Add(new SimPlayerCoopStrategy("PL1"));
-            GameGlobals.players.Add(new SimPlayerCoopStrategy("PL2"));
-            GameGlobals.players.Add(new SimPlayerCoopStrategy("PL3"));
+            GameGlobals.players.Add(new AIPlayerGreedyStrategy("PL1"));
+            GameGlobals.players.Add(new AIPlayerGreedyStrategy("PL2"));
+            GameGlobals.players.Add(new AIPlayerGreedyStrategy("PL3"));
             StartGame();
         }
     }

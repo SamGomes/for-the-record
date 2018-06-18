@@ -16,11 +16,11 @@ public class StartScreenFunctionalities : MonoBehaviour {
     private void StartGame()
     {
         InitGameGlobals();
-        if (GameProperties.currGameId == 0)
+        if (GameGlobals.currGameId == 0)
         {
             FileManager.InitWriter();
         }
-        GameProperties.currGameId++;
+        GameGlobals.currGameId++;
         GameSceneManager.LoadPlayersSetupScene();
     }
 

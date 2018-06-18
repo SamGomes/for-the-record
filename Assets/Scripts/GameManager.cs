@@ -177,6 +177,7 @@ public class GameManager : MonoBehaviour {
             StartPlayForInstrumentPhase();
             numPlayersToLevelUp = GameGlobals.players.Count;
         }
+
         //end of second phase; trigger album result
         if (numPlayersToPlayForInstrument == 0)
         {
@@ -185,21 +186,32 @@ public class GameManager : MonoBehaviour {
 
             numPlayersToPlayForInstrument = GameGlobals.players.Count;
         }
-        if(numPlayersToStartLastDecisions == 0)
-        {
-            Debug.Log(0);
-        }
-        //end of second phase; trigger album result
+
+        //end of third phase; trigger and log album result
         if (numPlayersToStartLastDecisions == 0)
         {
-            if (GameGlobals.albums.Count >= GameProperties.numberOfAlbumsPerGame)
+            int numPlayedAlbums = GameGlobals.albums.Count;
+            Album currAlbum = GameGlobals.albums[numPlayedAlbums - 1];
+
+            //write curr game logs
+            FileManager.WriteAlbumResultsToLog(GameGlobals.currGameId.ToString(), currGameRound.ToString(), currAlbum.GetId().ToString(), currAlbum.GetName(), currAlbum.GetMarketingState().ToString());
+            foreach(Player player in GameGlobals.players)
+            {
+                FileManager.WritePlayerResultsToLog(GameGlobals.currGameId.ToString(), currGameRound.ToString(), player.GetId().ToString(), player.GetName(), player.GetMoney().ToString());
+            }
+
+            //reinit some things for next game round
+            if (numPlayedAlbums >= GameProperties.numberOfAlbumsPerGame)
             {
                 currGameRound=0;
                 GameSceneManager.LoadEndScene();
                 return;
             }
+            numPlayersToStartLastDecisions = GameGlobals.players.Count;
+            currGameRound++;
 
-            if (!GameProperties.isSimulation) //if human player update his/her UI, start imidiately otherwise
+            //start next game round whenever ready
+            if (!GameProperties.isSimulation)
             {
                 StartCoroutine(ShowScreenWithDelay(UInewRoundScreen, 2.0f));
             }
@@ -207,8 +219,6 @@ public class GameManager : MonoBehaviour {
             {
                 StartGameRoundForAllPlayers("SimAlbum");
             }
-            numPlayersToStartLastDecisions = GameGlobals.players.Count;
-            currGameRound++;
         }
 
     }

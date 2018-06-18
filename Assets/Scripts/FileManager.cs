@@ -5,57 +5,34 @@ using UnityEngine;
 
 public static class FileManager{
     
-    static StreamWriter gameLogFileWritter = File.CreateText("Assets/Logs/gameLog.txt");
-    static StreamWriter playersLogFileWritter = File.CreateText("Assets/Logs/playersLog.txt");
+    static StreamWriter albumStatsFileWritter = File.CreateText("Assets/Logs/albumGameStatsLog.txt");
+    static StreamWriter playerStatsFileWritter = File.CreateText("Assets/Logs/playerGameStatsLog.txt");
+    static StreamWriter playerActionsLogFileWritter = File.CreateText("Assets/Logs/playerActionsLog.txt");
 
     static public void InitWriter()
     {
-        for (int i = 0; i < GameProperties.numberOfAlbumsPerGame; i++)
-        {
-            if (i > 0)
-            {
-                gameLogFileWritter.Write(";");
-            }
-            gameLogFileWritter.Write("\"album_" + i + "_MState\"");
-
-            gameLogFileWritter.Write(";");
-            for (int j = 0; j < GameProperties.numberOfPlayersPerGame; j++)
-            {
-                if (j > 0)
-                {
-                    gameLogFileWritter.Write(";");
-                }
-                gameLogFileWritter.Write("\"player_" + j + "_money\"");
-            }
-        }
-        gameLogFileWritter.WriteLine();
-
-        playersLogFileWritter.WriteLine("\"GameId\";\"Name\";\"Event Type\";\"Instrument\";\"Value\"");
+        albumStatsFileWritter.WriteLine("\"GameId\";\"RoundId\";\"AlbumId\";\"AlbumName\";\"MState\"");
+        playerStatsFileWritter.WriteLine("\"GameId\";\"RoundId\";\"PlayerId\";\"PlayerName\";\"Money\"");
+        playerActionsLogFileWritter.WriteLine("\"GameId\";\"RoundId\";\"PlayerId\";\"PlayerName\";\"Event Type\";\"Instrument\";\"Value\"");
     }
 
-    static public void WritePlayerActionToLog(string currGameId, string playerName, string eventType, string instrument, string coins)
+    static public void WriteAlbumResultsToLog(string currGameId, string currGameRoundId, string currAlbumId, string currAlbumName, string marktingState) {
+        albumStatsFileWritter.WriteLine(currGameId + ";" + currGameRoundId + ";" + currAlbumId + ";" + currAlbumName + ";" + marktingState);
+    }
+    static public void WritePlayerResultsToLog(string currGameId, string currGameRoundId, string playerId, string playerName, string money)
     {
-        playersLogFileWritter.WriteLine(currGameId + ";" + playerName + ";" + eventType + ";"+ instrument + ";"+ coins);
+        playerStatsFileWritter.WriteLine(currGameId + ";" + currGameRoundId + ";" + playerId + ";" + playerName + ";" + money);
     }
-
-    static public void WriteAlbumResultsToLog() {
-
-        for (int i = 0; i < GameProperties.numberOfAlbumsPerGame; i++)
-        {
-            Album currAlbum = GameGlobals.albums[i];
-            if (i > 0)
-            {
-                gameLogFileWritter.Write(";");
-            }
-            gameLogFileWritter.Write(System.Enum.GetNames(typeof(GameProperties.AlbumMarketingState))[(int)currAlbum.GetMarketingState()]);
-        }
-        gameLogFileWritter.WriteLine();
+    static public void WritePlayerActionToLog(string currGameId, string currGameRoundId, string playerId, string playerName, string eventType, string instrument, string coins)
+    {
+        playerActionsLogFileWritter.WriteLine(currGameId + ";" + currGameRoundId + ";" + playerId + ";" + playerName + ";" + eventType + ";"+ instrument + ";"+ coins);
     }
 
     static public void CloseWriter()
     {
-        gameLogFileWritter.Close();
-        playersLogFileWritter.Close();
+        albumStatsFileWritter.Close();
+        playerStatsFileWritter.Close();
+        playerActionsLogFileWritter.Close();
     }
 
 }
