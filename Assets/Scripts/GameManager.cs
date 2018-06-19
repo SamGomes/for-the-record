@@ -24,13 +24,26 @@ public class GameManager : MonoBehaviour {
 
     public Text UIcurrMarketValueText;
 
+
+    public GameObject UIRollDiceForInstrumentOverlay;
+    public GameObject UIRollDiceForMarketValueOverlay;
+
+
     private int currGameRound;
 
     void Awake()
     {
         gameUtilities = new RandomUtilities();
+
+
+        //mock to test
+        GameGlobals.albums = new List<Album>(GameProperties.numberOfAlbumsPerGame);
+        GameGlobals.players = new List<Player>(GameProperties.numberOfPlayersPerGame);
+        GameGlobals.players.Add(new UIPlayer("PL1"));
+        GameGlobals.players.Add(new UIPlayer("PL2"));
+        GameGlobals.players.Add(new UIPlayer("PL3"));
     }
-    
+
     public void InitGame()
     {
         int numPlayers = GameGlobals.players.Count;
@@ -39,12 +52,15 @@ public class GameManager : MonoBehaviour {
         {
             Player currPlayer = GameGlobals.players[i];
             currPlayer.InitGameData();
-            if (currPlayer.GetType() == typeof(UIPlayer))
+            if ((currPlayer as UIPlayer) != null) //check if player has UI
             {
                 ((UIPlayer)currPlayer).InitUI(playerUIPrefab, canvas);
             }
             currPlayer.ReceiveTokens(2);
         }
+
+        UIRollDiceForInstrumentOverlay.SetActive(false);
+        UIRollDiceForMarketValueOverlay.SetActive(false);
 
         currGameRound = 0; //first round
     }
@@ -113,11 +129,10 @@ public class GameManager : MonoBehaviour {
         StartLevelingUpPhase();
     }
 
-   
 
-    public void RollDicesForInstrument(Player currPlayer,GameProperties.Instrument instrument)
+
+    public int RollDicesForInstrument(Player currPlayer, GameProperties.Instrument instrument)
     {
-        Debug.Log("RollDicesForInstrumentsAndMarketing");
         Album currAlbum = GameGlobals.albums[GameGlobals.albums.Count - 1];
 
         var skillSet = currPlayer.GetSkillSet();
@@ -125,13 +140,21 @@ public class GameManager : MonoBehaviour {
 
         int newAlbumInstrumentValue = 0;
         int numTokensForInstrument = skillSet[instrument];
-        for(int i=0; i<numTokensForInstrument; i++)
+        for (int i = 0; i < numTokensForInstrument; i++)
         {
             int randomIncrease = gameUtilities.RollTheDice(6);
             newAlbumInstrumentValue += randomIncrease;
         }
-        currPlayer.SetAlbumContribution(instrument, newAlbumInstrumentValue);
-        currAlbum.SetInstrumentValue(currPlayer.GetDiceRollInstrument(), newAlbumInstrumentValue);
+
+        UIRollDiceForInstrumentOverlay.SetActive(true);
+
+        return newAlbumInstrumentValue;
+    }
+    public int RollDicesForMarketValue()
+    {
+        int marketValue = gameUtilities.RollTheDice(40);
+        UIcurrMarketValueText.text = marketValue.ToString();
+        return marketValue;
     }
 
     private IEnumerator HideObjectAfterAWhile(GameObject obj, float time)
@@ -146,9 +169,9 @@ public class GameManager : MonoBehaviour {
         Album currAlbum = GameGlobals.albums[GameGlobals.albums.Count - 1];
 
         int numPlayers = GameGlobals.players.Count;
-        int marketValue = gameUtilities.RollTheDice(40);
-        UIcurrMarketValueText.text = marketValue.ToString();
+        
         int newAlbumValue = currAlbum.CalcAlbumValue();
+        int marketValue = RollDicesForMarketValue();
         
         if (newAlbumValue >= marketValue)
         {
@@ -260,10 +283,13 @@ public class GameManager : MonoBehaviour {
     }
     public void PlayerPlayForInstrumentResponse(Player invoker)
     {
+        Album currAlbum = GameGlobals.albums[GameGlobals.albums.Count - 1];
         GameProperties.Instrument rollDiceInstrument = invoker.GetDiceRollInstrument();
         if (rollDiceInstrument != (GameProperties.Instrument) (-1)) //if there is a roll dice instrument
         {
-            RollDicesForInstrument(invoker, rollDiceInstrument);
+            int newAlbumInstrumentValue = RollDicesForInstrument(invoker, rollDiceInstrument);
+            invoker.SetAlbumContribution(rollDiceInstrument, newAlbumInstrumentValue);
+            currAlbum.SetInstrumentValue(invoker.GetDiceRollInstrument(), newAlbumInstrumentValue);
         }
         ChangeToNextPlayer(invoker);
         numPlayersToPlayForInstrument--;

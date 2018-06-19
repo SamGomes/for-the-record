@@ -9,7 +9,6 @@ public class AIPlayerSimple : Player
     {
     }
 
-
     public override void LevelUp()
     {
         SpendToken(GameProperties.Instrument.GUITAR);
@@ -37,7 +36,7 @@ public class AIPlayerSimple : Player
 
 }
 
-public class AIPlayerCoopStrategy : Player
+public class AIPlayerCoopStrategy : UIPlayer
 {
     GameProperties.Instrument preferredInstrument;
 
@@ -103,7 +102,7 @@ public class AIPlayerCoopStrategy : Player
 
 }
 
-public class AIPlayerGreedyStrategy : Player
+public class AIPlayerGreedyStrategy : UIPlayer
 {
     GameProperties.Instrument preferredInstrument;
 
