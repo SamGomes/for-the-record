@@ -45,8 +45,8 @@ public static class GameProperties
 
 
     //------------ Simulation --------------------
-    public static bool isSimulation = false;
-    public static int numGamesToSimulate = 10;
+    public static bool isSimulation = true;
+    public static int numGamesToSimulate = 10000;
 }
 
 public interface IUtilities

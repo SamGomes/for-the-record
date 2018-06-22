@@ -37,11 +37,11 @@ public class GameManager : MonoBehaviour {
 
 
         //mock to test
-        GameGlobals.albums = new List<Album>(GameProperties.numberOfAlbumsPerGame);
-        GameGlobals.players = new List<Player>(GameProperties.numberOfPlayersPerGame);
-        GameGlobals.players.Add(new UIPlayer("PL1"));
-        GameGlobals.players.Add(new UIPlayer("PL2"));
-        GameGlobals.players.Add(new UIPlayer("PL3"));
+        //GameGlobals.albums = new List<Album>(GameProperties.numberOfAlbumsPerGame);
+        //GameGlobals.players = new List<Player>(GameProperties.numberOfPlayersPerGame);
+        //GameGlobals.players.Add(new UIPlayer("PL1"));
+        //GameGlobals.players.Add(new UIPlayer("PL2"));
+        //GameGlobals.players.Add(new UIPlayer("PL3"));
     }
 
     public void InitGame()
@@ -146,7 +146,7 @@ public class GameManager : MonoBehaviour {
             newAlbumInstrumentValue += randomIncrease;
         }
 
-        UIRollDiceForInstrumentOverlay.SetActive(true);
+        //UIRollDiceForInstrumentOverlay.SetActive(true);
 
         return newAlbumInstrumentValue;
     }
