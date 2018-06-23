@@ -138,24 +138,28 @@ public class GameManager : MonoBehaviour {
 
         var skillSet = currPlayer.GetSkillSet();
 
+        int newAlbumInstrumentValue = 0;
+        int numTokensForInstrument = skillSet[instrument];
+
         //UI stuff
+        UIRollDiceForInstrumentOverlay.transform.Find("title/Text").GetComponent<Text>().text = "Rolling dice "+ numTokensForInstrument + " times for " + instrument.ToString() + " ...";
         Image diceImage = UIRollDiceForInstrumentOverlay.transform.Find("dice6").GetComponent<Image>();
         Animator diceAnimator = diceImage.GetComponent<Animator>();
         List<Sprite> diceNumSprites = new List<Sprite>();
 
-
-        int newAlbumInstrumentValue = 0;
-        int numTokensForInstrument = skillSet[instrument];
         for (int i = 0; i < numTokensForInstrument; i++)
         {
             int randomIncrease = gameUtilities.RollTheDice(6);
             newAlbumInstrumentValue += randomIncrease;
 
             diceNumSprites.Add(Resources.Load<Sprite>("Animations/dice6/sprites_3/endingAlternatives/" + randomIncrease));
+            //if (diceNumSprites == null)
+            //{
+            //    Debug.Log("cannot find sprite for dice number "+randomIncrease);
+            //}
             Debug.Log(randomIncrease);
-
         }
-        StartCoroutine(PlayDiceUI(diceImage.GetComponent<Animator>(), diceImage, diceNumSprites, 3.0f));
+        StartCoroutine(PlayDiceUI(diceAnimator, diceImage, diceNumSprites, 2.0f));
 
         return newAlbumInstrumentValue;
     }
@@ -163,18 +167,23 @@ public class GameManager : MonoBehaviour {
     {
         if (diceNumberSprites.Count > 0)
         {
-            Debug.Log("rolling dice ui...");
+            Debug.Log("rolling dice ui..."+ diceNumberSprites.Count);
             UIRollDiceForInstrumentOverlay.SetActive(true);
+            diceImage.overrideSprite = null;
+            diceAnimator.Rebind();
             diceAnimator.Play(0);
             while (!diceAnimator.GetCurrentAnimatorStateInfo(0).IsName("endState"))
             {
-                yield break;
+                yield return null;
             }
 
             diceImage.overrideSprite = diceNumberSprites[0];
             yield return new WaitForSeconds(delayToClose);
             diceNumberSprites.RemoveAt(0);
             StartCoroutine(PlayDiceUI(diceAnimator, diceImage, diceNumberSprites, delayToClose));
+        }
+        else
+        {
             UIRollDiceForInstrumentOverlay.SetActive(false);
         }
     }
@@ -214,11 +223,7 @@ public class GameManager : MonoBehaviour {
     }
 
 
-    private IEnumerator ShowScreenWithDelay(GameObject screen, float delay)
-    {
-        yield return new WaitForSeconds(delay);
-        screen.SetActive(true);
-    }
+
 
     // wait for all players to exit one phase and start other phase
     void Update () {
@@ -265,7 +270,7 @@ public class GameManager : MonoBehaviour {
             //start next game round whenever ready
             if (!GameProperties.isSimulation)
             {
-                StartCoroutine(ShowScreenWithDelay(UInewRoundScreen, 2.0f));
+                UInewRoundScreen.SetActive(true);
             }
             else
             {
@@ -340,12 +345,8 @@ public class GameManager : MonoBehaviour {
     public void LastDecisionsPhaseGetMarktingResponse(Player invoker)
     {
         //roll dices for markting
-        int marktingValue = 0;
-        for (int k = 0; k < invoker.GetSkillSet()[GameProperties.Instrument.MARKTING]; k++)
-        {
-            int randomIncrease = gameUtilities.RollTheDice(6);
-            marktingValue += randomIncrease;
-        }
+        int marktingValue = RollDicesForInstrument(invoker, GameProperties.Instrument.MARKTING);
+            
         invoker.SetAlbumContribution(GameProperties.Instrument.MARKTING, marktingValue);
         invoker.ReceiveMoney(GameProperties.tokenValue * marktingValue);
         ChangeToNextPlayer(invoker);
