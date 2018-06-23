@@ -37,11 +37,11 @@ public class GameManager : MonoBehaviour {
 
 
         //mock to test
-        //GameGlobals.albums = new List<Album>(GameProperties.numberOfAlbumsPerGame);
-        //GameGlobals.players = new List<Player>(GameProperties.numberOfPlayersPerGame);
-        //GameGlobals.players.Add(new UIPlayer("PL1"));
-        //GameGlobals.players.Add(new UIPlayer("PL2"));
-        //GameGlobals.players.Add(new UIPlayer("PL3"));
+        GameGlobals.albums = new List<Album>(GameProperties.numberOfAlbumsPerGame);
+        GameGlobals.players = new List<Player>(GameProperties.numberOfPlayersPerGame);
+        GameGlobals.players.Add(new UIPlayer("PL1"));
+        GameGlobals.players.Add(new UIPlayer("PL2"));
+        GameGlobals.players.Add(new UIPlayer("PL3"));
     }
 
     public void InitGame()
@@ -73,7 +73,7 @@ public class GameManager : MonoBehaviour {
     //warning: works only when using human players!
     private IEnumerator ChangeActivePlayerUI(UIPlayer player, float delay)
     {
-        yield return new WaitForSeconds(delay);
+        //yield return new WaitForSeconds(delay);
         int numPlayers = GameGlobals.players.Count;
         for (int i = 0; i < numPlayers; i++)
         {
@@ -85,6 +85,7 @@ public class GameManager : MonoBehaviour {
             UIPlayer currPlayer = (UIPlayer)GameGlobals.players[i];
             currPlayer.GetPlayerUI().SetActive(false);
         }
+        return null;
     }
 
     void Start()
@@ -137,6 +138,11 @@ public class GameManager : MonoBehaviour {
 
         var skillSet = currPlayer.GetSkillSet();
 
+        //UI stuff
+        Image diceImage = UIRollDiceForInstrumentOverlay.transform.Find("dice6").GetComponent<Image>();
+        Animator diceAnimator = diceImage.GetComponent<Animator>();
+        List<Sprite> diceNumSprites = new List<Sprite>();
+
 
         int newAlbumInstrumentValue = 0;
         int numTokensForInstrument = skillSet[instrument];
@@ -144,12 +150,36 @@ public class GameManager : MonoBehaviour {
         {
             int randomIncrease = gameUtilities.RollTheDice(6);
             newAlbumInstrumentValue += randomIncrease;
-        }
 
-        //UIRollDiceForInstrumentOverlay.SetActive(true);
+            diceNumSprites.Add(Resources.Load<Sprite>("Animations/dice6/sprites_3/endingAlternatives/" + randomIncrease));
+            Debug.Log(randomIncrease);
+
+        }
+        StartCoroutine(PlayDiceUI(diceImage.GetComponent<Animator>(), diceImage, diceNumSprites, 3.0f));
 
         return newAlbumInstrumentValue;
     }
+    private IEnumerator PlayDiceUI(Animator diceAnimator, Image diceImage, List<Sprite> diceNumberSprites, float delayToClose)
+    {
+        if (diceNumberSprites.Count > 0)
+        {
+            Debug.Log("rolling dice ui...");
+            UIRollDiceForInstrumentOverlay.SetActive(true);
+            diceAnimator.Play(0);
+            while (!diceAnimator.GetCurrentAnimatorStateInfo(0).IsName("endState"))
+            {
+                yield break;
+            }
+
+            diceImage.overrideSprite = diceNumberSprites[0];
+            yield return new WaitForSeconds(delayToClose);
+            diceNumberSprites.RemoveAt(0);
+            StartCoroutine(PlayDiceUI(diceAnimator, diceImage, diceNumberSprites, delayToClose));
+            UIRollDiceForInstrumentOverlay.SetActive(false);
+        }
+    }
+
+
     public int RollDicesForMarketValue()
     {
         int marketValue = gameUtilities.RollTheDice(40);
@@ -165,7 +195,6 @@ public class GameManager : MonoBehaviour {
 
     public void CheckAlbumResult()
     {
-        Debug.Log("CheckAlbumResult");
         Album currAlbum = GameGlobals.albums[GameGlobals.albums.Count - 1];
 
         int numPlayers = GameGlobals.players.Count;
@@ -329,9 +358,6 @@ public class GameManager : MonoBehaviour {
     {
         Player nextPlayer = GameGlobals.players[(GameGlobals.players.IndexOf(currPlayer) + 1) % GameGlobals.players.Count];
 
-        if (!GameProperties.isSimulation)
-        {
-            StartCoroutine(ChangeActivePlayerUI((UIPlayer) nextPlayer, 2.0f));
-        }
+        ChangeActivePlayerUI((UIPlayer) nextPlayer, 2.0f);
     }
 }
