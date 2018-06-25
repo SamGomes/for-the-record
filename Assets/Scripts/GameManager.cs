@@ -8,8 +8,6 @@ public class GameManager : MonoBehaviour {
 
     private IUtilities gameUtilities;
 
-    public GameObject playerUIPrefab;
-    public GameObject albumUIPrefab;
     public GameObject canvas;
 
     private int numPlayersToLevelUp;
@@ -17,6 +15,8 @@ public class GameManager : MonoBehaviour {
     private int numPlayersToStartLastDecisions;
 
     //------------ UI -----------------------------
+    public GameObject playerUIPrefab;
+    public GameObject albumUIPrefab;
 
     public GameObject UInewRoundScreen;
     public Button UIstartNewRoundButton;
@@ -27,6 +27,8 @@ public class GameManager : MonoBehaviour {
 
     public GameObject UIRollDiceForInstrumentOverlay;
     public GameObject UIRollDiceForMarketValueOverlay;
+
+    public GameObject dice6UI;
 
 
     private int currGameRound;
@@ -143,51 +145,58 @@ public class GameManager : MonoBehaviour {
 
         //UI stuff
         UIRollDiceForInstrumentOverlay.transform.Find("title/Text").GetComponent<Text>().text = "Rolling dice "+ numTokensForInstrument + " times for " + instrument.ToString() + " ...";
-        Image diceImage = UIRollDiceForInstrumentOverlay.transform.Find("dice6").GetComponent<Image>();
-        Animator diceAnimator = diceImage.GetComponent<Animator>();
         List<Sprite> diceNumSprites = new List<Sprite>();
-
-        for (int i = 0; i < numTokensForInstrument; i++)
+        
+        for (int i = 0; i < 5; i++)
         {
             int randomIncrease = gameUtilities.RollTheDice(6);
             newAlbumInstrumentValue += randomIncrease;
 
-            diceNumSprites.Add(Resources.Load<Sprite>("Animations/dice6/sprites_3/endingAlternatives/" + randomIncrease));
-            //if (diceNumSprites == null)
-            //{
-            //    Debug.Log("cannot find sprite for dice number "+randomIncrease);
-            //}
-            Debug.Log(randomIncrease);
+            Sprite currDiceNumberSprite = Resources.Load<Sprite>("Animations/RollDiceForInstrumentOverlay/dice6/sprites_3/endingAlternatives/" + randomIncrease);
+            if (currDiceNumberSprite == null)
+            {
+                Debug.Log("cannot find sprite for dice number " + randomIncrease);
+            }
+            else
+            {
+                Debug.Log(randomIncrease);
+                StartCoroutine(PlayDiceUI(i, 6, dice6UI, currDiceNumberSprite, 2.0f));
+            }
         }
-        StartCoroutine(PlayDiceUI(diceAnimator, diceImage, diceNumSprites, 2.0f));
 
         return newAlbumInstrumentValue;
     }
-    private IEnumerator PlayDiceUI(Animator diceAnimator, Image diceImage, List<Sprite> diceNumberSprites, float delayToClose)
+    private IEnumerator PlayDiceUI(int sequenceNumber, int diceNum, GameObject diceImagePrefab, Sprite currDiceNumberSprite, float delayToClose) 
+        //the sequence number aims to void dice overlaps as it represents the order for which this dice is going to be rolled. We do not want to roll a dice two times for the same place
     {
-        if (diceNumberSprites.Count > 0)
-        {
-            Debug.Log("rolling dice ui..."+ diceNumberSprites.Count);
-            UIRollDiceForInstrumentOverlay.SetActive(true);
-            diceImage.overrideSprite = null;
-            diceAnimator.Rebind();
-            diceAnimator.Play(0);
-            while (!diceAnimator.GetCurrentAnimatorStateInfo(0).IsName("endState"))
-            {
-                yield return null;
-            }
 
-            diceImage.overrideSprite = diceNumberSprites[0];
-            yield return new WaitForSeconds(delayToClose);
-            diceNumberSprites.RemoveAt(0);
-            StartCoroutine(PlayDiceUI(diceAnimator, diceImage, diceNumberSprites, delayToClose));
-        }
-        else
+        UIRollDiceForInstrumentOverlay.SetActive(true);
+        GameObject diceImageClone = Instantiate(diceImagePrefab, UIRollDiceForInstrumentOverlay.transform);
+
+        Image diceImage = diceImageClone.GetComponent<Image>();
+        Animator diceAnimator = diceImage.GetComponent<Animator>();
+
+        sequenceNumber = (sequenceNumber % 2==0)? sequenceNumber : -sequenceNumber;
+
+        diceImage.transform.Translate(new Vector3(Random.Range(-80.0f, 80.0f), Random.Range(-80.0f, 80.0f), 0));
+
+        diceImage.transform.Rotate(new Vector3(0, 0, 1), sequenceNumber * (360.0f/ diceNum + Random.Range(0.0f, 10.0f)));
+        diceImage.overrideSprite = null;
+        diceAnimator.Rebind();
+        diceAnimator.Play(0);
+        diceAnimator.speed = Random.Range(0.8f,1.4f);
+        while (!diceAnimator.GetCurrentAnimatorStateInfo(0).IsName("endState"))
         {
-            UIRollDiceForInstrumentOverlay.SetActive(false);
+            yield return null;
         }
+
+        diceImage.overrideSprite = currDiceNumberSprite;
+
+
+        yield return new WaitForSeconds(delayToClose);
+        UIRollDiceForInstrumentOverlay.SetActive(false);
+        Destroy(diceImageClone);
     }
-
 
     public int RollDicesForMarketValue()
     {
