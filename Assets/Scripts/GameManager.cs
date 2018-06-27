@@ -13,6 +13,7 @@ public class GameManager : MonoBehaviour {
     private int numPlayersToLevelUp;
     private int numPlayersToPlayForInstrument;
     private int numPlayersToStartLastDecisions;
+    private bool canCheckAlbumResult;
 
     //------------ UI -----------------------------
     public GameObject playerUIPrefab;
@@ -24,14 +25,18 @@ public class GameManager : MonoBehaviour {
 
     public Text UIcurrMarketValueText;
 
+    public GameObject UICheckAlbumResultScreen;
+
 
     public GameObject UIRollDiceForInstrumentOverlay;
     public GameObject UIRollDiceForMarketValueOverlay;
 
     public GameObject dice6UI;
+    public GameObject dice20UI;
 
 
     private int currGameRound;
+
 
     void Awake()
     {
@@ -48,6 +53,7 @@ public class GameManager : MonoBehaviour {
 
     public void InitGame()
     {
+        bool canCheckAlbumResult = false;
         int numPlayers = GameGlobals.players.Count;
 
         for (int i = 0; i < numPlayers; i++)
@@ -63,6 +69,8 @@ public class GameManager : MonoBehaviour {
 
         UIRollDiceForInstrumentOverlay.SetActive(false);
         UIRollDiceForMarketValueOverlay.SetActive(false);
+
+        UICheckAlbumResultScreen.Find("checkAlbumResultButton").GetComponent<Button>().onClick.AddListener(delegate () { canCheckAlbumResult = true; });
 
         currGameRound = 0; //first round
     }
@@ -169,7 +177,6 @@ public class GameManager : MonoBehaviour {
     private IEnumerator PlayDiceUI(int sequenceNumber, int diceNum, GameObject diceImagePrefab, Sprite currDiceNumberSprite, float delayToClose) 
         //the sequence number aims to void dice overlaps as it represents the order for which this dice is going to be rolled. We do not want to roll a dice two times for the same place
     {
-
         UIRollDiceForInstrumentOverlay.SetActive(true);
         GameObject diceImageClone = Instantiate(diceImagePrefab, UIRollDiceForInstrumentOverlay.transform);
 
@@ -180,7 +187,7 @@ public class GameManager : MonoBehaviour {
 
         diceImage.transform.Translate(new Vector3(Random.Range(-80.0f, 80.0f), Random.Range(-80.0f, 80.0f), 0));
 
-        diceImage.transform.Rotate(new Vector3(0, 0, 1), sequenceNumber * (360.0f/ diceNum + Random.Range(-2.0f, 2.0f)));
+        diceImage.transform.Rotate(new Vector3(0, 0, 1), sequenceNumber * (360.0f / diceNum));
         diceImage.overrideSprite = null;
         diceAnimator.Rebind();
         diceAnimator.Play(0);
@@ -189,9 +196,7 @@ public class GameManager : MonoBehaviour {
         {
             yield return null;
         }
-
         diceImage.overrideSprite = currDiceNumberSprite;
-
 
         yield return new WaitForSeconds(delayToClose);
         UIRollDiceForInstrumentOverlay.SetActive(false);
@@ -200,7 +205,15 @@ public class GameManager : MonoBehaviour {
 
     public int RollDicesForMarketValue()
     {
-        int marketValue = gameUtilities.RollTheDice(40);
+        int marketValue = 0; 
+        for(int i=0; i < 2; i++)
+        {
+            int randomIncrease = gameUtilities.RollTheDice(20);
+            Sprite currDiceNumberSprite = Resources.Load<Sprite>("Animations/RollDiceForInstrumentOverlay/dice20/sprites/endingAlternatives/" + randomIncrease);
+            StartCoroutine(PlayDiceUI(i, 20, dice20UI, currDiceNumberSprite, 2.0f));
+
+            marketValue += randomIncrease;
+        }
         UIcurrMarketValueText.text = marketValue.ToString();
         return marketValue;
     }
@@ -244,10 +257,15 @@ public class GameManager : MonoBehaviour {
             numPlayersToLevelUp = GameGlobals.players.Count;
         }
 
-        //end of second phase; trigger album result
-        if (numPlayersToPlayForInstrument == 0)
+        if (canCheckAlbumResult)
         {
             CheckAlbumResult();
+            canCheckAlbumResult = false;
+        }
+
+        //end of second phase;
+        if (numPlayersToPlayForInstrument == 0)
+        {
             StartLastDecisionsPhase();
 
             numPlayersToPlayForInstrument = GameGlobals.players.Count;
