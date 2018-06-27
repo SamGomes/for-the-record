@@ -147,7 +147,7 @@ public class GameManager : MonoBehaviour {
         UIRollDiceForInstrumentOverlay.transform.Find("title/Text").GetComponent<Text>().text = "Rolling dice "+ numTokensForInstrument + " times for " + instrument.ToString() + " ...";
         List<Sprite> diceNumSprites = new List<Sprite>();
         
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < numTokensForInstrument; i++)
         {
             int randomIncrease = gameUtilities.RollTheDice(6);
             newAlbumInstrumentValue += randomIncrease;
@@ -180,7 +180,7 @@ public class GameManager : MonoBehaviour {
 
         diceImage.transform.Translate(new Vector3(Random.Range(-80.0f, 80.0f), Random.Range(-80.0f, 80.0f), 0));
 
-        diceImage.transform.Rotate(new Vector3(0, 0, 1), sequenceNumber * (360.0f/ diceNum + Random.Range(0.0f, 10.0f)));
+        diceImage.transform.Rotate(new Vector3(0, 0, 1), sequenceNumber * (360.0f/ diceNum + Random.Range(-2.0f, 2.0f)));
         diceImage.overrideSprite = null;
         diceAnimator.Rebind();
         diceAnimator.Play(0);
