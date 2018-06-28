@@ -18,12 +18,14 @@ public class Album{
     private Text UIvalueText;
     private Text UImarketingStateText;
 
-    public Album(string name, GameObject albumUIPrefab, GameObject canvas)
+    public Album(string name, GameObject albumUIPrefab)
     {
 
         this.id = GameGlobals.albumIdCount++;
 
-        this.albumUI = Object.Instantiate(albumUIPrefab, canvas.transform);
+        this.albumUI = Object.Instantiate(albumUIPrefab);
+        Object.DontDestroyOnLoad(this.albumUI);
+
         this.UInameText = albumUI.transform.Find("albumName").GetComponent<Text>();
         this.UIvalueText = albumUI.transform.Find("albumValueText").GetComponent<Text>();
         this.UImarketingStateText = albumUI.transform.Find("albumMarketingStateText").GetComponent<Text>();
@@ -44,7 +46,6 @@ public class Album{
         {
             instrumentValues[instrument] = 0;
         }
-
     }
 
     public string GetName()
@@ -85,11 +86,11 @@ public class Album{
     {
         if (marketingState == GameProperties.AlbumMarketingState.MEGA_HIT)
         {
-            this.albumUI.transform.GetChild(0).GetComponent<Image>().color = Color.green;
+            this.albumUI.transform.GetChild(0).GetComponent<Image>().sprite = Resources.Load<Sprite>("Textures\\AlbumMEGA_HIT");
         }
         else if(marketingState == GameProperties.AlbumMarketingState.FAIL)
         {
-            this.albumUI.transform.GetChild(0).GetComponent<Image>().color = Color.red;
+            this.albumUI.transform.GetChild(0).GetComponent<Image>().sprite = Resources.Load<Sprite>("Textures\\AlbumFail");
         }
         this.marketingState = marketingState;
         UImarketingStateText.text = marketingState.ToString();

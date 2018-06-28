@@ -24,8 +24,13 @@ public class EndScreenFunctionalities : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        if (!(GameProperties.isSimulation && GameProperties.numGamesToSimulate > 0))
+        if (!GameProperties.isSimulation || (GameProperties.isSimulation && GameProperties.numGamesToSimulate > 0))
         {
+            foreach (Album album in GameGlobals.albums)
+            {
+                album.GetAlbumUI().transform.SetParent(UIAlbumCollectionDisplay.transform);
+                album.GetAlbumUI().transform.localPosition = new Vector3(0, 0, 0);
+            }
             UIRestartGameButton.onClick.AddListener(delegate () {
                 RestartGame();
             });

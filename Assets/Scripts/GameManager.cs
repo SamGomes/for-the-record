@@ -6,6 +6,8 @@ using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour {
 
+    private int numMegaHits;
+
     private IUtilities gameUtilities;
 
     public GameObject canvas;
@@ -22,21 +24,15 @@ public class GameManager : MonoBehaviour {
     public GameObject UInewRoundScreen;
     public Button UIstartNewRoundButton;
     public Text UIalbumNameText;
-
-    public Text UIcurrMarketValueText;
-
-    public GameObject UICheckAlbumResultScreen;
-
-
+    
     public GameObject UIRollDiceForInstrumentOverlay;
-    public GameObject UIRollDiceForMarketValueOverlay;
+    public GameObject UIRollDiceForMarketValueScreen;
 
     public GameObject dice6UI;
     public GameObject dice20UI;
 
 
     private int currGameRound;
-
 
     void Awake()
     {
@@ -53,7 +49,7 @@ public class GameManager : MonoBehaviour {
 
     public void InitGame()
     {
-        bool canCheckAlbumResult = false;
+        canCheckAlbumResult = false;
         int numPlayers = GameGlobals.players.Count;
 
         for (int i = 0; i < numPlayers; i++)
@@ -67,12 +63,8 @@ public class GameManager : MonoBehaviour {
             currPlayer.ReceiveTokens(2);
         }
 
-        UIRollDiceForInstrumentOverlay.SetActive(false);
-        UIRollDiceForMarketValueOverlay.SetActive(false);
-
-        UICheckAlbumResultScreen.Find("checkAlbumResultButton").GetComponent<Button>().onClick.AddListener(delegate () { canCheckAlbumResult = true; });
-
         currGameRound = 0; //first round
+        numMegaHits = 0;
     }
 
     public int GetCurrGameRound()
@@ -111,10 +103,24 @@ public class GameManager : MonoBehaviour {
         numPlayersToPlayForInstrument = GameGlobals.players.Count;
         numPlayersToStartLastDecisions = GameGlobals.players.Count;
 
+        GameGlobals.currGameState = GameProperties.GameState.NOT_FINISHED;
+
         if (GameProperties.isSimulation) //start imidiately in simulation
         {
             StartGameRoundForAllPlayers("SimAlbum");
         }
+        else
+        {
+            UIRollDiceForInstrumentOverlay.SetActive(false);
+            UIRollDiceForMarketValueScreen.SetActive(false);
+
+            Button rollDiceForMarketButton = UIRollDiceForMarketValueScreen.transform.Find("rollDiceForMarketButton").GetComponent<Button>();
+            rollDiceForMarketButton.onClick.AddListener(delegate () {
+                canCheckAlbumResult = true;
+            });
+        }
+
+
     }
 
     public void StartGameRoundForAllPlayers(string albumName)
@@ -125,7 +131,7 @@ public class GameManager : MonoBehaviour {
             currAlbumUI.SetActive(false);
         }
 
-        Album newAlbum = new Album(albumName, albumUIPrefab, canvas);
+        Album newAlbum = new Album(albumName, albumUIPrefab);
         newAlbum.GetAlbumUI().SetActive(true);
         GameGlobals.albums.Add(newAlbum);
 
@@ -172,10 +178,11 @@ public class GameManager : MonoBehaviour {
             }
         }
 
+
         return newAlbumInstrumentValue;
     }
     private IEnumerator PlayDiceUI(int sequenceNumber, int diceNum, GameObject diceImagePrefab, Sprite currDiceNumberSprite, float delayToClose) 
-        //the sequence number aims to void dice overlaps as it represents the order for which this dice is going to be rolled. We do not want to roll a dice two times for the same place
+    //the sequence number aims to void dice overlaps as it represents the order for which this dice is going to be rolled. We do not want to roll a dice two times for the same place
     {
         UIRollDiceForInstrumentOverlay.SetActive(true);
         GameObject diceImageClone = Instantiate(diceImagePrefab, UIRollDiceForInstrumentOverlay.transform);
@@ -199,6 +206,8 @@ public class GameManager : MonoBehaviour {
         diceImage.overrideSprite = currDiceNumberSprite;
 
         yield return new WaitForSeconds(delayToClose);
+
+        Album currAlbum = GameGlobals.albums[GameGlobals.albums.Count - 1];
         UIRollDiceForInstrumentOverlay.SetActive(false);
         Destroy(diceImageClone);
     }
@@ -210,41 +219,47 @@ public class GameManager : MonoBehaviour {
         {
             int randomIncrease = gameUtilities.RollTheDice(20);
             Sprite currDiceNumberSprite = Resources.Load<Sprite>("Animations/RollDiceForInstrumentOverlay/dice20/sprites/endingAlternatives/" + randomIncrease);
-            StartCoroutine(PlayDiceUI(i, 20, dice20UI, currDiceNumberSprite, 2.0f));
+            StartCoroutine(PlayDiceUI(i, 20, dice20UI, currDiceNumberSprite, 4.0f));
 
             marketValue += randomIncrease;
         }
-        UIcurrMarketValueText.text = marketValue.ToString();
         return marketValue;
     }
-
-    private IEnumerator HideObjectAfterAWhile(GameObject obj, float time)
-    {
-        yield return new WaitForSeconds(time);
-        obj.SetActive(false);
-    }
-
+    
     public void CheckAlbumResult()
     {
-        Album currAlbum = GameGlobals.albums[GameGlobals.albums.Count - 1];
+        int numAlbums = GameGlobals.albums.Count;
+        Album currAlbum = GameGlobals.albums[numAlbums - 1];
 
         int numPlayers = GameGlobals.players.Count;
         
         int newAlbumValue = currAlbum.CalcAlbumValue();
         int marketValue = RollDicesForMarketValue();
-        
         if (newAlbumValue >= marketValue)
         {
             currAlbum.SetMarketingState(GameProperties.AlbumMarketingState.MEGA_HIT);
+            numMegaHits++;
         }
         else
         {
             currAlbum.SetMarketingState(GameProperties.AlbumMarketingState.FAIL);
         }
-        
+
+        //check for victory or loss on album registry
+        float victoryThreshold = GameProperties.numberOfAlbumsPerGame / 2.0f;
+        if ((float)numMegaHits > victoryThreshold)
+        {
+            GameGlobals.currGameState = GameProperties.GameState.VICTORY;
+        }
+        else
+        {
+            float numAlbumsLeft = (float)(GameProperties.numberOfAlbumsPerGame - numAlbums);
+            if (numAlbumsLeft < victoryThreshold)
+            {
+                GameGlobals.currGameState = GameProperties.GameState.LOSS;
+            }
+        }
     }
-
-
 
 
     // wait for all players to exit one phase and start other phase
@@ -256,19 +271,22 @@ public class GameManager : MonoBehaviour {
             StartPlayForInstrumentPhase();
             numPlayersToLevelUp = GameGlobals.players.Count;
         }
-
-        if (canCheckAlbumResult)
-        {
-            CheckAlbumResult();
-            canCheckAlbumResult = false;
-        }
-
+        
         //end of second phase;
         if (numPlayersToPlayForInstrument == 0)
         {
-            StartLastDecisionsPhase();
 
-            numPlayersToPlayForInstrument = GameGlobals.players.Count;
+            //make phase UI active (this step is interim but must be done before last phase)
+            UIRollDiceForMarketValueScreen.SetActive(true);
+            if (canCheckAlbumResult)
+            {
+                CheckAlbumResult();
+                canCheckAlbumResult = false;
+                UIRollDiceForMarketValueScreen.SetActive(false);
+
+                StartLastDecisionsPhase();
+                numPlayersToPlayForInstrument = GameGlobals.players.Count;
+            }
         }
 
         //end of third phase; trigger and log album result
@@ -284,8 +302,8 @@ public class GameManager : MonoBehaviour {
                 FileManager.WritePlayerResultsToLog(GameGlobals.currGameId.ToString(), currGameRound.ToString(), player.GetId().ToString(), player.GetName(), player.GetMoney().ToString());
             }
 
-            //reinit some things for next game round
-            if (numPlayedAlbums >= GameProperties.numberOfAlbumsPerGame)
+            //reinit some things for next game if game result is known or max albums are achieved
+            if (GameGlobals.currGameState != GameProperties.GameState.NOT_FINISHED  || numPlayedAlbums >= GameProperties.numberOfAlbumsPerGame)
             {
                 currGameRound=0;
                 GameSceneManager.LoadEndScene();
@@ -352,6 +370,9 @@ public class GameManager : MonoBehaviour {
             invoker.SetAlbumContribution(rollDiceInstrument, newAlbumInstrumentValue);
             currAlbum.SetInstrumentValue(invoker.GetDiceRollInstrument(), newAlbumInstrumentValue);
         }
+
+        currAlbum.CalcAlbumValue(); //update album value and ui after playing for instrument
+
         ChangeToNextPlayer(invoker);
         numPlayersToPlayForInstrument--;
     }
@@ -385,7 +406,6 @@ public class GameManager : MonoBehaviour {
     public void ChangeToNextPlayer(Player currPlayer)
     {
         Player nextPlayer = GameGlobals.players[(GameGlobals.players.IndexOf(currPlayer) + 1) % GameGlobals.players.Count];
-
         ChangeActivePlayerUI((UIPlayer) nextPlayer, 2.0f);
     }
 }

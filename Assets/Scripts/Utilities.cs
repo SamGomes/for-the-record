@@ -1,19 +1,30 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 
 public static class GameGlobals
 {
     public static List<Album> albums;
     public static List<Player> players;
+    
 
     public static int currGameId = 0;
 
     public static int albumIdCount = 0;
     public static int playerIdCount = 0;
+
+    public static GameProperties.GameState currGameState;
 }
 
 public static class GameProperties
 {
+    public enum GameState
+    {
+        NOT_FINISHED,
+        VICTORY,
+        LOSS
+    }
+
     public enum Instrument
     {
         GUITAR,
@@ -40,7 +51,7 @@ public static class GameProperties
     public static int allowedPlayerActionsPerAlbum = 2;
     public static int allowedPlayerTokenBuysPerRound = 1;
 
-    public static int numberOfAlbumsPerGame = 3;
+    public static int numberOfAlbumsPerGame = 1;
     public static int numberOfPlayersPerGame = 3;
 
 

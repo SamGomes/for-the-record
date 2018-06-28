@@ -85,7 +85,7 @@ public class UIPlayer : Player
         GameObject UIinstrumentSelection = UILevelUpScreen.transform.Find("spendTokenSelection").gameObject;
         this.UIspendTokenDropdown = UIinstrumentSelection.transform.Find("spendTokenDropdown").gameObject.GetComponent<Dropdown>();
         this.UIspendTokenButton = UIinstrumentSelection.transform.Find("spendTokenButton").gameObject.GetComponent<Button>();
-        UIspendTokenButton.onClick.AddListener(delegate {
+        UIspendTokenButton.onClick.AddListener(delegate () {
             GameProperties.Instrument selectedInstrument = (GameProperties.Instrument)this.UIspendTokenDropdown.value;
             SpendToken(selectedInstrument);
             UpdateCommonUIElements();
@@ -93,7 +93,7 @@ public class UIPlayer : Player
 
         GameObject UIbuyTokenSelection = playerUI.transform.Find("playerActionSection/levelUpPhaseUI/buyTokenSelection").gameObject;
         this.UIbuyTokenButton = UIbuyTokenSelection.transform.Find("buyTokenButton").GetComponent<Button>();
-        UIbuyTokenButton.onClick.AddListener(delegate {
+        UIbuyTokenButton.onClick.AddListener(delegate () {
             if (tokensBoughtOnCurrRound < GameProperties.allowedPlayerTokenBuysPerRound)
             {
                 BuyTokens(1);
