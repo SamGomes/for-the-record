@@ -246,7 +246,7 @@ public class GameManager : MonoBehaviour {
         }
 
         //check for victory or loss on album registry
-        float victoryThreshold = GameProperties.numberOfAlbumsPerGame / 2.0f;
+        float victoryThreshold = Mathf.Ceil(GameProperties.numberOfAlbumsPerGame / 2.0f);
         if ((float)numMegaHits > victoryThreshold)
         {
             GameGlobals.currGameState = GameProperties.GameState.VICTORY;
@@ -275,7 +275,6 @@ public class GameManager : MonoBehaviour {
         //end of second phase;
         if (numPlayersToPlayForInstrument == 0)
         {
-
             //make phase UI active (this step is interim but must be done before last phase)
             UIRollDiceForMarketValueScreen.SetActive(true);
             if (canCheckAlbumResult)
@@ -315,6 +314,12 @@ public class GameManager : MonoBehaviour {
             //start next game round whenever ready
             if (!GameProperties.isSimulation)
             {
+                //disable old album before loading new game round screen
+                if (GameGlobals.albums.Count > 0)
+                {
+                    GameObject currAlbumUI = GameGlobals.albums[GameGlobals.albums.Count - 1].GetAlbumUI();
+                    currAlbumUI.SetActive(false);
+                }
                 UInewRoundScreen.SetActive(true);
             }
             else

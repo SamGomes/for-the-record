@@ -51,7 +51,7 @@ public static class GameProperties
     public static int allowedPlayerActionsPerAlbum = 2;
     public static int allowedPlayerTokenBuysPerRound = 1;
 
-    public static int numberOfAlbumsPerGame = 1;
+    public static int numberOfAlbumsPerGame = 5;
     public static int numberOfPlayersPerGame = 3;
 
 

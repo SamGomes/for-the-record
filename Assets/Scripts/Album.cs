@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Album{
+public class Album : MonoBehaviour {
 
     private int id;
 
@@ -26,9 +26,11 @@ public class Album{
         this.albumUI = Object.Instantiate(albumUIPrefab);
         Object.DontDestroyOnLoad(this.albumUI);
 
-        this.UInameText = albumUI.transform.Find("albumName").GetComponent<Text>();
-        this.UIvalueText = albumUI.transform.Find("albumValueText").GetComponent<Text>();
-        this.UImarketingStateText = albumUI.transform.Find("albumMarketingStateText").GetComponent<Text>();
+        this.UInameText = albumUI.transform.Find("DelayedElements/elements/albumName").GetComponent<Text>();
+        this.UIvalueText = albumUI.transform.Find("DelayedElements/elements/albumValueText").GetComponent<Text>();
+        this.UImarketingStateText = albumUI.transform.Find("DelayedElements/elements/albumMarketingStateText").GetComponent<Text>();
+
+        this.albumUI.transform.Find("DelayedElements/elements/backgroundOverride").GetComponent<Image>().sprite = Resources.Load<Sprite>("Textures\\AlbumNON_PUBOverlay");
 
         this.marketingState = GameProperties.AlbumMarketingState.NON_PUBLISHED;
         UImarketingStateText.text = marketingState.ToString();
@@ -66,11 +68,16 @@ public class Album{
 
     public int CalcAlbumValue()
     {
+        this.value = 0;
         foreach (GameProperties.Instrument instrument in System.Enum.GetValues(typeof(GameProperties.Instrument)))
         {
             this.value += instrumentValues[instrument];
         }
         UIvalueText.text = value.ToString();
+        foreach (Animator animator in this.albumUI.GetComponentsInChildren<Animator>()) {
+            animator.Rebind();
+            animator.Play(0); //play animation when calculating new value
+        }
         return this.value;
     }
     public GameObject GetAlbumUI()
@@ -86,14 +93,15 @@ public class Album{
     {
         if (marketingState == GameProperties.AlbumMarketingState.MEGA_HIT)
         {
-            this.albumUI.transform.GetChild(0).GetComponent<Image>().sprite = Resources.Load<Sprite>("Textures\\AlbumMEGA_HIT");
+            this.albumUI.transform.Find("DelayedElements/elements/backgroundOverride").GetComponent<Image>().sprite = Resources.Load<Sprite>("Textures\\AlbumMEGA_HITOverlay");
         }
         else if(marketingState == GameProperties.AlbumMarketingState.FAIL)
         {
-            this.albumUI.transform.GetChild(0).GetComponent<Image>().sprite = Resources.Load<Sprite>("Textures\\AlbumFail");
+            this.albumUI.transform.Find("DelayedElements/elements/backgroundOverride").GetComponent<Image>().sprite = Resources.Load<Sprite>("Textures\\AlbumFAILOverlay");
         }
         this.marketingState = marketingState;
         UImarketingStateText.text = marketingState.ToString();
     }
+    
 
 }

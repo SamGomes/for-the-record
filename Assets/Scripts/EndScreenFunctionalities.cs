@@ -30,8 +30,44 @@ public class EndScreenFunctionalities : MonoBehaviour
     {
         yield return new WaitForSeconds(delay);
         obj.SetActive(false);
+        if (!GameProperties.isSimulation)
+        {
+            LoadEndScreenUIElements();
+        }
     }
 
+    private void LoadEndScreenUIElements()
+    {
+        if (GameGlobals.albums != null)
+        {
+            int numAlbumsPlayed = GameGlobals.albums.Count;
+            for (int i = 0; i < 20; i++)
+            {
+                if (i == numAlbumsPlayed)
+                {
+                    break;
+                }
+
+                Album currAlbum = GameGlobals.albums[i];
+                GameObject currAlbumUI = currAlbum.GetAlbumUI();
+                currAlbumUI.SetActive(true);
+
+                Animator animator = currAlbumUI.GetComponentInChildren<Animator>();
+                animator.Play(0);
+                animator.speed = (i * 0.1f < animator.speed) ? animator.speed - i * 0.1f : animator.speed;
+
+                currAlbumUI.transform.SetParent(UIAlbumCollectionDisplay.transform);
+                currAlbumUI.transform.localPosition = new Vector3(0, 0, 0);
+
+                currAlbumUI.transform.Translate(new Vector3(i * 50.0f, 0, 0));
+            }
+        }
+
+        UIRestartGameButton.onClick.AddListener(delegate () {
+            RestartGame();
+        });
+
+    }
 
     // Use this for initialization
     void Start()
@@ -50,27 +86,19 @@ public class EndScreenFunctionalities : MonoBehaviour
             StartCoroutine(HideAfterDelay(UILossOverlay, 5.0f));
 
         }
-        else
-        {
-            Debug.Log("[ERROR]: Game state returned NON FINISHED on game end!");
-            return;
-        }
+        StartCoroutine(HideAfterDelay(UILossOverlay, 5.0f));
 
-        if (!GameProperties.isSimulation || (GameProperties.isSimulation && GameProperties.numGamesToSimulate > 0))
-        {
-            foreach (Album album in GameGlobals.albums)
-            {
-                album.GetAlbumUI().transform.SetParent(UIAlbumCollectionDisplay.transform);
-                album.GetAlbumUI().transform.localPosition = new Vector3(0, 0, 0);
-            }
-            UIRestartGameButton.onClick.AddListener(delegate () {
-                RestartGame();
-            });
-        }
-        else
+        //else
+        //{
+        //    Debug.Log("[ERROR]: Game state returned NON FINISHED on game end!");
+        //    return;
+        //}
+
+        if (GameProperties.isSimulation)
         {
             RestartGame();
         }
+
     }
 }
     
