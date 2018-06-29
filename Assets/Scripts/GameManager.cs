@@ -254,7 +254,7 @@ public class GameManager : MonoBehaviour {
         else
         {
             float numAlbumsLeft = (float)(GameProperties.numberOfAlbumsPerGame - numAlbums);
-            if (numAlbumsLeft < victoryThreshold)
+            if (numAlbumsLeft < victoryThreshold-numMegaHits)
             {
                 GameGlobals.currGameState = GameProperties.GameState.LOSS;
             }

@@ -15,6 +15,7 @@ public class Album : MonoBehaviour {
 
     private GameObject albumUI;
     private Text UInameText;
+    private GameObject UIinstrumentValuesTable;
     private Text UIvalueText;
     private Text UImarketingStateText;
 
@@ -27,8 +28,11 @@ public class Album : MonoBehaviour {
         Object.DontDestroyOnLoad(this.albumUI);
 
         this.UInameText = albumUI.transform.Find("DelayedElements/elements/albumName").GetComponent<Text>();
-        this.UIvalueText = albumUI.transform.Find("DelayedElements/elements/albumValueText").GetComponent<Text>();
-        this.UImarketingStateText = albumUI.transform.Find("DelayedElements/elements/albumMarketingStateText").GetComponent<Text>();
+        this.UIvalueText = albumUI.transform.Find("DelayedElements/elements/valueElements/albumValueText").GetComponent<Text>();
+        this.UImarketingStateText = albumUI.transform.Find("DelayedElements/elements/marketingStateElements/albumMarketingStateText").GetComponent<Text>();
+
+        this.UIinstrumentValuesTable = albumUI.transform.Find("DelayedElements/elements/valueElements/skillLevels").gameObject;
+
 
         this.albumUI.transform.Find("DelayedElements/elements/backgroundOverride").GetComponent<Image>().sprite = Resources.Load<Sprite>("Textures\\AlbumNON_PUBOverlay");
 
@@ -47,6 +51,7 @@ public class Album : MonoBehaviour {
         foreach (GameProperties.Instrument instrument in System.Enum.GetValues(typeof(GameProperties.Instrument)))
         {
             instrumentValues[instrument] = 0;
+            UIinstrumentValuesTable.GetComponentsInChildren<Text>()[(int)instrument].text = "0";
         }
     }
 
@@ -88,6 +93,7 @@ public class Album : MonoBehaviour {
     public void SetInstrumentValue(GameProperties.Instrument instrument, int value)
     {
         instrumentValues[instrument] = value;
+        UIinstrumentValuesTable.GetComponentsInChildren<Text>()[(int)instrument].text = value.ToString();
     }
     public void SetMarketingState(GameProperties.AlbumMarketingState marketingState)
     {

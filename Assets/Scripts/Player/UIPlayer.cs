@@ -13,10 +13,9 @@ public class UIPlayer : Player
     private Text UInameText;
     private Text UInumTokensValue;
     private Text UImoneyValue;
-
-    private Text UISkillTexts;
-    private Text UITokensTexts;
-    private Text UIContributionsTexts;
+    
+    private GameObject UISkillLevelsTexts;
+    //private Text UIContributionsTexts;
 
     private GameObject UILevelUpScreen;
     private GameObject UIPlayForInstrumentScreen;
@@ -54,17 +53,16 @@ public class UIPlayer : Player
 
         this.playerUI = Object.Instantiate(playerUIPrefab, canvas.transform);
 
-        this.UIplayerActionButton = playerUI.transform.Find("playerActionButton").gameObject.GetComponent<Button>();
+        this.UIplayerActionButton = playerUI.transform.Find("playerActionSection/playerActionButton").gameObject.GetComponent<Button>();
 
         this.UInameText = playerUI.transform.Find("nameText").gameObject.GetComponent<Text>();
 
-        this.UInumTokensValue = playerUI.transform.Find("gameStateSection/numTokensValue").gameObject.GetComponent<Text>();
-        this.UImoneyValue = playerUI.transform.Find("gameStateSection/moneyValue").gameObject.GetComponent<Text>();
+        this.UInumTokensValue = playerUI.transform.Find("playerStateSection/numTokensValue").gameObject.GetComponent<Text>();
+        this.UImoneyValue = playerUI.transform.Find("playerStateSection/moneyValue").gameObject.GetComponent<Text>();
 
-
-        this.UISkillTexts = playerUI.transform.Find("skillTable/skillTexts").gameObject.GetComponent<Text>();
-        this.UITokensTexts = playerUI.transform.Find("skillTable/tokensTexts").gameObject.GetComponent<Text>();
-        this.UIContributionsTexts = playerUI.transform.Find("skillTable/albumContributionsTexts").gameObject.GetComponent<Text>();
+        
+        this.UISkillLevelsTexts = playerUI.transform.Find("skillTable/skillLevels").gameObject;
+        //this.UIContributionsTexts = playerUI.transform.Find("skillTable/albumContributionsTexts").gameObject.GetComponent<Text>();
 
 
         this.UILevelUpScreen = playerUI.transform.Find("playerActionSection/levelUpPhaseUI").gameObject;
@@ -130,16 +128,15 @@ public class UIPlayer : Player
         UImoneyValue.text = money.ToString();
         UInumTokensValue.text = numTokens.ToString();
 
-        UISkillTexts.text = "";
-        UITokensTexts.text = "";
-        UIContributionsTexts.text = "";
+        //UISkillTexts.text = "";
+        //UIContributionsTexts.text = "";
         foreach (GameProperties.Instrument instrument in skillSet.Keys)
         {
-            UISkillTexts.text += " " + instrument.ToString()[0];
-            UITokensTexts.text += " " + skillSet[instrument].ToString();
+            //UISkillTexts.text += " " + instrument.ToString()[0];
+            UISkillLevelsTexts.GetComponentsInChildren<Text>()[(int)instrument].text = "  " + skillSet[instrument].ToString();
 
-            int currAlbumContribution = albumContributions[instrument];
-            UIContributionsTexts.text += (currAlbumContribution == 0) ? " _" : " " + currAlbumContribution.ToString();
+            //int currAlbumContribution = albumContributions[instrument];
+            //UIContributionsTexts.text += (currAlbumContribution == 0) ? " _" : " " + currAlbumContribution.ToString();
         }
     }
 

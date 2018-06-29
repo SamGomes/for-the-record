@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class EndScreenFunctionalities : MonoBehaviour
@@ -12,7 +13,7 @@ public class EndScreenFunctionalities : MonoBehaviour
     public GameObject UIVictoryOverlay;
     public GameObject UILossOverlay;
 
-
+    public GameObject albumUIPrefab;
 
     private void RestartGame()
     {
@@ -40,24 +41,27 @@ public class EndScreenFunctionalities : MonoBehaviour
     {
         if (GameGlobals.albums != null)
         {
+            //disable rendering of some albums and selecting others
             int numAlbumsPlayed = GameGlobals.albums.Count;
-            for (int i = 0; i < 20; i++)
+            for (int i = 0; i < numAlbumsPlayed; i++)
             {
-                if (i == numAlbumsPlayed)
-                {
-                    break;
-                }
-
                 Album currAlbum = GameGlobals.albums[i];
                 GameObject currAlbumUI = currAlbum.GetAlbumUI();
+                if ((numAlbumsPlayed - i) > 5) //maximum of 5 last albums rendered albums
+                {
+                    currAlbumUI.SetActive(false);
+                    continue;
+                }
                 currAlbumUI.SetActive(true);
 
                 Animator animator = currAlbumUI.GetComponentInChildren<Animator>();
+                animator.Rebind();
                 animator.Play(0);
                 animator.speed = (i * 0.1f < animator.speed) ? animator.speed - i * 0.1f : animator.speed;
 
                 currAlbumUI.transform.SetParent(UIAlbumCollectionDisplay.transform);
                 currAlbumUI.transform.localPosition = new Vector3(0, 0, 0);
+                currAlbumUI.transform.localScale = new Vector3(1, 1, 1);
 
                 currAlbumUI.transform.Translate(new Vector3(i * 50.0f, 0, 0));
             }
@@ -72,6 +76,24 @@ public class EndScreenFunctionalities : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+        //mock
+        GameGlobals.albums = new List<Album>(GameProperties.numberOfAlbumsPerGame);
+        Album newAlbum = new Album("1", albumUIPrefab);
+        GameGlobals.albums.Add(newAlbum);
+        newAlbum = new Album("2", albumUIPrefab);
+        GameGlobals.albums.Add(newAlbum);
+        newAlbum = new Album("3", albumUIPrefab);
+        GameGlobals.albums.Add(newAlbum);
+        newAlbum = new Album("4", albumUIPrefab);
+        GameGlobals.albums.Add(newAlbum);
+        newAlbum = new Album("5", albumUIPrefab);
+        GameGlobals.albums.Add(newAlbum);
+        newAlbum = new Album("6", albumUIPrefab);
+        GameGlobals.albums.Add(newAlbum);
+        newAlbum = new Album("7", albumUIPrefab);
+        GameGlobals.albums.Add(newAlbum);
+
+
         UIVictoryOverlay.SetActive(false);
         UILossOverlay.SetActive(false);
 
@@ -86,7 +108,7 @@ public class EndScreenFunctionalities : MonoBehaviour
             StartCoroutine(HideAfterDelay(UILossOverlay, 5.0f));
 
         }
-        StartCoroutine(HideAfterDelay(UILossOverlay, 5.0f));
+        StartCoroutine(HideAfterDelay(UILossOverlay, 0.0f));
 
         //else
         //{
@@ -99,6 +121,15 @@ public class EndScreenFunctionalities : MonoBehaviour
             RestartGame();
         }
 
+    }
+
+    void Update()
+    {
+        if (EventSystem.current.IsPointerOverGameObject() && EventSystem.current.currentSelectedGameObject != null &&
+     EventSystem.current.currentSelectedGameObject.GetComponent<Album>() != null)
+        {
+            EventSystem.current.currentSelectedGameObject.transform.SetAsLastSibling();
+        }
     }
 }
     
