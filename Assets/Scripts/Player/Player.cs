@@ -13,12 +13,16 @@ public abstract class Player
 
     protected GameManager gameManagerRef;
 
+
     protected string name;
     protected int numTokens;
     protected int money;
 
     protected GameProperties.Instrument diceRollInstrument;
     protected GameProperties.Instrument toBeTokenedInstrument;
+
+    protected List<GameProperties.Instrument> lastLeveledUpInstruments;
+    private List<GameProperties.Instrument> currLeveledUpInstruments;
 
     protected Dictionary<GameProperties.Instrument, int> skillSet;
     protected Dictionary<GameProperties.Instrument, int> albumContributions;
@@ -35,6 +39,10 @@ public abstract class Player
 
         this.money = 0;
         this.numTokens = 0;
+
+        this.lastLeveledUpInstruments = new List<GameProperties.Instrument>();
+        this.currLeveledUpInstruments = new List<GameProperties.Instrument>();
+
         this.diceRollInstrument = GameProperties.Instrument.GUITAR;
         this.toBeTokenedInstrument = GameProperties.Instrument.GUITAR;
         this.skillSet = new Dictionary<GameProperties.Instrument, int>();
@@ -82,6 +90,8 @@ public abstract class Player
 
     public void SendLevelUpResponse()
     {
+        lastLeveledUpInstruments = currLeveledUpInstruments;
+        currLeveledUpInstruments = new List<GameProperties.Instrument>();
         gameManagerRef.LevelUpResponse(this);
     }
     public void SendPlayForInstrumentResponse()
@@ -115,13 +125,21 @@ public abstract class Player
 
     public bool SpendToken(GameProperties.Instrument instrument)
     {
-        if (numTokens == 0)
+        //cannot spend token on last increased instruments
+        if (numTokens == 0) 
         {
+            Debug.Log("You have no more tokens to level up your skills!");
+            return false;
+        }else if (lastLeveledUpInstruments.Contains(instrument))
+        {
+            Debug.Log("You cannot develop the same skill on two consecutive albums!");
             return false;
         }
 
         numTokens--;
         skillSet[instrument]++;
+
+        currLeveledUpInstruments.Add(instrument);
 
         FileManager.WritePlayerActionToLog(GameGlobals.currGameId.ToString(), gameManagerRef.GetCurrGameRound().ToString(), this.id.ToString(), this.name,"SPENT_TOKEN", instrument.ToString() , "-");
         return true;
@@ -130,6 +148,7 @@ public abstract class Player
     {
         if (numTokens == 0)
         {
+            Debug.Log("You have no more tokens to convert!");
             return false;
         }
 
@@ -144,6 +163,7 @@ public abstract class Player
         int moneyToSpend = numTokensToBuy * GameProperties.tokenValue;
         if (money < moneyToSpend)
         {
+            Debug.Log("You have no money to convert!");
             return false;
         }
 

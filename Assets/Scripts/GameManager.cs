@@ -31,6 +31,7 @@ public class GameManager : MonoBehaviour {
     public GameObject dice6UI;
     public GameObject dice20UI;
 
+    public WarningScreenFunctionalities warningScreenRef;
 
     private int currGameRound;
 
@@ -58,7 +59,7 @@ public class GameManager : MonoBehaviour {
             currPlayer.InitGameData();
             if ((currPlayer as UIPlayer) != null) //check if player has UI
             {
-                ((UIPlayer)currPlayer).InitUI(playerUIPrefab, canvas);
+                ((UIPlayer)currPlayer).InitUI(playerUIPrefab, canvas, warningScreenRef);
             }
             currPlayer.ReceiveTokens(2);
         }

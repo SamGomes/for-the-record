@@ -37,6 +37,9 @@ public class UIPlayer : Player
     protected Dropdown UIrollDicesForDropdown;
 
 
+    private WarningScreenFunctionalities warningScreenRef;
+
+
     public UIPlayer(string name) : base(name)
     {
     }
@@ -48,8 +51,9 @@ public class UIPlayer : Player
     }
 
 
-    public void InitUI(GameObject playerUIPrefab, GameObject canvas)
+    public void InitUI(GameObject playerUIPrefab, GameObject canvas, WarningScreenFunctionalities warningScreenRef)
     {
+        this.warningScreenRef = warningScreenRef;
 
         this.playerUI = Object.Instantiate(playerUIPrefab, canvas.transform);
 
@@ -59,15 +63,13 @@ public class UIPlayer : Player
 
         this.UInumTokensValue = playerUI.transform.Find("playerStateSection/numTokensValue").gameObject.GetComponent<Text>();
         this.UImoneyValue = playerUI.transform.Find("playerStateSection/moneyValue").gameObject.GetComponent<Text>();
-
         
+
         this.UISkillLevelsTexts = playerUI.transform.Find("skillTable/skillLevels").gameObject;
         //this.UIContributionsTexts = playerUI.transform.Find("skillTable/albumContributionsTexts").gameObject.GetComponent<Text>();
 
-
         this.UILevelUpScreen = playerUI.transform.Find("playerActionSection/levelUpPhaseUI").gameObject;
         this.UIPlayForInstrumentScreen = playerUI.transform.Find("playerActionSection/playForInstrumentUI").gameObject;
-
 
 
         this.UILastDecisionsScreen = playerUI.transform.Find("playerActionSection/lastDecisionsUI").gameObject;
@@ -78,6 +80,9 @@ public class UIPlayer : Player
         this.UIStickWithMarktingMegaHitButton = UILastDecisionsMegaHitScreen.transform.Find("stickWithMarkting").gameObject.GetComponent<Button>();
 
         this.UIReceiveFailButton = UILastDecisionsFailScreen.transform.Find("receiveButton").gameObject.GetComponent<Button>();
+
+
+
 
 
         GameObject UIinstrumentSelection = UILevelUpScreen.transform.Find("spendTokenSelection").gameObject;
@@ -140,6 +145,43 @@ public class UIPlayer : Player
         }
     }
 
+    public new bool SpendToken(GameProperties.Instrument instrument)
+    {
+        bool result = base.SpendToken(instrument);
+        if (result == false) //handle the error in the UI
+        {
+            //cannot spend token on last increased instruments
+            if (numTokens == 0)
+            {
+                warningScreenRef.DisplayWarning("You have no more tokens to level up your skills!");
+            }
+            else if (lastLeveledUpInstruments.Contains(instrument))
+            {
+                warningScreenRef.DisplayWarning("You cannot develop the same skill on two consecutive albums!");
+            }
+        }
+        return result;
+    }
+
+    public new bool ConvertTokensToMoney(int numTokensToConvert)
+    {
+        bool result = base.ConvertTokensToMoney(numTokensToConvert);
+        if (result == false) //handle the error in the UI
+        {
+            warningScreenRef.DisplayWarning("You have no more tokens to convert!");
+        }
+        return result;
+    }
+
+    public new bool BuyTokens(int numTokensToBuy)
+    {
+        bool result = base.BuyTokens(numTokensToBuy);
+        if (result == false) //handle the error in the UI
+        {
+            warningScreenRef.DisplayWarning("You have no money to convert!");
+        }
+        return result;
+    }
 
     public override void LevelUp()
     {
