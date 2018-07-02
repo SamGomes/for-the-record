@@ -8,10 +8,14 @@ public class EndScreenFunctionalities : MonoBehaviour
 {
 
     public Button UIRestartGameButton;
+
     public GameObject UIAlbumCollectionDisplay;
+    public GameObject UIIndividualTable;
+    public GameObject UIIndividualTableEntryPrefab;
 
     public GameObject UIVictoryOverlay;
     public GameObject UILossOverlay;
+
 
     public GameObject albumUIPrefab;
 
@@ -73,25 +77,37 @@ public class EndScreenFunctionalities : MonoBehaviour
 
     }
 
+    //in order to sort the players list by money earned
+    public int SortPlayersByMoney(Player p1, Player p2)
+    {
+
+        return -1*(p1.GetMoney()).CompareTo(p2.GetMoney());
+    }
+
+
     // Use this for initialization
     void Start()
     {
         //mock
-        GameGlobals.albums = new List<Album>(GameProperties.numberOfAlbumsPerGame);
-        Album newAlbum = new Album("1", albumUIPrefab);
-        GameGlobals.albums.Add(newAlbum);
-        newAlbum = new Album("2", albumUIPrefab);
-        GameGlobals.albums.Add(newAlbum);
-        newAlbum = new Album("3", albumUIPrefab);
-        GameGlobals.albums.Add(newAlbum);
-        newAlbum = new Album("4", albumUIPrefab);
-        GameGlobals.albums.Add(newAlbum);
-        newAlbum = new Album("5", albumUIPrefab);
-        GameGlobals.albums.Add(newAlbum);
-        newAlbum = new Album("6", albumUIPrefab);
-        GameGlobals.albums.Add(newAlbum);
-        newAlbum = new Album("7", albumUIPrefab);
-        GameGlobals.albums.Add(newAlbum);
+        //GameGlobals.albums = new List<Album>(GameProperties.numberOfAlbumsPerGame);
+        //Album newAlbum = new Album("1", albumUIPrefab);
+        //GameGlobals.albums.Add(newAlbum);
+        //newAlbum = new Album("2", albumUIPrefab);
+        //GameGlobals.albums.Add(newAlbum);
+        //newAlbum = new Album("3", albumUIPrefab);
+        //GameGlobals.albums.Add(newAlbum);
+        //newAlbum = new Album("4", albumUIPrefab);
+        //GameGlobals.albums.Add(newAlbum);
+        //newAlbum = new Album("5", albumUIPrefab);
+        //GameGlobals.albums.Add(newAlbum);
+        //newAlbum = new Album("6", albumUIPrefab);
+        //GameGlobals.albums.Add(newAlbum);
+        //newAlbum = new Album("7", albumUIPrefab);
+        //GameGlobals.albums.Add(newAlbum);
+        //GameGlobals.players = new List<Player>(GameProperties.numberOfPlayersPerGame);
+        //GameGlobals.players.Add(new UIPlayer("PL1"));
+        //GameGlobals.players.Add(new UIPlayer("PL2"));
+        //GameGlobals.players.Add(new UIPlayer("PL3"));
 
 
         UIVictoryOverlay.SetActive(false);
@@ -116,20 +132,22 @@ public class EndScreenFunctionalities : MonoBehaviour
         //    return;
         //}
 
+        GameGlobals.players.Sort(SortPlayersByMoney);
+        int numPlayers = GameGlobals.players.Count;
+        for (int i=0; i<numPlayers; i++)
+        {
+            Player currPlayer = GameGlobals.players[i];
+            GameObject newTableEntry = Object.Instantiate(UIIndividualTableEntryPrefab, UIIndividualTable.transform);
+            newTableEntry.GetComponentsInChildren<Text>()[0].text = currPlayer.GetName();
+            newTableEntry.GetComponentsInChildren<Text>()[1].text = currPlayer.GetMoney().ToString();
+        }
+
+
         if (GameProperties.isSimulation)
         {
             RestartGame();
         }
 
-    }
-
-    void Update()
-    {
-        if (EventSystem.current.IsPointerOverGameObject() && EventSystem.current.currentSelectedGameObject != null &&
-     EventSystem.current.currentSelectedGameObject.GetComponent<Album>() != null)
-        {
-            EventSystem.current.currentSelectedGameObject.transform.SetAsLastSibling();
-        }
     }
 }
     

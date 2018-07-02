@@ -1,9 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class Album : MonoBehaviour {
+public class Album {
 
     private int id;
 
@@ -19,6 +20,8 @@ public class Album : MonoBehaviour {
     private Text UIvalueText;
     private Text UImarketingStateText;
 
+    private Button UIbackgroundImageEventSystem;
+
     public Album(string name, GameObject albumUIPrefab)
     {
 
@@ -26,6 +29,14 @@ public class Album : MonoBehaviour {
 
         this.albumUI = Object.Instantiate(albumUIPrefab);
         Object.DontDestroyOnLoad(this.albumUI);
+
+        this.UIbackgroundImageEventSystem = albumUI.transform.Find("button").GetComponent<Button>();
+
+        //make the album ui selectable
+        UIbackgroundImageEventSystem.onClick.AddListener(delegate () {
+            Debug.Log("selected?");
+            this.albumUI.transform.SetAsLastSibling();
+        });
 
         this.UInameText = albumUI.transform.Find("DelayedElements/elements/albumName").GetComponent<Text>();
         this.UIvalueText = albumUI.transform.Find("DelayedElements/elements/valueElements/albumValueText").GetComponent<Text>();
