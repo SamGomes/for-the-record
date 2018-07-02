@@ -43,14 +43,18 @@ public abstract class Player
         this.lastLeveledUpInstruments = new List<GameProperties.Instrument>();
         this.currLeveledUpInstruments = new List<GameProperties.Instrument>();
 
-        this.diceRollInstrument = GameProperties.Instrument.GUITAR;
-        this.toBeTokenedInstrument = GameProperties.Instrument.GUITAR;
+        this.diceRollInstrument = GameProperties.Instrument.NONE;
+        this.toBeTokenedInstrument = GameProperties.Instrument.NONE;
         this.skillSet = new Dictionary<GameProperties.Instrument, int>();
         this.albumContributions = new Dictionary<GameProperties.Instrument, int>();
 
         //add values to the dictionary
         foreach (GameProperties.Instrument instrument in System.Enum.GetValues(typeof(GameProperties.Instrument)))
         {
+            if (instrument == GameProperties.Instrument.NONE)
+            {
+                continue;
+            }
             skillSet[instrument] = 0;
             albumContributions[instrument] = 0;
         }
@@ -80,6 +84,7 @@ public abstract class Player
     }
     public void PlayForInstrumentRequest()
     {
+        tokensBoughtOnCurrRound = 0; //reset tokens bought on this round to 0
         PlayForInstrument();
     }
     public void LastDecisionsPhaseRequest(Album currAlbum)
@@ -161,6 +166,13 @@ public abstract class Player
     public bool BuyTokens(int numTokensToBuy)
     {
         int moneyToSpend = numTokensToBuy * GameProperties.tokenValue;
+
+        if (tokensBoughtOnCurrRound >= GameProperties.allowedPlayerTokenBuysPerRound)
+        {
+            Debug.Log("You can only convert money to one token per round!");
+            return false;
+        }
+
         if (money < moneyToSpend)
         {
             Debug.Log("You have no money to convert!");

@@ -141,7 +141,6 @@ public class GameManager : MonoBehaviour {
         {
             Player currPlayer = GameGlobals.players[i];
             currPlayer.InitAlbumContributions();
-            currPlayer.tokensBoughtOnCurrRound = 0;
         }
 
         StartLevelingUpPhase();
@@ -178,7 +177,6 @@ public class GameManager : MonoBehaviour {
                 StartCoroutine(PlayDiceUI(i, 6, dice6UI, currDiceNumberSprite, 2.0f));
             }
         }
-
 
         return newAlbumInstrumentValue;
     }
@@ -359,6 +357,7 @@ public class GameManager : MonoBehaviour {
             Player currPlayer = GameGlobals.players[i];
             currPlayer.LastDecisionsPhaseRequest(currAlbum);
         }
+
     }
 
     public void LevelUpResponse(Player invoker)
@@ -370,14 +369,14 @@ public class GameManager : MonoBehaviour {
     {
         Album currAlbum = GameGlobals.albums[GameGlobals.albums.Count - 1];
         GameProperties.Instrument rollDiceInstrument = invoker.GetDiceRollInstrument();
-        if (rollDiceInstrument != (GameProperties.Instrument) (-1)) //if there is a roll dice instrument
+        if (rollDiceInstrument != GameProperties.Instrument.NONE) //if there is a roll dice instrument
         {
             int newAlbumInstrumentValue = RollDicesForInstrument(invoker, rollDiceInstrument);
             invoker.SetAlbumContribution(rollDiceInstrument, newAlbumInstrumentValue);
             currAlbum.SetInstrumentValue(invoker.GetDiceRollInstrument(), newAlbumInstrumentValue);
-        }
 
-        currAlbum.CalcAlbumValue(); //update album value and ui after playing for instrument
+            currAlbum.CalcAlbumValue(); //update album value and ui after playing for instrument
+        }
 
         ChangeToNextPlayer(invoker);
         numPlayersToPlayForInstrument--;
@@ -386,6 +385,7 @@ public class GameManager : MonoBehaviour {
     {
         //receive 1000
         invoker.ReceiveMoney(GameProperties.tokenValue);
+        invoker.ReceiveTokens(1);
         ChangeToNextPlayer(invoker);
         numPlayersToStartLastDecisions--;
     }
@@ -393,6 +393,7 @@ public class GameManager : MonoBehaviour {
     {
         //receive 3000
         invoker.ReceiveMoney(GameProperties.tokenValue*3);
+        invoker.ReceiveTokens(1);
         ChangeToNextPlayer(invoker);
         numPlayersToStartLastDecisions--;
     }

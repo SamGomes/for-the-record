@@ -32,7 +32,8 @@ public static class GameProperties
         VOCALS,
         KEYBOARD,
         BASS,
-        MARKTING
+        MARKTING,
+        NONE
     }
     public enum AlbumMarketingState
     {

@@ -82,9 +82,6 @@ public class UIPlayer : Player
         this.UIReceiveFailButton = UILastDecisionsFailScreen.transform.Find("receiveButton").gameObject.GetComponent<Button>();
 
 
-
-
-
         GameObject UIinstrumentSelection = UILevelUpScreen.transform.Find("spendTokenSelection").gameObject;
         this.UIspendTokenDropdown = UIinstrumentSelection.transform.Find("spendTokenDropdown").gameObject.GetComponent<Dropdown>();
         this.UIspendTokenButton = UIinstrumentSelection.transform.Find("spendTokenButton").gameObject.GetComponent<Button>();
@@ -97,11 +94,8 @@ public class UIPlayer : Player
         GameObject UIbuyTokenSelection = playerUI.transform.Find("playerActionSection/levelUpPhaseUI/buyTokenSelection").gameObject;
         this.UIbuyTokenButton = UIbuyTokenSelection.transform.Find("buyTokenButton").GetComponent<Button>();
         UIbuyTokenButton.onClick.AddListener(delegate () {
-            if (tokensBoughtOnCurrRound < GameProperties.allowedPlayerTokenBuysPerRound)
-            {
-                BuyTokens(1);
-                UpdateCommonUIElements();
-            }
+            BuyTokens(1);
+            UpdateCommonUIElements();
         });
 
         this.UIrollDicesForDropdown = playerUI.transform.Find("playerActionSection/playForInstrumentUI/rollDicesForSelection/rollDicesForDropdown").gameObject.GetComponent<Dropdown>();
@@ -109,17 +103,28 @@ public class UIPlayer : Player
 
         foreach (GameProperties.Instrument instrument in System.Enum.GetValues(typeof(GameProperties.Instrument)))
         {
-            UIspendTokenDropdown.options.Add(new Dropdown.OptionData(instrument.ToString()));
+            if(instrument != GameProperties.Instrument.NONE)
+            {
+                UIspendTokenDropdown.options.Add(new Dropdown.OptionData(instrument.ToString()));
+            }
         }
         UIspendTokenDropdown.onValueChanged.AddListener(delegate {
             ChangeToBeTokenedInstrument((GameProperties.Instrument)UIspendTokenDropdown.value);
             UpdateCommonUIElements();
         });
         UIrollDicesForDropdown.onValueChanged.AddListener(delegate {
+            
             List<string> instrumentNames = new List<string>(System.Enum.GetNames(typeof(GameProperties.Instrument)));
             int instrIndex = instrumentNames.IndexOf(UIrollDicesForDropdown.options[UIrollDicesForDropdown.value].text);
             Debug.Log(instrumentNames.ToArray().ToString());
-            ChangeDiceRollInstrument((GameProperties.Instrument)instrIndex);
+            if (instrIndex != -1) //workaround to be able to not roll dice
+            {
+                ChangeDiceRollInstrument((GameProperties.Instrument) instrIndex);
+            }
+            else
+            {
+                ChangeDiceRollInstrument(GameProperties.Instrument.NONE);
+            }
             UpdateCommonUIElements();
         });
 
@@ -178,7 +183,16 @@ public class UIPlayer : Player
         bool result = base.BuyTokens(numTokensToBuy);
         if (result == false) //handle the error in the UI
         {
-            warningScreenRef.DisplayWarning("You have no money to convert!");
+            int moneyToSpend = numTokensToBuy * GameProperties.tokenValue;
+            if (tokensBoughtOnCurrRound >= GameProperties.allowedPlayerTokenBuysPerRound)
+            {
+                warningScreenRef.DisplayWarning("You can only convert money to one token per round!");
+            }
+
+            if (money < moneyToSpend)
+            {
+                warningScreenRef.DisplayWarning("You have no money to convert!");
+            }
         }
         return result;
     }
@@ -204,23 +218,20 @@ public class UIPlayer : Player
         //setup dropdown
         List<GameProperties.Instrument> skillSetKeys = new List<GameProperties.Instrument>(skillSet.Keys);
         UIrollDicesForDropdown.ClearOptions();
-        int firstInstrumentInDropdown = -1;
-        UIrollDicesForDropdown.options.Add(new Dropdown.OptionData("(Do not role dice)"));
-        for (int i = 0; i < skillSetKeys.Count - 1; i++)
+        for (int i = 0; i < skillSetKeys.Count; i++)
         {
             GameProperties.Instrument currInstrument = skillSetKeys[i];
-            if (skillSet[currInstrument] > 0 || this.toBeTokenedInstrument == currInstrument)
+            if (currInstrument != GameProperties.Instrument.MARKTING && skillSet[currInstrument] > 0)
             {
-                if (firstInstrumentInDropdown == -1)
+                if (UIrollDicesForDropdown.options.Count == 0)
                 {
-                    firstInstrumentInDropdown = i;
+                    ChangeDiceRollInstrument(currInstrument);
                 }
                 UIrollDicesForDropdown.options.Add(new Dropdown.OptionData(currInstrument.ToString()));
             }
         }
-        ChangeDiceRollInstrument((GameProperties.Instrument)firstInstrumentInDropdown);
+        UIrollDicesForDropdown.options.Add(new Dropdown.OptionData("(Do not role dice)"));
         UIrollDicesForDropdown.RefreshShownValue();
-
         UIplayerActionButton.onClick.RemoveAllListeners();
         UIplayerActionButton.onClick.AddListener(delegate { SendPlayForInstrumentResponse(); UpdateCommonUIElements(); });
         UpdateCommonUIElements();

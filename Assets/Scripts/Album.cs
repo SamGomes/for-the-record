@@ -61,6 +61,10 @@ public class Album {
         //add values to the dictionary
         foreach (GameProperties.Instrument instrument in System.Enum.GetValues(typeof(GameProperties.Instrument)))
         {
+            if (instrument == GameProperties.Instrument.NONE)
+            {
+                continue;
+            }
             instrumentValues[instrument] = 0;
             UIinstrumentValuesTable.GetComponentsInChildren<Text>()[(int)instrument].text = "0";
         }
@@ -85,7 +89,7 @@ public class Album {
     public int CalcAlbumValue()
     {
         this.value = 0;
-        foreach (GameProperties.Instrument instrument in System.Enum.GetValues(typeof(GameProperties.Instrument)))
+        foreach (GameProperties.Instrument instrument in instrumentValues.Keys)
         {
             this.value += instrumentValues[instrument];
         }
