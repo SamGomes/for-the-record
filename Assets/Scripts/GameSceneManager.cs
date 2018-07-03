@@ -4,20 +4,23 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public static class GameSceneManager{
+
+    private static SceneTransitionEffect transitionEffect = new Fade(Color.black);
+
     public static void LoadStartScene()
     {
-        SceneManager.LoadScene("startScene", LoadSceneMode.Single);
+        transitionEffect.LoadSceneWithEffect("startScene", LoadSceneMode.Single);
     }
     public static void LoadPlayersSetupScene()
     {
-        SceneManager.LoadScene("playersSetupScene", LoadSceneMode.Single);
+        transitionEffect.LoadSceneWithEffect("playersSetupScene", LoadSceneMode.Single);
     }
     public static void LoadMainScene()
     {
-        SceneManager.LoadScene("mainScene", LoadSceneMode.Single);
+        transitionEffect.LoadSceneWithEffect("mainScene", LoadSceneMode.Single);
     }
     public static void LoadEndScene()
     {
-        SceneManager.LoadScene("endScene", LoadSceneMode.Single);
+        transitionEffect.LoadSceneWithEffect("endScene", LoadSceneMode.Single);
     }
 }
