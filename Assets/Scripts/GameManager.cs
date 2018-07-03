@@ -158,7 +158,7 @@ public class GameManager : MonoBehaviour {
         int numTokensForInstrument = skillSet[instrument];
 
         //UI stuff
-        UIRollDiceForInstrumentOverlay.transform.Find("title/Text").GetComponent<Text>().text = "Rolling dice "+ numTokensForInstrument + " times for " + instrument.ToString() + " ...";
+        UIRollDiceForInstrumentOverlay.transform.Find("title/Text").GetComponent<Text>().text = "Rolling "+ numTokensForInstrument + " dices for " + instrument.ToString() + " ...";
         List<Sprite> diceNumSprites = new List<Sprite>();
         
         for (int i = 0; i < numTokensForInstrument; i++)
@@ -174,7 +174,7 @@ public class GameManager : MonoBehaviour {
             else
             {
                 Debug.Log(randomIncrease);
-                StartCoroutine(PlayDiceUI(i, 6, dice6UI, currDiceNumberSprite, 2.0f));
+                StartCoroutine(PlayDiceUI(i, 6, dice6UI, currDiceNumberSprite, 4.0f));
             }
         }
 
@@ -213,6 +213,8 @@ public class GameManager : MonoBehaviour {
 
     public int RollDicesForMarketValue()
     {
+        UIRollDiceForInstrumentOverlay.transform.Find("title/Text").GetComponent<Text>().text = "Rolling dices for market...";
+
         int marketValue = 0; 
         for(int i=0; i < 2; i++)
         {

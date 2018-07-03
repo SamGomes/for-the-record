@@ -124,8 +124,11 @@ public class EndScreenFunctionalities : MonoBehaviour
             StartCoroutine(HideAfterDelay(UILossOverlay, 5.0f));
 
         }
-        StartCoroutine(HideAfterDelay(UILossOverlay, 0.0f));
-
+        //StartCoroutine(HideAfterDelay(UILossOverlay, 0.0f));
+        if (!GameProperties.isSimulation)
+        {
+            LoadEndScreenUIElements();
+        }
         //else
         //{
         //    Debug.Log("[ERROR]: Game state returned NON FINISHED on game end!");
