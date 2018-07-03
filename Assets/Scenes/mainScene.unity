@@ -1266,6 +1266,7 @@ GameObject:
   - component: {fileID: 1055533091}
   - component: {fileID: 1055533093}
   - component: {fileID: 1055533092}
+  - component: {fileID: 1055533094}
   m_Layer: 5
   m_Name: RollDiceForInstrumentOverlay
   m_TagString: Untagged
@@ -1329,6 +1330,24 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 3
   m_TargetDisplay: 0
+--- !u!95 &1055533094
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1055533090}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 91190393574882540982dddd35fa6af0, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &1168968026
 GameObject:
   m_ObjectHideFlags: 0
