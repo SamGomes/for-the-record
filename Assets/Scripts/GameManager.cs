@@ -293,6 +293,17 @@ public class GameManager : MonoBehaviour {
         if (numPlayersToStartLastDecisions == 0)
         {
             int numPlayedAlbums = GameGlobals.albums.Count;
+
+            //reinit some things for next game if game result is known or max albums are achieved
+            if (GameGlobals.currGameState != GameProperties.GameState.NOT_FINISHED)
+            {
+                currGameRound=0;
+                GameGlobals.currGameState = GameProperties.GameState.NOT_FINISHED;
+                Debug.Log("GameGlobals.currGameState: "+ GameGlobals.currGameState);
+                GameSceneManager.LoadEndScene();
+                return;
+            }
+
             Album currAlbum = GameGlobals.albums[numPlayedAlbums - 1];
 
             //write curr game logs
@@ -301,14 +312,7 @@ public class GameManager : MonoBehaviour {
             {
                 FileManager.WritePlayerResultsToLog(GameGlobals.currGameId.ToString(), currGameRound.ToString(), player.GetId().ToString(), player.GetName(), player.GetMoney().ToString());
             }
-
-            //reinit some things for next game if game result is known or max albums are achieved
-            if (GameGlobals.currGameState != GameProperties.GameState.NOT_FINISHED  || numPlayedAlbums >= GameProperties.numberOfAlbumsPerGame)
-            {
-                currGameRound=0;
-                GameSceneManager.LoadEndScene();
-                return;
-            }
+            
             numPlayersToStartLastDecisions = GameGlobals.players.Count;
             currGameRound++;
 
