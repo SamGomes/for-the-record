@@ -93,17 +93,23 @@ public abstract class Player
     }
 
 
-    public void SendLevelUpResponse()
+    public bool SendLevelUpResponse()
     {
+        if (numTokens != 0)
+        {
+            return false;
+        }
         lastLeveledUpInstruments = currLeveledUpInstruments;
         currLeveledUpInstruments = new List<GameProperties.Instrument>();
         gameManagerRef.LevelUpResponse(this);
+        return true;
     }
-    public void SendPlayForInstrumentResponse()
+    public bool SendPlayForInstrumentResponse()
     {
         gameManagerRef.PlayerPlayForInstrumentResponse(this);
+        return true;
     }
-    public void SendLastDecisionsPhaseResponse(int condition)
+    public bool SendLastDecisionsPhaseResponse(int condition)
     {
         switch (condition)
         {
@@ -117,6 +123,7 @@ public abstract class Player
                 gameManagerRef.LastDecisionsPhaseGet1000Response(this);
                 break;
         }
+        return true;
     }
 
     public void ChangeDiceRollInstrument(GameProperties.Instrument instrument)
@@ -135,7 +142,7 @@ public abstract class Player
         {
             Debug.Log("You have no more tokens to level up your skills!");
             return false;
-        }else if (lastLeveledUpInstruments.Contains(instrument))
+        }else if (instrument != GameProperties.Instrument.MARKTING && lastLeveledUpInstruments.Contains(instrument))
         {
             Debug.Log("You cannot develop the same skill on two consecutive albums!");
             return false;

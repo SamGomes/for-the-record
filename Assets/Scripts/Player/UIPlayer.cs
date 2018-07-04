@@ -11,7 +11,6 @@ public class UIPlayer : Player
     private Button UIplayerActionButton;
 
     private Text UInameText;
-    private Text UInumTokensValue;
     private Text UImoneyValue;
     
     private GameObject UISkillLevelsTexts;
@@ -33,6 +32,7 @@ public class UIPlayer : Player
     protected Button UIspendTokenButton;
 
     protected Button UIbuyTokenButton;
+    private Text UInumTokensValue;
 
     protected Dropdown UIrollDicesForDropdown;
 
@@ -60,8 +60,6 @@ public class UIPlayer : Player
         this.UIplayerActionButton = playerUI.transform.Find("playerActionSection/playerActionButton").gameObject.GetComponent<Button>();
 
         this.UInameText = playerUI.transform.Find("nameText").gameObject.GetComponent<Text>();
-
-        this.UInumTokensValue = playerUI.transform.Find("playerStateSection/numTokensValue").gameObject.GetComponent<Text>();
         this.UImoneyValue = playerUI.transform.Find("playerStateSection/moneyValue").gameObject.GetComponent<Text>();
         
 
@@ -91,8 +89,9 @@ public class UIPlayer : Player
             UpdateCommonUIElements();
         });
 
-        GameObject UIbuyTokenSelection = playerUI.transform.Find("playerActionSection/levelUpPhaseUI/buyTokenSelection").gameObject;
-        this.UIbuyTokenButton = UIbuyTokenSelection.transform.Find("buyTokenButton").GetComponent<Button>();
+        GameObject UILevelUpPhase = playerUI.transform.Find("playerActionSection/levelUpPhaseUI").gameObject;
+        this.UInumTokensValue = UILevelUpPhase.transform.Find("numTokensValue").GetComponent<Text>();
+        this.UIbuyTokenButton = UILevelUpPhase.transform.Find("buyTokenSelection/buyTokenButton").GetComponent<Button>();
         UIbuyTokenButton.onClick.AddListener(delegate () {
             BuyTokens(1);
             UpdateCommonUIElements();
@@ -155,12 +154,11 @@ public class UIPlayer : Player
         bool result = base.SpendToken(instrument);
         if (result == false) //handle the error in the UI
         {
-            //cannot spend token on last increased instruments
             if (numTokens == 0)
             {
                 warningScreenRef.DisplayWarning("You have no more tokens to level up your skills!");
             }
-            else if (lastLeveledUpInstruments.Contains(instrument))
+            else if (instrument != GameProperties.Instrument.MARKTING && lastLeveledUpInstruments.Contains(instrument))
             {
                 warningScreenRef.DisplayWarning("You cannot develop the same skill on two consecutive albums!");
             }
@@ -196,6 +194,22 @@ public class UIPlayer : Player
         }
         return result;
     }
+
+
+    public new bool SendLevelUpResponse()
+    {
+        bool success = base.SendLevelUpResponse();
+        if (!success) //handle the error in the ui
+        {
+            if (numTokens != 0)
+            {
+                warningScreenRef.DisplayWarning("You have to spend all your tokens before you finish leveling up!");
+            }
+        }
+        return success;
+    }
+
+
 
     public override void LevelUp()
     {

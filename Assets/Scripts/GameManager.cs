@@ -410,6 +410,7 @@ public class GameManager : MonoBehaviour {
             
         invoker.SetAlbumContribution(GameProperties.Instrument.MARKTING, marktingValue);
         invoker.ReceiveMoney(GameProperties.tokenValue * marktingValue);
+        invoker.ReceiveTokens(1);
         ChangeToNextPlayer(invoker);
         numPlayersToStartLastDecisions--;
     }
