@@ -61,7 +61,7 @@ public class Album {
         //add values to the dictionary
         foreach (GameProperties.Instrument instrument in System.Enum.GetValues(typeof(GameProperties.Instrument)))
         {
-            if (instrument == GameProperties.Instrument.NONE || instrument == GameProperties.Instrument.MARKTING)
+            if (instrument == GameProperties.Instrument.NONE || instrument == GameProperties.Instrument.MARKETING)
             {
                 continue;
             }

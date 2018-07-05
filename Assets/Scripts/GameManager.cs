@@ -53,15 +53,24 @@ public class GameManager : MonoBehaviour {
         canCheckAlbumResult = false;
         int numPlayers = GameGlobals.players.Count;
 
+        Player currPlayer = null;
         for (int i = 0; i < numPlayers; i++)
         {
-            Player currPlayer = GameGlobals.players[i];
+            currPlayer = GameGlobals.players[i];
             currPlayer.InitGameData();
             if ((currPlayer as UIPlayer) != null) //check if player has UI
             {
                 ((UIPlayer)currPlayer).InitUI(playerUIPrefab, canvas, warningScreenRef);
+                //position UI correctly depending on players number (table layout)
+                //float refAngle = (180.0f / (numPlayers - 1));
+                //((UIPlayer)currPlayer).GetPlayerUI().transform.RotateAround(new Vector3(510, 490, 0), new Vector3(0, 0, 1), (i * refAngle));
+                //((UIPlayer)currPlayer).GetPlayerUI().transform.Rotate(new Vector3(0, 0, 1), -(i*refAngle) + 90.0f);
             }
             currPlayer.ReceiveTokens(2);
+        }
+        if(currPlayer != null)
+        {
+            ChangeToNextPlayer(((UIPlayer)currPlayer)); //init marker to first player
         }
 
         currGameRound = 0; //first round
@@ -82,11 +91,11 @@ public class GameManager : MonoBehaviour {
         {
             if (GameGlobals.players[i] == player)
             {
-                player.GetPlayerUI().SetActive(true);
+                player.GetPlayerMarkerUI().SetActive(true);
                 continue;
             }
             UIPlayer currPlayer = (UIPlayer)GameGlobals.players[i];
-            currPlayer.GetPlayerUI().SetActive(false);
+            currPlayer.GetPlayerMarkerUI().SetActive(false);
         }
         return null;
     }
@@ -406,9 +415,9 @@ public class GameManager : MonoBehaviour {
     public void LastDecisionsPhaseGetMarktingResponse(Player invoker)
     {
         //roll dices for markting
-        int marktingValue = RollDicesForInstrument(invoker, GameProperties.Instrument.MARKTING);
+        int marktingValue = RollDicesForInstrument(invoker, GameProperties.Instrument.MARKETING);
             
-        invoker.SetAlbumContribution(GameProperties.Instrument.MARKTING, marktingValue);
+        invoker.SetAlbumContribution(GameProperties.Instrument.MARKETING, marktingValue);
         invoker.ReceiveMoney(GameProperties.tokenValue * marktingValue);
         invoker.ReceiveTokens(1);
         ChangeToNextPlayer(invoker);

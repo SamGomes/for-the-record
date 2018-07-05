@@ -147,7 +147,7 @@ public class AIPlayerGreedyStrategy : UIPlayer
         }
         else
         {
-            preferredInstrument = GameProperties.Instrument.MARKTING;
+            preferredInstrument = GameProperties.Instrument.MARKETING;
         }
         SpendToken(preferredInstrument);
         SendLevelUpResponse();

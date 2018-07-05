@@ -142,7 +142,7 @@ public abstract class Player
         {
             Debug.Log("You have no more tokens to level up your skills!");
             return false;
-        }else if (instrument != GameProperties.Instrument.MARKTING && lastLeveledUpInstruments.Contains(instrument))
+        }else if (instrument != GameProperties.Instrument.MARKETING && lastLeveledUpInstruments.Contains(instrument))
         {
             Debug.Log("You cannot develop the same skill on two consecutive albums!");
             return false;

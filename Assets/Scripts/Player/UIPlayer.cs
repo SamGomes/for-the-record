@@ -7,6 +7,7 @@ public class UIPlayer : Player
 {
 
     private GameObject playerUI;
+    private GameObject playerMarkerUI;
 
     private Button UIplayerActionButton;
 
@@ -22,7 +23,7 @@ public class UIPlayer : Player
 
     private GameObject UILastDecisionsMegaHitScreen;
     protected Button UIReceiveMegaHitButton;
-    protected Button UIStickWithMarktingMegaHitButton;
+    protected Button UIStickWithMarketingMegaHitButton;
 
     private GameObject UILastDecisionsFailScreen;
     protected Button UIReceiveFailButton;
@@ -49,13 +50,17 @@ public class UIPlayer : Player
     {
         return this.playerUI;
     }
-
+    public GameObject GetPlayerMarkerUI()
+    {
+        return this.playerMarkerUI;
+    }
 
     public void InitUI(GameObject playerUIPrefab, GameObject canvas, WarningScreenFunctionalities warningScreenRef)
     {
         this.warningScreenRef = warningScreenRef;
 
         this.playerUI = Object.Instantiate(playerUIPrefab, canvas.transform);
+        this.playerMarkerUI = playerUI.transform.Find("marker").gameObject;
 
         this.UIplayerActionButton = playerUI.transform.Find("playerActionSection/playerActionButton").gameObject.GetComponent<Button>();
 
@@ -63,7 +68,7 @@ public class UIPlayer : Player
         this.UImoneyValue = playerUI.transform.Find("playerStateSection/moneyValue").gameObject.GetComponent<Text>();
         
 
-        this.UISkillLevelsTexts = playerUI.transform.Find("skillTable/skillLevels").gameObject;
+        this.UISkillLevelsTexts = playerUI.transform.Find("playerStateSection/skillTable/skillLevels").gameObject;
         //this.UIContributionsTexts = playerUI.transform.Find("skillTable/albumContributionsTexts").gameObject.GetComponent<Text>();
 
         this.UILevelUpScreen = playerUI.transform.Find("playerActionSection/levelUpPhaseUI").gameObject;
@@ -75,7 +80,7 @@ public class UIPlayer : Player
         this.UILastDecisionsFailScreen = UILastDecisionsScreen.transform.Find("earnMoneyQuestion/failQuestion").gameObject;
 
         this.UIReceiveMegaHitButton = UILastDecisionsMegaHitScreen.transform.Find("receiveButton").gameObject.GetComponent<Button>();
-        this.UIStickWithMarktingMegaHitButton = UILastDecisionsMegaHitScreen.transform.Find("stickWithMarkting").gameObject.GetComponent<Button>();
+        this.UIStickWithMarketingMegaHitButton = UILastDecisionsMegaHitScreen.transform.Find("stickWithMarketing").gameObject.GetComponent<Button>();
 
         this.UIReceiveFailButton = UILastDecisionsFailScreen.transform.Find("receiveButton").gameObject.GetComponent<Button>();
 
@@ -127,7 +132,7 @@ public class UIPlayer : Player
             UpdateCommonUIElements();
         });
 
-        UInameText.text = this.name + " Turn:";
+        UInameText.text = this.name + " Control Panel:";
         UpdateCommonUIElements();
     }
 
@@ -169,13 +174,13 @@ public class UIPlayer : Player
             UIbuyTokenButton.interactable = true;
         }
 
-        if (skillSet[GameProperties.Instrument.MARKTING] == 0)
+        if (skillSet[GameProperties.Instrument.MARKETING] == 0)
         {
-            UIStickWithMarktingMegaHitButton.interactable = false;
+            UIStickWithMarketingMegaHitButton.interactable = false;
         }
         else
         {
-            UIStickWithMarktingMegaHitButton.interactable = true;
+            UIStickWithMarketingMegaHitButton.interactable = true;
         }
 
     }
@@ -189,7 +194,7 @@ public class UIPlayer : Player
             {
                 warningScreenRef.DisplayWarning("You have no more tokens to level up your skills!");
             }
-            else if (instrument != GameProperties.Instrument.MARKTING && lastLeveledUpInstruments.Contains(instrument))
+            else if (instrument != GameProperties.Instrument.MARKETING && lastLeveledUpInstruments.Contains(instrument))
             {
                 warningScreenRef.DisplayWarning("You cannot develop the same skill on two consecutive albums!");
             }
@@ -266,7 +271,7 @@ public class UIPlayer : Player
         for (int i = 0; i < skillSetKeys.Count; i++)
         {
             GameProperties.Instrument currInstrument = skillSetKeys[i];
-            if (currInstrument != GameProperties.Instrument.MARKTING && skillSet[currInstrument] > 0)
+            if (currInstrument != GameProperties.Instrument.MARKETING && skillSet[currInstrument] > 0)
             {
                 if (UIrollDicesForDropdown.options.Count == 0)
                 {
@@ -300,10 +305,10 @@ public class UIPlayer : Player
         }
 
         UIReceiveMegaHitButton.onClick.RemoveAllListeners();
-        UIStickWithMarktingMegaHitButton.onClick.RemoveAllListeners();
+        UIStickWithMarketingMegaHitButton.onClick.RemoveAllListeners();
         UIReceiveFailButton.onClick.RemoveAllListeners();
         UIReceiveMegaHitButton.onClick.AddListener(delegate { SendLastDecisionsPhaseResponse(0); UpdateCommonUIElements(); });
-        UIStickWithMarktingMegaHitButton.onClick.AddListener(delegate { SendLastDecisionsPhaseResponse(1); UpdateCommonUIElements(); });
+        UIStickWithMarketingMegaHitButton.onClick.AddListener(delegate { SendLastDecisionsPhaseResponse(1); UpdateCommonUIElements(); });
         UIReceiveFailButton.onClick.AddListener(delegate { SendLastDecisionsPhaseResponse(2); UpdateCommonUIElements(); });
         UpdateCommonUIElements();
     }
