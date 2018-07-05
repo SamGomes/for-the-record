@@ -147,6 +147,37 @@ public class UIPlayer : Player
             //int currAlbumContribution = albumContributions[instrument];
             //UIContributionsTexts.text += (currAlbumContribution == 0) ? " _" : " " + currAlbumContribution.ToString();
         }
+
+        //disable buttons to avoid errors
+        if (this.numTokens == 0)
+        {
+            UIspendTokenButton.interactable = false;
+            UIspendTokenDropdown.interactable = false;
+        }
+        else
+        {
+            UIspendTokenButton.interactable = true;
+            UIspendTokenDropdown.interactable = true;
+        }
+
+        if (this.money == 0)
+        {
+            UIbuyTokenButton.interactable = false;
+        }
+        else
+        {
+            UIbuyTokenButton.interactable = true;
+        }
+
+        if (skillSet[GameProperties.Instrument.MARKTING] == 0)
+        {
+            UIStickWithMarktingMegaHitButton.interactable = false;
+        }
+        else
+        {
+            UIStickWithMarktingMegaHitButton.interactable = true;
+        }
+
     }
 
     public new bool SpendToken(GameProperties.Instrument instrument)
