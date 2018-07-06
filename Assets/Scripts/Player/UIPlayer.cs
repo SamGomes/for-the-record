@@ -14,7 +14,8 @@ public class UIPlayer : Player
     private Text UInameText;
     private Text UImoneyValue;
     
-    private GameObject UISkillLevelsTexts;
+    private Text[] UISkillLevelsTexts;
+    private List<Button> UISkillIconsButtons;
     //private Text UIContributionsTexts;
 
     private GameObject UILevelUpScreen;
@@ -28,15 +29,13 @@ public class UIPlayer : Player
     private GameObject UILastDecisionsFailScreen;
     protected Button UIReceiveFailButton;
 
-
-    protected Dropdown UIspendTokenDropdown;
     protected Button UIspendTokenButton;
 
     protected Button UIbuyTokenButton;
     private Text UInumTokensValue;
+    protected Button UIdiscardChangesButton;
 
-    protected Dropdown UIrollDicesForDropdown;
-
+    private Text UICurrInstrumentToRollText;
 
     private WarningScreenFunctionalities warningScreenRef;
 
@@ -66,13 +65,31 @@ public class UIPlayer : Player
 
         this.UInameText = playerUI.transform.Find("nameText").gameObject.GetComponent<Text>();
         this.UImoneyValue = playerUI.transform.Find("playerStateSection/moneyValue").gameObject.GetComponent<Text>();
-        
 
-        this.UISkillLevelsTexts = playerUI.transform.Find("playerStateSection/skillTable/skillLevels").gameObject;
-        //this.UIContributionsTexts = playerUI.transform.Find("skillTable/albumContributionsTexts").gameObject.GetComponent<Text>();
+        this.UISkillLevelsTexts = playerUI.transform.Find("playerStateSection/skillTable/skillLevels").GetComponentsInChildren<Text>();
+        this.UISkillIconsButtons = new List<Button>(playerUI.transform.Find("playerStateSection/skillTable/skillIcons").GetComponentsInChildren<Button>());
+
+
+
 
         this.UILevelUpScreen = playerUI.transform.Find("playerActionSection/levelUpPhaseUI").gameObject;
+        this.UInumTokensValue = UILevelUpScreen.transform.Find("numTokensValue").GetComponent<Text>();
+        this.UIbuyTokenButton = UILevelUpScreen.transform.Find("buyTokenSelection/buyTokenButton").GetComponent<Button>();
+        UIbuyTokenButton.onClick.AddListener(delegate () {
+            BuyTokens(1);
+            UpdateCommonUIElements();
+        });
+        //this.UIdiscardChangesButton = UILevelUpPhase.transform.Find("buyTokenSelection/discardChanges").GetComponent<Button>();
+        //UIbuyTokenButton.onClick.AddListener(delegate () {
+        //    //DiscardChanges();
+        //    UpdateCommonUIElements();
+        //});
+
+        
+
         this.UIPlayForInstrumentScreen = playerUI.transform.Find("playerActionSection/playForInstrumentUI").gameObject;
+        this.UICurrInstrumentToRollText = UIPlayForInstrumentScreen.transform.Find("currInstrumentToRollValue").GetComponent<Text>();
+
 
 
         this.UILastDecisionsScreen = playerUI.transform.Find("playerActionSection/lastDecisionsUI").gameObject;
@@ -84,53 +101,8 @@ public class UIPlayer : Player
 
         this.UIReceiveFailButton = UILastDecisionsFailScreen.transform.Find("receiveButton").gameObject.GetComponent<Button>();
 
+        
 
-        GameObject UIinstrumentSelection = UILevelUpScreen.transform.Find("spendTokenSelection").gameObject;
-        this.UIspendTokenDropdown = UIinstrumentSelection.transform.Find("spendTokenDropdown").gameObject.GetComponent<Dropdown>();
-        this.UIspendTokenButton = UIinstrumentSelection.transform.Find("spendTokenButton").gameObject.GetComponent<Button>();
-        UIspendTokenButton.onClick.AddListener(delegate () {
-            GameProperties.Instrument selectedInstrument = (GameProperties.Instrument)this.UIspendTokenDropdown.value;
-            SpendToken(selectedInstrument);
-            UpdateCommonUIElements();
-        });
-
-        GameObject UILevelUpPhase = playerUI.transform.Find("playerActionSection/levelUpPhaseUI").gameObject;
-        this.UInumTokensValue = UILevelUpPhase.transform.Find("numTokensValue").GetComponent<Text>();
-        this.UIbuyTokenButton = UILevelUpPhase.transform.Find("buyTokenSelection/buyTokenButton").GetComponent<Button>();
-        UIbuyTokenButton.onClick.AddListener(delegate () {
-            BuyTokens(1);
-            UpdateCommonUIElements();
-        });
-
-        this.UIrollDicesForDropdown = playerUI.transform.Find("playerActionSection/playForInstrumentUI/rollDicesForSelection/rollDicesForDropdown").gameObject.GetComponent<Dropdown>();
-
-
-        foreach (GameProperties.Instrument instrument in System.Enum.GetValues(typeof(GameProperties.Instrument)))
-        {
-            if(instrument != GameProperties.Instrument.NONE)
-            {
-                UIspendTokenDropdown.options.Add(new Dropdown.OptionData(instrument.ToString()));
-            }
-        }
-        UIspendTokenDropdown.onValueChanged.AddListener(delegate {
-            ChangeToBeTokenedInstrument((GameProperties.Instrument)UIspendTokenDropdown.value);
-            UpdateCommonUIElements();
-        });
-        UIrollDicesForDropdown.onValueChanged.AddListener(delegate {
-            
-            List<string> instrumentNames = new List<string>(System.Enum.GetNames(typeof(GameProperties.Instrument)));
-            int instrIndex = instrumentNames.IndexOf(UIrollDicesForDropdown.options[UIrollDicesForDropdown.value].text);
-            Debug.Log(instrumentNames.ToArray().ToString());
-            if (instrIndex != -1) //workaround to be able to not roll dice
-            {
-                ChangeDiceRollInstrument((GameProperties.Instrument) instrIndex);
-            }
-            else
-            {
-                ChangeDiceRollInstrument(GameProperties.Instrument.NONE);
-            }
-            UpdateCommonUIElements();
-        });
 
         UInameText.text = this.name + " Control Panel:";
         UpdateCommonUIElements();
@@ -142,28 +114,29 @@ public class UIPlayer : Player
         UImoneyValue.text = money.ToString();
         UInumTokensValue.text = numTokens.ToString();
 
-        //UISkillTexts.text = "";
-        //UIContributionsTexts.text = "";
         foreach (GameProperties.Instrument instrument in skillSet.Keys)
         {
-            //UISkillTexts.text += " " + instrument.ToString()[0];
-            UISkillLevelsTexts.GetComponentsInChildren<Text>()[(int)instrument].text = "  " + skillSet[instrument].ToString();
-
-            //int currAlbumContribution = albumContributions[instrument];
-            //UIContributionsTexts.text += (currAlbumContribution == 0) ? " _" : " " + currAlbumContribution.ToString();
+            UISkillLevelsTexts[(int)instrument].text = "  " + skillSet[instrument].ToString();
         }
 
-        //disable buttons to avoid errors
-        if (this.numTokens == 0)
-        {
-            UIspendTokenButton.interactable = false;
-            UIspendTokenDropdown.interactable = false;
-        }
-        else
-        {
-            UIspendTokenButton.interactable = true;
-            UIspendTokenDropdown.interactable = true;
-        }
+
+        ////disable buttons to avoid errors
+        //if (this.numTokens == 0)
+        //{
+        //    for (int i = 0; i < UISkillIconsButtons.Count; i++)
+        //    {
+        //        Button currButton = UISkillIconsButtons[i];
+        //        currButton.interactable = false;
+        //    }
+        //}
+        //else
+        //{
+        //    for (int i = 0; i < UISkillIconsButtons.Count; i++)
+        //    {
+        //        Button currButton = UISkillIconsButtons[i];
+        //        currButton.interactable = true;
+        //    }
+        //}
 
         if (this.money == 0)
         {
@@ -182,6 +155,7 @@ public class UIPlayer : Player
         {
             UIStickWithMarketingMegaHitButton.interactable = true;
         }
+        UICurrInstrumentToRollText.text = this.diceRollInstrument.ToString();
 
     }
 
@@ -194,9 +168,9 @@ public class UIPlayer : Player
             {
                 warningScreenRef.DisplayWarning("You have no more tokens to level up your skills!");
             }
-            else if (instrument != GameProperties.Instrument.MARKETING && lastLeveledUpInstruments.Contains(instrument))
+            else if (skillSet[instrument] == 3)
             {
-                warningScreenRef.DisplayWarning("You cannot develop the same skill on two consecutive albums!");
+                warningScreenRef.DisplayWarning("You cannot develop the same skill more than 3 times!");
             }
         }
         return result;
@@ -245,6 +219,21 @@ public class UIPlayer : Player
         return success;
     }
 
+    public new bool ChangeDiceRollInstrument(GameProperties.Instrument instrument)
+    {
+        bool success = base.ChangeDiceRollInstrument(instrument);
+        if (!success) //handle the error in the ui
+        {
+            if (instrument == GameProperties.Instrument.MARKETING)
+            {
+                warningScreenRef.DisplayWarning("The dices for marketing are rolled only after knowing the album result.");
+            }else if (skillSet[instrument] == 0)
+            {
+                warningScreenRef.DisplayWarning("You cannot roll dices for an unevolved skill!");
+            }
+        }
+        return success;
+    }
 
 
     public override void LevelUp()
@@ -254,8 +243,22 @@ public class UIPlayer : Player
         UIPlayForInstrumentScreen.SetActive(false);
         UILastDecisionsScreen.SetActive(false);
 
+        for (int i = 0; i < UISkillIconsButtons.Count; i++)
+        {
+            Button currButton = UISkillIconsButtons[i];
+            currButton.onClick.RemoveAllListeners();
+            currButton.onClick.AddListener(delegate {
+                SpendToken((GameProperties.Instrument) UISkillIconsButtons.IndexOf(currButton));
+                UpdateCommonUIElements();
+            });
+        }
+        
         UIplayerActionButton.onClick.RemoveAllListeners();
-        UIplayerActionButton.onClick.AddListener(delegate { SendLevelUpResponse(); UpdateCommonUIElements(); });
+        UIplayerActionButton.onClick.AddListener(delegate {
+            SendLevelUpResponse();
+            UpdateCommonUIElements();
+        });
+
         UpdateCommonUIElements();
     }
     public override void PlayForInstrument()
@@ -265,25 +268,23 @@ public class UIPlayer : Player
         UIPlayForInstrumentScreen.SetActive(true);
         UILastDecisionsScreen.SetActive(false);
 
-        //setup dropdown
-        List<GameProperties.Instrument> skillSetKeys = new List<GameProperties.Instrument>(skillSet.Keys);
-        UIrollDicesForDropdown.ClearOptions();
-        for (int i = 0; i < skillSetKeys.Count; i++)
+
+        for (int i = 0; i < UISkillIconsButtons.Count; i++)
         {
-            GameProperties.Instrument currInstrument = skillSetKeys[i];
-            if (currInstrument != GameProperties.Instrument.MARKETING && skillSet[currInstrument] > 0)
-            {
-                if (UIrollDicesForDropdown.options.Count == 0)
-                {
-                    ChangeDiceRollInstrument(currInstrument);
-                }
-                UIrollDicesForDropdown.options.Add(new Dropdown.OptionData(currInstrument.ToString()));
-            }
+            Button currButton = UISkillIconsButtons[i];
+            currButton.onClick.RemoveAllListeners();
+            currButton.onClick.AddListener(delegate {
+                ChangeDiceRollInstrument((GameProperties.Instrument) UISkillIconsButtons.IndexOf(currButton));
+                UpdateCommonUIElements();
+            });
         }
-        UIrollDicesForDropdown.options.Add(new Dropdown.OptionData("(Do not role dice)"));
-        UIrollDicesForDropdown.RefreshShownValue();
+
+
         UIplayerActionButton.onClick.RemoveAllListeners();
-        UIplayerActionButton.onClick.AddListener(delegate { SendPlayForInstrumentResponse(); UpdateCommonUIElements(); });
+        UIplayerActionButton.onClick.AddListener(delegate {
+            SendPlayForInstrumentResponse();
+            UpdateCommonUIElements();
+        });
         UpdateCommonUIElements();
     }
     public override void LastDecisionsPhase(Album currAlbum)
@@ -292,6 +293,13 @@ public class UIPlayer : Player
         UILevelUpScreen.SetActive(false);
         UIPlayForInstrumentScreen.SetActive(false);
         UILastDecisionsScreen.SetActive(true);
+
+        for (int i = 0; i < UISkillIconsButtons.Count; i++)
+        {
+            Button currButton = UISkillIconsButtons[i];
+            currButton.onClick.RemoveAllListeners();
+        }
+
 
         if (currAlbum.GetMarketingState() == GameProperties.AlbumMarketingState.MEGA_HIT)
         {

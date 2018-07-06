@@ -19,10 +19,7 @@ public abstract class Player
     protected int money;
 
     protected GameProperties.Instrument diceRollInstrument;
-    protected GameProperties.Instrument toBeTokenedInstrument;
-
-    protected List<GameProperties.Instrument> lastLeveledUpInstruments;
-    private List<GameProperties.Instrument> currLeveledUpInstruments;
+    protected List<GameProperties.Instrument> toBeTokenedInstruments;
 
     protected Dictionary<GameProperties.Instrument, int> skillSet;
     protected Dictionary<GameProperties.Instrument, int> albumContributions;
@@ -40,11 +37,8 @@ public abstract class Player
         this.money = 0;
         this.numTokens = 0;
 
-        this.lastLeveledUpInstruments = new List<GameProperties.Instrument>();
-        this.currLeveledUpInstruments = new List<GameProperties.Instrument>();
-
         this.diceRollInstrument = GameProperties.Instrument.NONE;
-        this.toBeTokenedInstrument = GameProperties.Instrument.NONE;
+        this.toBeTokenedInstruments = new List<GameProperties.Instrument>();
         this.skillSet = new Dictionary<GameProperties.Instrument, int>();
         this.albumContributions = new Dictionary<GameProperties.Instrument, int>();
 
@@ -99,8 +93,6 @@ public abstract class Player
         {
             return false;
         }
-        lastLeveledUpInstruments = currLeveledUpInstruments;
-        currLeveledUpInstruments = new List<GameProperties.Instrument>();
         gameManagerRef.LevelUpResponse(this);
         return true;
     }
@@ -126,13 +118,23 @@ public abstract class Player
         return true;
     }
 
-    public void ChangeDiceRollInstrument(GameProperties.Instrument instrument)
+    public bool ChangeDiceRollInstrument(GameProperties.Instrument instrument)
     {
+        if (skillSet[instrument] == 0 || instrument == GameProperties.Instrument.MARKETING)
+        {
+            return false;
+        }
+
         this.diceRollInstrument = instrument;
+        return true;
     }
-    public void ChangeToBeTokenedInstrument(GameProperties.Instrument instrument)
+    public void AddToBeTokenedInstrument(GameProperties.Instrument instrument)
     {
-        this.toBeTokenedInstrument = instrument;
+        this.toBeTokenedInstruments.Add(instrument);
+    }
+    public void RemoveToBeTokenedInstrument(GameProperties.Instrument instrument)
+    {
+        this.toBeTokenedInstruments.Remove(instrument);
     }
 
     public bool SpendToken(GameProperties.Instrument instrument)
@@ -142,16 +144,14 @@ public abstract class Player
         {
             Debug.Log("You have no more tokens to level up your skills!");
             return false;
-        }else if (instrument != GameProperties.Instrument.MARKETING && lastLeveledUpInstruments.Contains(instrument))
+        }else if (skillSet[instrument] == 3)
         {
-            Debug.Log("You cannot develop the same skill on two consecutive albums!");
+            Debug.Log("You cannot develop the same skill more than 3 times!");
             return false;
         }
 
         numTokens--;
         skillSet[instrument]++;
-
-        currLeveledUpInstruments.Add(instrument);
 
         FileManager.WritePlayerActionToLog(GameGlobals.currGameId.ToString(), gameManagerRef.GetCurrGameRound().ToString(), this.id.ToString(), this.name,"SPENT_TOKEN", instrument.ToString() , "-");
         return true;

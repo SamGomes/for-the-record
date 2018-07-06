@@ -61,6 +61,8 @@ public class GameManager : MonoBehaviour {
             if ((currPlayer as UIPlayer) != null) //check if player has UI
             {
                 ((UIPlayer)currPlayer).InitUI(playerUIPrefab, canvas, warningScreenRef);
+                ((UIPlayer)currPlayer).GetPlayerUI().transform.Translate(new Vector3(0, -i*170.0f, 0));
+
                 //position UI correctly depending on players number (table layout)
                 //float refAngle = (180.0f / (numPlayers - 1));
                 //((UIPlayer)currPlayer).GetPlayerUI().transform.RotateAround(new Vector3(510, 490, 0), new Vector3(0, 0, 1), (i * refAngle));
@@ -255,20 +257,20 @@ public class GameManager : MonoBehaviour {
             currAlbum.SetMarketingState(GameProperties.AlbumMarketingState.FAIL);
         }
 
-        //check for victory or loss on album registry
+        //check for loss on album registry (collapse)
         float victoryThreshold = Mathf.Ceil(GameProperties.numberOfAlbumsPerGame / 2.0f);
-        if ((float)numMegaHits > victoryThreshold)
-        {
-            GameGlobals.currGameState = GameProperties.GameState.VICTORY;
-        }
-        else
-        {
+        //if ((float)numMegaHits > victoryThreshold)
+        //{
+        //    GameGlobals.currGameState = GameProperties.GameState.VICTORY;
+        //}
+        //else
+        //{
             float numAlbumsLeft = (float)(GameProperties.numberOfAlbumsPerGame - numAlbums);
-            if (numAlbumsLeft < victoryThreshold-numMegaHits)
+            if (numAlbumsLeft < victoryThreshold - numMegaHits)
             {
                 GameGlobals.currGameState = GameProperties.GameState.LOSS;
             }
-        }
+        //}
     }
 
 
