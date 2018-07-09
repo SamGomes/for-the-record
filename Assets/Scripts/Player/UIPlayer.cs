@@ -68,9 +68,7 @@ public class UIPlayer : Player
 
         this.UISkillLevelsTexts = playerUI.transform.Find("playerStateSection/skillTable/skillLevels").GetComponentsInChildren<Text>();
         this.UISkillIconsButtons = new List<Button>(playerUI.transform.Find("playerStateSection/skillTable/skillIcons").GetComponentsInChildren<Button>());
-
-
-
+        
 
         this.UILevelUpScreen = playerUI.transform.Find("playerActionSection/levelUpPhaseUI").gameObject;
         this.UInumTokensValue = UILevelUpScreen.transform.Find("numTokensValue").GetComponent<Text>();
@@ -79,13 +77,14 @@ public class UIPlayer : Player
             BuyTokens(1);
             UpdateCommonUIElements();
         });
-        //this.UIdiscardChangesButton = UILevelUpPhase.transform.Find("buyTokenSelection/discardChanges").GetComponent<Button>();
-        //UIbuyTokenButton.onClick.AddListener(delegate () {
-        //    //DiscardChanges();
-        //    UpdateCommonUIElements();
-        //});
+        this.UIdiscardChangesButton = UILevelUpScreen.transform.Find("buyTokenSelection/discardChangesButton").GetComponent<Button>();
+        UIdiscardChangesButton.onClick.AddListener(delegate ()
+        {
+            RollBackChangesToPhaseStart();
+            UpdateCommonUIElements();
+        });
 
-        
+
 
         this.UIPlayForInstrumentScreen = playerUI.transform.Find("playerActionSection/playForInstrumentUI").gameObject;
         this.UICurrInstrumentToRollText = UIPlayForInstrumentScreen.transform.Find("currInstrumentToRollValue").GetComponent<Text>();
@@ -119,26 +118,7 @@ public class UIPlayer : Player
             UISkillLevelsTexts[(int)instrument].text = "  " + skillSet[instrument].ToString();
         }
 
-
-        ////disable buttons to avoid errors
-        //if (this.numTokens == 0)
-        //{
-        //    for (int i = 0; i < UISkillIconsButtons.Count; i++)
-        //    {
-        //        Button currButton = UISkillIconsButtons[i];
-        //        currButton.interactable = false;
-        //    }
-        //}
-        //else
-        //{
-        //    for (int i = 0; i < UISkillIconsButtons.Count; i++)
-        //    {
-        //        Button currButton = UISkillIconsButtons[i];
-        //        currButton.interactable = true;
-        //    }
-        //}
-
-        if (this.money == 0)
+        if (this.money == 0 || tokensBoughtOnCurrRound > GameProperties.allowedPlayerTokenBuysPerRound)
         {
             UIbuyTokenButton.interactable = false;
         }
@@ -216,8 +196,28 @@ public class UIPlayer : Player
                 warningScreenRef.DisplayWarning("You have to spend all your tokens before you finish leveling up!");
             }
         }
+        else
+        {
+            UIplayerActionButton.interactable = false;
+        }
         return success;
     }
+    public new bool SendPlayForInstrumentResponse()
+    {
+        bool success = base.SendPlayForInstrumentResponse();
+        UIplayerActionButton.interactable = false;
+        return success;
+    }
+    public new bool SendLastDecisionsPhaseResponse(int condition)
+    {
+        bool success = base.SendLastDecisionsPhaseResponse(condition);
+        UIplayerActionButton.interactable = false;
+        UIReceiveFailButton.interactable = false;
+        UIReceiveMegaHitButton.interactable = false;
+        UIStickWithMarketingMegaHitButton.interactable = false;
+        return success;
+    }
+
 
     public new bool ChangeDiceRollInstrument(GameProperties.Instrument instrument)
     {
@@ -254,6 +254,7 @@ public class UIPlayer : Player
         }
         
         UIplayerActionButton.onClick.RemoveAllListeners();
+        UIplayerActionButton.interactable = true;
         UIplayerActionButton.onClick.AddListener(delegate {
             SendLevelUpResponse();
             UpdateCommonUIElements();
@@ -281,6 +282,7 @@ public class UIPlayer : Player
 
 
         UIplayerActionButton.onClick.RemoveAllListeners();
+        UIplayerActionButton.interactable = true;
         UIplayerActionButton.onClick.AddListener(delegate {
             SendPlayForInstrumentResponse();
             UpdateCommonUIElements();

@@ -15,6 +15,7 @@ public abstract class Player
 
 
     protected string name;
+
     protected int numTokens;
     protected int money;
 
@@ -23,6 +24,10 @@ public abstract class Player
 
     protected Dictionary<GameProperties.Instrument, int> skillSet;
     protected Dictionary<GameProperties.Instrument, int> albumContributions;
+
+    protected int unchangedMoney;
+    protected int unchangedNumTokens;
+    protected Dictionary<GameProperties.Instrument, int> unchangedSkillSetInstruments;
 
     public int tokensBoughtOnCurrRound;
    
@@ -63,6 +68,7 @@ public abstract class Player
     public abstract void PlayForInstrument();
     public abstract void LastDecisionsPhase(Album currAlbum);
 
+
     public int GetId()
     {
         return this.id;
@@ -74,6 +80,11 @@ public abstract class Player
 
     public void LevelUpRequest()
     {
+        //save player state before changes
+        unchangedSkillSetInstruments = new Dictionary<GameProperties.Instrument, int>();
+        unchangedMoney = money;
+        unchangedNumTokens = numTokens;
+
         LevelUp();
     }
     public void PlayForInstrumentRequest()
@@ -93,6 +104,12 @@ public abstract class Player
         {
             return false;
         }
+
+        //update player state saves
+        unchangedSkillSetInstruments = skillSet;
+        unchangedMoney = money;
+        unchangedNumTokens = numTokens;
+
         gameManagerRef.LevelUpResponse(this);
         return true;
     }
@@ -151,6 +168,10 @@ public abstract class Player
         }
 
         numTokens--;
+        if (!unchangedSkillSetInstruments.ContainsKey(instrument))
+        {
+            unchangedSkillSetInstruments[instrument] = skillSet[instrument];
+        }
         skillSet[instrument]++;
 
         FileManager.WritePlayerActionToLog(GameGlobals.currGameId.ToString(), gameManagerRef.GetCurrGameRound().ToString(), this.id.ToString(), this.name,"SPENT_TOKEN", instrument.ToString() , "-");
@@ -192,6 +213,16 @@ public abstract class Player
         tokensBoughtOnCurrRound+=numTokensToBuy;
         FileManager.WritePlayerActionToLog(GameGlobals.currGameId.ToString(), gameManagerRef.GetCurrGameRound().ToString(), this.id.ToString(), this.name,"BOUGHT_TOKENS", "-" , numTokensToBuy.ToString());
         return true;
+    }
+    public void RollBackChangesToPhaseStart()
+    {
+        foreach(GameProperties.Instrument skill in unchangedSkillSetInstruments.Keys)
+        {
+            skillSet[skill] = unchangedSkillSetInstruments[skill];
+        }
+        money = unchangedMoney;
+        numTokens = unchangedNumTokens;
+        tokensBoughtOnCurrRound = 0;
     }
 
     public void ReceiveMoney(int moneyToReceive)

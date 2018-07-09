@@ -1942,7 +1942,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: End Turn
+  m_Text: End Phase
 --- !u!114 &114455101274858262
 MonoBehaviour:
   m_ObjectHideFlags: 1

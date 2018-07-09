@@ -31,6 +31,8 @@ public class GameManager : MonoBehaviour {
     public GameObject dice6UI;
     public GameObject dice20UI;
 
+    public GameObject UIAlbumCollectionDisplay;
+
     public WarningScreenFunctionalities warningScreenRef;
 
     private int currGameRound;
@@ -70,10 +72,10 @@ public class GameManager : MonoBehaviour {
             }
             currPlayer.ReceiveTokens(2);
         }
-        if(currPlayer != null)
-        {
-            ChangeToNextPlayer(((UIPlayer)currPlayer)); //init marker to first player
-        }
+        //if(currPlayer != null)
+        //{
+        //    ChangeToNextPlayer(((UIPlayer)currPlayer)); //init marker to first player
+        //}
 
         currGameRound = 0; //first round
         numMegaHits = 0;
@@ -137,15 +139,10 @@ public class GameManager : MonoBehaviour {
 
     public void StartGameRoundForAllPlayers(string albumName)
     {
-        if (GameGlobals.albums.Count > 0)
-        {
-            GameObject currAlbumUI = GameGlobals.albums[GameGlobals.albums.Count - 1].GetAlbumUI();
-            currAlbumUI.SetActive(false);
-        }
-
         Album newAlbum = new Album(albumName, albumUIPrefab);
         newAlbum.GetAlbumUI().SetActive(true);
         GameGlobals.albums.Add(newAlbum);
+        //UIAddAlbumToCollection(newAlbum);
 
         int numPlayers = GameGlobals.players.Count;
         for (int i = 0; i < numPlayers; i++)
@@ -311,6 +308,13 @@ public class GameManager : MonoBehaviour {
                 currGameRound=0;
                 GameGlobals.currGameState = GameProperties.GameState.NOT_FINISHED;
                 Debug.Log("GameGlobals.currGameState: "+ GameGlobals.currGameState);
+
+                //move albums to root so they can be saved through scenes
+                foreach(Album album in GameGlobals.albums)
+                {
+                    UIRemoveAlbumFromCollection(album);
+                }
+
                 GameSceneManager.LoadEndScene();
                 return;
             }
@@ -330,12 +334,13 @@ public class GameManager : MonoBehaviour {
             //start next game round whenever ready
             if (!GameProperties.isSimulation)
             {
-                //disable old album before loading new game round screen
-                if (GameGlobals.albums.Count > 0)
-                {
-                    GameObject currAlbumUI = GameGlobals.albums[GameGlobals.albums.Count - 1].GetAlbumUI();
-                    currAlbumUI.SetActive(false);
-                }
+                ////disable old album before loading new game round screen
+                //if (GameGlobals.albums.Count > 0)
+                //{
+                //    GameObject currAlbumUI = GameGlobals.albums[GameGlobals.albums.Count - 1].GetAlbumUI();
+                //    currAlbumUI.SetActive(false);
+                //}
+                UIAddAlbumToCollection(currAlbum);
                 UInewRoundScreen.SetActive(true);
             }
             else
@@ -379,7 +384,7 @@ public class GameManager : MonoBehaviour {
 
     public void LevelUpResponse(Player invoker)
     {
-        ChangeToNextPlayer(invoker);
+        //ChangeToNextPlayer(invoker);
         numPlayersToLevelUp--;
     }
     public void PlayerPlayForInstrumentResponse(Player invoker)
@@ -395,7 +400,7 @@ public class GameManager : MonoBehaviour {
             currAlbum.CalcAlbumValue(); //update album value and ui after playing for instrument
         }
 
-        ChangeToNextPlayer(invoker);
+        //ChangeToNextPlayer(invoker);
         numPlayersToPlayForInstrument--;
     }
     public void LastDecisionsPhaseGet1000Response(Player invoker)
@@ -403,7 +408,7 @@ public class GameManager : MonoBehaviour {
         //receive 1000
         invoker.ReceiveMoney(GameProperties.tokenValue);
         invoker.ReceiveTokens(1);
-        ChangeToNextPlayer(invoker);
+        //ChangeToNextPlayer(invoker);
         numPlayersToStartLastDecisions--;
     }
     public void LastDecisionsPhaseGet3000Response(Player invoker)
@@ -411,7 +416,7 @@ public class GameManager : MonoBehaviour {
         //receive 3000
         invoker.ReceiveMoney(GameProperties.tokenValue*3);
         invoker.ReceiveTokens(1);
-        ChangeToNextPlayer(invoker);
+        //ChangeToNextPlayer(invoker);
         numPlayersToStartLastDecisions--;
     }
     public void LastDecisionsPhaseGetMarktingResponse(Player invoker)
@@ -422,7 +427,7 @@ public class GameManager : MonoBehaviour {
         invoker.SetAlbumContribution(GameProperties.Instrument.MARKETING, marktingValue);
         invoker.ReceiveMoney(GameProperties.tokenValue * marktingValue);
         invoker.ReceiveTokens(1);
-        ChangeToNextPlayer(invoker);
+        //ChangeToNextPlayer(invoker);
         numPlayersToStartLastDecisions--;
     }
 
@@ -433,4 +438,26 @@ public class GameManager : MonoBehaviour {
         Player nextPlayer = GameGlobals.players[(GameGlobals.players.IndexOf(currPlayer) + 1) % GameGlobals.players.Count];
         ChangeActivePlayerUI((UIPlayer) nextPlayer, 2.0f);
     }
+
+    public void UIAddAlbumToCollection(Album albumToAdd)
+    {
+        int albumsSize = GameGlobals.albums.Count;
+        GameObject currAlbumUI = albumToAdd.GetAlbumUI();
+
+        Animator animator = currAlbumUI.GetComponentInChildren<Animator>();
+        animator.Rebind();
+        animator.Play(0);
+
+        currAlbumUI.transform.SetParent(UIAlbumCollectionDisplay.transform);
+        currAlbumUI.transform.localPosition = new Vector3(0, 0, 0);
+        currAlbumUI.transform.localScale = new Vector3(1, 1, 1);
+
+        currAlbumUI.transform.Translate(new Vector3(albumsSize * 50.0f, 0, 0));
+    }
+    public void UIRemoveAlbumFromCollection(Album albumToRemove)
+    {
+        GameObject currAlbumUI = albumToRemove.GetAlbumUI();
+        currAlbumUI.transform.SetParent(transform.root);
+    }
+
 }
