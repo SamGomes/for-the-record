@@ -45,7 +45,7 @@ public class GameManager : MonoBehaviour {
         //mock to test
         GameGlobals.albums = new List<Album>(GameProperties.numberOfAlbumsPerGame);
         GameGlobals.players = new List<Player>(GameProperties.numberOfPlayersPerGame);
-        GameGlobals.players.Add(new UIPlayer("PL1"));
+        GameGlobals.players.Add(new UIPlayer("AI-PL1"));
         GameGlobals.players.Add(new UIPlayer("PL2"));
         GameGlobals.players.Add(new UIPlayer("PL3"));
     }
@@ -72,10 +72,10 @@ public class GameManager : MonoBehaviour {
             }
             currPlayer.ReceiveTokens(2);
         }
-        //if(currPlayer != null)
-        //{
-        //    ChangeToNextPlayer(((UIPlayer)currPlayer)); //init marker to first player
-        //}
+        if (currPlayer != null)
+        {
+            ChangeToNextPlayer(((UIPlayer)currPlayer)); //init marker to first player
+        }
 
         currGameRound = 0; //first round
         numMegaHits = 0;
@@ -89,6 +89,7 @@ public class GameManager : MonoBehaviour {
     //warning: works only when using human players!
     private IEnumerator ChangeActivePlayerUI(UIPlayer player, float delay)
     {
+        player.GetPlayerUI().transform.SetAsLastSibling();
         //yield return new WaitForSeconds(delay);
         int numPlayers = GameGlobals.players.Count;
         for (int i = 0; i < numPlayers; i++)
@@ -96,10 +97,12 @@ public class GameManager : MonoBehaviour {
             if (GameGlobals.players[i] == player)
             {
                 player.GetPlayerMarkerUI().SetActive(true);
+                player.GetPlayerDisablerUI().SetActive(true);
                 continue;
             }
             UIPlayer currPlayer = (UIPlayer)GameGlobals.players[i];
             currPlayer.GetPlayerMarkerUI().SetActive(false);
+            currPlayer.GetPlayerDisablerUI().SetActive(false);
         }
         return null;
     }
@@ -166,7 +169,7 @@ public class GameManager : MonoBehaviour {
         int numTokensForInstrument = skillSet[instrument];
 
         //UI stuff
-        UIRollDiceForInstrumentOverlay.transform.Find("title/Text").GetComponent<Text>().text = "Rolling "+ numTokensForInstrument + " dices for " + instrument.ToString() + " ...";
+        UIRollDiceForInstrumentOverlay.transform.Find("title/Text").GetComponent<Text>().text = currPlayer.GetName() + " rolling "+ numTokensForInstrument + " dice(s) for " + instrument.ToString() + " ...";
         List<Sprite> diceNumSprites = new List<Sprite>();
         
         for (int i = 0; i < numTokensForInstrument; i++)
@@ -384,7 +387,7 @@ public class GameManager : MonoBehaviour {
 
     public void LevelUpResponse(Player invoker)
     {
-        //ChangeToNextPlayer(invoker);
+        ChangeToNextPlayer(invoker);
         numPlayersToLevelUp--;
     }
     public void PlayerPlayForInstrumentResponse(Player invoker)
@@ -400,7 +403,7 @@ public class GameManager : MonoBehaviour {
             currAlbum.CalcAlbumValue(); //update album value and ui after playing for instrument
         }
 
-        //ChangeToNextPlayer(invoker);
+        ChangeToNextPlayer(invoker);
         numPlayersToPlayForInstrument--;
     }
     public void LastDecisionsPhaseGet1000Response(Player invoker)
@@ -408,7 +411,7 @@ public class GameManager : MonoBehaviour {
         //receive 1000
         invoker.ReceiveMoney(GameProperties.tokenValue);
         invoker.ReceiveTokens(1);
-        //ChangeToNextPlayer(invoker);
+        ChangeToNextPlayer(invoker);
         numPlayersToStartLastDecisions--;
     }
     public void LastDecisionsPhaseGet3000Response(Player invoker)
@@ -416,7 +419,7 @@ public class GameManager : MonoBehaviour {
         //receive 3000
         invoker.ReceiveMoney(GameProperties.tokenValue*3);
         invoker.ReceiveTokens(1);
-        //ChangeToNextPlayer(invoker);
+        ChangeToNextPlayer(invoker);
         numPlayersToStartLastDecisions--;
     }
     public void LastDecisionsPhaseGetMarktingResponse(Player invoker)

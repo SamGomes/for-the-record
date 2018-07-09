@@ -39,7 +39,7 @@ public class Album {
         });
 
         this.UInameText = albumUI.transform.Find("DelayedElements/elements/albumName").GetComponent<Text>();
-        this.UIvalueText = albumUI.transform.Find("DelayedElements/elements/valueElements/albumValueText").GetComponent<Text>();
+        this.UIvalueText = albumUI.transform.Find("DelayedElements/elements/valueElements/valueDisplay/albumValueText").GetComponent<Text>();
         this.UImarketingStateText = albumUI.transform.Find("DelayedElements/elements/marketingStateElements/albumMarketingStateText").GetComponent<Text>();
 
         this.UIinstrumentValuesTable = albumUI.transform.Find("DelayedElements/elements/valueElements/skillLevels").gameObject;

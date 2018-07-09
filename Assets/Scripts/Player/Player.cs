@@ -8,11 +8,8 @@ using UnityEngine.UI;
 public abstract class Player
 {
     private int id;
-
     private string actionLog;
-
     protected GameManager gameManagerRef;
-
 
     protected string name;
 
@@ -161,9 +158,9 @@ public abstract class Player
         {
             Debug.Log("You have no more tokens to level up your skills!");
             return false;
-        }else if (skillSet[instrument] == 3)
+        }else if (skillSet[instrument] == GameProperties.maximumSkillLevelPerInstrument)
         {
-            Debug.Log("You cannot develop the same skill more than 3 times!");
+            Debug.Log("You cannot develop the same skill more than "+ GameProperties.maximumSkillLevelPerInstrument  + " times!");
             return false;
         }
 

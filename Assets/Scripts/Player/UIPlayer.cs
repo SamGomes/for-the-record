@@ -8,6 +8,7 @@ public class UIPlayer : Player
 
     private GameObject playerUI;
     private GameObject playerMarkerUI;
+    private GameObject playerDisablerUI;
 
     private Button UIplayerActionButton;
 
@@ -36,6 +37,8 @@ public class UIPlayer : Player
     protected Button UIdiscardChangesButton;
 
     private Text UICurrInstrumentToRollText;
+    protected Button UInotRollDicesButton;
+
 
     private WarningScreenFunctionalities warningScreenRef;
 
@@ -53,6 +56,10 @@ public class UIPlayer : Player
     {
         return this.playerMarkerUI;
     }
+    public GameObject GetPlayerDisablerUI()
+    {
+        return this.playerDisablerUI;
+    }
 
     public void InitUI(GameObject playerUIPrefab, GameObject canvas, WarningScreenFunctionalities warningScreenRef)
     {
@@ -60,6 +67,7 @@ public class UIPlayer : Player
 
         this.playerUI = Object.Instantiate(playerUIPrefab, canvas.transform);
         this.playerMarkerUI = playerUI.transform.Find("marker").gameObject;
+        this.playerDisablerUI = playerUI.transform.Find("disabler").gameObject;
 
         this.UIplayerActionButton = playerUI.transform.Find("playerActionSection/playerActionButton").gameObject.GetComponent<Button>();
 
@@ -89,6 +97,12 @@ public class UIPlayer : Player
         this.UIPlayForInstrumentScreen = playerUI.transform.Find("playerActionSection/playForInstrumentUI").gameObject;
         this.UICurrInstrumentToRollText = UIPlayForInstrumentScreen.transform.Find("currInstrumentToRollValue").GetComponent<Text>();
 
+        this.UInotRollDicesButton = UIPlayForInstrumentScreen.transform.Find("notRollDicesButton").GetComponent<Button>();
+        UInotRollDicesButton.onClick.AddListener(delegate ()
+        {
+            this.diceRollInstrument = GameProperties.Instrument.NONE;
+            UpdateCommonUIElements();
+        });
 
 
         this.UILastDecisionsScreen = playerUI.transform.Find("playerActionSection/lastDecisionsUI").gameObject;
@@ -100,7 +114,6 @@ public class UIPlayer : Player
 
         this.UIReceiveFailButton = UILastDecisionsFailScreen.transform.Find("receiveButton").gameObject.GetComponent<Button>();
 
-        
 
 
         UInameText.text = this.name + " Control Panel:";
@@ -117,24 +130,6 @@ public class UIPlayer : Player
         {
             UISkillLevelsTexts[(int)instrument].text = "  " + skillSet[instrument].ToString();
         }
-
-        if (this.money == 0 || tokensBoughtOnCurrRound > GameProperties.allowedPlayerTokenBuysPerRound)
-        {
-            UIbuyTokenButton.interactable = false;
-        }
-        else
-        {
-            UIbuyTokenButton.interactable = true;
-        }
-
-        if (skillSet[GameProperties.Instrument.MARKETING] == 0)
-        {
-            UIStickWithMarketingMegaHitButton.interactable = false;
-        }
-        else
-        {
-            UIStickWithMarketingMegaHitButton.interactable = true;
-        }
         UICurrInstrumentToRollText.text = this.diceRollInstrument.ToString();
 
     }
@@ -148,9 +143,9 @@ public class UIPlayer : Player
             {
                 warningScreenRef.DisplayWarning("You have no more tokens to level up your skills!");
             }
-            else if (skillSet[instrument] == 3)
+            else if (skillSet[instrument] == GameProperties.maximumSkillLevelPerInstrument)
             {
-                warningScreenRef.DisplayWarning("You cannot develop the same skill more than 3 times!");
+                warningScreenRef.DisplayWarning("You cannot develop the same skill more than " + GameProperties.maximumSkillLevelPerInstrument + " times!");
             }
         }
         return result;
@@ -199,22 +194,31 @@ public class UIPlayer : Player
         else
         {
             UIplayerActionButton.interactable = false;
+            UIdiscardChangesButton.interactable = false;
+            UIbuyTokenButton.interactable = false;
         }
         return success;
     }
     public new bool SendPlayForInstrumentResponse()
     {
         bool success = base.SendPlayForInstrumentResponse();
-        UIplayerActionButton.interactable = false;
+        if (success)
+        {
+            UIplayerActionButton.interactable = false;
+            UInotRollDicesButton.interactable = false;
+        }
         return success;
     }
     public new bool SendLastDecisionsPhaseResponse(int condition)
     {
         bool success = base.SendLastDecisionsPhaseResponse(condition);
-        UIplayerActionButton.interactable = false;
-        UIReceiveFailButton.interactable = false;
-        UIReceiveMegaHitButton.interactable = false;
-        UIStickWithMarketingMegaHitButton.interactable = false;
+        if (success)
+        {
+            UIplayerActionButton.interactable = false;
+            UIReceiveFailButton.interactable = false;
+            UIReceiveMegaHitButton.interactable = false;
+            UIStickWithMarketingMegaHitButton.interactable = false;
+        }
         return success;
     }
 
@@ -255,10 +259,23 @@ public class UIPlayer : Player
         
         UIplayerActionButton.onClick.RemoveAllListeners();
         UIplayerActionButton.interactable = true;
+        UIdiscardChangesButton.interactable = true;
+        UIbuyTokenButton.interactable = true;
         UIplayerActionButton.onClick.AddListener(delegate {
             SendLevelUpResponse();
             UpdateCommonUIElements();
         });
+
+
+        if (this.money == 0)
+        {
+            UIbuyTokenButton.interactable = false;
+        }
+        else
+        {
+            UIbuyTokenButton.interactable = true;
+        }
+
 
         UpdateCommonUIElements();
     }
@@ -283,6 +300,7 @@ public class UIPlayer : Player
 
         UIplayerActionButton.onClick.RemoveAllListeners();
         UIplayerActionButton.interactable = true;
+        UInotRollDicesButton.interactable = true;
         UIplayerActionButton.onClick.AddListener(delegate {
             SendPlayForInstrumentResponse();
             UpdateCommonUIElements();
@@ -314,9 +332,23 @@ public class UIPlayer : Player
             UILastDecisionsMegaHitScreen.SetActive(false);
         }
 
+        UIplayerActionButton.interactable = true;
+        UIReceiveFailButton.interactable = true;
+        UIReceiveMegaHitButton.interactable = true;
+        if (skillSet[GameProperties.Instrument.MARKETING] == 0)
+        {
+            UIStickWithMarketingMegaHitButton.interactable = false;
+        }
+        else
+        {
+            UIStickWithMarketingMegaHitButton.interactable = true;
+        }
+
+
         UIReceiveMegaHitButton.onClick.RemoveAllListeners();
         UIStickWithMarketingMegaHitButton.onClick.RemoveAllListeners();
         UIReceiveFailButton.onClick.RemoveAllListeners();
+
         UIReceiveMegaHitButton.onClick.AddListener(delegate { SendLastDecisionsPhaseResponse(0); UpdateCommonUIElements(); });
         UIStickWithMarketingMegaHitButton.onClick.AddListener(delegate { SendLastDecisionsPhaseResponse(1); UpdateCommonUIElements(); });
         UIReceiveFailButton.onClick.AddListener(delegate { SendLastDecisionsPhaseResponse(2); UpdateCommonUIElements(); });

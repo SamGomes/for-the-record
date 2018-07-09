@@ -1,9 +1,17 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 
-public class AIPlayerSimple : Player
+public class AIPlayer: UIPlayer
+{
+    public AIPlayer(string name) : base(name)
+    {
+    }
+}
+
+public class AIPlayerSimple : AIPlayer
 {
     public AIPlayerSimple(string name) : base(name)
     {
@@ -36,49 +44,58 @@ public class AIPlayerSimple : Player
 
 }
 
-public class AIPlayerCoopStrategy : UIPlayer
+public class AIPlayerCoopStrategy : AIPlayer
 {
     GameProperties.Instrument preferredInstrument;
-
 
     public AIPlayerCoopStrategy(string name) : base(name)
     {
     }
 
-
     public override void LevelUp()
     {
         //this strategy always plays for instruments, not for markting
-        GameProperties.Instrument smallestInstrumentOverall = GameProperties.Instrument.BASS;
-        int smallestValuForInstrumenteOverall = -1;
-        
-        List<GameProperties.Instrument> playerSkillSetKeys = new List<GameProperties.Instrument>(this.GetSkillSet().Keys);
-        for (int j = 0 ; j < (playerSkillSetKeys.Count - 1) ; j++) //exclude markting, thats why the (playerSkillSetKeys.Count - 1)
+        while (this.numTokens > 0)
         {
-            GameProperties.Instrument currInstrument = playerSkillSetKeys[j];
-            int biggestValueForInstrument = -1;
-            for (int i=0; i < GameGlobals.players.Count; i++)
+            GameProperties.Instrument smallestInstrumentOverall = GameProperties.Instrument.BASS;
+            int smallestValueForInstrumenteOverall = -1;
+
+            List<GameProperties.Instrument> playerSkillSetKeys = new List<GameProperties.Instrument>(this.GetSkillSet().Keys);
+            for (int j = 0; j < (playerSkillSetKeys.Count - 1); j++) //exclude markting, thats why the (playerSkillSetKeys.Count - 1)
             {
-                Player currPlayer = GameGlobals.players[i];
-                if (this == currPlayer)
+                GameProperties.Instrument currInstrument = playerSkillSetKeys[j];
+                int biggestValueForInstrument = -1;
+                for (int i = 0; i < GameGlobals.players.Count; i++)
                 {
-                    continue;
+                    Player currPlayer = GameGlobals.players[i];
+                    if (this == currPlayer)
+                    {
+                        continue;
+                    }
+
+                    int currValue = currPlayer.GetSkillSet()[playerSkillSetKeys[j]];
+                    if (biggestValueForInstrument == -1 || currValue > biggestValueForInstrument)
+                    {
+                        biggestValueForInstrument = currValue;
+                    }
                 }
-            
-                int currValue = currPlayer.GetSkillSet()[playerSkillSetKeys[j]];
-                if(biggestValueForInstrument == -1 || currValue > biggestValueForInstrument)
+                if (smallestValueForInstrumenteOverall == -1 || (this.skillSet[currInstrument] < GameProperties.maximumSkillLevelPerInstrument && biggestValueForInstrument < smallestValueForInstrumenteOverall))
                 {
-                    biggestValueForInstrument = currValue;
+                    smallestValueForInstrumenteOverall = biggestValueForInstrument;
+                    smallestInstrumentOverall = currInstrument;
                 }
             }
-            if(smallestValuForInstrumenteOverall == -1 || biggestValueForInstrument < smallestValuForInstrumenteOverall)
+            preferredInstrument = smallestInstrumentOverall;
+            if (!GameProperties.isSimulation)
             {
-                smallestValuForInstrumenteOverall = biggestValueForInstrument;
-                smallestInstrumentOverall = currInstrument;
+                //StartCoroutine(ThinkBeforeAction(SpendToken,preferredInstrument, 2.0f));
+                UpdateCommonUIElements();
+            }
+            else
+            {
+                SpendToken(preferredInstrument);
             }
         }
-        preferredInstrument = smallestInstrumentOverall;
-        SpendToken(preferredInstrument);
         SendLevelUpResponse();
     }
 
@@ -100,6 +117,13 @@ public class AIPlayerCoopStrategy : UIPlayer
         }
     }
 
+    //predicting hri-s
+    public IEnumerator ThinkBeforeAction(Func<GameProperties.Instrument, bool> methodName, GameProperties.Instrument instrument, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        methodName(instrument);
+    }
+
 }
 
 public class AIPlayerGreedyStrategy : UIPlayer
@@ -115,8 +139,9 @@ public class AIPlayerGreedyStrategy : UIPlayer
         //this strategy always plays for markting except in the first play where it plays cooperatively
         if (gameManagerRef.GetCurrGameRound() == 0)
         {
+            //this strategy always plays for instruments, not for markting
             GameProperties.Instrument smallestInstrumentOverall = GameProperties.Instrument.BASS;
-            int smallestValuForInstrumenteOverall = -1;
+            int smallestValueForInstrumenteOverall = -1;
 
             List<GameProperties.Instrument> playerSkillSetKeys = new List<GameProperties.Instrument>(this.GetSkillSet().Keys);
             for (int j = 0; j < (playerSkillSetKeys.Count - 1); j++) //exclude markting, thats why the (playerSkillSetKeys.Count - 1)
@@ -137,9 +162,9 @@ public class AIPlayerGreedyStrategy : UIPlayer
                         biggestValueForInstrument = currValue;
                     }
                 }
-                if (smallestValuForInstrumenteOverall == -1 || biggestValueForInstrument < smallestValuForInstrumenteOverall)
+                if (smallestValueForInstrumenteOverall == -1 || (this.skillSet[currInstrument] < GameProperties.maximumSkillLevelPerInstrument && biggestValueForInstrument < smallestValueForInstrumenteOverall))
                 {
-                    smallestValuForInstrumenteOverall = biggestValueForInstrument;
+                    smallestValueForInstrumenteOverall = biggestValueForInstrument;
                     smallestInstrumentOverall = currInstrument;
                 }
             }
