@@ -266,7 +266,6 @@ public class UIPlayer : Player
         UIbuyTokenButton.interactable = true;
         UIplayerActionButton.onClick.AddListener(delegate {
             SendLevelUpResponse();
-            UpdateCommonUIElements();
         });
 
 
@@ -306,7 +305,6 @@ public class UIPlayer : Player
         UInotRollDicesButton.interactable = true;
         UIplayerActionButton.onClick.AddListener(delegate {
             SendPlayForInstrumentResponse();
-            UpdateCommonUIElements();
         });
         UpdateCommonUIElements();
     }
@@ -352,9 +350,9 @@ public class UIPlayer : Player
         UIStickWithMarketingMegaHitButton.onClick.RemoveAllListeners();
         UIReceiveFailButton.onClick.RemoveAllListeners();
 
-        UIReceiveMegaHitButton.onClick.AddListener(delegate { SendLastDecisionsPhaseResponse(0); UpdateCommonUIElements(); });
-        UIStickWithMarketingMegaHitButton.onClick.AddListener(delegate { SendLastDecisionsPhaseResponse(1); UpdateCommonUIElements(); });
-        UIReceiveFailButton.onClick.AddListener(delegate { SendLastDecisionsPhaseResponse(2); UpdateCommonUIElements(); });
+        UIReceiveMegaHitButton.onClick.AddListener(delegate { SendLastDecisionsPhaseResponse(0); });
+        UIStickWithMarketingMegaHitButton.onClick.AddListener(delegate { SendLastDecisionsPhaseResponse(1); });
+        UIReceiveFailButton.onClick.AddListener(delegate { SendLastDecisionsPhaseResponse(2); });
         UpdateCommonUIElements();
     }
 

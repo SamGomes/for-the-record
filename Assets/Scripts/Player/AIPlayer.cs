@@ -6,7 +6,16 @@ using UnityEngine.UI;
 
 public class AIPlayer : UIPlayer
 {
-    public AIPlayer(string name) : base(name) {}
+
+    protected float levelUpThinkingDelay;
+    protected float playForInstrumentThinkingDelay;
+    protected float lastDecisionThinkingDelay;
+
+    public AIPlayer(string name) : base(name) {
+        levelUpThinkingDelay = 4.0f;
+        playForInstrumentThinkingDelay = 2.0f;
+        lastDecisionThinkingDelay = 6.0f;
+    }
 
     //public new void InitUI(GameObject playerUIPrefab, GameObject canvas, WarningScreenFunctionalities warningScreenRef)
     //{
@@ -70,7 +79,7 @@ public class AIPlayerSimple : AIPlayer
         if (!GameProperties.isSimulation)
         {
             base.LevelUp();
-            playerMonoBehaviourFunctionalities.StartCoroutine(ThinkBeforeLevelingUp(2.0f));
+            playerMonoBehaviourFunctionalities.StartCoroutine(ThinkBeforeLevelingUp(levelUpThinkingDelay));
         }
         else
         {
@@ -86,7 +95,7 @@ public class AIPlayerSimple : AIPlayer
         if (!GameProperties.isSimulation)
         {
             base.LevelUp();
-            playerMonoBehaviourFunctionalities.StartCoroutine(ThinkBeforePlayForInstrument(2.0f));
+            playerMonoBehaviourFunctionalities.StartCoroutine(ThinkBeforePlayForInstrument(playForInstrumentThinkingDelay));
         }
         else
         {
@@ -109,7 +118,7 @@ public class AIPlayerSimple : AIPlayer
         if (!GameProperties.isSimulation)
         {
             base.LastDecisionsPhase(currAlbum);
-            playerMonoBehaviourFunctionalities.StartCoroutine(ThinkBeforeLastDecisionPhase(condition, 2.0f));
+            playerMonoBehaviourFunctionalities.StartCoroutine(ThinkBeforeLastDecisionPhase(condition, lastDecisionThinkingDelay));
         }
         else
         {
@@ -184,7 +193,7 @@ public class AIPlayerCoopStrategy : AIPlayer
         if (!GameProperties.isSimulation)
         {
             base.LevelUp();
-            playerMonoBehaviourFunctionalities.StartCoroutine(ThinkBeforeLevelingUp(2.0f));
+            playerMonoBehaviourFunctionalities.StartCoroutine(ThinkBeforeLevelingUp(levelUpThinkingDelay));
         }
         else
         {
@@ -198,7 +207,7 @@ public class AIPlayerCoopStrategy : AIPlayer
         if (!GameProperties.isSimulation)
         {
             base.PlayForInstrument();
-            playerMonoBehaviourFunctionalities.StartCoroutine(ThinkBeforePlayForInstrument(2.0f));
+            playerMonoBehaviourFunctionalities.StartCoroutine(ThinkBeforePlayForInstrument(playForInstrumentThinkingDelay));
         }
         else
         {
@@ -221,7 +230,7 @@ public class AIPlayerCoopStrategy : AIPlayer
         if (!GameProperties.isSimulation)
         {
             base.LastDecisionsPhase(currAlbum);
-            playerMonoBehaviourFunctionalities.StartCoroutine(ThinkBeforeLastDecisionPhase(condition, 2.0f));
+            playerMonoBehaviourFunctionalities.StartCoroutine(ThinkBeforeLastDecisionPhase(condition, lastDecisionThinkingDelay));
         }
         else
         {
@@ -246,7 +255,7 @@ public class AIPlayerGreedyStrategy : AIPlayer
         if (gameManagerRef.GetCurrGameRound() == 0)
         {
             //this strategy always plays for instruments, not for markting
-            for (int numTokensSpent = 0; numTokensSpent < (this.numTokens + 1); numTokensSpent++)
+            for (int numTokensSpent = 0; numTokensSpent < (this.numTokens - 1); numTokensSpent++)
             {
                 GameProperties.Instrument smallestInstrumentOverall = GameProperties.Instrument.NONE;
                 int smallestValueForInstrumenteOverall = -1;
@@ -286,6 +295,7 @@ public class AIPlayerGreedyStrategy : AIPlayer
                 preferredInstrument = smallestInstrumentOverall;
                 SpendToken(smallestInstrumentOverall);
             }
+            SpendToken(GameProperties.Instrument.MARKETING);
         }
         else
         {
@@ -296,7 +306,7 @@ public class AIPlayerGreedyStrategy : AIPlayer
             }
 
             //this strategy always plays for instruments, not for markting
-            for (int numTokensSpent = 0; numTokensSpent < (this.numTokens + 1); numTokensSpent++)
+            for (int numTokensSpent = 0; numTokensSpent < this.numTokens; numTokensSpent++)
             {
                 SpendToken(GameProperties.Instrument.MARKETING);
             }
@@ -305,7 +315,7 @@ public class AIPlayerGreedyStrategy : AIPlayer
         if (!GameProperties.isSimulation)
         {
             base.LevelUp();
-            playerMonoBehaviourFunctionalities.StartCoroutine(ThinkBeforeLevelingUp(2.0f));
+            playerMonoBehaviourFunctionalities.StartCoroutine(ThinkBeforeLevelingUp(levelUpThinkingDelay));
         }
         else
         {
@@ -319,7 +329,7 @@ public class AIPlayerGreedyStrategy : AIPlayer
         if (!GameProperties.isSimulation)
         {
             base.PlayForInstrument();
-            playerMonoBehaviourFunctionalities.StartCoroutine(ThinkBeforePlayForInstrument(2.0f));
+            playerMonoBehaviourFunctionalities.StartCoroutine(ThinkBeforePlayForInstrument(playForInstrumentThinkingDelay));
         }
         else
         {
@@ -342,7 +352,7 @@ public class AIPlayerGreedyStrategy : AIPlayer
         if (!GameProperties.isSimulation)
         {
             base.LastDecisionsPhase(currAlbum);
-            playerMonoBehaviourFunctionalities.StartCoroutine(ThinkBeforeLastDecisionPhase(condition, 2.0f));
+            playerMonoBehaviourFunctionalities.StartCoroutine(ThinkBeforeLastDecisionPhase(condition, lastDecisionThinkingDelay));
         }
         else
         {

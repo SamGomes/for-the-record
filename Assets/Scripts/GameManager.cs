@@ -47,7 +47,7 @@ public class GameManager : MonoBehaviour {
         //mock to test
         GameGlobals.albums = new List<Album>(GameProperties.numberOfAlbumsPerGame);
         GameGlobals.players = new List<Player>(GameProperties.numberOfPlayersPerGame);
-        GameGlobals.players.Add(new AIPlayerGreedyStrategy("AI-PL1"));
+        GameGlobals.players.Add(new AIPlayerCoopStrategy("AI-PL1"));
         GameGlobals.players.Add(new UIPlayer("PL2"));
         GameGlobals.players.Add(new UIPlayer("PL3"));
     }
@@ -368,37 +368,41 @@ public class GameManager : MonoBehaviour {
     public void StartLevelingUpPhase()
     {
         int numPlayers = GameGlobals.players.Count;
-        for (int i = 0; i < numPlayers; i++)
-        {
-            Player currPlayer = GameGlobals.players[i];
+        //for (int i = 0; i < numPlayers; i++)
+        //{
+            Player currPlayer = GameGlobals.players[0];
             currPlayer.LevelUpRequest();
-        }
+        //}
     }
     public void StartPlayForInstrumentPhase()
     {
         int numPlayers = GameGlobals.players.Count;
-        for (int i = 0; i < numPlayers; i++)
-        {
-            Player currPlayer = GameGlobals.players[i];
+        //for (int i = 0; i < numPlayers; i++)
+        //{
+            Player currPlayer = GameGlobals.players[0];
             currPlayer.PlayForInstrumentRequest();
-        }
+        //}
     }
     public void StartLastDecisionsPhase()
     {
         Album currAlbum = GameGlobals.albums[GameGlobals.albums.Count - 1];
         int numPlayers = GameGlobals.players.Count;
-        for (int i = 0; i < numPlayers; i++)
-        {
-            Player currPlayer = GameGlobals.players[i];
+        //for (int i = 0; i < numPlayers; i++)
+        //{
+            Player currPlayer = GameGlobals.players[0];
             currPlayer.LastDecisionsPhaseRequest(currAlbum);
-        }
+        //}
 
     }
 
     public void LevelUpResponse(Player invoker)
     {
-        ChangeToNextPlayer(invoker);
+        Player nextPlayer = ChangeToNextPlayer(invoker);
         numPlayersToLevelUp--;
+        if (numPlayersToLevelUp > 0)
+        {
+            nextPlayer.LevelUpRequest();
+        }
     }
     public void PlayerPlayForInstrumentResponse(Player invoker)
     {
@@ -413,43 +417,68 @@ public class GameManager : MonoBehaviour {
             currAlbum.CalcAlbumValue(); //update album value and ui after playing for instrument
         }
 
-        ChangeToNextPlayer(invoker);
+        Player nextPlayer = ChangeToNextPlayer(invoker);
         numPlayersToPlayForInstrument--;
+        if (numPlayersToPlayForInstrument > 0)
+        {
+            nextPlayer.PlayForInstrumentRequest();
+        }
     }
     public void LastDecisionsPhaseGet1000Response(Player invoker)
     {
+        Album currAlbum = GameGlobals.albums[GameGlobals.albums.Count - 1];
+        
         //receive 1000
         invoker.ReceiveMoney(GameProperties.tokenValue);
-        invoker.ReceiveTokens(1);
-        ChangeToNextPlayer(invoker);
+
+        Player nextPlayer = ChangeToNextPlayer(invoker);
         numPlayersToStartLastDecisions--;
+        if (numPlayersToStartLastDecisions > 0)
+        {
+            nextPlayer.LastDecisionsPhaseRequest(currAlbum);
+        }
     }
     public void LastDecisionsPhaseGet3000Response(Player invoker)
     {
+        Album currAlbum = GameGlobals.albums[GameGlobals.albums.Count - 1];
+
         //receive 3000
         invoker.ReceiveMoney(GameProperties.tokenValue*3);
-        invoker.ReceiveTokens(1);
-        ChangeToNextPlayer(invoker);
+
+        Player nextPlayer = ChangeToNextPlayer(invoker);
         numPlayersToStartLastDecisions--;
+        if (numPlayersToStartLastDecisions > 0)
+        {
+            nextPlayer.LastDecisionsPhaseRequest(currAlbum);
+        }
+
     }
     public void LastDecisionsPhaseGetMarktingResponse(Player invoker)
     {
+        Album currAlbum = GameGlobals.albums[GameGlobals.albums.Count - 1];
+
         //roll dices for markting
         int marktingValue = RollDicesForInstrument(invoker, GameProperties.Instrument.MARKETING);
             
         invoker.SetAlbumContribution(GameProperties.Instrument.MARKETING, marktingValue);
         invoker.ReceiveMoney(GameProperties.tokenValue * marktingValue);
-        invoker.ReceiveTokens(1);
-        //ChangeToNextPlayer(invoker);
+
+        Player nextPlayer = ChangeToNextPlayer(invoker);
         numPlayersToStartLastDecisions--;
+        if (numPlayersToStartLastDecisions > 0)
+        {
+            nextPlayer.LastDecisionsPhaseRequest(currAlbum);
+        }
     }
 
 
 
-    public void ChangeToNextPlayer(Player currPlayer)
+    public Player ChangeToNextPlayer(Player currPlayer)
     {
         Player nextPlayer = GameGlobals.players[(GameGlobals.players.IndexOf(currPlayer) + 1) % GameGlobals.players.Count];
         ChangeActivePlayerUI((UIPlayer) nextPlayer, 2.0f);
+
+        return nextPlayer;
     }
 
     public void UIAddAlbumToCollection(Album albumToAdd)
