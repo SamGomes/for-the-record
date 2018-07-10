@@ -7,6 +7,8 @@ using UnityEngine.UI;
 
 public abstract class Player
 {
+    protected PlayerMonoBehaviourFunctionalities playerMonoBehaviourFunctionalities;
+
     private int id;
     private string actionLog;
     protected GameManager gameManagerRef;
@@ -30,7 +32,6 @@ public abstract class Player
    
     public Player(string name)
     {
-
         this.id = GameGlobals.playerIdCount++;
         this.name = name;
 
@@ -59,6 +60,7 @@ public abstract class Player
     public void InitGameData()
     {
         this.gameManagerRef = GameObject.Find("GameManager").gameObject.GetComponent<GameManager>();
+        this.playerMonoBehaviourFunctionalities = gameManagerRef.GetComponent<PlayerMonoBehaviourFunctionalities>();
     }
 
     public abstract void LevelUp();

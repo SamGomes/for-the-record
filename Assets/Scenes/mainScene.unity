@@ -2391,6 +2391,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1655503343}
   - component: {fileID: 1655503344}
+  - component: {fileID: 1655503345}
   m_Layer: 5
   m_Name: GameManager
   m_TagString: Untagged
@@ -2442,6 +2443,17 @@ MonoBehaviour:
   dice20UI: {fileID: 1343802999348054, guid: e7db9767e3fa50e4c927aac9705ae4ca, type: 2}
   UIAlbumCollectionDisplay: {fileID: 52795738}
   warningScreenRef: {fileID: 381400655}
+--- !u!114 &1655503345
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1655503342}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49e7240f9475c114da311a837280073a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1708910577
 GameObject:
   m_ObjectHideFlags: 0

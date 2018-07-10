@@ -119,7 +119,7 @@ public class UIPlayer : Player
         UInameText.text = this.name + " Control Panel:";
         UpdateCommonUIElements();
     }
-
+    
 
     public void UpdateCommonUIElements()
     {
@@ -196,6 +196,7 @@ public class UIPlayer : Player
             UIplayerActionButton.interactable = false;
             UIdiscardChangesButton.interactable = false;
             UIbuyTokenButton.interactable = false;
+            UpdateCommonUIElements();
         }
         return success;
     }
@@ -206,6 +207,7 @@ public class UIPlayer : Player
         {
             UIplayerActionButton.interactable = false;
             UInotRollDicesButton.interactable = false;
+            UpdateCommonUIElements();
         }
         return success;
     }
@@ -218,6 +220,7 @@ public class UIPlayer : Player
             UIReceiveFailButton.interactable = false;
             UIReceiveMegaHitButton.interactable = false;
             UIStickWithMarketingMegaHitButton.interactable = false;
+            UpdateCommonUIElements();
         }
         return success;
     }

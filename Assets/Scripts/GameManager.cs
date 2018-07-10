@@ -37,6 +37,8 @@ public class GameManager : MonoBehaviour {
 
     private int currGameRound;
 
+    private bool gameMainSceneFinished;
+
     void Awake()
     {
         gameUtilities = new RandomUtilities();
@@ -45,13 +47,15 @@ public class GameManager : MonoBehaviour {
         //mock to test
         GameGlobals.albums = new List<Album>(GameProperties.numberOfAlbumsPerGame);
         GameGlobals.players = new List<Player>(GameProperties.numberOfPlayersPerGame);
-        GameGlobals.players.Add(new UIPlayer("AI-PL1"));
+        GameGlobals.players.Add(new AIPlayerGreedyStrategy("AI-PL1"));
         GameGlobals.players.Add(new UIPlayer("PL2"));
         GameGlobals.players.Add(new UIPlayer("PL3"));
     }
 
     public void InitGame()
     {
+        gameMainSceneFinished = false;
+
         canCheckAlbumResult = false;
         int numPlayers = GameGlobals.players.Count;
 
@@ -62,6 +66,7 @@ public class GameManager : MonoBehaviour {
             currPlayer.InitGameData();
             if ((currPlayer as UIPlayer) != null) //check if player has UI
             {
+                
                 ((UIPlayer)currPlayer).InitUI(playerUIPrefab, canvas, warningScreenRef);
                 ((UIPlayer)currPlayer).GetPlayerUI().transform.Translate(new Vector3(0, -i*170.0f, 0));
 
@@ -257,25 +262,32 @@ public class GameManager : MonoBehaviour {
             currAlbum.SetMarketingState(GameProperties.AlbumMarketingState.FAIL);
         }
 
-        //check for loss on album registry (collapse)
+        //check for game loss (collapse) or victory on album registry
         float victoryThreshold = Mathf.Ceil(GameProperties.numberOfAlbumsPerGame / 2.0f);
-        //if ((float)numMegaHits > victoryThreshold)
-        //{
-        //    GameGlobals.currGameState = GameProperties.GameState.VICTORY;
-        //}
-        //else
-        //{
-            float numAlbumsLeft = (float)(GameProperties.numberOfAlbumsPerGame - numAlbums);
-            if (numAlbumsLeft < victoryThreshold - numMegaHits)
+        
+        float numAlbumsLeft = (float)(GameProperties.numberOfAlbumsPerGame - numAlbums);
+        if (numAlbumsLeft < victoryThreshold - numMegaHits)
+        {
+            GameGlobals.currGameState = GameProperties.GameState.LOSS;
+        }
+        else
+        {
+            if(numAlbumsLeft == 0)
             {
                 GameGlobals.currGameState = GameProperties.GameState.LOSS;
             }
-        //}
+        }
     }
 
 
     // wait for all players to exit one phase and start other phase
     void Update () {
+        
+        //avoid rerun in this case because load scene is asyncronous
+        if (this.gameMainSceneFinished)
+        {
+            return;
+        }
 
         //end of first phase; trigger second phase
         if (numPlayersToLevelUp == 0)
@@ -308,47 +320,45 @@ public class GameManager : MonoBehaviour {
             //reinit some things for next game if game result is known or max albums are achieved
             if (GameGlobals.currGameState != GameProperties.GameState.NOT_FINISHED)
             {
-                currGameRound=0;
-                GameGlobals.currGameState = GameProperties.GameState.NOT_FINISHED;
-                Debug.Log("GameGlobals.currGameState: "+ GameGlobals.currGameState);
+                currGameRound = 0;
+                //GameGlobals.currGameState = GameProperties.GameState.NOT_FINISHED;
+                Debug.Log("GameGlobals.currGameState: " + GameGlobals.currGameState);
 
                 //move albums to root so they can be saved through scenes
-                foreach(Album album in GameGlobals.albums)
+                foreach (Album album in GameGlobals.albums)
                 {
                     UIRemoveAlbumFromCollection(album);
                 }
 
                 GameSceneManager.LoadEndScene();
+                this.gameMainSceneFinished = true;
                 return;
-            }
-
-            Album currAlbum = GameGlobals.albums[numPlayedAlbums - 1];
-
-            //write curr game logs
-            FileManager.WriteAlbumResultsToLog(GameGlobals.currGameId.ToString(), currGameRound.ToString(), currAlbum.GetId().ToString(), currAlbum.GetName(), currAlbum.GetMarketingState().ToString());
-            foreach(Player player in GameGlobals.players)
-            {
-                FileManager.WritePlayerResultsToLog(GameGlobals.currGameId.ToString(), currGameRound.ToString(), player.GetId().ToString(), player.GetName(), player.GetMoney().ToString());
-            }
-            
-            numPlayersToStartLastDecisions = GameGlobals.players.Count;
-            currGameRound++;
-
-            //start next game round whenever ready
-            if (!GameProperties.isSimulation)
-            {
-                ////disable old album before loading new game round screen
-                //if (GameGlobals.albums.Count > 0)
-                //{
-                //    GameObject currAlbumUI = GameGlobals.albums[GameGlobals.albums.Count - 1].GetAlbumUI();
-                //    currAlbumUI.SetActive(false);
-                //}
-                UIAddAlbumToCollection(currAlbum);
-                UInewRoundScreen.SetActive(true);
             }
             else
             {
-                StartGameRoundForAllPlayers("SimAlbum");
+
+                Album currAlbum = GameGlobals.albums[numPlayedAlbums - 1];
+
+                //write curr game logs
+                FileManager.WriteAlbumResultsToLog(GameGlobals.currGameId.ToString(), currGameRound.ToString(), currAlbum.GetId().ToString(), currAlbum.GetName(), currAlbum.GetMarketingState().ToString());
+                foreach (Player player in GameGlobals.players)
+                {
+                    FileManager.WritePlayerResultsToLog(GameGlobals.currGameId.ToString(), currGameRound.ToString(), player.GetId().ToString(), player.GetName(), player.GetMoney().ToString());
+                }
+
+                numPlayersToStartLastDecisions = GameGlobals.players.Count;
+                currGameRound++;
+
+                //start next game round whenever ready
+                if (!GameProperties.isSimulation)
+                {
+                    UIAddAlbumToCollection(currAlbum);
+                    UInewRoundScreen.SetActive(true);
+                }
+                else
+                {
+                    StartGameRoundForAllPlayers("SimAlbum");
+                }
             }
         }
 
@@ -460,7 +470,7 @@ public class GameManager : MonoBehaviour {
     public void UIRemoveAlbumFromCollection(Album albumToRemove)
     {
         GameObject currAlbumUI = albumToRemove.GetAlbumUI();
-        currAlbumUI.transform.SetParent(transform.root);
+        currAlbumUI.transform.parent = null;
     }
 
 }
