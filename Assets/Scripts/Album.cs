@@ -28,7 +28,6 @@ public class Album {
         this.id = GameGlobals.albumIdCount++;
 
         this.albumUI = Object.Instantiate(albumUIPrefab);
-        Object.DontDestroyOnLoad(this.albumUI);
 
         this.UIbackgroundImageEventSystem = albumUI.transform.Find("button").GetComponent<Button>();
 

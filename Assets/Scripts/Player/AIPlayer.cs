@@ -13,8 +13,8 @@ public class AIPlayer : UIPlayer
 
     public AIPlayer(string name) : base(name) {
         levelUpThinkingDelay = 4.0f;
-        playForInstrumentThinkingDelay = 2.0f;
-        lastDecisionThinkingDelay = 6.0f;
+        playForInstrumentThinkingDelay = 8.0f;
+        lastDecisionThinkingDelay = 2.0f;
     }
 
     //public new void InitUI(GameObject playerUIPrefab, GameObject canvas, WarningScreenFunctionalities warningScreenRef)
