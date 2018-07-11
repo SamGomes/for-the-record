@@ -39,17 +39,20 @@ public class GameManager : MonoBehaviour {
 
     private bool gameMainSceneFinished;
 
+
+    private Album currAlbum;
+
     void Awake()
     {
         gameUtilities = new RandomUtilities();
 
 
-        //mock to test
-        GameGlobals.albums = new List<Album>(GameProperties.numberOfAlbumsPerGame);
-        GameGlobals.players = new List<Player>(GameProperties.numberOfPlayersPerGame);
-        GameGlobals.players.Add(new UIPlayer("AI-PL1"));
-        GameGlobals.players.Add(new UIPlayer("PL2"));
-        GameGlobals.players.Add(new UIPlayer("PL3"));
+        ////mock to test
+        //GameGlobals.albums = new List<Album>(GameProperties.numberOfAlbumsPerGame);
+        //GameGlobals.players = new List<Player>(GameProperties.numberOfPlayersPerGame);
+        //GameGlobals.players.Add(new AIPlayerCoopStrategy("Coop Jeff"));
+        //GameGlobals.players.Add(new AIPlayerGreedyStrategy("Greedy Kevin"));
+        //GameGlobals.players.Add(new AIPlayerBalancedStrategy("Balanced Sam"));
     }
 
     public void InitGame()
@@ -140,6 +143,7 @@ public class GameManager : MonoBehaviour {
             rollDiceForMarketButton.onClick.AddListener(delegate () {
                 canCheckAlbumResult = true;
             });
+            
         }
 
 
@@ -150,7 +154,7 @@ public class GameManager : MonoBehaviour {
         Album newAlbum = new Album(albumName, albumUIPrefab);
         newAlbum.GetAlbumUI().SetActive(true);
         GameGlobals.albums.Add(newAlbum);
-        //UIAddAlbumToCollection(newAlbum);
+        this.currAlbum = newAlbum;
 
         int numPlayers = GameGlobals.players.Count;
         for (int i = 0; i < numPlayers; i++)
@@ -166,8 +170,6 @@ public class GameManager : MonoBehaviour {
 
     public int RollDicesForInstrument(Player currPlayer, GameProperties.Instrument instrument)
     {
-        Album currAlbum = GameGlobals.albums[GameGlobals.albums.Count - 1];
-
         var skillSet = currPlayer.GetSkillSet();
 
         int newAlbumInstrumentValue = 0;
@@ -221,8 +223,7 @@ public class GameManager : MonoBehaviour {
         diceImage.overrideSprite = currDiceNumberSprite;
 
         yield return new WaitForSeconds(delayToClose);
-
-        Album currAlbum = GameGlobals.albums[GameGlobals.albums.Count - 1];
+        
         UIRollDiceForInstrumentOverlay.SetActive(false);
         Destroy(diceImageClone);
     }
@@ -246,8 +247,6 @@ public class GameManager : MonoBehaviour {
     public void CheckAlbumResult()
     {
         int numAlbums = GameGlobals.albums.Count;
-        Album currAlbum = GameGlobals.albums[numAlbums - 1];
-
         int numPlayers = GameGlobals.players.Count;
         
         int newAlbumValue = currAlbum.CalcAlbumValue();
@@ -301,7 +300,7 @@ public class GameManager : MonoBehaviour {
         {
             //make phase UI active (this step is interim but must be done before last phase)
             UIRollDiceForMarketValueScreen.SetActive(true);
-            if (canCheckAlbumResult)
+            if (canCheckAlbumResult || GameProperties.isSimulation)
             {
                 CheckAlbumResult();
                 canCheckAlbumResult = false;
@@ -316,8 +315,6 @@ public class GameManager : MonoBehaviour {
         if (numPlayersToStartLastDecisions == 0)
         {
             int numPlayedAlbums = GameGlobals.albums.Count;
-
-            Album currAlbum = GameGlobals.albums[numPlayedAlbums - 1];
 
             //write curr game logs
             FileManager.WriteAlbumResultsToLog(GameGlobals.currGameId.ToString(), currGameRound.ToString(), currAlbum.GetId().ToString(), currAlbum.GetName(), currAlbum.GetMarketingState().ToString());
@@ -370,7 +367,7 @@ public class GameManager : MonoBehaviour {
         //for (int i = 0; i < numPlayers; i++)
         //{
             Player currPlayer = GameGlobals.players[0];
-            currPlayer.LevelUpRequest();
+            currPlayer.LevelUpRequest(currAlbum);
         //}
     }
     public void StartPlayForInstrumentPhase()
@@ -379,7 +376,7 @@ public class GameManager : MonoBehaviour {
         //for (int i = 0; i < numPlayers; i++)
         //{
             Player currPlayer = GameGlobals.players[0];
-            currPlayer.PlayForInstrumentRequest();
+            currPlayer.PlayForInstrumentRequest(currAlbum);
         //}
     }
     public void StartLastDecisionsPhase()
@@ -399,12 +396,11 @@ public class GameManager : MonoBehaviour {
         numPlayersToLevelUp--;
         if (numPlayersToLevelUp > 0)
         {
-            nextPlayer.LevelUpRequest();
+            nextPlayer.LevelUpRequest(currAlbum);
         }
     }
     public void PlayerPlayForInstrumentResponse(Player invoker)
     {
-        Album currAlbum = GameGlobals.albums[GameGlobals.albums.Count - 1];
         GameProperties.Instrument rollDiceInstrument = invoker.GetDiceRollInstrument();
         if (rollDiceInstrument != GameProperties.Instrument.NONE) //if there is a roll dice instrument
         {
@@ -419,13 +415,11 @@ public class GameManager : MonoBehaviour {
         numPlayersToPlayForInstrument--;
         if (numPlayersToPlayForInstrument > 0)
         {
-            nextPlayer.PlayForInstrumentRequest();
+            nextPlayer.PlayForInstrumentRequest(currAlbum);
         }
     }
     public void LastDecisionsPhaseGet1000Response(Player invoker)
     {
-        Album currAlbum = GameGlobals.albums[GameGlobals.albums.Count - 1];
-        
         //receive 1000
         invoker.ReceiveMoney(GameProperties.tokenValue);
 
@@ -438,8 +432,6 @@ public class GameManager : MonoBehaviour {
     }
     public void LastDecisionsPhaseGet3000Response(Player invoker)
     {
-        Album currAlbum = GameGlobals.albums[GameGlobals.albums.Count - 1];
-
         //receive 3000
         invoker.ReceiveMoney(GameProperties.tokenValue*3);
 
@@ -453,8 +445,6 @@ public class GameManager : MonoBehaviour {
     }
     public void LastDecisionsPhaseGetMarktingResponse(Player invoker)
     {
-        Album currAlbum = GameGlobals.albums[GameGlobals.albums.Count - 1];
-
         //roll dices for markting
         int marktingValue = RollDicesForInstrument(invoker, GameProperties.Instrument.MARKETING);
             

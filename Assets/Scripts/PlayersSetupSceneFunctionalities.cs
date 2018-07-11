@@ -27,9 +27,10 @@ public class PlayersSetupSceneFunctionalities : MonoBehaviour {
 
             UIStartGameButton.gameObject.SetActive(false);
 
-            UIAIPlayerSelectionDropdown.options.Add(new Dropdown.OptionData("GREEDY"));
-            UIAIPlayerSelectionDropdown.options.Add(new Dropdown.OptionData("LIBERAL"));
-            UIAIPlayerSelectionDropdown.options.Add(new Dropdown.OptionData("MIXED"));
+            foreach(string type in System.Enum.GetNames(typeof(GameProperties.AIPlayerType)))
+            {
+                UIAIPlayerSelectionDropdown.options.Add(new Dropdown.OptionData(type));
+            }
 
             UIStartGameButton.onClick.AddListener(delegate { StartGame(); });
             UIAddPlayerButton.onClick.AddListener(delegate
@@ -39,7 +40,24 @@ public class PlayersSetupSceneFunctionalities : MonoBehaviour {
             });
             UIAddAIPlayerButton.onClick.AddListener(delegate
             {
-                GameGlobals.players.Add(new AIPlayerGreedyStrategy(UINameSelectionInputBox.text));
+                string playerName = UINameSelectionInputBox.text;
+                AIPlayer newPlayer = new AIPlayer(playerName);
+                switch ((GameProperties.AIPlayerType) UIAIPlayerSelectionDropdown.value)
+                {
+                    case GameProperties.AIPlayerType.SIMPLE:
+                        newPlayer = new AIPlayerSimple(playerName);
+                        break;
+                    case GameProperties.AIPlayerType.COOPERATIVE:
+                        newPlayer = new AIPlayerCoopStrategy(playerName);
+                        break;
+                    case GameProperties.AIPlayerType.GREEDY:
+                        newPlayer = new AIPlayerGreedyStrategy(playerName);
+                        break;
+                    case GameProperties.AIPlayerType.BALANCED:
+                        newPlayer = new AIPlayerBalancedStrategy(playerName);
+                        break;
+                }
+                GameGlobals.players.Add(newPlayer);
                 CheckForAllPlayersRegistered();
             });
         }

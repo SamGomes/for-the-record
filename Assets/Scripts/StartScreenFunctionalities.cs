@@ -11,6 +11,7 @@ public class StartScreenFunctionalities : MonoBehaviour {
     {
         GameGlobals.albums = new List<Album>(GameProperties.numberOfAlbumsPerGame);
         GameGlobals.players = new List<Player>(GameProperties.numberOfPlayersPerGame);
+        
     }
 
     private void StartGame()
@@ -20,6 +21,8 @@ public class StartScreenFunctionalities : MonoBehaviour {
         {
             FileManager.InitWriter();
         }
+        //GameGlobals.playerIdCount = 0;
+        //GameGlobals.albumIdCount = 0;
         GameGlobals.currGameId++;
         GameSceneManager.LoadPlayersSetupScene();
     }

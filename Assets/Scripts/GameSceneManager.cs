@@ -9,18 +9,46 @@ public static class GameSceneManager{
 
     public static void LoadStartScene()
     {
-        transitionEffect.LoadSceneWithEffect("startScene", LoadSceneMode.Single);
+        if (!GameProperties.isSimulation)
+        {
+            transitionEffect.LoadSceneWithEffect("startScene", LoadSceneMode.Single);
+        }
+        else
+        {
+            SceneManager.LoadScene("startScene", LoadSceneMode.Single);
+        }
     }
     public static void LoadPlayersSetupScene()
     {
-        transitionEffect.LoadSceneWithEffect("playersSetupScene", LoadSceneMode.Single);
+        if (!GameProperties.isSimulation)
+        {
+            transitionEffect.LoadSceneWithEffect("playersSetupScene", LoadSceneMode.Single);
+        }
+        else
+        {
+            SceneManager.LoadScene("playersSetupScene", LoadSceneMode.Single);
+        }
     }
     public static void LoadMainScene()
     {
-        transitionEffect.LoadSceneWithEffect("mainScene", LoadSceneMode.Single);
+        if (!GameProperties.isSimulation)
+        {
+            transitionEffect.LoadSceneWithEffect("mainScene", LoadSceneMode.Single);
+        }
+        else
+        {
+            SceneManager.LoadScene("mainScene", LoadSceneMode.Single);
+        }
     }
     public static void LoadEndScene()
     {
-        transitionEffect.LoadSceneWithEffect("endScene", LoadSceneMode.Single);
+        if (!GameProperties.isSimulation)
+        {
+            transitionEffect.LoadSceneWithEffect("endScene", LoadSceneMode.Single);
+        }
+        else
+        {
+            SceneManager.LoadScene("endScene", LoadSceneMode.Single);
+        }
     }
 }

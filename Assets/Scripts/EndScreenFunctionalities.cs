@@ -21,14 +21,14 @@ public class EndScreenFunctionalities : MonoBehaviour
 
     private void RestartGame()
     {
+        foreach(Album album in GameGlobals.albums)
+        {
+            Object.Destroy(album.GetAlbumUI());
+        }
         GameSceneManager.LoadStartScene();
         Debug.Log("numGamesToSimulate: " + GameProperties.numGamesToSimulate);
 
         GameProperties.numGamesToSimulate--;
-        if (GameProperties.numGamesToSimulate == 0)
-        {
-            FileManager.CloseWriter();
-        }
     }
 
     private IEnumerator HideAfterDelay(GameObject obj, float delay)
@@ -145,10 +145,17 @@ public class EndScreenFunctionalities : MonoBehaviour
             newTableEntry.GetComponentsInChildren<Text>()[1].text = currPlayer.GetMoney().ToString();
         }
 
-
+        FileManager.WriteGameToLog(GameGlobals.currGameId.ToString(), GameGlobals.currGameState.ToString());
         if (GameProperties.isSimulation)
         {
-            RestartGame();
+            if (GameProperties.numGamesToSimulate > 1)
+            {
+                RestartGame();
+            }
+            else
+            {
+                FileManager.CloseWriter();
+            }
         }
 
     }

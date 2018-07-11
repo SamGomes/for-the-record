@@ -243,7 +243,7 @@ public class UIPlayer : Player
     }
 
 
-    public override void LevelUp()
+    public override void LevelUp(Album currAlbum)
     {
         UIplayerActionButton.gameObject.SetActive(true);
         UILevelUpScreen.SetActive(true);
@@ -281,7 +281,7 @@ public class UIPlayer : Player
 
         UpdateCommonUIElements();
     }
-    public override void PlayForInstrument()
+    public override void PlayForInstrument(Album currAlbum)
     {
         UIplayerActionButton.gameObject.SetActive(true);
         UILevelUpScreen.SetActive(false);

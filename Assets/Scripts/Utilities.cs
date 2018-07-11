@@ -42,10 +42,12 @@ public static class GameProperties
         MEGA_HIT
     }
 
-    public enum PlayerAction
+    public enum AIPlayerType
     {
-        SPEND_TOKEN,
-        CHANGE_PREFERRED_INSTRUMENT
+        SIMPLE,
+        COOPERATIVE,
+        GREEDY,
+        BALANCED
     }
 
     public static int tokenValue = 1000;
@@ -54,12 +56,12 @@ public static class GameProperties
 
     public static int maximumSkillLevelPerInstrument = 3;
 
-    public static int numberOfAlbumsPerGame = 2;
+    public static int numberOfAlbumsPerGame = 5;
     public static int numberOfPlayersPerGame = 3;
 
 
     //------------ Simulation --------------------
-    public static bool isSimulation = false;
+    public static bool isSimulation = true;
     public static int numGamesToSimulate = 10000;
 }
 

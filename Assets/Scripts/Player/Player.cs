@@ -9,7 +9,7 @@ public abstract class Player
 {
     protected PlayerMonoBehaviourFunctionalities playerMonoBehaviourFunctionalities;
 
-    private int id;
+    protected int id;
     private string actionLog;
     protected GameManager gameManagerRef;
 
@@ -55,6 +55,7 @@ public abstract class Player
             skillSet[instrument] = 0;
             albumContributions[instrument] = 0;
         }
+
     }
 
     public void InitGameData()
@@ -63,8 +64,8 @@ public abstract class Player
         this.playerMonoBehaviourFunctionalities = gameManagerRef.GetComponent<PlayerMonoBehaviourFunctionalities>();
     }
 
-    public abstract void LevelUp();
-    public abstract void PlayForInstrument();
+    public abstract void LevelUp(Album currAlbum);
+    public abstract void PlayForInstrument(Album currAlbum);
     public abstract void LastDecisionsPhase(Album currAlbum);
 
 
@@ -77,19 +78,19 @@ public abstract class Player
         return this.name;
     }
 
-    public void LevelUpRequest()
+    public void LevelUpRequest(Album currAlbum)
     {
         //save player state before changes
         unchangedSkillSetInstruments = new Dictionary<GameProperties.Instrument, int>();
         unchangedMoney = money;
         unchangedNumTokens = numTokens;
 
-        LevelUp();
+        LevelUp(currAlbum);
     }
-    public void PlayForInstrumentRequest()
+    public void PlayForInstrumentRequest(Album currAlbum)
     {
         tokensBoughtOnCurrRound = 0; //reset tokens bought on this round to 0
-        PlayForInstrument();
+        PlayForInstrument(currAlbum);
     }
     public void LastDecisionsPhaseRequest(Album currAlbum)
     {
