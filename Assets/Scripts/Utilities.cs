@@ -61,8 +61,8 @@ public static class GameProperties
 
 
     //------------ Simulation --------------------
-    public static bool isSimulation = true;
-    public static int numGamesToSimulate = 10000;
+    public static bool isSimulation = false;
+    public static int numGamesToSimulate = 1000;
 }
 
 public interface IUtilities
@@ -75,16 +75,15 @@ public class RandomUtilities: IUtilities{
 
     public int RollTheDice(int diceNumbers)
     {
-        return random.Next(diceNumbers-1) + 1;
+        return random.Next(1,diceNumbers+1);
     }
 }
 
-public class FixedUtilities : IUtilities
-{
+public class FixedUtilities : IUtilities{
     int numberOfDiceRolls = 0;
     public int RollTheDice(int diceNumbers)
     {
         numberOfDiceRolls++;
-        return numberOfDiceRolls;
+        return numberOfDiceRolls%diceNumbers;
     }
 }

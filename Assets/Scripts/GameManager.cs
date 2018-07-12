@@ -47,12 +47,12 @@ public class GameManager : MonoBehaviour {
         gameUtilities = new RandomUtilities();
 
 
-        ////mock to test
-        //GameGlobals.albums = new List<Album>(GameProperties.numberOfAlbumsPerGame);
-        //GameGlobals.players = new List<Player>(GameProperties.numberOfPlayersPerGame);
-        //GameGlobals.players.Add(new AIPlayerCoopStrategy("Coop Jeff"));
-        //GameGlobals.players.Add(new AIPlayerGreedyStrategy("Greedy Kevin"));
-        //GameGlobals.players.Add(new AIPlayerBalancedStrategy("Balanced Sam"));
+        //mock to test
+        GameGlobals.albums = new List<Album>(GameProperties.numberOfAlbumsPerGame);
+        GameGlobals.players = new List<Player>(GameProperties.numberOfPlayersPerGame);
+        GameGlobals.players.Add(new UIPlayer("Coop Jeff"));
+        GameGlobals.players.Add(new UIPlayer("Greedy Kevin"));
+        GameGlobals.players.Add(new UIPlayer("Balanced Sam"));
     }
 
     public void InitGame()
@@ -351,6 +351,14 @@ public class GameManager : MonoBehaviour {
                 {
                     UIRemoveAlbumFromCollection(album);
                     Object.DontDestroyOnLoad(album.GetAlbumUI()); //can only be made after getting the object on root
+                }
+
+                if(GameGlobals.currGameState == GameProperties.GameState.LOSS)
+                {
+                    foreach(Player player in GameGlobals.players)
+                    {
+                        player.TakeAllMoney();
+                    }
                 }
 
                 GameSceneManager.LoadEndScene();

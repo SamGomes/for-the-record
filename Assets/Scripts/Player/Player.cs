@@ -225,6 +225,10 @@ public abstract class Player
         tokensBoughtOnCurrRound = 0;
     }
 
+    public void TakeAllMoney()
+    {
+        this.money = 0;
+    }
     public void ReceiveMoney(int moneyToReceive)
     {
         this.money += moneyToReceive;
