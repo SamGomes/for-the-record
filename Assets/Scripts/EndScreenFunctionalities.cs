@@ -16,6 +16,8 @@ public class EndScreenFunctionalities : MonoBehaviour
     public GameObject UIVictoryOverlay;
     public GameObject UILossOverlay;
 
+    public GameObject mainScreen;
+
 
     public GameObject albumUIPrefab;
 
@@ -35,8 +37,10 @@ public class EndScreenFunctionalities : MonoBehaviour
     {
         yield return new WaitForSeconds(delay);
         obj.SetActive(false);
+
         if (!GameProperties.isSimulation)
         {
+            mainScreen.SetActive(true);
             LoadEndScreenUIElements();
         }
     }
@@ -89,31 +93,40 @@ public class EndScreenFunctionalities : MonoBehaviour
     void Start()
     {
         //mock
-        //GameGlobals.albums = new List<Album>(GameProperties.numberOfAlbumsPerGame);
-        //Album newAlbum = new Album("1", albumUIPrefab);
-        //GameGlobals.albums.Add(newAlbum);
-        //newAlbum = new Album("2", albumUIPrefab);
-        //GameGlobals.albums.Add(newAlbum);
-        //newAlbum = new Album("3", albumUIPrefab);
-        //GameGlobals.albums.Add(newAlbum);
-        //newAlbum = new Album("4", albumUIPrefab);
-        //GameGlobals.albums.Add(newAlbum);
-        //newAlbum = new Album("5", albumUIPrefab);
-        //GameGlobals.albums.Add(newAlbum);
-        //newAlbum = new Album("6", albumUIPrefab);
-        //GameGlobals.albums.Add(newAlbum);
-        //newAlbum = new Album("7", albumUIPrefab);
-        //GameGlobals.albums.Add(newAlbum);
-        //GameGlobals.players = new List<Player>(GameProperties.numberOfPlayersPerGame);
-        //GameGlobals.players.Add(new UIPlayer("PL1"));
-        //GameGlobals.players.Add(new UIPlayer("PL2"));
-        //GameGlobals.players.Add(new UIPlayer("PL3"));
+        GameGlobals.albums = new List<Album>(GameProperties.numberOfAlbumsPerGame);
+        Album newAlbum = new Album("1", albumUIPrefab);
+        GameGlobals.albums.Add(newAlbum);
+        newAlbum = new Album("2", albumUIPrefab);
+        GameGlobals.albums.Add(newAlbum);
+        newAlbum = new Album("3", albumUIPrefab);
+        GameGlobals.albums.Add(newAlbum);
+        newAlbum = new Album("4", albumUIPrefab);
+        GameGlobals.albums.Add(newAlbum);
+        newAlbum = new Album("5", albumUIPrefab);
+        GameGlobals.albums.Add(newAlbum);
+        newAlbum = new Album("6", albumUIPrefab);
+        GameGlobals.albums.Add(newAlbum);
+        newAlbum = new Album("7", albumUIPrefab);
+        GameGlobals.albums.Add(newAlbum);
+        GameGlobals.players = new List<Player>(GameProperties.numberOfPlayersPerGame);
+        GameGlobals.players.Add(new UIPlayer("PL1"));
+        GameGlobals.players.Add(new UIPlayer("PL2"));
+        GameGlobals.players.Add(new UIPlayer("PL3"));
+        GameGlobals.currGameState = GameProperties.GameState.VICTORY;
 
 
         UIVictoryOverlay.SetActive(false);
         UILossOverlay.SetActive(false);
+        mainScreen.SetActive(false);
 
-        if (GameGlobals.currGameState == GameProperties.GameState.VICTORY)
+        int numAlbumsPlayed = GameGlobals.albums.Count;
+        for (int i = 0; i < numAlbumsPlayed; i++)
+        {
+            GameGlobals.albums[i].GetAlbumUI().SetActive(false);
+        }
+
+
+            if (GameGlobals.currGameState == GameProperties.GameState.VICTORY)
         {
             UIVictoryOverlay.SetActive(true);
             StartCoroutine(HideAfterDelay(UIVictoryOverlay, 5.0f));
@@ -124,16 +137,12 @@ public class EndScreenFunctionalities : MonoBehaviour
             StartCoroutine(HideAfterDelay(UILossOverlay, 5.0f));
 
         }
-        //StartCoroutine(HideAfterDelay(UILossOverlay, 0.0f));
-        if (!GameProperties.isSimulation)
+        else
         {
-            LoadEndScreenUIElements();
+            Debug.Log("[ERROR]: Game state returned NON FINISHED on game end!");
+            return;
         }
-        //else
-        //{
-        //    Debug.Log("[ERROR]: Game state returned NON FINISHED on game end!");
-        //    return;
-        //}
+
 
         GameGlobals.players.Sort(SortPlayersByMoney);
         int numPlayers = GameGlobals.players.Count;
