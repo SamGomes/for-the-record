@@ -33,10 +33,9 @@ public class EndScreenFunctionalities : MonoBehaviour
         GameProperties.numGamesToSimulate--;
     }
 
-    private IEnumerator HideAfterDelay(GameObject obj, float delay)
+    private IEnumerator LoadMainScreenAfterDelay(float delay)
     {
         yield return new WaitForSeconds(delay);
-        obj.SetActive(false);
 
         if (!GameProperties.isSimulation)
         {
@@ -92,27 +91,27 @@ public class EndScreenFunctionalities : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        //mock
-        GameGlobals.albums = new List<Album>(GameProperties.numberOfAlbumsPerGame);
-        Album newAlbum = new Album("1", albumUIPrefab);
-        GameGlobals.albums.Add(newAlbum);
-        newAlbum = new Album("2", albumUIPrefab);
-        GameGlobals.albums.Add(newAlbum);
-        newAlbum = new Album("3", albumUIPrefab);
-        GameGlobals.albums.Add(newAlbum);
-        newAlbum = new Album("4", albumUIPrefab);
-        GameGlobals.albums.Add(newAlbum);
-        newAlbum = new Album("5", albumUIPrefab);
-        GameGlobals.albums.Add(newAlbum);
-        newAlbum = new Album("6", albumUIPrefab);
-        GameGlobals.albums.Add(newAlbum);
-        newAlbum = new Album("7", albumUIPrefab);
-        GameGlobals.albums.Add(newAlbum);
-        GameGlobals.players = new List<Player>(GameProperties.numberOfPlayersPerGame);
-        GameGlobals.players.Add(new UIPlayer("PL1"));
-        GameGlobals.players.Add(new UIPlayer("PL2"));
-        GameGlobals.players.Add(new UIPlayer("PL3"));
-        GameGlobals.currGameState = GameProperties.GameState.VICTORY;
+        ////mock
+        //GameGlobals.albums = new List<Album>(GameProperties.numberOfAlbumsPerGame);
+        //Album newAlbum = new Album("1", albumUIPrefab);
+        //GameGlobals.albums.Add(newAlbum);
+        //newAlbum = new Album("2", albumUIPrefab);
+        //GameGlobals.albums.Add(newAlbum);
+        //newAlbum = new Album("3", albumUIPrefab);
+        //GameGlobals.albums.Add(newAlbum);
+        //newAlbum = new Album("4", albumUIPrefab);
+        //GameGlobals.albums.Add(newAlbum);
+        //newAlbum = new Album("5", albumUIPrefab);
+        //GameGlobals.albums.Add(newAlbum);
+        //newAlbum = new Album("6", albumUIPrefab);
+        //GameGlobals.albums.Add(newAlbum);
+        //newAlbum = new Album("7", albumUIPrefab);
+        //GameGlobals.albums.Add(newAlbum);
+        //GameGlobals.players = new List<Player>(GameProperties.numberOfPlayersPerGame);
+        //GameGlobals.players.Add(new UIPlayer("PL1"));
+        //GameGlobals.players.Add(new UIPlayer("PL2"));
+        //GameGlobals.players.Add(new UIPlayer("PL3"));
+        //GameGlobals.currGameState = GameProperties.GameState.VICTORY;
 
 
         UIVictoryOverlay.SetActive(false);
@@ -126,15 +125,13 @@ public class EndScreenFunctionalities : MonoBehaviour
         }
 
 
-            if (GameGlobals.currGameState == GameProperties.GameState.VICTORY)
+        if (GameGlobals.currGameState == GameProperties.GameState.VICTORY)
         {
             UIVictoryOverlay.SetActive(true);
-            StartCoroutine(HideAfterDelay(UIVictoryOverlay, 5.0f));
         }
         else if(GameGlobals.currGameState == GameProperties.GameState.LOSS)
         {
             UILossOverlay.SetActive(true);
-            StartCoroutine(HideAfterDelay(UILossOverlay, 5.0f));
 
         }
         else
@@ -142,6 +139,7 @@ public class EndScreenFunctionalities : MonoBehaviour
             Debug.Log("[ERROR]: Game state returned NON FINISHED on game end!");
             return;
         }
+        StartCoroutine(LoadMainScreenAfterDelay(5.0f));
 
 
         GameGlobals.players.Sort(SortPlayersByMoney);

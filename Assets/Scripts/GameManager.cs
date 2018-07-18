@@ -47,7 +47,7 @@ public class GameManager : MonoBehaviour {
         gameUtilities = new RandomUtilities();
 
 
-        //mock to test
+        ////mock to test
         GameGlobals.albums = new List<Album>(GameProperties.numberOfAlbumsPerGame);
         GameGlobals.players = new List<Player>(GameProperties.numberOfPlayersPerGame);
         GameGlobals.players.Add(new UIPlayer("Coop Jeff"));
