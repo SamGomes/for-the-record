@@ -152,7 +152,7 @@ public class EndScreenFunctionalities : MonoBehaviour
             newTableEntry.GetComponentsInChildren<Text>()[1].text = currPlayer.GetMoney().ToString();
         }
 
-        FileManager.WriteGameToLog(GameGlobals.currGameId.ToString(), GameGlobals.currGameState.ToString());
+        GameProperties.gameLogManager.WriteGameToLog(GameGlobals.currGameId.ToString(), GameGlobals.currGameState.ToString());
         if (GameProperties.isSimulation)
         {
             if (GameProperties.numGamesToSimulate > 1)
@@ -161,7 +161,7 @@ public class EndScreenFunctionalities : MonoBehaviour
             }
             else
             {
-                FileManager.CloseWriter();
+                GameProperties.gameLogManager.CloseLogs();
             }
         }
 

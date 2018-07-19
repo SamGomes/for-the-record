@@ -317,10 +317,10 @@ public class GameManager : MonoBehaviour {
             int numPlayedAlbums = GameGlobals.albums.Count;
 
             //write curr game logs
-            FileManager.WriteAlbumResultsToLog(GameGlobals.currGameId.ToString(), currGameRound.ToString(), currAlbum.GetId().ToString(), currAlbum.GetName(), currAlbum.GetMarketingState().ToString());
+            GameProperties.gameLogManager.WriteAlbumResultsToLog(GameGlobals.currGameId.ToString(), currGameRound.ToString(), currAlbum.GetId().ToString(), currAlbum.GetName(), currAlbum.GetMarketingState().ToString());
             foreach (Player player in GameGlobals.players)
             {
-                FileManager.WritePlayerResultsToLog(GameGlobals.currGameId.ToString(), currGameRound.ToString(), player.GetId().ToString(), player.GetName(), player.GetMoney().ToString());
+                GameProperties.gameLogManager.WritePlayerResultsToLog(GameGlobals.currGameId.ToString(), currGameRound.ToString(), player.GetId().ToString(), player.GetName(), player.GetMoney().ToString());
             }
 
             numPlayersToStartLastDecisions = GameGlobals.players.Count;

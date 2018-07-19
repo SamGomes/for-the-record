@@ -63,6 +63,8 @@ public static class GameProperties
     //------------ Simulation --------------------
     public static bool isSimulation = false;
     public static int numGamesToSimulate = 1000;
+
+    public static LogManager gameLogManager = new GoogleFormsLogManager();
 }
 
 public interface IUtilities

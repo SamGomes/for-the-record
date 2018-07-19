@@ -4,8 +4,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-
-
 public class AIPlayer : UIPlayer
 {
     protected GameProperties.AIPlayerType type;
@@ -20,24 +18,9 @@ public class AIPlayer : UIPlayer
         lastDecisionThinkingDelay = 2.0f;
     }
 
-    //defect
-    //protected void DoNotPlayForInstruments()
-    //{
-    //    ChangeDiceRollInstrument(GameProperties.Instrument.NONE);
-    //    if (!GameProperties.isSimulation)
-    //    {
-    //        base.PlayForInstrument();
-    //        playerMonoBehaviourFunctionalities.StartCoroutine(ThinkBeforePlayForInstrument(2.0f));
-    //    }
-    //    else
-    //    {
-    //        SendPlayForInstrumentResponse();
-    //    }
-    //}
-
     protected void RegisterMeOnPlayersLog()
     {
-        FileManager.WritePlayerToLog(this.id.ToString(), this.name, this.type.ToString());
+        GameProperties.gameLogManager.WritePlayerToLog(this.id.ToString(), this.name, this.type.ToString());
     }
 
     //predicting hri-s
