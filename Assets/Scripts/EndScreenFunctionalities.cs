@@ -152,7 +152,7 @@ public class EndScreenFunctionalities : MonoBehaviour
             newTableEntry.GetComponentsInChildren<Text>()[1].text = currPlayer.GetMoney().ToString();
         }
 
-        GameProperties.gameLogManager.WriteGameToLog(GameGlobals.currGameId.ToString(), GameGlobals.currGameState.ToString());
+        GameProperties.gameLogManager.WriteGameToLog("0",GameGlobals.currGameId.ToString(), GameGlobals.currGameState.ToString());
         if (GameProperties.isSimulation)
         {
             if (GameProperties.numGamesToSimulate > 1)

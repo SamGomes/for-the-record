@@ -20,7 +20,7 @@ public class AIPlayer : UIPlayer
 
     protected void RegisterMeOnPlayersLog()
     {
-        GameProperties.gameLogManager.WritePlayerToLog(this.id.ToString(), this.name, this.type.ToString());
+        GameProperties.gameLogManager.WritePlayerToLog("0", GameGlobals.currGameId.ToString(), this.id.ToString(), this.name, this.type.ToString());
     }
 
     //predicting hri-s

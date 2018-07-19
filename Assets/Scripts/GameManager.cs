@@ -52,8 +52,8 @@ public class GameManager : MonoBehaviour {
         GameGlobals.albums = new List<Album>(GameProperties.numberOfAlbumsPerGame);
         GameGlobals.players = new List<Player>(GameProperties.numberOfPlayersPerGame);
         GameGlobals.players.Add(new AIPlayerCoopStrategy("Coop Jeff"));
-        GameGlobals.players.Add(new UIPlayer("Greedy Kevin"));
-        GameGlobals.players.Add(new UIPlayer("Balanced Sam"));
+        GameGlobals.players.Add(new AIPlayerGreedyStrategy("Greedy Kevin"));
+        GameGlobals.players.Add(new AIPlayerBalancedStrategy("Balanced Sam"));
     }
 
     public void InitGame()
@@ -318,10 +318,10 @@ public class GameManager : MonoBehaviour {
             int numPlayedAlbums = GameGlobals.albums.Count;
 
             //write curr game logs
-            GameProperties.gameLogManager.WriteAlbumResultsToLog(GameGlobals.currGameId.ToString(), currGameRound.ToString(), currAlbum.GetId().ToString(), currAlbum.GetName(), currAlbum.GetMarketingState().ToString());
+            GameProperties.gameLogManager.WriteAlbumResultsToLog("0", GameGlobals.currGameId.ToString(), currGameRound.ToString(), currAlbum.GetId().ToString(), currAlbum.GetName(), currAlbum.GetMarketingState().ToString());
             foreach (Player player in GameGlobals.players)
             {
-                GameProperties.gameLogManager.WritePlayerResultsToLog(GameGlobals.currGameId.ToString(), currGameRound.ToString(), player.GetId().ToString(), player.GetName(), player.GetMoney().ToString());
+                GameProperties.gameLogManager.WritePlayerResultsToLog("0", GameGlobals.currGameId.ToString(), currGameRound.ToString(), player.GetId().ToString(), player.GetName(), player.GetMoney().ToString());
             }
 
             numPlayersToStartLastDecisions = GameGlobals.players.Count;

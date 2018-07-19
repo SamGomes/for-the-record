@@ -174,7 +174,7 @@ public abstract class Player
         }
         skillSet[instrument]++;
 
-        GameProperties.gameLogManager.WritePlayerActionToLog(GameGlobals.currGameId.ToString(), gameManagerRef.GetCurrGameRound().ToString(), this.id.ToString(), this.name,"SPENT_TOKEN", instrument.ToString() , "-");
+        GameProperties.gameLogManager.WritePlayerActionToLog("0", GameGlobals.currGameId.ToString(), gameManagerRef.GetCurrGameRound().ToString(), this.id.ToString(), this.name,"SPENT_TOKEN", instrument.ToString() , "-");
         return true;
     }
     public bool ConvertTokensToMoney(int numTokensToConvert)
@@ -188,7 +188,7 @@ public abstract class Player
         numTokens-=numTokensToConvert;
         money += numTokensToConvert * GameProperties.tokenValue;
 
-        GameProperties.gameLogManager.WritePlayerActionToLog(GameGlobals.currGameId.ToString(), gameManagerRef.GetCurrGameRound().ToString(), this.id.ToString(), this.name,"CONVERTED_TOKENS", "-" , numTokensToConvert.ToString());
+        GameProperties.gameLogManager.WritePlayerActionToLog("0", GameGlobals.currGameId.ToString(), gameManagerRef.GetCurrGameRound().ToString(), this.id.ToString(), this.name,"CONVERTED_TOKENS", "-" , numTokensToConvert.ToString());
         return true;
     }
     public bool BuyTokens(int numTokensToBuy)
@@ -211,7 +211,7 @@ public abstract class Player
         numTokens += numTokensToBuy;
 
         tokensBoughtOnCurrRound+=numTokensToBuy;
-        GameProperties.gameLogManager.WritePlayerActionToLog(GameGlobals.currGameId.ToString(), gameManagerRef.GetCurrGameRound().ToString(), this.id.ToString(), this.name,"BOUGHT_TOKENS", "-" , numTokensToBuy.ToString());
+        GameProperties.gameLogManager.WritePlayerActionToLog("0", GameGlobals.currGameId.ToString(), gameManagerRef.GetCurrGameRound().ToString(), this.id.ToString(), this.name,"BOUGHT_TOKENS", "-" , numTokensToBuy.ToString());
         return true;
     }
     public void RollBackChangesToPhaseStart()
@@ -232,7 +232,7 @@ public abstract class Player
     public void ReceiveMoney(int moneyToReceive)
     {
         this.money += moneyToReceive;
-        GameProperties.gameLogManager.WritePlayerActionToLog(GameGlobals.currGameId.ToString(), gameManagerRef.GetCurrGameRound().ToString(), this.id.ToString(), this.name,"RECEIVED_MONEY", "-" , moneyToReceive.ToString());
+        GameProperties.gameLogManager.WritePlayerActionToLog("0", GameGlobals.currGameId.ToString(), gameManagerRef.GetCurrGameRound().ToString(), this.id.ToString(), this.name,"RECEIVED_MONEY", "-" , moneyToReceive.ToString());
     }
     public void ReceiveTokens(int numTokensToReceive)
     {
@@ -267,7 +267,7 @@ public abstract class Player
     public void SetAlbumContribution(GameProperties.Instrument instrument, int value)
     {
         this.albumContributions[instrument] = value;
-        GameProperties.gameLogManager.WritePlayerActionToLog(GameGlobals.currGameId.ToString(), gameManagerRef.GetCurrGameRound().ToString(), this.id.ToString(), this.name,"INSTRUMENT_VALUE_CHANGED", instrument.ToString(), value.ToString());
+        GameProperties.gameLogManager.WritePlayerActionToLog("0", GameGlobals.currGameId.ToString(), gameManagerRef.GetCurrGameRound().ToString(), this.id.ToString(), this.name,"INSTRUMENT_VALUE_CHANGED", instrument.ToString(), value.ToString());
     }
     public Dictionary<GameProperties.Instrument, int> GetAlbumContributions()
     {
