@@ -126,32 +126,48 @@ public class GoogleFormsLogManager : LogManager
 }
 
 //mySQL log manager
-//public class MySQLLogManager: LogManager
-//{
-//    private WWW albumStats;
-//    private WWW playersLog;
-//    private WWW playerStats;
-//    private WWW gameStats;
-//    private WWW playerActionsLog;
+public class MySQLLogManager : LogManager
+{
+    private string phpLogServerConnectionPath;
+    private string databaseName;
 
-//    public void InitLogs()
-//    {
-//        albumStats = new WWW("http://localhost:3000/sqlconnect/albumStats.php");
-//        playersLog;
-//        playerStats;
-//        gameStats;
-//        playerActionsLog;
-//    }
-//    public void WritePlayerToLog(string playerId, string playerName, string type)
-//    {
-//        WWWForm form = new WWWForm();
-//        form.AddField("playerId", playerId);
-//        form.AddField("playerName", playerName);
-//        form.AddField("type", playerId);
-//    }
-//    public void WriteGameToLog(string gameId, string result);
-//    public void WriteAlbumResultsToLog(string currGameId, string currGameRoundId, string currAlbumId, string currAlbumName, string marktingState);
-//    public void WritePlayerResultsToLog(string currGameId, string currGameRoundId, string playerId, string playerName, string money);
-//    public void WritePlayerActionToLog(string currGameId, string currGameRoundId, string playerId, string playerName, string eventType, string instrument, string coins);
-//    public void CloseLogs();
-//}
+    public override void InitLogs()
+    {
+        phpLogServerConnectionPath = "http://localhost:3000/dbActions.php";
+        databaseName = "for_the_record_logs";
+    }
+    public override void WritePlayerToLog(string playerId, string playerName, string type)
+    {
+        WWWForm form = new WWWForm();
+        form.AddField("dbAction", "INSERT");
+        form.AddField("databaseName", databaseName);
+        form.AddField("tableName", "player_stats_log");
+
+        string[] keys = { "playerId", "playerName", "type" };
+        string[] values = { playerId, playerName, type };
+
+        PassTableArguments(form, "arrFields", "arrValues", keys,values);
+        WWW phpConnection = new WWW(phpLogServerConnectionPath, form);
+        
+    }
+    public override void WriteGameToLog(string gameId, string result)
+    {
+       
+    }
+    public override void WriteAlbumResultsToLog(string currGameId, string currGameRoundId, string currAlbumId, string currAlbumName, string marktingState) { }
+    public override void WritePlayerResultsToLog(string currGameId, string currGameRoundId, string playerId, string playerName, string money) { }
+    public override void WritePlayerActionToLog(string currGameId, string currGameRoundId, string playerId, string playerName, string eventType, string instrument, string coins) { }
+    public override void CloseLogs() { }
+
+    private void PassTableArguments(WWWForm form, string keysTableName, string valuesTableName, string[] keys, string[] values)
+    {
+        for(int i=0; i < keys.Length; i++)
+        {
+            form.AddField(keysTableName+"[]", keys[i]);
+        }
+        for(int i=0; i< values.Length; i++)
+        {
+            form.AddField(valuesTableName+"[]", values[i]);
+        }
+    }
+}
