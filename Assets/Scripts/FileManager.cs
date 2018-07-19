@@ -89,7 +89,6 @@ public static class FileManager
     }
     static public void WriteAlbumResultsToLog(string currGameId, string currGameRoundId, string currAlbumId, string currAlbumName, string marketingState)
     {
-        //Application.ExternalEval("(window.open(https://docs.google.com/forms/d/e/1FAIpQLSffdgyATkT9In487OPjpQ-sXPLDtXcKy6jSdIsWbOLk1dAbyQ/formResponse?ifq&entry.1243275873=SessionId&entry.67037947="+currGameId+"&entry.1708403356="+currGameRoundId+"&entry.1264259345="+currAlbumId+"&entry.416810127=AlbumName&entry.724890801="+marketingState+"&submit=Submit)).close()");
         Application.ExternalEval("(window.open(\"https://docs.google.com/forms/d/e/1FAIpQLSffdgyATkT9In487OPjpQ-sXPLDtXcKy6jSdIsWbOLk1dAbyQ/formResponse?ifq&entry.1243275873=SessionId&entry.67037947="+currGameId+"&entry.1708403356="+currGameRoundId+"&entry.1264259345="+currAlbumId+"&entry.416810127="+currAlbumName+"&entry.724890801="+marketingState+ "&submit=Submit\", \"_blank\")).close()");
     }
     static public void WritePlayerResultsToLog(string currGameId, string currGameRoundId, string playerId, string playerName, string money)
