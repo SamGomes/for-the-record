@@ -116,6 +116,7 @@ public abstract class Player
     public bool SendPlayForInstrumentResponse()
     {
         gameManagerRef.PlayerPlayForInstrumentResponse(this);
+        this.diceRollInstrument = GameProperties.Instrument.NONE;
         return true;
     }
     public bool SendLastDecisionsPhaseResponse(int condition)

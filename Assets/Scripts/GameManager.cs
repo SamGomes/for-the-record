@@ -193,13 +193,13 @@ public class GameManager : MonoBehaviour {
             else
             {
                 Debug.Log(randomIncrease);
-                StartCoroutine(PlayDiceUI(i, 6, dice6UI, currDiceNumberSprite, "+"+randomIncrease+" Album Value", 4.0f));
+                StartCoroutine(PlayDiceUI(i, 6, dice6UI, currDiceNumberSprite, "+"+randomIncrease+" Album Value", Color.yellow, 4.0f));
             }
         }
 
         return newAlbumInstrumentValue;
     }
-    private IEnumerator PlayDiceUI(int sequenceNumber, int diceNum, GameObject diceImagePrefab, Sprite currDiceNumberSprite, string arrowTextString, float delayToClose) 
+    private IEnumerator PlayDiceUI(int sequenceNumber, int diceNum, GameObject diceImagePrefab, Sprite currDiceNumberSprite, string arrowTextString, Color arrowColor, float delayToClose) 
     //the sequence number aims to void dice overlaps as it represents the order for which this dice is going to be rolled. We do not want to roll a dice two times for the same place
     {
 
@@ -223,11 +223,15 @@ public class GameManager : MonoBehaviour {
 
         //get and disable arrow animation until end of dice animation
         GameObject diceArrow = diceImage.transform.GetChild(0).gameObject;
+        diceArrow.GetComponentInChildren<Image>().color = arrowColor;
+
         diceArrow.transform.Rotate(new Vector3(0, 0, 1), - diceRotation);
         Animator arrowAnimator = diceArrow.GetComponentInChildren<Animator>();
         arrowAnimator.speed = 0;
         Text arrowText = diceArrow.GetComponentInChildren<Text>();
         arrowText.text = arrowTextString;
+        arrowText.color = arrowColor;
+
 
         while (!diceAnimator.GetCurrentAnimatorStateInfo(0).IsName("endState"))
         {
@@ -252,7 +256,7 @@ public class GameManager : MonoBehaviour {
         {
             int randomIncrease = gameUtilities.RollTheDice(20);
             Sprite currDiceNumberSprite = Resources.Load<Sprite>("Animations/RollDiceForInstrumentOverlay/dice20/sprites/endingAlternatives/" + randomIncrease);
-            StartCoroutine(PlayDiceUI(i, 20, dice20UI, currDiceNumberSprite, "+" + randomIncrease + " Market Value", 4.0f));
+            StartCoroutine(PlayDiceUI(i, 20, dice20UI, currDiceNumberSprite, "+" + randomIncrease + " Market Value", Color.red, 4.0f));
 
             marketValue += randomIncrease;
         }

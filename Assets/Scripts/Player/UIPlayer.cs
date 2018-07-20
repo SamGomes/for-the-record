@@ -35,8 +35,7 @@ public class UIPlayer : Player
     protected Button UIbuyTokenButton;
     private Text UInumTokensValue;
     protected Button UIdiscardChangesButton;
-
-    private Text UICurrInstrumentToRollText;
+    
     protected Button UInotRollDicesButton;
 
 
@@ -95,7 +94,6 @@ public class UIPlayer : Player
 
 
         this.UIPlayForInstrumentScreen = playerUI.transform.Find("playerActionSection/playForInstrumentUI").gameObject;
-        this.UICurrInstrumentToRollText = UIPlayForInstrumentScreen.transform.Find("currInstrumentToRollValue").GetComponent<Text>();
 
         this.UInotRollDicesButton = UIPlayForInstrumentScreen.transform.Find("notRollDicesButton").GetComponent<Button>();
         UInotRollDicesButton.onClick.AddListener(delegate ()
@@ -129,8 +127,8 @@ public class UIPlayer : Player
         foreach (GameProperties.Instrument instrument in skillSet.Keys)
         {
             UISkillLevelsTexts[(int)instrument].text = "  " + skillSet[instrument].ToString();
+            UISkillIconsButtons[(int)instrument].GetComponent<Outline>().enabled = (instrument == diceRollInstrument);
         }
-        UICurrInstrumentToRollText.text = this.diceRollInstrument.ToString();
 
     }
 
