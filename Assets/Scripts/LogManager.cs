@@ -16,6 +16,42 @@ public abstract class LogManager
     abstract public void CloseLogs();
 }
 
+//debug log manager
+public class DebugLogManager : LogManager
+{
+    public override void InitLogs()
+    {
+        Debug.Log("Log Initialzed.");
+    }
+    public override void WritePlayerToLog(string sessionId, string currGameId, string playerId, string playername, string type)
+    {
+        Debug.Log("WritePlayerToLog: " + sessionId + ";" + currGameId + ";" + playerId + ";" + playername + ";" + type);
+    }
+    public override void WriteGameToLog(string sessionId, string currGameId, string result)
+    {
+        Debug.Log("WriteGameToLog: " + sessionId + ";" + currGameId + ";" + result);
+    }
+    public override void WriteAlbumResultsToLog(string sessionId, string currGameId, string currGameRoundId, string currAlbumId, string currAlbumName, string marktingState)
+    {
+        Debug.Log("WriteAlbumResultsToLog: " + sessionId + ";" + currGameId + ";" + currGameRoundId + ";" + currAlbumId + ";" + currAlbumName + ";" + marktingState);
+    }
+    public override void WritePlayerResultsToLog(string sessionId, string currGameId, string currGameRoundId, string playerId, string playerName, string money)
+    {
+        Debug.Log("WritePlayerResultsToLog: " + sessionId + ";" + currGameId + ";" + currGameRoundId + ";" + playerId + ";" + playerName + ";" + money);
+    }
+    public override void WritePlayerActionToLog(string sessionId, string currGameId, string currGameRoundId, string playerId, string playerName, string eventType, string skill, string coins)
+    {
+        Debug.Log("WritePlayerActionToLog: " + sessionId + ";" + currGameId + ";" + currGameRoundId + ";" + playerId + ";" + playerName + ";" + eventType + ";" + skill + ";" + coins);
+    }
+
+    public override void CloseLogs()
+    {
+        Debug.Log("Log Closed.");
+    }
+
+}
+
+
 //file log manager
 public class FileLogManager : LogManager
 {

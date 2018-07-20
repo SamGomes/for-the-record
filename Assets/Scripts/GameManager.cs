@@ -51,9 +51,9 @@ public class GameManager : MonoBehaviour {
         GameProperties.gameLogManager.InitLogs();
         GameGlobals.albums = new List<Album>(GameProperties.numberOfAlbumsPerGame);
         GameGlobals.players = new List<Player>(GameProperties.numberOfPlayersPerGame);
-        GameGlobals.players.Add(new AIPlayerCoopStrategy("Coop Jeff"));
-        GameGlobals.players.Add(new AIPlayerGreedyStrategy("Greedy Kevin"));
-        GameGlobals.players.Add(new AIPlayerBalancedStrategy("Balanced Sam"));
+        GameGlobals.players.Add(new UIPlayer("Coop Jeff"));
+        GameGlobals.players.Add(new UIPlayer("Greedy Kevin"));
+        GameGlobals.players.Add(new UIPlayer("Balanced Sam"));
     }
 
     public void InitGame()
@@ -193,15 +193,16 @@ public class GameManager : MonoBehaviour {
             else
             {
                 Debug.Log(randomIncrease);
-                StartCoroutine(PlayDiceUI(i, 6, dice6UI, currDiceNumberSprite, 4.0f));
+                StartCoroutine(PlayDiceUI(i, 6, dice6UI, currDiceNumberSprite, "+"+randomIncrease+" Album Value", 4.0f));
             }
         }
 
         return newAlbumInstrumentValue;
     }
-    private IEnumerator PlayDiceUI(int sequenceNumber, int diceNum, GameObject diceImagePrefab, Sprite currDiceNumberSprite, float delayToClose) 
+    private IEnumerator PlayDiceUI(int sequenceNumber, int diceNum, GameObject diceImagePrefab, Sprite currDiceNumberSprite, string arrowTextString, float delayToClose) 
     //the sequence number aims to void dice overlaps as it represents the order for which this dice is going to be rolled. We do not want to roll a dice two times for the same place
     {
+
         UIRollDiceForInstrumentOverlay.SetActive(true);
         GameObject diceImageClone = Instantiate(diceImagePrefab, UIRollDiceForInstrumentOverlay.transform);
 
@@ -212,16 +213,29 @@ public class GameManager : MonoBehaviour {
 
         diceImage.transform.Translate(new Vector3(Random.Range(-80.0f, 80.0f), Random.Range(-80.0f, 80.0f), 0));
 
-        diceImage.transform.Rotate(new Vector3(0, 0, 1), sequenceNumber * (360.0f / diceNum));
+        float diceRotation = sequenceNumber * (360.0f / diceNum);
+
+        diceImage.transform.Rotate(new Vector3(0, 0, 1), diceRotation);
         diceImage.overrideSprite = null;
         diceAnimator.Rebind();
         diceAnimator.Play(0);
         diceAnimator.speed = Random.Range(0.8f,1.4f);
+
+        //get and disable arrow animation until end of dice animation
+        GameObject diceArrow = diceImage.transform.GetChild(0).gameObject;
+        diceArrow.transform.Rotate(new Vector3(0, 0, 1), - diceRotation);
+        Animator arrowAnimator = diceArrow.GetComponentInChildren<Animator>();
+        arrowAnimator.speed = 0;
+        Text arrowText = diceArrow.GetComponentInChildren<Text>();
+        arrowText.text = arrowTextString;
+
         while (!diceAnimator.GetCurrentAnimatorStateInfo(0).IsName("endState"))
         {
             yield return null;
         }
         diceImage.overrideSprite = currDiceNumberSprite;
+        
+        arrowAnimator.speed = 1;
 
         yield return new WaitForSeconds(delayToClose);
         
@@ -238,7 +252,7 @@ public class GameManager : MonoBehaviour {
         {
             int randomIncrease = gameUtilities.RollTheDice(20);
             Sprite currDiceNumberSprite = Resources.Load<Sprite>("Animations/RollDiceForInstrumentOverlay/dice20/sprites/endingAlternatives/" + randomIncrease);
-            StartCoroutine(PlayDiceUI(i, 20, dice20UI, currDiceNumberSprite, 4.0f));
+            StartCoroutine(PlayDiceUI(i, 20, dice20UI, currDiceNumberSprite, "+" + randomIncrease + " Market Value", 4.0f));
 
             marketValue += randomIncrease;
         }

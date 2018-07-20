@@ -61,10 +61,10 @@ public static class GameProperties
 
 
     //------------ Simulation --------------------
-    public static bool isSimulation = true;
+    public static bool isSimulation = false;
     public static int numGamesToSimulate = 20;
 
-    public static LogManager gameLogManager = new MySQLLogManager();
+    public static LogManager gameLogManager = new DebugLogManager();
 }
 
 public interface IUtilities
