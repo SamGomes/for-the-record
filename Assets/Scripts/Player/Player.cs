@@ -64,6 +64,7 @@ public abstract class Player
         this.playerMonoBehaviourFunctionalities = gameManagerRef.GetComponent<PlayerMonoBehaviourFunctionalities>();
     }
 
+    public abstract void ChooseDiceRollInstrument(Album currAlbum);
     public abstract void LevelUp(Album currAlbum);
     public abstract void PlayForInstrument(Album currAlbum);
     public abstract void LastDecisionsPhase(Album currAlbum);
@@ -78,6 +79,11 @@ public abstract class Player
         return this.name;
     }
 
+    public void ChooseDiceRollRequest(Album currAlbum)
+    {
+        this.diceRollInstrument = GameProperties.Instrument.NONE;
+        ChooseDiceRollInstrument(currAlbum);
+    }
     public void LevelUpRequest(Album currAlbum)
     {
         //save player state before changes
@@ -97,7 +103,11 @@ public abstract class Player
         LastDecisionsPhase(currAlbum);
     }
 
-
+    public bool SendChooseDiceRollInstrumentResponse()
+    {
+        gameManagerRef.ChooseDiceRollResponse(this);
+        return true;
+    }
     public bool SendLevelUpResponse()
     {
         if (numTokens != 0)
@@ -116,7 +126,6 @@ public abstract class Player
     public bool SendPlayForInstrumentResponse()
     {
         gameManagerRef.PlayerPlayForInstrumentResponse(this);
-        this.diceRollInstrument = GameProperties.Instrument.NONE;
         return true;
     }
     public bool SendLastDecisionsPhaseResponse(int condition)
@@ -138,13 +147,12 @@ public abstract class Player
 
     public bool ChangeDiceRollInstrument(GameProperties.Instrument instrument)
     {
-        if (skillSet[instrument] == 0 || instrument == GameProperties.Instrument.MARKETING)
-        {
-            return false;
-        }
-
         this.diceRollInstrument = instrument;
         return true;
+    }
+    public GameProperties.Instrument GetDiceRollInstrument()
+    {
+        return this.diceRollInstrument;
     }
     public void AddToBeTokenedInstrument(GameProperties.Instrument instrument)
     {
@@ -242,10 +250,6 @@ public abstract class Player
     public int GetMoney()
     {
         return this.money;
-    }
-    public GameProperties.Instrument GetDiceRollInstrument()
-    {
-        return this.diceRollInstrument;
     }
 
 

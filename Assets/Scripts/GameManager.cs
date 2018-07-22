@@ -15,6 +15,7 @@ public class GameManager : MonoBehaviour {
     private int numPlayersToLevelUp;
     private int numPlayersToPlayForInstrument;
     private int numPlayersToStartLastDecisions;
+    private int numPlayersToChooseDiceRollInstrument;
     private bool canCheckAlbumResult;
 
     //------------ UI -----------------------------
@@ -48,12 +49,12 @@ public class GameManager : MonoBehaviour {
 
 
         ////mock to test
-        //GameProperties.gameLogManager.InitLogs();
-        //GameGlobals.albums = new List<Album>(GameProperties.numberOfAlbumsPerGame);
-        //GameGlobals.players = new List<Player>(GameProperties.numberOfPlayersPerGame);
-        //GameGlobals.players.Add(new UIPlayer("Coop Jeff"));
-        //GameGlobals.players.Add(new UIPlayer("Greedy Kevin"));
-        //GameGlobals.players.Add(new UIPlayer("Balanced Sam"));
+        GameProperties.gameLogManager.InitLogs();
+        GameGlobals.albums = new List<Album>(GameProperties.numberOfAlbumsPerGame);
+        GameGlobals.players = new List<Player>(GameProperties.numberOfPlayersPerGame);
+        GameGlobals.players.Add(new UIPlayer("Coop Jeff"));
+        GameGlobals.players.Add(new UIPlayer("Greedy Kevin"));
+        GameGlobals.players.Add(new UIPlayer("Balanced Sam"));
     }
 
     public void InitGame()
@@ -125,6 +126,7 @@ public class GameManager : MonoBehaviour {
             StartGameRoundForAllPlayers(UIalbumNameText.text);
         });
 
+        numPlayersToChooseDiceRollInstrument = GameGlobals.players.Count;
         numPlayersToLevelUp = GameGlobals.players.Count;
         numPlayersToPlayForInstrument = GameGlobals.players.Count;
         numPlayersToStartLastDecisions = GameGlobals.players.Count;
@@ -164,7 +166,7 @@ public class GameManager : MonoBehaviour {
             currPlayer.InitAlbumContributions();
         }
 
-        StartLevelingUpPhase();
+        StartChooseDiceRollPhase();
     }
 
 
@@ -308,6 +310,13 @@ public class GameManager : MonoBehaviour {
         }
 
         //end of first phase; trigger second phase
+        if (numPlayersToChooseDiceRollInstrument == 0)
+        {
+            StartLevelingUpPhase();
+            numPlayersToChooseDiceRollInstrument = GameGlobals.players.Count; //is not performed to ensure this phase is only played once
+        }
+
+        //end of first phase; trigger second phase
         if (numPlayersToLevelUp == 0)
         {
             StartPlayForInstrumentPhase();
@@ -388,6 +397,15 @@ public class GameManager : MonoBehaviour {
     }
 
 
+    public void StartChooseDiceRollPhase()
+    {
+        int numPlayers = GameGlobals.players.Count;
+        //for (int i = 0; i < numPlayers; i++)
+        //{
+        Player currPlayer = GameGlobals.players[0];
+        currPlayer.ChooseDiceRollRequest(currAlbum);
+        //}
+    }
     public void StartLevelingUpPhase()
     {
         int numPlayers = GameGlobals.players.Count;
@@ -417,6 +435,17 @@ public class GameManager : MonoBehaviour {
         //}
     }
 
+
+    //------------------------------------------Responses---------------------------------------
+    public void ChooseDiceRollResponse(Player invoker)
+    {
+        Player nextPlayer = ChangeToNextPlayer(invoker);
+        numPlayersToChooseDiceRollInstrument--;
+        if (numPlayersToChooseDiceRollInstrument > 0)
+        {
+            nextPlayer.ChooseDiceRollRequest(currAlbum);
+        }
+    }
     public void LevelUpResponse(Player invoker)
     {
         Player nextPlayer = ChangeToNextPlayer(invoker);

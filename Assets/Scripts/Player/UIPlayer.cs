@@ -19,6 +19,7 @@ public class UIPlayer : Player
     private List<Button> UISkillIconsButtons;
     //private Text UIContributionsTexts;
 
+    private GameObject UIChooseDiceRollInstrumentScreen;
     private GameObject UILevelUpScreen;
     private GameObject UIPlayForInstrumentScreen;
     private GameObject UILastDecisionsScreen;
@@ -76,6 +77,8 @@ public class UIPlayer : Player
         this.UISkillLevelsTexts = playerUI.transform.Find("playerStateSection/skillTable/skillLevels").GetComponentsInChildren<Text>();
         this.UISkillIconsButtons = new List<Button>(playerUI.transform.Find("playerStateSection/skillTable/skillIcons").GetComponentsInChildren<Button>());
         
+        this.UIChooseDiceRollInstrumentScreen = playerUI.transform.Find("playerActionSection/chooseDiceRollInstrumentPhaseUI").gameObject;
+
 
         this.UILevelUpScreen = playerUI.transform.Find("playerActionSection/levelUpPhaseUI").gameObject;
         this.UInumTokensValue = UILevelUpScreen.transform.Find("numTokensValue").GetComponent<Text>();
@@ -129,7 +132,6 @@ public class UIPlayer : Player
             UISkillLevelsTexts[(int)instrument].text = "  " + skillSet[instrument].ToString();
             UISkillIconsButtons[(int)instrument].GetComponent<Outline>().enabled = (instrument == diceRollInstrument);
         }
-
     }
 
     public new bool SpendToken(GameProperties.Instrument instrument)
@@ -178,7 +180,25 @@ public class UIPlayer : Player
         return result;
     }
 
-
+    public new bool SendChooseDiceRollInstrumentResponse()
+    {
+        bool success = base.SendChooseDiceRollInstrumentResponse();
+        if (success) //handle the error in the ui
+        {
+            //disable instrument buttons except the chosen one.
+            foreach (GameProperties.Instrument instrument in skillSet.Keys)
+            {
+                if(instrument == diceRollInstrument || instrument == GameProperties.Instrument.MARKETING)
+                {
+                    continue;
+                }
+                UISkillIconsButtons[(int)instrument].transform.gameObject.SetActive(false); //take off the other instruments
+                UISkillLevelsTexts[(int)instrument].transform.gameObject.SetActive(false);
+            }
+            UpdateCommonUIElements();
+        }
+        return success;
+    }
     public new bool SendLevelUpResponse()
     {
         bool success = base.SendLevelUpResponse();
@@ -227,23 +247,46 @@ public class UIPlayer : Player
     public new bool ChangeDiceRollInstrument(GameProperties.Instrument instrument)
     {
         bool success = base.ChangeDiceRollInstrument(instrument);
-        if (!success) //handle the error in the ui
-        {
-            if (instrument == GameProperties.Instrument.MARKETING)
-            {
-                warningScreenRef.DisplayWarning("The dices for marketing are rolled only after knowing the album result.");
-            }else if (skillSet[instrument] == 0)
-            {
-                warningScreenRef.DisplayWarning("You cannot roll dices for an unevolved skill!");
-            }
-        }
+        //if (!success) //handle the error in the ui
+        //{
+        //    if (instrument == GameProperties.Instrument.MARKETING)
+        //    {
+        //        warningScreenRef.DisplayWarning("The dices for marketing are rolled only after knowing the album result.");
+        //    }else if (skillSet[instrument] == 0)
+        //    {
+        //        warningScreenRef.DisplayWarning("You cannot roll dices for an unevolved skill!");
+        //    }
+        //}
         return success;
     }
 
+    public override void ChooseDiceRollInstrument(Album currAlbum) {
+        UIplayerActionButton.gameObject.SetActive(true);
+        UIChooseDiceRollInstrumentScreen.SetActive(true);
+        UILevelUpScreen.SetActive(false);
+        UIPlayForInstrumentScreen.SetActive(false);
+        UILastDecisionsScreen.SetActive(false);
 
+        for (int i = 0; i < UISkillIconsButtons.Count; i++)
+        {
+            Button currButton = UISkillIconsButtons[i];
+            currButton.onClick.RemoveAllListeners();
+            currButton.onClick.AddListener(delegate {
+                ChangeDiceRollInstrument((GameProperties.Instrument)UISkillIconsButtons.IndexOf(currButton));
+                UpdateCommonUIElements();
+            });
+        }
+
+        UIplayerActionButton.onClick.RemoveAllListeners();
+        UIplayerActionButton.interactable = true;
+        UIplayerActionButton.onClick.AddListener(delegate {
+            SendChooseDiceRollInstrumentResponse();
+        });
+    }
     public override void LevelUp(Album currAlbum)
     {
         UIplayerActionButton.gameObject.SetActive(true);
+        UIChooseDiceRollInstrumentScreen.SetActive(false);
         UILevelUpScreen.SetActive(true);
         UIPlayForInstrumentScreen.SetActive(false);
         UILastDecisionsScreen.SetActive(false);
@@ -282,6 +325,7 @@ public class UIPlayer : Player
     public override void PlayForInstrument(Album currAlbum)
     {
         UIplayerActionButton.gameObject.SetActive(true);
+        UIChooseDiceRollInstrumentScreen.SetActive(false);
         UILevelUpScreen.SetActive(false);
         UIPlayForInstrumentScreen.SetActive(true);
         UILastDecisionsScreen.SetActive(false);
@@ -309,6 +353,7 @@ public class UIPlayer : Player
     public override void LastDecisionsPhase(Album currAlbum)
     {
         UIplayerActionButton.gameObject.SetActive(false);
+        UIChooseDiceRollInstrumentScreen.SetActive(false);
         UILevelUpScreen.SetActive(false);
         UIPlayForInstrumentScreen.SetActive(false);
         UILastDecisionsScreen.SetActive(true);
