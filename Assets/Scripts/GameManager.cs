@@ -34,14 +34,17 @@ public class GameManager : MonoBehaviour {
 
     public GameObject UIAlbumCollectionDisplay;
 
-    public WarningScreenFunctionalities warningScreenRef;
+    public PoppupScreenFunctionalities warningScreenRef;
+    public PoppupScreenFunctionalities infoScreenRef;
 
     private int currGameRound;
 
     private bool gameMainSceneFinished;
-
+    private bool preferredInstrumentsChoosen;
 
     private Album currAlbum;
+
+    private float diceRollDelay;
 
     void Awake()
     {
@@ -60,6 +63,9 @@ public class GameManager : MonoBehaviour {
     public void InitGame()
     {
         gameMainSceneFinished = false;
+        preferredInstrumentsChoosen = false;
+
+        diceRollDelay = 6.0f;
 
         canCheckAlbumResult = false;
         int numPlayers = GameGlobals.players.Count;
@@ -68,13 +74,11 @@ public class GameManager : MonoBehaviour {
         for (int i = 0; i < numPlayers; i++)
         {
             currPlayer = GameGlobals.players[i];
-            currPlayer.InitGameData();
+            currPlayer.InitPlayer(playerUIPrefab, canvas, warningScreenRef);
             if ((currPlayer as UIPlayer) != null) //check if player has UI
             {
-                
-                ((UIPlayer)currPlayer).InitUI(playerUIPrefab, canvas, warningScreenRef);
-                ((UIPlayer)currPlayer).GetPlayerUI().transform.Translate(new Vector3(0, -i*170.0f, 0));
 
+                ((UIPlayer)currPlayer).GetPlayerUI().transform.Translate(new Vector3(0, -i*170.0f, 0));
                 //position UI correctly depending on players number (table layout)
                 //float refAngle = (180.0f / (numPlayers - 1));
                 //((UIPlayer)currPlayer).GetPlayerUI().transform.RotateAround(new Vector3(510, 490, 0), new Vector3(0, 0, 1), (i * refAngle));
@@ -166,7 +170,14 @@ public class GameManager : MonoBehaviour {
             currPlayer.InitAlbumContributions();
         }
 
-        StartChooseDiceRollPhase();
+        if (!preferredInstrumentsChoosen)
+        {
+            StartChoosePreferredInstrumentPhase();
+        }
+        else
+        {
+            StartLevelingUpPhase();
+        }
     }
 
 
@@ -195,7 +206,7 @@ public class GameManager : MonoBehaviour {
             else
             {
                 Debug.Log(randomIncrease);
-                StartCoroutine(PlayDiceUI(i, 6, dice6UI, currDiceNumberSprite, "+"+randomIncrease+" Album Value", Color.yellow, 4.0f));
+                StartCoroutine(PlayDiceUI(i, 6, dice6UI, currDiceNumberSprite, "+"+randomIncrease+" Album Value", Color.yellow, diceRollDelay));
             }
         }
 
@@ -258,8 +269,7 @@ public class GameManager : MonoBehaviour {
         {
             int randomIncrease = gameUtilities.RollTheDice(20);
             Sprite currDiceNumberSprite = Resources.Load<Sprite>("Animations/RollDiceForInstrumentOverlay/dice20/sprites/endingAlternatives/" + randomIncrease);
-            StartCoroutine(PlayDiceUI(i, 20, dice20UI, currDiceNumberSprite, "+" + randomIncrease + " Market Value", Color.red, 4.0f));
-
+            StartCoroutine(PlayDiceUI(i, 20, dice20UI, currDiceNumberSprite, "+" + randomIncrease + " Market Value", Color.red, diceRollDelay));
             marketValue += randomIncrease;
         }
         return marketValue;
@@ -275,11 +285,13 @@ public class GameManager : MonoBehaviour {
         if (newAlbumValue >= marketValue)
         {
             currAlbum.SetMarketingState(GameProperties.AlbumMarketingState.MEGA_HIT);
+            infoScreenRef.DisplayPoppupWithDelay("As your album value ("+ newAlbumValue +") was HIGHER than the market value ("+ marketValue +"), the album was successfully published! Congratulations!", diceRollDelay);
             numMegaHits++;
         }
         else
         {
             currAlbum.SetMarketingState(GameProperties.AlbumMarketingState.FAIL);
+            infoScreenRef.DisplayPoppupWithDelay("As your album value (" + newAlbumValue + ") was LOWER than the market value (" + marketValue + "), the album could not be published. The band losses were taken into account!", diceRollDelay);
         }
 
         //check for game loss (collapse) or victory on album registry
@@ -299,6 +311,13 @@ public class GameManager : MonoBehaviour {
         }
     }
 
+    private void ResetAllPlayers()
+    {
+        foreach (Player player in GameGlobals.players)
+        {
+            player.ResetPlayer();
+        }
+    }
 
     // wait for all players to exit one phase and start other phase
     void Update () {
@@ -310,10 +329,12 @@ public class GameManager : MonoBehaviour {
         }
 
         //end of first phase; trigger second phase
-        if (numPlayersToChooseDiceRollInstrument == 0)
+        if(!preferredInstrumentsChoosen && numPlayersToChooseDiceRollInstrument == 0)
         {
             StartLevelingUpPhase();
-            numPlayersToChooseDiceRollInstrument = GameGlobals.players.Count; //is not performed to ensure this phase is only played once
+            //numPlayersToChooseDiceRollInstrument = GameGlobals.players.Count; //is not performed to ensure this phase is only played once
+            preferredInstrumentsChoosen = true;
+
         }
 
         //end of first phase; trigger second phase
@@ -397,17 +418,19 @@ public class GameManager : MonoBehaviour {
     }
 
 
-    public void StartChooseDiceRollPhase()
+    public void StartChoosePreferredInstrumentPhase()
     {
+        ResetAllPlayers();
         int numPlayers = GameGlobals.players.Count;
         //for (int i = 0; i < numPlayers; i++)
         //{
         Player currPlayer = GameGlobals.players[0];
-        currPlayer.ChooseDiceRollRequest(currAlbum);
+        currPlayer.ChoosePreferredInstrumentRequest(currAlbum);
         //}
     }
     public void StartLevelingUpPhase()
     {
+        ResetAllPlayers();
         int numPlayers = GameGlobals.players.Count;
         //for (int i = 0; i < numPlayers; i++)
         //{
@@ -417,6 +440,7 @@ public class GameManager : MonoBehaviour {
     }
     public void StartPlayForInstrumentPhase()
     {
+        ResetAllPlayers();
         int numPlayers = GameGlobals.players.Count;
         //for (int i = 0; i < numPlayers; i++)
         //{
@@ -426,6 +450,7 @@ public class GameManager : MonoBehaviour {
     }
     public void StartLastDecisionsPhase()
     {
+        ResetAllPlayers();
         Album currAlbum = GameGlobals.albums[GameGlobals.albums.Count - 1];
         int numPlayers = GameGlobals.players.Count;
         //for (int i = 0; i < numPlayers; i++)
@@ -437,13 +462,13 @@ public class GameManager : MonoBehaviour {
 
 
     //------------------------------------------Responses---------------------------------------
-    public void ChooseDiceRollResponse(Player invoker)
+    public void ChoosePreferredInstrumentResponse(Player invoker)
     {
         Player nextPlayer = ChangeToNextPlayer(invoker);
         numPlayersToChooseDiceRollInstrument--;
         if (numPlayersToChooseDiceRollInstrument > 0)
         {
-            nextPlayer.ChooseDiceRollRequest(currAlbum);
+            nextPlayer.ChoosePreferredInstrumentRequest(currAlbum);
         }
     }
     public void LevelUpResponse(Player invoker)

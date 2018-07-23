@@ -18,6 +18,7 @@ public abstract class Player
     protected int numTokens;
     protected int money;
 
+    protected GameProperties.Instrument preferredInstrument;
     protected GameProperties.Instrument diceRollInstrument;
     protected List<GameProperties.Instrument> toBeTokenedInstruments;
 
@@ -41,6 +42,7 @@ public abstract class Player
         this.numTokens = 0;
 
         this.diceRollInstrument = GameProperties.Instrument.NONE;
+        this.preferredInstrument = GameProperties.Instrument.NONE;
         this.toBeTokenedInstruments = new List<GameProperties.Instrument>();
         this.skillSet = new Dictionary<GameProperties.Instrument, int>();
         this.albumContributions = new Dictionary<GameProperties.Instrument, int>();
@@ -58,13 +60,15 @@ public abstract class Player
 
     }
 
-    public void InitGameData()
+    public virtual void InitPlayer(params object[] args)
     {
         this.gameManagerRef = GameObject.Find("GameManager").gameObject.GetComponent<GameManager>();
         this.playerMonoBehaviourFunctionalities = gameManagerRef.GetComponent<PlayerMonoBehaviourFunctionalities>();
     }
+    
+    public abstract void ResetPlayer(params object[] args);
 
-    public abstract void ChooseDiceRollInstrument(Album currAlbum);
+    public abstract void ChoosePreferredInstrument(Album currAlbum);
     public abstract void LevelUp(Album currAlbum);
     public abstract void PlayForInstrument(Album currAlbum);
     public abstract void LastDecisionsPhase(Album currAlbum);
@@ -79,10 +83,10 @@ public abstract class Player
         return this.name;
     }
 
-    public void ChooseDiceRollRequest(Album currAlbum)
+    public void ChoosePreferredInstrumentRequest(Album currAlbum)
     {
-        this.diceRollInstrument = GameProperties.Instrument.NONE;
-        ChooseDiceRollInstrument(currAlbum);
+        this.preferredInstrument = GameProperties.Instrument.NONE;
+        ChoosePreferredInstrument(currAlbum);
     }
     public void LevelUpRequest(Album currAlbum)
     {
@@ -96,6 +100,7 @@ public abstract class Player
     public void PlayForInstrumentRequest(Album currAlbum)
     {
         tokensBoughtOnCurrRound = 0; //reset tokens bought on this round to 0
+        ChangeDiceRollInstrument(GameProperties.Instrument.NONE);
         PlayForInstrument(currAlbum);
     }
     public void LastDecisionsPhaseRequest(Album currAlbum)
@@ -103,16 +108,21 @@ public abstract class Player
         LastDecisionsPhase(currAlbum);
     }
 
-    public bool SendChooseDiceRollInstrumentResponse()
+    public virtual int SendChoosePreferredInstrumentResponse()
     {
-        gameManagerRef.ChooseDiceRollResponse(this);
-        return true;
+        if (preferredInstrument == GameProperties.Instrument.NONE)
+        {
+            Debug.Log("No preferred instrumet selected!");
+            return 1;
+        }
+        gameManagerRef.ChoosePreferredInstrumentResponse(this);
+        return 0;
     }
-    public bool SendLevelUpResponse()
+    public virtual int SendLevelUpResponse()
     {
         if (numTokens != 0)
         {
-            return false;
+            return 1;
         }
 
         //update player state saves
@@ -121,14 +131,14 @@ public abstract class Player
         unchangedNumTokens = numTokens;
 
         gameManagerRef.LevelUpResponse(this);
-        return true;
+        return 0;
     }
-    public bool SendPlayForInstrumentResponse()
+    public virtual int SendPlayForInstrumentResponse()
     {
         gameManagerRef.PlayerPlayForInstrumentResponse(this);
-        return true;
+        return 0;
     }
-    public bool SendLastDecisionsPhaseResponse(int condition)
+    public virtual int SendLastDecisionsPhaseResponse(int condition)
     {
         switch (condition)
         {
@@ -142,17 +152,53 @@ public abstract class Player
                 gameManagerRef.LastDecisionsPhaseGet1000Response(this);
                 break;
         }
-        return true;
+        return 0;
     }
 
-    public bool ChangeDiceRollInstrument(GameProperties.Instrument instrument)
+    public virtual int ChangePreferredInstrument(GameProperties.Instrument instrument) //returns error ids
     {
-        this.diceRollInstrument = instrument;
-        return true;
+        if(instrument == GameProperties.Instrument.MARKETING)
+        {
+            return 1;
+        }
+        //check if other players have the same preferred instrument
+        foreach (Player player in GameGlobals.players)
+        {
+            if (player == this)
+            {
+                continue;
+            }
+            if(player.preferredInstrument == instrument)
+            {
+                return 2;
+            }
+        }
+        this.preferredInstrument = instrument;
+        return 0;
     }
+    public virtual int ChangeDiceRollInstrument(GameProperties.Instrument instrument)
+    {
+        if (instrument == GameProperties.Instrument.MARKETING)
+        {
+            Debug.Log("The dices for marketing are rolled only after knowing the album result.");
+            return 1;
+        }
+        else if (instrument != GameProperties.Instrument.NONE && skillSet[instrument] == 0)
+        {
+            Debug.Log("You cannot roll dices for an unevolved skill!");
+            return 2;
+        }
+        this.diceRollInstrument = instrument;
+        return 0;
+    }
+
     public GameProperties.Instrument GetDiceRollInstrument()
     {
         return this.diceRollInstrument;
+    }
+    public GameProperties.Instrument GetPreferredInstrument()
+    {
+        return this.preferredInstrument;
     }
     public void AddToBeTokenedInstrument(GameProperties.Instrument instrument)
     {
@@ -163,17 +209,17 @@ public abstract class Player
         this.toBeTokenedInstruments.Remove(instrument);
     }
 
-    public bool SpendToken(GameProperties.Instrument instrument)
+    public virtual int SpendToken(GameProperties.Instrument instrument)
     {
         //cannot spend token on last increased instruments
         if (numTokens == 0) 
         {
             Debug.Log("You have no more tokens to level up your skills!");
-            return false;
+            return 1;
         }else if (skillSet[instrument] == GameProperties.maximumSkillLevelPerInstrument)
         {
             Debug.Log("You cannot develop the same skill more than "+ GameProperties.maximumSkillLevelPerInstrument  + " times!");
-            return false;
+            return 2;
         }
 
         numTokens--;
@@ -184,36 +230,36 @@ public abstract class Player
         skillSet[instrument]++;
 
         GameProperties.gameLogManager.WritePlayerActionToLog("0", GameGlobals.currGameId.ToString(), gameManagerRef.GetCurrGameRound().ToString(), this.id.ToString(), this.name,"SPENT_TOKEN", instrument.ToString() , "-");
-        return true;
+        return 0;
     }
-    public bool ConvertTokensToMoney(int numTokensToConvert)
+    public virtual int ConvertTokensToMoney(int numTokensToConvert)
     {
         if (numTokens == 0)
         {
             Debug.Log("You have no more tokens to convert!");
-            return false;
+            return 1;
         }
 
         numTokens-=numTokensToConvert;
         money += numTokensToConvert * GameProperties.tokenValue;
 
         GameProperties.gameLogManager.WritePlayerActionToLog("0", GameGlobals.currGameId.ToString(), gameManagerRef.GetCurrGameRound().ToString(), this.id.ToString(), this.name,"CONVERTED_TOKENS", "-" , numTokensToConvert.ToString());
-        return true;
+        return 0;
     }
-    public bool BuyTokens(int numTokensToBuy)
+    public virtual int BuyTokens(int numTokensToBuy)
     {
         int moneyToSpend = numTokensToBuy * GameProperties.tokenValue;
 
         if (tokensBoughtOnCurrRound >= GameProperties.allowedPlayerTokenBuysPerRound)
         {
             Debug.Log("You can only convert money to one token per round!");
-            return false;
+            return 1;
         }
 
         if (money < moneyToSpend)
         {
             Debug.Log("You have no money to convert!");
-            return false;
+            return 2;
         }
 
         money -= moneyToSpend;
@@ -221,7 +267,7 @@ public abstract class Player
 
         tokensBoughtOnCurrRound+=numTokensToBuy;
         GameProperties.gameLogManager.WritePlayerActionToLog("0", GameGlobals.currGameId.ToString(), gameManagerRef.GetCurrGameRound().ToString(), this.id.ToString(), this.name,"BOUGHT_TOKENS", "-" , numTokensToBuy.ToString());
-        return true;
+        return 0;
     }
     public void RollBackChangesToPhaseStart()
     {
