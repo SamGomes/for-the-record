@@ -5,18 +5,26 @@ using UnityEngine.UI;
 
 public class PlayersSetupSceneFunctionalities : MonoBehaviour {
 
+    private GameObject title1;
+    private GameObject title2;
+
     private InputField UINameSelectionInputBox;
     private Button UIStartGameButton;
     private Button UIAddPlayerButton;
     private Button UIResetButton;
 
     private GameObject UIAIPlayerSelectionButtonsObject;
+    private GameObject configSelectionButtonsObject;
 
 
     void Start ()
     {
         if (!GameProperties.isSimulation)
         {
+
+            this.title1 = GameObject.Find("Canvas/SetupScreen/title1").gameObject;
+            this.title2 = GameObject.Find("Canvas/SetupScreen/title2").gameObject;
+
             this.UIResetButton = GameObject.Find("Canvas/SetupScreen/resetButton").gameObject.GetComponent<Button>();
             this.UINameSelectionInputBox = GameObject.Find("Canvas/SetupScreen/nameSelectionInputBox").gameObject.GetComponent<InputField>();
             this.UIStartGameButton = GameObject.Find("Canvas/SetupScreen/startGameButton").gameObject.GetComponent<Button>();
@@ -24,6 +32,9 @@ public class PlayersSetupSceneFunctionalities : MonoBehaviour {
 
             this.UIAIPlayerSelectionButtonsObject = GameObject.Find("Canvas/SetupScreen/addAIPlayerGameButtons").gameObject;
             Button[] UIAIPlayerSelectionButtons= UIAIPlayerSelectionButtonsObject.GetComponentsInChildren<Button>();
+
+            this.configSelectionButtonsObject = GameObject.Find("Canvas/SetupScreen/configButtons").gameObject;
+            Button[] configButtons = configSelectionButtonsObject.GetComponentsInChildren<Button>();
 
             UIResetButton.onClick.AddListener(delegate {
                 GameGlobals.players.Clear();
@@ -41,6 +52,7 @@ public class PlayersSetupSceneFunctionalities : MonoBehaviour {
                 GameGlobals.players.Add(new UIPlayer(UINameSelectionInputBox.text));
                 CheckForAllPlayersRegistered();
             });
+
             for(int i=0; i < UIAIPlayerSelectionButtons.Length; i++)
             {
                 Button button = UIAIPlayerSelectionButtons[i];
@@ -68,7 +80,41 @@ public class PlayersSetupSceneFunctionalities : MonoBehaviour {
                     CheckForAllPlayersRegistered();
                 });
             }
-           
+
+            for (int i = 0; i < configButtons.Length; i++)
+            {
+                Button button = configButtons[i];
+                button.onClick.AddListener(delegate
+                {
+                    if (button.gameObject.name.EndsWith("1"))
+                    {
+                        GameGlobals.players.Add(new UIPlayer("Human1"));
+                        GameGlobals.players.Add(new UIPlayer("Human2"));
+                        GameGlobals.players.Add(new UIPlayer("Human3"));
+                    }
+                    else if (button.gameObject.name.EndsWith("2"))
+                    {
+                        GameGlobals.players.Add(new AIPlayerCoopStrategy("Robot1"));
+                        GameGlobals.players.Add(new AIPlayerGreedyStrategy("Robot2"));
+                        GameGlobals.players.Add(new UIPlayer("Human"));
+                    }
+                    else if (button.gameObject.name.EndsWith("3"))
+                    {
+                        GameGlobals.players.Add(new AIPlayerCoopStrategy("Robot1"));
+                        GameGlobals.players.Add(new AIPlayerGreedyStrategy("Robot2"));
+                        GameGlobals.players.Add(new UIPlayer("Human"));
+                    }
+                    else if (button.gameObject.name.EndsWith("4"))
+                    {
+                        GameGlobals.players.Add(new AIPlayerCoopStrategy("Robot1"));
+                        GameGlobals.players.Add(new AIPlayerGreedyStrategy("Robot2"));
+                        GameGlobals.players.Add(new UIPlayer("Human"));
+                    }
+                    button.interactable = false;
+                    CheckForAllPlayersRegistered();
+                });
+            }
+
         }
         else
         {
@@ -90,10 +136,13 @@ public class PlayersSetupSceneFunctionalities : MonoBehaviour {
         if (GameGlobals.players.Count == GameProperties.numberOfPlayersPerGame)
         {
             UIStartGameButton.gameObject.SetActive(true);
+            title1.gameObject.SetActive(false);
+            title2.gameObject.SetActive(false);
             UIAddPlayerButton.gameObject.SetActive(false);
             UINameSelectionInputBox.gameObject.SetActive(false);
 
             UIAIPlayerSelectionButtonsObject.SetActive(false);
+            configSelectionButtonsObject.SetActive(false);
             UIResetButton.gameObject.SetActive(false);
         }
     }
