@@ -15,10 +15,10 @@ public class AIPlayer : UIPlayer
     public AIPlayer(string name) : base(name) {
         levelUpThinkingDelay = 4.0f;
         playForInstrumentThinkingDelay = 8.0f;
-        lastDecisionThinkingDelay = 2.0f;
+        lastDecisionThinkingDelay = 5.0f;
     }
 
-    protected void RegisterMeOnPlayersLog()
+    public override void RegisterMeOnPlayersLog()
     {
         GameProperties.gameLogManager.WritePlayerToLog("0", GameGlobals.currGameId.ToString(), this.id.ToString(), this.name, this.type.ToString());
     }
@@ -55,7 +55,6 @@ public class AIPlayerSimple : AIPlayer
     public AIPlayerSimple(string name) : base(name)
     {
         this.type = GameProperties.AIPlayerType.SIMPLE;
-        RegisterMeOnPlayersLog();
     }
 
     public override void LevelUp(Album currAlbum)
@@ -122,7 +121,6 @@ public class AIPlayerCoopStrategy : AIPlayer
     public AIPlayerCoopStrategy(string name) : base(name)
     {
         this.type = GameProperties.AIPlayerType.COOPERATIVE;
-        RegisterMeOnPlayersLog();
     }
 
     public override void LevelUp(Album currAlbum)
@@ -237,7 +235,6 @@ public class AIPlayerGreedyStrategy : AIPlayer
     public AIPlayerGreedyStrategy(string name) : base(name)
     {
         this.type = GameProperties.AIPlayerType.GREEDY;
-        RegisterMeOnPlayersLog();
     }
 
     public override void LevelUp(Album currAlbum)
@@ -360,7 +357,6 @@ public class AIPlayerBalancedStrategy : AIPlayer
     public AIPlayerBalancedStrategy(string name) : base(name)
     {
         this.type = GameProperties.AIPlayerType.BALANCED;
-        RegisterMeOnPlayersLog();
     }
 
     private void LevelUpForInstrument(Album currAlbum)

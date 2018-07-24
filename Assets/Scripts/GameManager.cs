@@ -23,7 +23,7 @@ public class GameManager : MonoBehaviour {
     public GameObject albumUIPrefab;
 
     public GameObject UInewRoundScreen;
-    public Button UIstartNewRoundButton;
+    public Button UIadvanceRoundButton;
     public Text UIalbumNameText;
     
     public GameObject UIRollDiceForInstrumentOverlay;
@@ -36,8 +36,8 @@ public class GameManager : MonoBehaviour {
 
     public GameObject poppupPrefab;
     public PoppupScreenFunctionalities warningScreenRef;
-    public PoppupScreenFunctionalities infoScreenRefAlbumLoss;
-    public PoppupScreenFunctionalities infoScreenRefAlbumWin;
+    public PoppupScreenFunctionalities infoScreenLossRef;
+    public PoppupScreenFunctionalities infoScreenWinRef;
 
     private int currGameRound;
 
@@ -58,7 +58,7 @@ public class GameManager : MonoBehaviour {
         GameGlobals.albums = new List<Album>(GameProperties.numberOfAlbumsPerGame);
         GameGlobals.players = new List<Player>(GameProperties.numberOfPlayersPerGame);
         GameGlobals.players.Add(new UIPlayer("Coop Jeff"));
-        GameGlobals.players.Add(new AIPlayerCoopStrategy("Greedy Kevin"));
+        GameGlobals.players.Add(new UIPlayer("Greedy Kevin"));
         GameGlobals.players.Add(new UIPlayer("Balanced Sam"));
     }
 
@@ -66,8 +66,8 @@ public class GameManager : MonoBehaviour {
     {
         warningScreenRef = new PoppupScreenFunctionalities(poppupPrefab,canvas, this.GetComponent<PlayerMonoBehaviourFunctionalities>(),Resources.Load<Sprite>("Textures/UI/Icons/Warning"), new Color(0.9f, 0.8f, 0.8f));
 
-        infoScreenRefAlbumLoss = new PoppupScreenFunctionalities(poppupPrefab,canvas, this.GetComponent<PlayerMonoBehaviourFunctionalities>(),Resources.Load<Sprite>("Textures/UI/Icons/InfoLoss"), new Color(0.9f, 0.8f, 0.8f));
-        infoScreenRefAlbumWin = new PoppupScreenFunctionalities(poppupPrefab,canvas, this.GetComponent<PlayerMonoBehaviourFunctionalities>(),Resources.Load<Sprite>("Textures/UI/Icons/InfoWin"), new Color(0.8f, 0.9f, 0.8f));
+        infoScreenLossRef = new PoppupScreenFunctionalities(poppupPrefab,canvas, this.GetComponent<PlayerMonoBehaviourFunctionalities>(),Resources.Load<Sprite>("Textures/UI/Icons/InfoLoss"), new Color(0.9f, 0.8f, 0.8f));
+        infoScreenWinRef = new PoppupScreenFunctionalities(poppupPrefab,canvas, this.GetComponent<PlayerMonoBehaviourFunctionalities>(),Resources.Load<Sprite>("Textures/UI/Icons/InfoWin"), new Color(0.8f, 0.9f, 0.8f));
 
         gameMainSceneFinished = false;
         preferredInstrumentsChoosen = false;
@@ -132,9 +132,16 @@ public class GameManager : MonoBehaviour {
     {
         InitGame();
 
-        UIstartNewRoundButton.onClick.AddListener(delegate () {
-            UInewRoundScreen.SetActive(false);
-            StartGameRoundForAllPlayers(UIalbumNameText.text);
+        UIadvanceRoundButton.onClick.AddListener(delegate () {
+            if (this.gameMainSceneFinished)
+            {
+                GameSceneManager.LoadEndScene();
+            }
+            else
+            {
+                UInewRoundScreen.SetActive(false);
+                StartGameRoundForAllPlayers(UIalbumNameText.text);
+            }
         });
 
         numPlayersToChooseDiceRollInstrument = GameGlobals.players.Count;
@@ -292,13 +299,13 @@ public class GameManager : MonoBehaviour {
         if (newAlbumValue >= marketValue)
         {
             currAlbum.SetMarketingState(GameProperties.AlbumMarketingState.MEGA_HIT);
-            infoScreenRefAlbumWin.DisplayPoppupWithDelay("As your album value ("+ newAlbumValue +") was HIGHER than the market value ("+ marketValue +"), the album was successfully published! Congratulations! Everyone can choose to receive 3000 coins or to invest in their own marketing.", diceRollDelay);
+            infoScreenWinRef.DisplayPoppupWithDelay("As your album value ("+ newAlbumValue +") was HIGHER than the market value ("+ marketValue +"), the album was successfully published! Congratulations! Everyone can choose to receive 3000 coins or to invest in their own marketing.", diceRollDelay);
             numMegaHits++;
         }
         else
         {
             currAlbum.SetMarketingState(GameProperties.AlbumMarketingState.FAIL);
-            infoScreenRefAlbumLoss.DisplayPoppupWithDelay("As your album value (" + newAlbumValue + ") was LOWER than the market value (" + marketValue + "), the album could not be published. Although the band incurred in debt, everyone receives 1000 coins of the band savings.", diceRollDelay);
+            infoScreenLossRef.DisplayPoppupWithDelay("As your album value (" + newAlbumValue + ") was LOWER than the market value (" + marketValue + "), the album could not be published. Although the band incurred in debt, everyone receives 1000 coins of the band savings.", diceRollDelay);
         }
 
         //check for game loss (collapse) or victory on album registry
@@ -415,9 +422,14 @@ public class GameManager : MonoBehaviour {
                     {
                         player.TakeAllMoney();
                     }
+                    infoScreenLossRef.DisplayPoppup("The band incurred in too much debt, therefore no more albums can be produced!");
+                }
+                else
+                {
+                    infoScreenWinRef.DisplayPoppup("The band had a successful journey! Congratulations!");
                 }
 
-                GameSceneManager.LoadEndScene();
+                UIadvanceRoundButton.GetComponentInChildren<Text>().text = "Finish Game";
                 this.gameMainSceneFinished = true;
             }
         }
@@ -546,7 +558,6 @@ public class GameManager : MonoBehaviour {
             nextPlayer.LastDecisionsPhaseRequest(currAlbum);
         }
     }
-
 
 
     public Player ChangeToNextPlayer(Player currPlayer)

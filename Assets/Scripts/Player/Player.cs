@@ -57,13 +57,15 @@ public abstract class Player
             skillSet[instrument] = 0;
             albumContributions[instrument] = 0;
         }
-
     }
+
+    public abstract void RegisterMeOnPlayersLog();
 
     public virtual void InitPlayer(params object[] args)
     {
         this.gameManagerRef = GameObject.Find("GameManager").gameObject.GetComponent<GameManager>();
         this.playerMonoBehaviourFunctionalities = gameManagerRef.GetComponent<PlayerMonoBehaviourFunctionalities>();
+        RegisterMeOnPlayersLog();
     }
     
     public abstract void ResetPlayer(params object[] args);

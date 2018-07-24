@@ -165,6 +165,11 @@ public class UIPlayer : Player
         UpdateCommonUIElements();
     }
 
+    public override void RegisterMeOnPlayersLog()
+    {
+        GameProperties.gameLogManager.WritePlayerToLog("0", GameGlobals.currGameId.ToString(), this.id.ToString(), this.name, "-");
+    }
+
     public void UpdateCommonUIElements()
     {
         UImoneyValue.text = money.ToString();
@@ -184,7 +189,7 @@ public class UIPlayer : Player
             switch (result)
             {
                 case 1:
-                    warningScreenRef.DisplayPoppup("You have no more tokens to level up your skills!");
+                    warningScreenRef.DisplayPoppup("You cannot level up more skills in this round!");
                     break;
                 case 2:
                     warningScreenRef.DisplayPoppup("You cannot develop the same skill more than " + GameProperties.maximumSkillLevelPerInstrument + " times!");
@@ -201,7 +206,7 @@ public class UIPlayer : Player
             switch (result)
             {
                 case 1:
-                    warningScreenRef.DisplayPoppup("You have no more tokens to convert!");
+                    warningScreenRef.DisplayPoppup("You have no more skill levels to convert to money!");
                     break;
             }
         }
@@ -215,11 +220,11 @@ public class UIPlayer : Player
             switch (result)
             {
                 case 1:
-                    warningScreenRef.DisplayPoppup("You can only convert money to one token per round!");
+                    warningScreenRef.DisplayPoppup("You can only convert money to one skill level per round!");
                     break;
 
                 case 2:
-                    warningScreenRef.DisplayPoppup("You have no money to convert!");
+                    warningScreenRef.DisplayPoppup("You have no more money to convert to skill levels!");
                     break;
             }
         }
