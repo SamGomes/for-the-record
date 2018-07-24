@@ -23,6 +23,12 @@ public class AIPlayer : UIPlayer
         GameProperties.gameLogManager.WritePlayerToLog("0", GameGlobals.currGameId.ToString(), this.id.ToString(), this.name, this.type.ToString());
     }
 
+    public override void InitUI(GameObject playerUIPrefab, GameObject canvas, PoppupScreenFunctionalities warningScreenRef)
+    {
+        base.InitUI(playerUIPrefab, canvas, warningScreenRef);
+        this.DisableAllInputs();
+    }
+
     //predicting hri-s
     public IEnumerator ThinkBeforeLevelingUp(float delay)
     {

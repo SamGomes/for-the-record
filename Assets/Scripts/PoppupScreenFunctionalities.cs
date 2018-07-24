@@ -3,16 +3,26 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PoppupScreenFunctionalities : MonoBehaviour
+public class PoppupScreenFunctionalities
 {
-    public GameObject poppupContainer;
+    private GameObject poppupInstance;
 
-    public Button UIcloseButton;
-    public Text UIpoppupText;
+    private PlayerMonoBehaviourFunctionalities playerMonoBehaviourFunctionalities;
 
     // Use this for initialization
-    void Start()
+    public PoppupScreenFunctionalities(GameObject poppupPrefab, GameObject canvas, PlayerMonoBehaviourFunctionalities playerMonoBehaviourFunctionalities, Sprite icon, Color backgroundColor)
     {
+        poppupInstance = Object.Instantiate(poppupPrefab, canvas.transform);
+
+
+        Image backround = poppupInstance.transform.Find("messageBackground").GetComponent<Image>();
+        backround.color = backgroundColor;
+        poppupInstance.transform.Find("icon").GetComponent<Image>().sprite = icon;
+
+        Button UIcloseButton = poppupInstance.transform.Find("closeButton").GetComponent<Button>();
+
+        this.playerMonoBehaviourFunctionalities = playerMonoBehaviourFunctionalities;
+
         HidePoppupPanel();
         UIcloseButton.onClick.AddListener(delegate ()
         {
@@ -21,12 +31,12 @@ public class PoppupScreenFunctionalities : MonoBehaviour
     }
     public void HidePoppupPanel()
     {
-        poppupContainer.SetActive(false);
+        poppupInstance.SetActive(false);
     }
     public void DisplayPoppup(string text)
     {
-        UIpoppupText.text = text;
-        poppupContainer.SetActive(true);
+        poppupInstance.transform.Find("text").GetComponent<Text>().text = text;
+        poppupInstance.SetActive(true);
     }
 
     private IEnumerator DisplayPoppupWithDelayCoroutine(string text, float delay)
@@ -37,6 +47,6 @@ public class PoppupScreenFunctionalities : MonoBehaviour
 
     public void DisplayPoppupWithDelay(string text, float delay)
     {
-        StartCoroutine(DisplayPoppupWithDelayCoroutine(text,delay));
+        playerMonoBehaviourFunctionalities.StartCoroutine(DisplayPoppupWithDelayCoroutine(text,delay));
     }
 }

@@ -9,6 +9,7 @@ public class UIPlayer : Player
     private GameObject playerUI;
     private GameObject playerMarkerUI;
     private GameObject playerDisablerUI;
+    private GameObject playerSelfDisablerUI;
 
     private Button UIplayerActionButton;
 
@@ -17,6 +18,7 @@ public class UIPlayer : Player
     
     private Text[] UISkillLevelsTexts;
     private List<Button> UISkillIconsButtons;
+    
 
     private GameObject UIChooseDiceRollInstrumentScreen;
     private GameObject UILevelUpScreen;
@@ -63,13 +65,15 @@ public class UIPlayer : Player
     }
 
 
-    public void InitUI(GameObject playerUIPrefab, GameObject canvas, PoppupScreenFunctionalities warningScreenRef)
+    public virtual void InitUI(GameObject playerUIPrefab, GameObject canvas, PoppupScreenFunctionalities warningScreenRef)
     {
         this.warningScreenRef = warningScreenRef;
 
         this.playerUI = Object.Instantiate(playerUIPrefab, canvas.transform);
         this.playerMarkerUI = playerUI.transform.Find("marker").gameObject;
         this.playerDisablerUI = playerUI.transform.Find("disabler").gameObject;
+        this.playerSelfDisablerUI = playerUI.transform.Find("selfDisabler").gameObject;
+        playerSelfDisablerUI.SetActive(false); //provide interaction by default
 
         this.UIplayerActionButton = playerUI.transform.Find("playerActionSection/playerActionButton").gameObject.GetComponent<Button>();
 
@@ -523,8 +527,17 @@ public class UIPlayer : Player
         UILevelUpScreen.SetActive(false);
         UIPlayForInstrumentScreen.SetActive(false);
         UILastDecisionsScreen.SetActive(false);
+        UIplayerActionButton.gameObject.SetActive(false);
     }
 
+    public void DisableAllInputs()
+    {
+        playerSelfDisablerUI.SetActive(true);
+    }
+    public void EnableAllInputs()
+    {
+        playerSelfDisablerUI.SetActive(false);
+    }
 
     public override void InitPlayer(params object[] args)
     {

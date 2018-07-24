@@ -34,8 +34,10 @@ public class GameManager : MonoBehaviour {
 
     public GameObject UIAlbumCollectionDisplay;
 
+    public GameObject poppupPrefab;
     public PoppupScreenFunctionalities warningScreenRef;
-    public PoppupScreenFunctionalities infoScreenRef;
+    public PoppupScreenFunctionalities infoScreenRefAlbumLoss;
+    public PoppupScreenFunctionalities infoScreenRefAlbumWin;
 
     private int currGameRound;
 
@@ -56,12 +58,17 @@ public class GameManager : MonoBehaviour {
         GameGlobals.albums = new List<Album>(GameProperties.numberOfAlbumsPerGame);
         GameGlobals.players = new List<Player>(GameProperties.numberOfPlayersPerGame);
         GameGlobals.players.Add(new UIPlayer("Coop Jeff"));
-        GameGlobals.players.Add(new UIPlayer("Greedy Kevin"));
+        GameGlobals.players.Add(new AIPlayerCoopStrategy("Greedy Kevin"));
         GameGlobals.players.Add(new UIPlayer("Balanced Sam"));
     }
 
     public void InitGame()
     {
+        warningScreenRef = new PoppupScreenFunctionalities(poppupPrefab,canvas, this.GetComponent<PlayerMonoBehaviourFunctionalities>(),Resources.Load<Sprite>("Textures/UI/Icons/Warning"), new Color(0.9f, 0.8f, 0.8f));
+
+        infoScreenRefAlbumLoss = new PoppupScreenFunctionalities(poppupPrefab,canvas, this.GetComponent<PlayerMonoBehaviourFunctionalities>(),Resources.Load<Sprite>("Textures/UI/Icons/InfoLoss"), new Color(0.9f, 0.8f, 0.8f));
+        infoScreenRefAlbumWin = new PoppupScreenFunctionalities(poppupPrefab,canvas, this.GetComponent<PlayerMonoBehaviourFunctionalities>(),Resources.Load<Sprite>("Textures/UI/Icons/InfoWin"), new Color(0.8f, 0.9f, 0.8f));
+
         gameMainSceneFinished = false;
         preferredInstrumentsChoosen = false;
 
@@ -285,13 +292,13 @@ public class GameManager : MonoBehaviour {
         if (newAlbumValue >= marketValue)
         {
             currAlbum.SetMarketingState(GameProperties.AlbumMarketingState.MEGA_HIT);
-            infoScreenRef.DisplayPoppupWithDelay("As your album value ("+ newAlbumValue +") was HIGHER than the market value ("+ marketValue +"), the album was successfully published! Congratulations!", diceRollDelay);
+            infoScreenRefAlbumWin.DisplayPoppupWithDelay("As your album value ("+ newAlbumValue +") was HIGHER than the market value ("+ marketValue +"), the album was successfully published! Congratulations! Everyone can choose to receive 3000 coins or to invest in their own marketing.", diceRollDelay);
             numMegaHits++;
         }
         else
         {
             currAlbum.SetMarketingState(GameProperties.AlbumMarketingState.FAIL);
-            infoScreenRef.DisplayPoppupWithDelay("As your album value (" + newAlbumValue + ") was LOWER than the market value (" + marketValue + "), the album could not be published. The band losses were taken into account!", diceRollDelay);
+            infoScreenRefAlbumLoss.DisplayPoppupWithDelay("As your album value (" + newAlbumValue + ") was LOWER than the market value (" + marketValue + "), the album could not be published. Although the band incurred in debt, everyone receives 1000 coins of the band savings.", diceRollDelay);
         }
 
         //check for game loss (collapse) or victory on album registry
