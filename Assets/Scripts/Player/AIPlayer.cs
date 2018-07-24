@@ -4,15 +4,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class AIPlayer : UIPlayer
+public abstract class AIPlayer : UIPlayer
 {
     protected GameProperties.AIPlayerType type;
 
+    protected float choosePreferredInstrumentDelay;
     protected float levelUpThinkingDelay;
     protected float playForInstrumentThinkingDelay;
     protected float lastDecisionThinkingDelay;
 
     public AIPlayer(string name) : base(name) {
+        choosePreferredInstrumentDelay = 3.0f;
         levelUpThinkingDelay = 4.0f;
         playForInstrumentThinkingDelay = 8.0f;
         lastDecisionThinkingDelay = 5.0f;
@@ -29,23 +31,127 @@ public class AIPlayer : UIPlayer
         this.DisableAllInputs();
     }
 
+    //All AI players pick one of the available instruments similarly
+    public virtual void ChoosePreferredInstrumentActions(Album currAlbum) {
+
+        foreach (GameProperties.Instrument instrument in skillSet.Keys)
+        {
+            bool instrumentIsAvailable = true;
+            //check if other players have the same preferred instrument
+            foreach (Player player in GameGlobals.players)
+            {
+                if (player == this)
+                {
+                    continue;
+                }
+                if (player.GetPreferredInstrument() == instrument)
+                {
+                    instrumentIsAvailable = false;
+                    break;
+                }
+            }
+            if (instrumentIsAvailable)
+            {
+                ChangePreferredInstrument(instrument);
+                break;
+            }
+        }
+
+    }
+
+    public virtual void LevelUpActions(Album currAlbum) { }
+
+    //All AI players play for the available instruments similarly
+    public virtual void PlayforInstrumentActions(Album currAlbum) {
+        if (skillSet[preferredInstrument] > 0)
+        {
+            ChangeDiceRollInstrument(preferredInstrument);
+        }
+        else
+        {
+            ChangeDiceRollInstrument(GameProperties.Instrument.NONE);
+        }
+    }
+
+    public virtual int LastDecisionsActions(Album currAlbum) { return 0; }
+
+
+    public override void ChoosePreferredInstrument(Album currAlbum)
+    {
+        base.ChoosePreferredInstrument(currAlbum);
+        if (!GameProperties.isSimulation)
+        {
+            playerMonoBehaviourFunctionalities.StartCoroutine(ThinkBeforeChoosingPreferredInstrument(currAlbum,choosePreferredInstrumentDelay));
+        }
+        else
+        {
+            PlayforInstrumentActions(currAlbum);
+            SendChoosePreferredInstrumentResponse();
+        }
+    }
+    public override void LevelUp(Album currAlbum)
+    {
+        base.LevelUp(currAlbum);
+        if (!GameProperties.isSimulation)
+        {
+            playerMonoBehaviourFunctionalities.StartCoroutine(ThinkBeforeLevelingUp(currAlbum, levelUpThinkingDelay));
+        }
+        else
+        {
+            LevelUp(currAlbum);
+            SendPlayForInstrumentResponse();
+        }
+    }
+    public override void PlayForInstrument(Album currAlbum)
+    {
+        base.PlayForInstrument(currAlbum);
+        if (!GameProperties.isSimulation)
+        {
+            playerMonoBehaviourFunctionalities.StartCoroutine(ThinkBeforePlayForInstrument(currAlbum, playForInstrumentThinkingDelay));
+        }
+        else
+        {
+            PlayforInstrumentActions(currAlbum);
+            SendPlayForInstrumentResponse();
+        }
+    }
+    public override void LastDecisionsPhase(Album currAlbum)
+    {
+        base.LastDecisionsPhase(currAlbum);
+        if (!GameProperties.isSimulation)
+        {
+            playerMonoBehaviourFunctionalities.StartCoroutine(ThinkBeforePlayForInstrument(currAlbum, lastDecisionThinkingDelay));
+        }
+        else
+        {
+            LastDecisionsActions(currAlbum);
+            SendPlayForInstrumentResponse();
+        }
+    }
+
     //predicting hri-s
-    public IEnumerator ThinkBeforeLevelingUp(float delay)
+    public IEnumerator ThinkBeforeChoosingPreferredInstrument(Album currAlbum, float delay)
     {
         yield return new WaitForSeconds(delay);
-        //yield return null;
+        ChoosePreferredInstrumentActions(currAlbum);
+        SendChoosePreferredInstrumentResponse();
+    }
+    public IEnumerator ThinkBeforeLevelingUp(Album currAlbum, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        LevelUpActions(currAlbum);
         SendLevelUpResponse();
     }
-    public IEnumerator ThinkBeforePlayForInstrument(float delay)
+    public IEnumerator ThinkBeforePlayForInstrument(Album currAlbum, float delay)
     {
         yield return new WaitForSeconds(delay);
-        //yield return null;
+        PlayforInstrumentActions(currAlbum);
         SendPlayForInstrumentResponse();
     }
-    public IEnumerator ThinkBeforeLastDecisionPhase(int condition, float delay)
+    public IEnumerator ThinkBeforeLastDecisionPhase(Album currAlbum, float delay)
     {
         yield return new WaitForSeconds(delay);
-        //yield return null;
+        int condition = LastDecisionsActions(currAlbum);
         SendLastDecisionsPhaseResponse(condition);
     }
 }
@@ -57,39 +163,12 @@ public class AIPlayerSimple : AIPlayer
         this.type = GameProperties.AIPlayerType.SIMPLE;
     }
 
-    public override void LevelUp(Album currAlbum)
+    public override void LevelUpActions(Album currAlbum)
     {
         SpendToken(GameProperties.Instrument.GUITAR);
-        SpendToken(GameProperties.Instrument.GUITAR);
-
-        if (!GameProperties.isSimulation)
-        {
-            base.LevelUp(currAlbum);
-            playerMonoBehaviourFunctionalities.StartCoroutine(ThinkBeforeLevelingUp(levelUpThinkingDelay));
-        }
-        else
-        {
-            SendLevelUpResponse();
-        }
 
     }
-
-    public override void PlayForInstrument(Album currAlbum)
-    {
-        ChangeDiceRollInstrument(GameProperties.Instrument.GUITAR);
-
-        if (!GameProperties.isSimulation)
-        {
-            base.LevelUp(currAlbum);
-            playerMonoBehaviourFunctionalities.StartCoroutine(ThinkBeforePlayForInstrument(playForInstrumentThinkingDelay));
-        }
-        else
-        {
-            SendPlayForInstrumentResponse();
-        }
-    }
-
-    public override void LastDecisionsPhase(Album currAlbum)
+    public override int LastDecisionsActions(Album currAlbum)
     {
         int condition = 0;
         if (currAlbum.GetMarketingState() == GameProperties.AlbumMarketingState.MEGA_HIT)
@@ -100,109 +179,30 @@ public class AIPlayerSimple : AIPlayer
         {
             condition = 2;
         }
-
-        if (!GameProperties.isSimulation)
-        {
-            base.LastDecisionsPhase(currAlbum);
-            playerMonoBehaviourFunctionalities.StartCoroutine(ThinkBeforeLastDecisionPhase(condition, lastDecisionThinkingDelay));
-        }
-        else
-        {
-            SendLastDecisionsPhaseResponse(condition);
-        }
+        return condition;
     }
-
 }
 
 public class AIPlayerCoopStrategy : AIPlayer
 {
-    GameProperties.Instrument preferredInstrument;
-
     public AIPlayerCoopStrategy(string name) : base(name)
     {
         this.type = GameProperties.AIPlayerType.COOPERATIVE;
     }
 
-    public override void LevelUp(Album currAlbum)
+    public override void LevelUpActions(Album currAlbum)
     {
         //if there is money left spend it
-        if (money > 0)
+        if (skillSet[preferredInstrument] < GameProperties.maximumSkillLevelPerInstrument)
         {
-            BuyTokens(1);
-        }
-
-        //this strategy always plays for instruments, not for markting
-        for (int numTokensSpent = 0; numTokensSpent < (this.numTokens + 1); numTokensSpent++)
-        {
-            GameProperties.Instrument smallestInstrumentOverall = GameProperties.Instrument.NONE;
-            int smallestValueForInstrumenteOverall = -1;
-
-            List<GameProperties.Instrument> playerSkillSetKeys = new List<GameProperties.Instrument>(this.GetSkillSet().Keys);
-            for (int j = 0; j < (playerSkillSetKeys.Count - 1); j++) //exclude markting, thats why the (playerSkillSetKeys.Count - 1)
+            if (money > 0)
             {
-                GameProperties.Instrument currInstrument = playerSkillSetKeys[j];
-
-                //cannot evolve fully evolved skill
-                if (skillSet[currInstrument] >= GameProperties.maximumSkillLevelPerInstrument)
-                {
-                    continue;
-                }
-
-                int biggestValueForInstrument = -1;
-                for (int i = 0; i < GameGlobals.players.Count; i++)
-                {
-                    Player currPlayer = GameGlobals.players[i];
-                    if (this == currPlayer)
-                    {
-                        continue;
-                    }
-
-                    int currValue = currPlayer.GetSkillSet()[playerSkillSetKeys[j]];
-                    if (biggestValueForInstrument == -1 || currValue > biggestValueForInstrument)
-                    {
-                        biggestValueForInstrument = currValue;
-                    }
-                }
-                if (smallestValueForInstrumenteOverall == -1 || biggestValueForInstrument < smallestValueForInstrumenteOverall)
-                {
-                    smallestValueForInstrumenteOverall = biggestValueForInstrument;
-                    smallestInstrumentOverall = currInstrument;
-                }
+                BuyTokens(1);
             }
-            //if my preferred skill is less evolved than other of my skills, I change my mind! XD
-            if (skillSet[preferredInstrument] < skillSet[smallestInstrumentOverall])
-            {
-                preferredInstrument = smallestInstrumentOverall;
-            }
-            SpendToken(smallestInstrumentOverall);
-        }
-
-        if (!GameProperties.isSimulation)
-        {
-            base.LevelUp(currAlbum);
-            playerMonoBehaviourFunctionalities.StartCoroutine(ThinkBeforeLevelingUp(levelUpThinkingDelay));
-        }
-        else
-        {
-            SendLevelUpResponse();
+            SpendToken(preferredInstrument);
         }
     }
-
-    public override void PlayForInstrument(Album currAlbum)
-    {
-        ChangeDiceRollInstrument(preferredInstrument);
-        if (!GameProperties.isSimulation)
-        {
-            base.PlayForInstrument(currAlbum);
-            playerMonoBehaviourFunctionalities.StartCoroutine(ThinkBeforePlayForInstrument(playForInstrumentThinkingDelay));
-        }
-        else
-        {
-            SendPlayForInstrumentResponse();
-        }
-    }
-
-    public override void LastDecisionsPhase(Album currAlbum)
+    public override int LastDecisionsActions(Album currAlbum)
     {
         int condition = 0;
         if (currAlbum.GetMarketingState() == GameProperties.AlbumMarketingState.MEGA_HIT)
@@ -213,76 +213,22 @@ public class AIPlayerCoopStrategy : AIPlayer
         {
             condition = 2;
         }
-
-        if (!GameProperties.isSimulation)
-        {
-            base.LastDecisionsPhase(currAlbum);
-            playerMonoBehaviourFunctionalities.StartCoroutine(ThinkBeforeLastDecisionPhase(condition, lastDecisionThinkingDelay));
-        }
-        else
-        {
-            SendLastDecisionsPhaseResponse(condition);
-        }
+        return condition;
     }
-
 }
 
 //this strategy always plays for markting except in the first play where it is cooperative. In the last decision it always trusts his markting.
 public class AIPlayerGreedyStrategy : AIPlayer
 {
-    GameProperties.Instrument preferredInstrument;
-
     public AIPlayerGreedyStrategy(string name) : base(name)
     {
         this.type = GameProperties.AIPlayerType.GREEDY;
     }
 
-    public override void LevelUp(Album currAlbum)
+    public override void LevelUpActions(Album currAlbum)
     {
-
         if (gameManagerRef.GetCurrGameRound() == 0)
         {
-            //this strategy always plays for instruments, not for markting
-            for (int numTokensSpent = 0; numTokensSpent < (this.numTokens - 1); numTokensSpent++)
-            {
-                GameProperties.Instrument smallestInstrumentOverall = GameProperties.Instrument.NONE;
-                int smallestValueForInstrumenteOverall = -1;
-
-                List<GameProperties.Instrument> playerSkillSetKeys = new List<GameProperties.Instrument>(this.GetSkillSet().Keys);
-                for (int j = 0; j < (playerSkillSetKeys.Count - 1); j++) //exclude markting, thats why the (playerSkillSetKeys.Count - 1)
-                {
-                    GameProperties.Instrument currInstrument = playerSkillSetKeys[j];
-
-                    //cannot evolve fully evolved skill
-                    if (skillSet[currInstrument] >= GameProperties.maximumSkillLevelPerInstrument)
-                    {
-                        continue;
-                    }
-
-                    int biggestValueForInstrument = -1;
-                    for (int i = 0; i < GameGlobals.players.Count; i++)
-                    {
-                        Player currPlayer = GameGlobals.players[i];
-                        if (this == currPlayer)
-                        {
-                            continue;
-                        }
-
-                        int currValue = currPlayer.GetSkillSet()[playerSkillSetKeys[j]];
-                        if (biggestValueForInstrument == -1 || currValue > biggestValueForInstrument)
-                        {
-                            biggestValueForInstrument = currValue;
-                        }
-                    }
-                    if (smallestValueForInstrumenteOverall == -1 || biggestValueForInstrument < smallestValueForInstrumenteOverall)
-                    {
-                        smallestValueForInstrumenteOverall = biggestValueForInstrument;
-                        smallestInstrumentOverall = currInstrument;
-                    }
-                }
-                preferredInstrument = smallestInstrumentOverall;
-                SpendToken(smallestInstrumentOverall);
-            }
             SpendToken(GameProperties.Instrument.MARKETING);
         }
         else
@@ -300,32 +246,8 @@ public class AIPlayerGreedyStrategy : AIPlayer
             }
             
         }
-        if (!GameProperties.isSimulation)
-        {
-            base.LevelUp(currAlbum);
-            playerMonoBehaviourFunctionalities.StartCoroutine(ThinkBeforeLevelingUp(levelUpThinkingDelay));
-        }
-        else
-        {
-            SendLevelUpResponse();
-        }
     }
-
-    public override void PlayForInstrument(Album currAlbum)
-    {
-        ChangeDiceRollInstrument(preferredInstrument);
-        if (!GameProperties.isSimulation)
-        {
-            base.PlayForInstrument(currAlbum);
-            playerMonoBehaviourFunctionalities.StartCoroutine(ThinkBeforePlayForInstrument(playForInstrumentThinkingDelay));
-        }
-        else
-        {
-            SendPlayForInstrumentResponse();
-        }
-    }
-
-    public override void LastDecisionsPhase(Album currAlbum)
+    public override int LastDecisionsActions(Album currAlbum)
     {
         int condition = 0;
         if (currAlbum.GetMarketingState() == GameProperties.AlbumMarketingState.MEGA_HIT)
@@ -336,82 +258,23 @@ public class AIPlayerGreedyStrategy : AIPlayer
         {
             condition = 2;
         }
-
-        if (!GameProperties.isSimulation)
-        {
-            base.LastDecisionsPhase(currAlbum);
-            playerMonoBehaviourFunctionalities.StartCoroutine(ThinkBeforeLastDecisionPhase(condition, lastDecisionThinkingDelay));
-        }
-        else
-        {
-            SendLastDecisionsPhaseResponse(condition);
-        }
+        return condition;
     }
-
 }
 
 public class AIPlayerBalancedStrategy : AIPlayer
 {
-    GameProperties.Instrument preferredInstrument;
-
     public AIPlayerBalancedStrategy(string name) : base(name)
     {
         this.type = GameProperties.AIPlayerType.BALANCED;
     }
-
-    private void LevelUpForInstrument(Album currAlbum)
-    {
-        
-        GameProperties.Instrument smallestInstrumentOverall = GameProperties.Instrument.NONE;
-        int smallestValueForInstrumenteOverall = -1;
-
-        List<GameProperties.Instrument> playerSkillSetKeys = new List<GameProperties.Instrument>(this.GetSkillSet().Keys);
-        for (int j = 0; j < (playerSkillSetKeys.Count - 1); j++) //exclude markting, thats why the (playerSkillSetKeys.Count - 1)
-        {
-            GameProperties.Instrument currInstrument = playerSkillSetKeys[j];
-
-            //cannot evolve fully evolved skill
-            if (skillSet[currInstrument] >= GameProperties.maximumSkillLevelPerInstrument)
-            {
-                continue;
-            }
-
-            int biggestValueForInstrument = -1;
-            for (int i = 0; i < GameGlobals.players.Count; i++)
-            {
-                Player currPlayer = GameGlobals.players[i];
-                if (this == currPlayer)
-                {
-                    continue;
-                }
-
-                int currValue = currPlayer.GetSkillSet()[playerSkillSetKeys[j]];
-                if (biggestValueForInstrument == -1 || currValue > biggestValueForInstrument)
-                {
-                    biggestValueForInstrument = currValue;
-                }
-            }
-            if (smallestValueForInstrumenteOverall == -1 || biggestValueForInstrument < smallestValueForInstrumenteOverall)
-            {
-                smallestValueForInstrumenteOverall = biggestValueForInstrument;
-                smallestInstrumentOverall = currInstrument;
-            }
-        }
-        preferredInstrument = smallestInstrumentOverall;
-        SpendToken(smallestInstrumentOverall);
-    }
-
-    public override void LevelUp(Album currAlbum)
+   
+    public override void LevelUpActions(Album currAlbum)
     {
         //on first round put one token on instrument and one token on marketing
         if (gameManagerRef.GetCurrGameRound() == 0)
         {
-            //this strategy always plays for instruments, not for markting
-            for (int numTokensSpent = 0; numTokensSpent < (this.numTokens - 1); numTokensSpent++)
-            {
-                LevelUpForInstrument(currAlbum);
-            }
-            SpendToken(GameProperties.Instrument.MARKETING);
+            SpendToken(preferredInstrument);
         }
         else //on the other rounds see if album was a fail and play cooperatively, otherwise play for marketing
         {
@@ -426,7 +289,7 @@ public class AIPlayerBalancedStrategy : AIPlayer
 
                 for (int numTokensSpent = 0; numTokensSpent < this.numTokens; numTokensSpent++)
                 {
-                    LevelUpForInstrument(currAlbum);
+                    SpendToken(preferredInstrument);
                 }
             }
             else if(lastAlbum.GetMarketingState() == GameProperties.AlbumMarketingState.MEGA_HIT)
@@ -443,32 +306,8 @@ public class AIPlayerBalancedStrategy : AIPlayer
                 }
             }
         }
-        if (!GameProperties.isSimulation)
-        {
-            base.LevelUp(currAlbum);
-            playerMonoBehaviourFunctionalities.StartCoroutine(ThinkBeforeLevelingUp(levelUpThinkingDelay));
-        }
-        else
-        {
-            SendLevelUpResponse();
-        }
     }
-
-    public override void PlayForInstrument(Album currAlbum)
-    {
-        ChangeDiceRollInstrument(preferredInstrument);
-        if (!GameProperties.isSimulation)
-        {
-            base.PlayForInstrument(currAlbum);
-            playerMonoBehaviourFunctionalities.StartCoroutine(ThinkBeforePlayForInstrument(playForInstrumentThinkingDelay));
-        }
-        else
-        {
-            SendPlayForInstrumentResponse();
-        }
-    }
-
-    public override void LastDecisionsPhase(Album currAlbum)
+    public override int LastDecisionsActions(Album currAlbum)
     {
         int condition = 0;
         if (currAlbum.GetMarketingState() == GameProperties.AlbumMarketingState.MEGA_HIT)
@@ -479,15 +318,6 @@ public class AIPlayerBalancedStrategy : AIPlayer
         {
             condition = 2;
         }
-
-        if (!GameProperties.isSimulation)
-        {
-            base.LastDecisionsPhase(currAlbum);
-            playerMonoBehaviourFunctionalities.StartCoroutine(ThinkBeforeLastDecisionPhase(condition, lastDecisionThinkingDelay));
-        }
-        else
-        {
-            SendLastDecisionsPhaseResponse(condition);
-        }
+        return condition;
     }
 }

@@ -56,7 +56,7 @@ public static class GameProperties
 
     public static int maximumSkillLevelPerInstrument = 3;
 
-    public static int numberOfAlbumsPerGame = 1;
+    public static int numberOfAlbumsPerGame = 5;
     public static int numberOfPlayersPerGame = 3;
 
 

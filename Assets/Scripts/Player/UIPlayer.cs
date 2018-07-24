@@ -120,6 +120,11 @@ public class UIPlayer : Player
             }
             SpendToken(preferredInstrument);
             UpdateCommonUIElements();
+            //auto pass phase
+            if (numTokens == 0)
+            {
+                SendLevelUpResponse();
+            }
         });
         this.UIspendTokenInMarketingButton = UILevelUpScreen.transform.Find("spendTokenSelection/spendTokenInMarketingButton").GetComponent<Button>();
         UIspendTokenInMarketingButton.onClick.AddListener(delegate ()
@@ -130,6 +135,11 @@ public class UIPlayer : Player
             }
             SpendToken(GameProperties.Instrument.MARKETING);
             UpdateCommonUIElements();
+            //auto pass phase
+            if (numTokens == 0)
+            {
+                SendLevelUpResponse();
+            }
         });
 
 
@@ -400,7 +410,7 @@ public class UIPlayer : Player
     }
     public override void LevelUp(Album currAlbum)
     {
-        UIplayerActionButton.gameObject.SetActive(true);
+        UIplayerActionButton.gameObject.SetActive(false);
         UIChooseDiceRollInstrumentScreen.SetActive(false);
         UILevelUpScreen.SetActive(true);
         UIPlayForInstrumentScreen.SetActive(false);

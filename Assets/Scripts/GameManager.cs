@@ -57,9 +57,9 @@ public class GameManager : MonoBehaviour {
         GameProperties.gameLogManager.InitLogs();
         GameGlobals.albums = new List<Album>(GameProperties.numberOfAlbumsPerGame);
         GameGlobals.players = new List<Player>(GameProperties.numberOfPlayersPerGame);
-        GameGlobals.players.Add(new UIPlayer("Coop Jeff"));
-        GameGlobals.players.Add(new UIPlayer("Greedy Kevin"));
-        GameGlobals.players.Add(new UIPlayer("Balanced Sam"));
+        GameGlobals.players.Add(new AIPlayerCoopStrategy("Coop Jeff"));
+        GameGlobals.players.Add(new AIPlayerGreedyStrategy("Greedy Kevin"));
+        GameGlobals.players.Add(new AIPlayerBalancedStrategy("Balanced Sam"));
     }
 
     public void InitGame()
@@ -67,7 +67,7 @@ public class GameManager : MonoBehaviour {
         warningScreenRef = new PoppupScreenFunctionalities(poppupPrefab,canvas, this.GetComponent<PlayerMonoBehaviourFunctionalities>(),Resources.Load<Sprite>("Textures/UI/Icons/Warning"), new Color(0.9f, 0.8f, 0.8f));
 
         infoScreenLossRef = new PoppupScreenFunctionalities(poppupPrefab,canvas, this.GetComponent<PlayerMonoBehaviourFunctionalities>(),Resources.Load<Sprite>("Textures/UI/Icons/InfoLoss"), new Color(0.9f, 0.8f, 0.8f));
-        infoScreenWinRef = new PoppupScreenFunctionalities(poppupPrefab,canvas, this.GetComponent<PlayerMonoBehaviourFunctionalities>(),Resources.Load<Sprite>("Textures/UI/Icons/InfoWin"), new Color(0.8f, 0.9f, 0.8f));
+        infoScreenWinRef = new PoppupScreenFunctionalities(poppupPrefab,canvas, this.GetComponent<PlayerMonoBehaviourFunctionalities>(),Resources.Load<Sprite>("Textures/UI/Icons/InfoWin"), new Color(0.9f, 0.9f, 0.8f));
 
         gameMainSceneFinished = false;
         preferredInstrumentsChoosen = false;
@@ -91,7 +91,7 @@ public class GameManager : MonoBehaviour {
                 //((UIPlayer)currPlayer).GetPlayerUI().transform.RotateAround(new Vector3(510, 490, 0), new Vector3(0, 0, 1), (i * refAngle));
                 //((UIPlayer)currPlayer).GetPlayerUI().transform.Rotate(new Vector3(0, 0, 1), -(i*refAngle) + 90.0f);
             }
-            currPlayer.ReceiveTokens(2);
+            currPlayer.ReceiveTokens(1);
         }
         if (currPlayer != null)
         {
