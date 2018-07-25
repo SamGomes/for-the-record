@@ -107,7 +107,6 @@ GameObject:
   - component: {fileID: 224880039917175112}
   - component: {fileID: 223093116126073976}
   - component: {fileID: 114547240783594802}
-  - component: {fileID: 114566936526270096}
   m_Layer: 0
   m_Name: PoppupScreen
   m_TagString: Untagged
@@ -336,20 +335,6 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
---- !u!114 &114566936526270096
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1616141079890306}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8b86655546ecc064fbe946b14cb26b21, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  poppupContainer: {fileID: 0}
-  UIcloseButton: {fileID: 114516257981720432}
-  UIpoppupText: {fileID: 114369908176880344}
 --- !u!114 &114619054416226260
 MonoBehaviour:
   m_ObjectHideFlags: 1

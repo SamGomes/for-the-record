@@ -13,16 +13,20 @@ public abstract class AIPlayer : UIPlayer
     protected float playForInstrumentThinkingDelay;
     protected float lastDecisionThinkingDelay;
 
+    protected float sendResponsesDelay;
+
     public AIPlayer(string name) : base(name) {
-        choosePreferredInstrumentDelay = 3.0f;
-        levelUpThinkingDelay = 4.0f;
-        playForInstrumentThinkingDelay = 8.0f;
-        lastDecisionThinkingDelay = 5.0f;
+        choosePreferredInstrumentDelay = 2.0f;
+        levelUpThinkingDelay = 2.0f;
+        playForInstrumentThinkingDelay = 2.0f;
+        lastDecisionThinkingDelay = 2.0f;
+
+        sendResponsesDelay = 0.5f;
     }
 
     public override void RegisterMeOnPlayersLog()
     {
-        GameProperties.gameLogManager.WritePlayerToLog("0", GameGlobals.currGameId.ToString(), this.id.ToString(), this.name, this.type.ToString());
+        GameGlobals.gameLogManager.WritePlayerToLog("0", GameGlobals.currGameId.ToString(), this.id.ToString(), this.name, this.type.ToString());
     }
 
     public override void InitUI(GameObject playerUIPrefab, GameObject canvas, PoppupScreenFunctionalities warningScreenRef)
@@ -81,11 +85,11 @@ public abstract class AIPlayer : UIPlayer
         base.ChoosePreferredInstrument(currAlbum);
         if (!GameProperties.isSimulation)
         {
-            playerMonoBehaviourFunctionalities.StartCoroutine(ThinkBeforeChoosingPreferredInstrument(currAlbum,choosePreferredInstrumentDelay));
+            playerMonoBehaviourFunctionalities.StartCoroutine(ThinkBeforeChoosingPreferredInstrument(currAlbum,choosePreferredInstrumentDelay, false));
         }
         else
         {
-            PlayforInstrumentActions(currAlbum);
+            ChoosePreferredInstrumentActions(currAlbum);
             SendChoosePreferredInstrumentResponse();
         }
     }
@@ -94,12 +98,12 @@ public abstract class AIPlayer : UIPlayer
         base.LevelUp(currAlbum);
         if (!GameProperties.isSimulation)
         {
-            playerMonoBehaviourFunctionalities.StartCoroutine(ThinkBeforeLevelingUp(currAlbum, levelUpThinkingDelay));
+            playerMonoBehaviourFunctionalities.StartCoroutine(ThinkBeforeLevelingUp(currAlbum, levelUpThinkingDelay, false));
         }
         else
         {
-            LevelUp(currAlbum);
-            SendPlayForInstrumentResponse();
+            LevelUpActions(currAlbum);
+            SendLevelUpResponse();
         }
     }
     public override void PlayForInstrument(Album currAlbum)
@@ -107,7 +111,7 @@ public abstract class AIPlayer : UIPlayer
         base.PlayForInstrument(currAlbum);
         if (!GameProperties.isSimulation)
         {
-            playerMonoBehaviourFunctionalities.StartCoroutine(ThinkBeforePlayForInstrument(currAlbum, playForInstrumentThinkingDelay));
+            playerMonoBehaviourFunctionalities.StartCoroutine(ThinkBeforePlayForInstrument(currAlbum, playForInstrumentThinkingDelay, false));
         }
         else
         {
@@ -120,39 +124,67 @@ public abstract class AIPlayer : UIPlayer
         base.LastDecisionsPhase(currAlbum);
         if (!GameProperties.isSimulation)
         {
-            playerMonoBehaviourFunctionalities.StartCoroutine(ThinkBeforePlayForInstrument(currAlbum, lastDecisionThinkingDelay));
+            playerMonoBehaviourFunctionalities.StartCoroutine(ThinkBeforeLastDecisionPhase(currAlbum, lastDecisionThinkingDelay, false, 0));
         }
         else
         {
-            LastDecisionsActions(currAlbum);
-            SendPlayForInstrumentResponse();
+            int condition = LastDecisionsActions(currAlbum);
+            SendLastDecisionsPhaseResponse(condition);
         }
     }
 
     //predicting hri-s
-    public IEnumerator ThinkBeforeChoosingPreferredInstrument(Album currAlbum, float delay)
+    public IEnumerator ThinkBeforeChoosingPreferredInstrument(Album currAlbum, float delay, bool isSendingResponse)
     {
         yield return new WaitForSeconds(delay);
-        ChoosePreferredInstrumentActions(currAlbum);
-        SendChoosePreferredInstrumentResponse();
+        if (!isSendingResponse)
+        {
+            ChoosePreferredInstrumentActions(currAlbum);
+            playerMonoBehaviourFunctionalities.StartCoroutine(ThinkBeforeChoosingPreferredInstrument(currAlbum, sendResponsesDelay, true));
+        }
+        else
+        {
+            SendChoosePreferredInstrumentResponse();
+        }
     }
-    public IEnumerator ThinkBeforeLevelingUp(Album currAlbum, float delay)
+    public IEnumerator ThinkBeforeLevelingUp(Album currAlbum, float delay, bool isSendingResponse)
     {
         yield return new WaitForSeconds(delay);
-        LevelUpActions(currAlbum);
-        SendLevelUpResponse();
+        if (!isSendingResponse)
+        {
+            LevelUpActions(currAlbum);
+            playerMonoBehaviourFunctionalities.StartCoroutine(ThinkBeforeLevelingUp(currAlbum, sendResponsesDelay, true));
+        }
+        else
+        {
+            SendLevelUpResponse();
+        }
     }
-    public IEnumerator ThinkBeforePlayForInstrument(Album currAlbum, float delay)
+    public IEnumerator ThinkBeforePlayForInstrument(Album currAlbum, float delay, bool isSendingResponse)
     {
         yield return new WaitForSeconds(delay);
-        PlayforInstrumentActions(currAlbum);
-        SendPlayForInstrumentResponse();
+        if (!isSendingResponse)
+        {
+            PlayforInstrumentActions(currAlbum);
+            playerMonoBehaviourFunctionalities.StartCoroutine(ThinkBeforePlayForInstrument(currAlbum, sendResponsesDelay, true));
+        }
+        else
+        {
+            SendPlayForInstrumentResponse();
+        }
     }
-    public IEnumerator ThinkBeforeLastDecisionPhase(Album currAlbum, float delay)
+    public IEnumerator ThinkBeforeLastDecisionPhase(Album currAlbum, float delay, bool isSendingResponse, int receivedCondition)
     {
         yield return new WaitForSeconds(delay);
-        int condition = LastDecisionsActions(currAlbum);
-        SendLastDecisionsPhaseResponse(condition);
+        if (!isSendingResponse)
+        {
+            int condition = LastDecisionsActions(currAlbum);
+            playerMonoBehaviourFunctionalities.StartCoroutine(ThinkBeforeLastDecisionPhase(currAlbum, sendResponsesDelay, true, condition));
+        }
+        else
+        {
+            SendLastDecisionsPhaseResponse(receivedCondition);
+        }
     }
 }
 
@@ -227,7 +259,7 @@ public class AIPlayerGreedyStrategy : AIPlayer
 
     public override void LevelUpActions(Album currAlbum)
     {
-        if (gameManagerRef.GetCurrGameRound() == 0)
+        if (GameGlobals.currGameRoundId == 0)
         {
             SpendToken(GameProperties.Instrument.MARKETING);
         }
@@ -272,7 +304,7 @@ public class AIPlayerBalancedStrategy : AIPlayer
     public override void LevelUpActions(Album currAlbum)
     {
         //on first round put one token on instrument and one token on marketing
-        if (gameManagerRef.GetCurrGameRound() == 0)
+        if (GameGlobals.currGameRoundId == 0)
         {
             SpendToken(preferredInstrument);
         }

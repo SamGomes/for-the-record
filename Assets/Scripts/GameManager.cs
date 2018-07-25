@@ -8,8 +8,6 @@ public class GameManager : MonoBehaviour {
 
     private int numMegaHits;
 
-    private IUtilities gameUtilities;
-
     public GameObject canvas;
 
     private int numPlayersToLevelUp;
@@ -39,7 +37,6 @@ public class GameManager : MonoBehaviour {
     public PoppupScreenFunctionalities infoScreenLossRef;
     public PoppupScreenFunctionalities infoScreenWinRef;
 
-    private int currGameRound;
 
     private bool gameMainSceneFinished;
     private bool preferredInstrumentsChoosen;
@@ -50,11 +47,8 @@ public class GameManager : MonoBehaviour {
 
     void Awake()
     {
-        gameUtilities = new RandomUtilities();
-
-
         ////mock to test
-        GameProperties.gameLogManager.InitLogs();
+        //GameGlobals.gameLogManager.InitLogs();
         GameGlobals.albums = new List<Album>(GameProperties.numberOfAlbumsPerGame);
         GameGlobals.players = new List<Player>(GameProperties.numberOfPlayersPerGame);
         GameGlobals.players.Add(new AIPlayerCoopStrategy("Coop Jeff"));
@@ -98,13 +92,8 @@ public class GameManager : MonoBehaviour {
             ChangeToNextPlayer(((UIPlayer)currPlayer)); //init marker to first player
         }
 
-        currGameRound = 0; //first round
+        GameGlobals.currGameRoundId = 0; //first round
         numMegaHits = 0;
-    }
-
-    public int GetCurrGameRound()
-    {
-        return this.currGameRound;
     }
 
     //warning: works only when using human players!
@@ -209,7 +198,7 @@ public class GameManager : MonoBehaviour {
         
         for (int i = 0; i < numTokensForInstrument; i++)
         {
-            int randomIncrease = gameUtilities.RollTheDice(6);
+            int randomIncrease = GameGlobals.gameDiceNG.RollTheDice(6);
             newAlbumInstrumentValue += randomIncrease;
 
             Sprite currDiceNumberSprite = Resources.Load<Sprite>("Animations/RollDiceForInstrumentOverlay/dice6/sprites_3/endingAlternatives/" + randomIncrease);
@@ -281,7 +270,7 @@ public class GameManager : MonoBehaviour {
         int marketValue = 0; 
         for(int i=0; i < 2; i++)
         {
-            int randomIncrease = gameUtilities.RollTheDice(20);
+            int randomIncrease = GameGlobals.gameDiceNG.RollTheDice(20);
             Sprite currDiceNumberSprite = Resources.Load<Sprite>("Animations/RollDiceForInstrumentOverlay/dice20/sprites/endingAlternatives/" + randomIncrease);
             StartCoroutine(PlayDiceUI(i, 20, dice20UI, currDiceNumberSprite, "+" + randomIncrease + " Market Value", Color.red, diceRollDelay));
             marketValue += randomIncrease;
@@ -299,18 +288,28 @@ public class GameManager : MonoBehaviour {
         if (newAlbumValue >= marketValue)
         {
             currAlbum.SetMarketingState(GameProperties.AlbumMarketingState.MEGA_HIT);
-            infoScreenWinRef.DisplayPoppupWithDelay("As your album value ("+ newAlbumValue +") was HIGHER than the market value ("+ marketValue +"), the album was successfully published! Congratulations! Everyone can choose to receive 3000 coins or to invest in their own marketing.", diceRollDelay);
             numMegaHits++;
         }
         else
         {
             currAlbum.SetMarketingState(GameProperties.AlbumMarketingState.FAIL);
-            infoScreenLossRef.DisplayPoppupWithDelay("As your album value (" + newAlbumValue + ") was LOWER than the market value (" + marketValue + "), the album could not be published. Although the band incurred in debt, everyone receives 1000 coins of the band savings.", diceRollDelay);
         }
+
+        if (!GameProperties.isSimulation)
+        {
+            if (newAlbumValue >= marketValue)
+            {
+                infoScreenWinRef.DisplayPoppupWithDelay("As your album value (" + newAlbumValue + ") was HIGHER than the market value (" + marketValue + "), the album was successfully published! Congratulations! Everyone can choose to receive 3000 coins or to invest in their own marketing.", diceRollDelay);
+            }
+            else
+            {
+                infoScreenLossRef.DisplayPoppupWithDelay("As your album value (" + newAlbumValue + ") was LOWER than the market value (" + marketValue + "), the album could not be published. Although the band incurred in debt, everyone receives 1000 coins of the band savings.", diceRollDelay);
+            }
+        }
+        
 
         //check for game loss (collapse) or victory on album registry
         float victoryThreshold = Mathf.Ceil(GameProperties.numberOfAlbumsPerGame / 2.0f);
-        
         float numAlbumsLeft = (float)(GameProperties.numberOfAlbumsPerGame - numAlbums);
         if (numAlbumsLeft < victoryThreshold - numMegaHits)
         {
@@ -323,6 +322,7 @@ public class GameManager : MonoBehaviour {
                 GameGlobals.currGameState = GameProperties.GameState.VICTORY;
             }
         }
+
     }
 
     private void ResetAllPlayers()
@@ -380,14 +380,14 @@ public class GameManager : MonoBehaviour {
             int numPlayedAlbums = GameGlobals.albums.Count;
 
             //write curr game logs
-            GameProperties.gameLogManager.WriteAlbumResultsToLog("0", GameGlobals.currGameId.ToString(), currGameRound.ToString(), currAlbum.GetId().ToString(), currAlbum.GetName(), currAlbum.GetMarketingState().ToString());
+            GameGlobals.gameLogManager.WriteAlbumResultsToLog("0", GameGlobals.currGameId.ToString(), GameGlobals.currGameRoundId.ToString(), currAlbum.GetId().ToString(), currAlbum.GetName(), currAlbum.GetMarketingState().ToString());
             foreach (Player player in GameGlobals.players)
             {
-                GameProperties.gameLogManager.WritePlayerResultsToLog("0", GameGlobals.currGameId.ToString(), currGameRound.ToString(), player.GetId().ToString(), player.GetName(), player.GetMoney().ToString());
+                GameGlobals.gameLogManager.WritePlayerResultsToLog("0", GameGlobals.currGameId.ToString(), GameGlobals.currGameRoundId.ToString(), player.GetId().ToString(), player.GetName(), player.GetMoney().ToString());
             }
 
             numPlayersToStartLastDecisions = GameGlobals.players.Count;
-            currGameRound++;
+            GameGlobals.currGameRoundId++;
 
             //start next game round whenever ready
             if (!GameProperties.isSimulation)
@@ -405,7 +405,7 @@ public class GameManager : MonoBehaviour {
             //reinit some things for next game if game result is known or max albums are achieved
             if (GameGlobals.currGameState != GameProperties.GameState.NOT_FINISHED)
             {
-                currGameRound = 0;
+                GameGlobals.currGameRoundId = 0;
                 //GameGlobals.currGameState = GameProperties.GameState.NOT_FINISHED;
                 Debug.Log("GameGlobals.currGameState: " + GameGlobals.currGameState);
 
@@ -431,6 +431,11 @@ public class GameManager : MonoBehaviour {
 
                 UIadvanceRoundButton.GetComponentInChildren<Text>().text = "Finish Game";
                 this.gameMainSceneFinished = true;
+
+                if (GameProperties.isSimulation)
+                {
+                    GameSceneManager.LoadEndScene();
+                }
             }
         }
 
@@ -507,8 +512,6 @@ public class GameManager : MonoBehaviour {
             int newAlbumInstrumentValue = RollDicesForInstrument(invoker, rollDiceInstrument);
             invoker.SetAlbumContribution(rollDiceInstrument, newAlbumInstrumentValue);
             currAlbum.SetInstrumentValue(invoker.GetDiceRollInstrument(), newAlbumInstrumentValue);
-
-            currAlbum.CalcAlbumValue(); //update album value and ui after playing for instrument
         }
 
         Player nextPlayer = ChangeToNextPlayer(invoker);
@@ -543,9 +546,9 @@ public class GameManager : MonoBehaviour {
         }
 
     }
-    public void LastDecisionsPhaseGetMarktingResponse(Player invoker)
+    public void LastDecisionsPhaseGetMarketingResponse(Player invoker)
     {
-        //roll dices for markting
+        //roll dices for marketing
         int marktingValue = RollDicesForInstrument(invoker, GameProperties.Instrument.MARKETING);
             
         invoker.SetAlbumContribution(GameProperties.Instrument.MARKETING, marktingValue);

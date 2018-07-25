@@ -148,7 +148,7 @@ public abstract class Player
                 gameManagerRef.LastDecisionsPhaseGet3000Response(this);
                 break;
             case 1:
-                gameManagerRef.LastDecisionsPhaseGetMarktingResponse(this);
+                gameManagerRef.LastDecisionsPhaseGetMarketingResponse(this);
                 break;
             case 2:
                 gameManagerRef.LastDecisionsPhaseGet1000Response(this);
@@ -231,7 +231,7 @@ public abstract class Player
         }
         skillSet[instrument]++;
 
-        GameProperties.gameLogManager.WritePlayerActionToLog("0", GameGlobals.currGameId.ToString(), gameManagerRef.GetCurrGameRound().ToString(), this.id.ToString(), this.name,"SPENT_TOKEN", instrument.ToString() , "-");
+        GameGlobals.gameLogManager.WritePlayerActionToLog("0", GameGlobals.currGameId.ToString(), GameGlobals.currGameRoundId.ToString(), this.id.ToString(), this.name,"SPENT_TOKEN", instrument.ToString() , "-");
         return 0;
     }
     public virtual int ConvertTokensToMoney(int numTokensToConvert)
@@ -245,7 +245,7 @@ public abstract class Player
         numTokens-=numTokensToConvert;
         money += numTokensToConvert * GameProperties.tokenValue;
 
-        GameProperties.gameLogManager.WritePlayerActionToLog("0", GameGlobals.currGameId.ToString(), gameManagerRef.GetCurrGameRound().ToString(), this.id.ToString(), this.name,"CONVERTED_TOKENS", "-" , numTokensToConvert.ToString());
+        GameGlobals.gameLogManager.WritePlayerActionToLog("0", GameGlobals.currGameId.ToString(), GameGlobals.currGameRoundId.ToString(), this.id.ToString(), this.name,"CONVERTED_TOKENS", "-" , numTokensToConvert.ToString());
         return 0;
     }
     public virtual int BuyTokens(int numTokensToBuy)
@@ -268,7 +268,7 @@ public abstract class Player
         numTokens += numTokensToBuy;
 
         tokensBoughtOnCurrRound+=numTokensToBuy;
-        GameProperties.gameLogManager.WritePlayerActionToLog("0", GameGlobals.currGameId.ToString(), gameManagerRef.GetCurrGameRound().ToString(), this.id.ToString(), this.name,"BOUGHT_TOKENS", "-" , numTokensToBuy.ToString());
+        GameGlobals.gameLogManager.WritePlayerActionToLog("0", GameGlobals.currGameId.ToString(), GameGlobals.currGameRoundId.ToString(), this.id.ToString(), this.name,"BOUGHT_TOKENS", "-" , numTokensToBuy.ToString());
         return 0;
     }
     public void RollBackChangesToPhaseStart()
@@ -289,7 +289,7 @@ public abstract class Player
     public void ReceiveMoney(int moneyToReceive)
     {
         this.money += moneyToReceive;
-        GameProperties.gameLogManager.WritePlayerActionToLog("0", GameGlobals.currGameId.ToString(), gameManagerRef.GetCurrGameRound().ToString(), this.id.ToString(), this.name,"RECEIVED_MONEY", "-" , moneyToReceive.ToString());
+        GameGlobals.gameLogManager.WritePlayerActionToLog("0", GameGlobals.currGameId.ToString(), GameGlobals.currGameRoundId.ToString(), this.id.ToString(), this.name,"RECEIVED_MONEY", "-" , moneyToReceive.ToString());
     }
     public void ReceiveTokens(int numTokensToReceive)
     {
@@ -320,7 +320,7 @@ public abstract class Player
     public void SetAlbumContribution(GameProperties.Instrument instrument, int value)
     {
         this.albumContributions[instrument] = value;
-        GameProperties.gameLogManager.WritePlayerActionToLog("0", GameGlobals.currGameId.ToString(), gameManagerRef.GetCurrGameRound().ToString(), this.id.ToString(), this.name,"INSTRUMENT_VALUE_CHANGED", instrument.ToString(), value.ToString());
+        GameGlobals.gameLogManager.WritePlayerActionToLog("0", GameGlobals.currGameId.ToString(), GameGlobals.currGameRoundId.ToString(), this.id.ToString(), this.name,"INSTRUMENT_VALUE_CHANGED", instrument.ToString(), value.ToString());
     }
     public Dictionary<GameProperties.Instrument, int> GetAlbumContributions()
     {

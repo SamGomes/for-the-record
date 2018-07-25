@@ -177,7 +177,7 @@ public class UIPlayer : Player
 
     public override void RegisterMeOnPlayersLog()
     {
-        GameProperties.gameLogManager.WritePlayerToLog("0", GameGlobals.currGameId.ToString(), this.id.ToString(), this.name, "-");
+        GameGlobals.gameLogManager.WritePlayerToLog("0", GameGlobals.currGameId.ToString(), this.id.ToString(), this.name, "-");
     }
 
     public void UpdateCommonUIElements()
