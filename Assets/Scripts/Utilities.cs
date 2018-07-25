@@ -6,7 +6,6 @@ public static class GameGlobals
 {
     public static List<Album> albums;
     public static List<Player> players;
-    
 
     public static int currGameId = 0;
     public static int currGameRoundId = 0;
@@ -16,10 +15,11 @@ public static class GameGlobals
 
     public static GameProperties.GameState currGameState;
 
+    public static IDiceNG gameDiceNG = new AlbumLossDiceNG();
+
     public static ILogManager gameLogManager = new FileLogManager();
     public static AudioManager audioManager = new AudioManager();
 
-    public static IDiceNG gameDiceNG = new AlbumVictoryDiceNG();
 }
 
 public static class GameProperties
@@ -66,7 +66,7 @@ public static class GameProperties
     public static int numberOfPlayersPerGame = 3;
 
     //------------ Simulation --------------------
-    public static bool isSimulation = true;
+    public static bool isSimulation = false;
     public static int numGamesToSimulate = 1000;
 }
 

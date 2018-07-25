@@ -1,4 +1,0 @@
-"SessionId";"GameId";"Result"
-0;1;LOSS
-0;2;LOSS
-0;3;LOSS

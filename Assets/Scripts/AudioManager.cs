@@ -4,19 +4,31 @@ using UnityEngine;
 
 public class AudioManager{
 
-    private AudioSource themeIntro;
-    private AudioSource themeLoop;
+    private GameObject audioManagerObject;
 
-    public void PlayInfinitClip(GameObject invoker, AudioClip intro, AudioClip loop)
+    private AudioSource source;
+    private AudioSource loopSource;
+    
+    public AudioManager()
     {
-        themeIntro = invoker.AddComponent<AudioSource>();
-        themeLoop = invoker.AddComponent<AudioSource>();
-        
+        this.audioManagerObject = new GameObject();
+        Object.DontDestroyOnLoad(audioManagerObject);
+        this.source = audioManagerObject.AddComponent<AudioSource>();
+        this.loopSource = audioManagerObject.AddComponent<AudioSource>();
+    }
+
+    public void PlayInfinitClip(string introClipPath, string loopClipPath)
+    {
         //play theme song
-        themeIntro.clip = Resources.Load<AudioClip>("Audio/theme/themeIntro");
-        themeLoop.clip = Resources.Load<AudioClip>("Audio/theme/themeLoop");
-        themeIntro.Play();
-        themeLoop.PlayDelayed(themeIntro.clip.length);
-        themeLoop.loop = true;
+        source.clip = Resources.Load<AudioClip>(introClipPath);
+        loopSource.clip = Resources.Load<AudioClip>(loopClipPath);
+        source.Play();
+        loopSource.PlayDelayed(source.clip.length);
+        loopSource.loop = true;
+    }
+    public void PlayClip(string sourceClipPath)
+    {
+        source.clip = Resources.Load<AudioClip>(sourceClipPath);
+        source.Play();
     }
 }

@@ -31,11 +31,9 @@ public class StartScreenFunctionalities : MonoBehaviour {
         this.UIStartGameButton = GameObject.Find("Canvas/StartScreen/startGameButton").gameObject.GetComponent<Button>();
         if (!GameProperties.isSimulation)
         {
-
-            AudioClip themeIntro = Resources.Load<AudioClip>("Audio/theme/themeIntro");
-            AudioClip themeLoop = Resources.Load<AudioClip>("Audio/theme/themeLoop");
             //play theme song
-            GameGlobals.audioManager.PlayInfinitClip(this.gameObject, themeIntro, themeLoop);
+            //GameGlobals.audioManager.PlayInfinitClip("Audio/theme/themeIntro", "Audio/theme/themeLoop");
+
             UIStartGameButton.onClick.AddListener(delegate () { StartGame(); });
         }
         else

@@ -51,9 +51,9 @@ public class GameManager : MonoBehaviour {
         //GameGlobals.gameLogManager.InitLogs();
         GameGlobals.albums = new List<Album>(GameProperties.numberOfAlbumsPerGame);
         GameGlobals.players = new List<Player>(GameProperties.numberOfPlayersPerGame);
-        GameGlobals.players.Add(new AIPlayerCoopStrategy("Coop Jeff"));
-        GameGlobals.players.Add(new AIPlayerGreedyStrategy("Greedy Kevin"));
-        GameGlobals.players.Add(new AIPlayerBalancedStrategy("Balanced Sam"));
+        GameGlobals.players.Add(new UIPlayer("Coop Jeff"));
+        GameGlobals.players.Add(new UIPlayer("Greedy Kevin"));
+        GameGlobals.players.Add(new UIPlayer("Balanced Sam"));
     }
 
     public void InitGame()
@@ -94,6 +94,16 @@ public class GameManager : MonoBehaviour {
 
         GameGlobals.currGameRoundId = 0; //first round
         numMegaHits = 0;
+        
+        //setup audio on buttons
+        Button[] allButtons = Object.FindObjectsOfType<Button>();
+        foreach(Button button in allButtons)
+        {
+            button.onClick.AddListener(delegate ()
+            {
+                GameGlobals.audioManager.PlayClip("Audio/snap");
+            });
+        }
     }
 
     //warning: works only when using human players!
@@ -300,10 +310,12 @@ public class GameManager : MonoBehaviour {
             if (newAlbumValue >= marketValue)
             {
                 infoScreenWinRef.DisplayPoppupWithDelay("As your album value (" + newAlbumValue + ") was HIGHER than the market value (" + marketValue + "), the album was successfully published! Congratulations! Everyone can choose to receive 3000 coins or to invest in their own marketing.", diceRollDelay);
+                GameGlobals.audioManager.PlayClip("Audio/albumVictory");
             }
             else
             {
                 infoScreenLossRef.DisplayPoppupWithDelay("As your album value (" + newAlbumValue + ") was LOWER than the market value (" + marketValue + "), the album could not be published. Although the band incurred in debt, everyone receives 1000 coins of the band savings.", diceRollDelay);
+                GameGlobals.audioManager.PlayClip("Audio/albumLoss");
             }
         }
         

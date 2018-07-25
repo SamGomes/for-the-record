@@ -41,9 +41,9 @@ public class AlbumVictoryDiceNG : FixedDiceNG
         //trigger for market
         if (diceNumbers == 20)
         {
-            if (GameGlobals.currGameRoundId < GameProperties.numberOfAlbumsPerGame)
+            if (GameGlobals.currGameRoundId < GameProperties.numberOfAlbumsPerGame - 1)
             {
-                return (GameGlobals.currGameRoundId % 2 == 0) ? BadMarketRNG(diceNumbers) : GoodMarketRNG(diceNumbers); ;
+                return (GameGlobals.currGameRoundId % 2 == 0) ? BadMarketRNG(diceNumbers) : GoodMarketRNG(diceNumbers);
             }
             else
             {
@@ -64,7 +64,7 @@ public class AlbumLossDiceNG : FixedDiceNG
         //trigger for market
         if (diceNumbers == 20)
         {
-            if (GameGlobals.currGameRoundId < GameProperties.numberOfAlbumsPerGame)
+            if (GameGlobals.currGameRoundId < GameProperties.numberOfAlbumsPerGame - 1)
             {
                 return (GameGlobals.currGameRoundId % 2 == 0) ? BadMarketRNG(diceNumbers) : GoodMarketRNG(diceNumbers); ;
             }
