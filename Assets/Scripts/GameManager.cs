@@ -46,7 +46,6 @@ public class GameManager : MonoBehaviour {
     {
         gameUtilities = new RandomUtilities();
 
-
         ////mock to test
         //GameProperties.gameLogManager.InitLogs();
         //GameGlobals.albums = new List<Album>(GameProperties.numberOfAlbumsPerGame);

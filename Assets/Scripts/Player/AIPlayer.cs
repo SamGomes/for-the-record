@@ -489,29 +489,3 @@ public class AIPlayerBalancedStrategy : AIPlayer
         }
     }
 }
-
-
-public class RoboticPlayerCoopStrategy : AIPlayerCoopStrategy
-{
-    public RoboticPlayerCoopStrategy(string name) : base(name)
-    {
-    }
-
-    public override void LevelUp(Album currAlbum)
-    {
-        base.LevelUp(currAlbum);
-        Console.WriteLine("Rotobic player did LevelUp.");
-    }
-
-    public override void PlayForInstrument(Album currAlbum)
-    {
-        base.PlayForInstrument(currAlbum);
-        Console.WriteLine("Rotobic player did PlayForInstrument.");
-    }
-
-    public override void LastDecisionsPhase(Album currAlbum)
-    {
-        base.LastDecisionsPhase(currAlbum);
-        Console.WriteLine("Rotobic player did LastDecisionsPhase.");
-    }
-}

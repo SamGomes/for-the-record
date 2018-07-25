@@ -94,21 +94,21 @@ public class PlayersSetupSceneFunctionalities : MonoBehaviour {
                     }
                     else if (button.gameObject.name.EndsWith("2"))
                     {
-                        GameGlobals.players.Add(new AIPlayerCoopStrategy("Robot1"));
-                        GameGlobals.players.Add(new AIPlayerGreedyStrategy("Robot2"));
-                        GameGlobals.players.Add(new UIPlayer("Human"));
+                        GameGlobals.players.Add(new RoboticPlayerGreedyStrategy("Emys"));
+                        GameGlobals.players.Add(new RoboticPlayerCoopStrategy("Glin"));
+                        GameGlobals.players.Add(new UIPlayer("Player"));
                     }
                     else if (button.gameObject.name.EndsWith("3"))
                     {
-                        GameGlobals.players.Add(new AIPlayerCoopStrategy("Robot1"));
-                        GameGlobals.players.Add(new AIPlayerGreedyStrategy("Robot2"));
-                        GameGlobals.players.Add(new UIPlayer("Human"));
+                        GameGlobals.players.Add(new AIPlayerGreedyStrategy("Emys"));
+                        GameGlobals.players.Add(new AIPlayerCoopStrategy("Glin"));
+                        GameGlobals.players.Add(new UIPlayer("Player"));
                     }
                     else if (button.gameObject.name.EndsWith("4"))
                     {
-                        GameGlobals.players.Add(new AIPlayerCoopStrategy("Robot1"));
-                        GameGlobals.players.Add(new AIPlayerGreedyStrategy("Robot2"));
-                        GameGlobals.players.Add(new UIPlayer("Human"));
+                        GameGlobals.players.Add(new AIPlayerGreedyStrategy("Emys"));
+                        GameGlobals.players.Add(new AIPlayerCoopStrategy("Glin"));
+                        GameGlobals.players.Add(new UIPlayer("Player"));
                     }
                     button.interactable = false;
                     CheckForAllPlayersRegistered();
