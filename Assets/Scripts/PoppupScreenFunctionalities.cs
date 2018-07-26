@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class PoppupScreenFunctionalities
 {
     private GameObject poppupInstance;
+    private string audioPath;
 
     private PlayerMonoBehaviourFunctionalities playerMonoBehaviourFunctionalities;
 
@@ -28,6 +29,14 @@ public class PoppupScreenFunctionalities
         {
             HidePoppupPanel();
         });
+
+        this.audioPath = null;
+    }
+
+    public PoppupScreenFunctionalities(GameObject poppupPrefab, GameObject canvas, PlayerMonoBehaviourFunctionalities playerMonoBehaviourFunctionalities, Sprite icon, Color backgroundColor, string audioPath)
+        : this(poppupPrefab, canvas, playerMonoBehaviourFunctionalities, icon, backgroundColor)
+    {
+        this.audioPath = audioPath;
     }
     public void HidePoppupPanel()
     {
@@ -37,6 +46,10 @@ public class PoppupScreenFunctionalities
     {
         poppupInstance.transform.Find("text").GetComponent<Text>().text = text;
         poppupInstance.SetActive(true);
+        if (audioPath != null)
+        {
+            GameGlobals.audioManager.PlayClip(audioPath);
+        }
     }
 
     private IEnumerator DisplayPoppupWithDelayCoroutine(string text, float delay)
@@ -44,6 +57,7 @@ public class PoppupScreenFunctionalities
         yield return new WaitForSeconds(delay);
         DisplayPoppup(text);
     }
+
 
     public void DisplayPoppupWithDelay(string text, float delay)
     {

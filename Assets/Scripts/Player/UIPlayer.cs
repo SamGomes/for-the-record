@@ -97,12 +97,14 @@ public class UIPlayer : Player
         this.UIbuyTokenButton = UILevelUpScreen.transform.Find("buyTokenSelection/buyTokenButton").GetComponent<Button>();
         UIbuyTokenButton.onClick.AddListener(delegate ()
         {
+            GameGlobals.audioManager.PlayClip("Audio/snap");
             BuyTokens(1);
             UpdateCommonUIElements();
         });
         this.UIdiscardChangesButton = UILevelUpScreen.transform.Find("buyTokenSelection/discardChangesButton").GetComponent<Button>();
         UIdiscardChangesButton.onClick.AddListener(delegate ()
         {
+            GameGlobals.audioManager.PlayClip("Audio/snap");
             RollBackChangesToPhaseStart();
             UpdateCommonUIElements();
         });
@@ -114,7 +116,8 @@ public class UIPlayer : Player
         this.UIspendTokenInInstrumentButton = UILevelUpScreen.transform.Find("spendTokenSelection/spendTokenInPreferredInstrumentButton").GetComponent<Button>();
         UIspendTokenInInstrumentButton.onClick.AddListener(delegate ()
         {
-            if (money >= GameProperties.tokenValue)
+            GameGlobals.audioManager.PlayClip("Audio/snap");
+            if (numTokens == 0 && money >= GameProperties.tokenValue)
             {
                 BuyTokens(1);
             }
@@ -129,7 +132,8 @@ public class UIPlayer : Player
         this.UIspendTokenInMarketingButton = UILevelUpScreen.transform.Find("spendTokenSelection/spendTokenInMarketingButton").GetComponent<Button>();
         UIspendTokenInMarketingButton.onClick.AddListener(delegate ()
         {
-            if (money >= GameProperties.tokenValue)
+            GameGlobals.audioManager.PlayClip("Audio/snap");
+            if (numTokens == 0 && money >= GameProperties.tokenValue)
             {
                 BuyTokens(1);
             }
@@ -149,6 +153,7 @@ public class UIPlayer : Player
         this.UInotRollDicesButton = UIPlayForInstrumentScreen.transform.Find("notRollDicesButton").GetComponent<Button>();
         UInotRollDicesButton.onClick.AddListener(delegate ()
         {
+            GameGlobals.audioManager.PlayClip("Audio/snap");
             ChangeDiceRollInstrument(GameProperties.Instrument.NONE);
             UpdateCommonUIElements();
             SendPlayForInstrumentResponse();
@@ -156,6 +161,7 @@ public class UIPlayer : Player
         this.UIrollForPreferredInstrumentButton = UIPlayForInstrumentScreen.transform.Find("rollForPreferredInstrumentButton").GetComponent<Button>();
         UIrollForPreferredInstrumentButton.onClick.AddListener(delegate ()
         {
+            GameGlobals.audioManager.PlayClip("Audio/snap");
             ChangeDiceRollInstrument(this.preferredInstrument);
             UpdateCommonUIElements();
             SendPlayForInstrumentResponse();
@@ -177,7 +183,7 @@ public class UIPlayer : Player
 
     public override void RegisterMeOnPlayersLog()
     {
-        GameGlobals.gameLogManager.WritePlayerToLog("0", GameGlobals.currGameId.ToString(), this.id.ToString(), this.name, "-");
+        GameGlobals.gameLogManager.WritePlayerToLog(GameGlobals.currSessionId.ToString(), GameGlobals.currGameId.ToString(), this.id.ToString(), this.name, "-");
     }
 
     public void UpdateCommonUIElements()
@@ -396,6 +402,7 @@ public class UIPlayer : Player
             Button currButton = UISkillIconsButtons[i];
             currButton.onClick.RemoveAllListeners();
             currButton.onClick.AddListener(delegate {
+                GameGlobals.audioManager.PlayClip("Audio/snap");
                 int currButtonIndex = UISkillIconsButtons.IndexOf(currButton);
                 ChangePreferredInstrument((GameProperties.Instrument) currButtonIndex);
                 UpdateCommonUIElements();
@@ -405,6 +412,7 @@ public class UIPlayer : Player
         UIplayerActionButton.onClick.RemoveAllListeners();
         UIplayerActionButton.interactable = true;
         UIplayerActionButton.onClick.AddListener(delegate {
+            GameGlobals.audioManager.PlayClip("Audio/snap");
             SendChoosePreferredInstrumentResponse();
         });
     }
@@ -421,6 +429,7 @@ public class UIPlayer : Player
             Button currButton = UISkillIconsButtons[i];
             currButton.onClick.RemoveAllListeners();
             currButton.onClick.AddListener(delegate {
+                GameGlobals.audioManager.PlayClip("Audio/snap");
                 SpendToken((GameProperties.Instrument) UISkillIconsButtons.IndexOf(currButton));
                 UpdateCommonUIElements();
             });
@@ -431,6 +440,7 @@ public class UIPlayer : Player
         UIdiscardChangesButton.interactable = true;
         UIbuyTokenButton.interactable = true;
         UIplayerActionButton.onClick.AddListener(delegate {
+            GameGlobals.audioManager.PlayClip("Audio/snap");
             SendLevelUpResponse();
         });
 
@@ -472,6 +482,7 @@ public class UIPlayer : Player
             Button currButton = UISkillIconsButtons[i];
             currButton.onClick.RemoveAllListeners();
             currButton.onClick.AddListener(delegate {
+                GameGlobals.audioManager.PlayClip("Audio/snap");
                 int currButtonIndex = UISkillIconsButtons.IndexOf(currButton);
                 ChangeDiceRollInstrument((GameProperties.Instrument)currButtonIndex);
                 UpdateCommonUIElements();
@@ -483,6 +494,7 @@ public class UIPlayer : Player
         UIplayerActionButton.interactable = true;
         UInotRollDicesButton.interactable = true;
         UIplayerActionButton.onClick.AddListener(delegate {
+            GameGlobals.audioManager.PlayClip("Audio/snap");
             SendPlayForInstrumentResponse();
         });
         UpdateCommonUIElements();
@@ -530,9 +542,18 @@ public class UIPlayer : Player
         UIStickWithMarketingMegaHitButton.onClick.RemoveAllListeners();
         UIReceiveFailButton.onClick.RemoveAllListeners();
 
-        UIReceiveMegaHitButton.onClick.AddListener(delegate { SendLastDecisionsPhaseResponse(0); });
-        UIStickWithMarketingMegaHitButton.onClick.AddListener(delegate { SendLastDecisionsPhaseResponse(1); });
-        UIReceiveFailButton.onClick.AddListener(delegate { SendLastDecisionsPhaseResponse(2); });
+        UIReceiveMegaHitButton.onClick.AddListener(delegate {
+            GameGlobals.audioManager.PlayClip("Audio/chaChing");
+            SendLastDecisionsPhaseResponse(0);
+        });
+        UIStickWithMarketingMegaHitButton.onClick.AddListener(delegate {
+            GameGlobals.audioManager.PlayClip("Audio/chaChing");
+            SendLastDecisionsPhaseResponse(1);
+        });
+        UIReceiveFailButton.onClick.AddListener(delegate {
+            GameGlobals.audioManager.PlayClip("Audio/chaChing");
+            SendLastDecisionsPhaseResponse(2);
+        });
         UpdateCommonUIElements();
     }
 

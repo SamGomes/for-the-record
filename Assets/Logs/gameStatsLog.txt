@@ -1,0 +1,2 @@
+"SessionId";"GameId";"Result"
+43308.0267807801;1;LOSS

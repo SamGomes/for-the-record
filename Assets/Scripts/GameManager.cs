@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Events;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 
@@ -60,8 +62,8 @@ public class GameManager : MonoBehaviour {
     {
         warningScreenRef = new PoppupScreenFunctionalities(poppupPrefab,canvas, this.GetComponent<PlayerMonoBehaviourFunctionalities>(),Resources.Load<Sprite>("Textures/UI/Icons/Warning"), new Color(0.9f, 0.8f, 0.8f));
 
-        infoScreenLossRef = new PoppupScreenFunctionalities(poppupPrefab,canvas, this.GetComponent<PlayerMonoBehaviourFunctionalities>(),Resources.Load<Sprite>("Textures/UI/Icons/InfoLoss"), new Color(0.9f, 0.8f, 0.8f));
-        infoScreenWinRef = new PoppupScreenFunctionalities(poppupPrefab,canvas, this.GetComponent<PlayerMonoBehaviourFunctionalities>(),Resources.Load<Sprite>("Textures/UI/Icons/InfoWin"), new Color(0.9f, 0.9f, 0.8f));
+        infoScreenLossRef = new PoppupScreenFunctionalities(poppupPrefab,canvas, this.GetComponent<PlayerMonoBehaviourFunctionalities>(),Resources.Load<Sprite>("Textures/UI/Icons/InfoLoss"), new Color(0.9f, 0.8f, 0.8f), "Audio/albumLoss");
+        infoScreenWinRef = new PoppupScreenFunctionalities(poppupPrefab,canvas, this.GetComponent<PlayerMonoBehaviourFunctionalities>(),Resources.Load<Sprite>("Textures/UI/Icons/InfoWin"), new Color(0.9f, 0.9f, 0.8f), "Audio/albumVictory");
 
         gameMainSceneFinished = false;
         preferredInstrumentsChoosen = false;
@@ -94,16 +96,7 @@ public class GameManager : MonoBehaviour {
 
         GameGlobals.currGameRoundId = 0; //first round
         numMegaHits = 0;
-        
-        //setup audio on buttons
-        Button[] allButtons = Object.FindObjectsOfType<Button>();
-        foreach(Button button in allButtons)
-        {
-            button.onClick.AddListener(delegate ()
-            {
-                GameGlobals.audioManager.PlayClip("Audio/snap");
-            });
-        }
+
     }
 
     //warning: works only when using human players!
@@ -208,7 +201,7 @@ public class GameManager : MonoBehaviour {
         
         for (int i = 0; i < numTokensForInstrument; i++)
         {
-            int randomIncrease = GameGlobals.gameDiceNG.RollTheDice(6);
+            int randomIncrease = GameGlobals.gameDiceNG.RollTheDice(6,i);
             newAlbumInstrumentValue += randomIncrease;
 
             Sprite currDiceNumberSprite = Resources.Load<Sprite>("Animations/RollDiceForInstrumentOverlay/dice6/sprites_3/endingAlternatives/" + randomIncrease);
@@ -222,6 +215,7 @@ public class GameManager : MonoBehaviour {
                 StartCoroutine(PlayDiceUI(i, 6, dice6UI, currDiceNumberSprite, "+"+randomIncrease+" Album Value", Color.yellow, diceRollDelay));
             }
         }
+        GameGlobals.gameLogManager.WriteEventToLog(GameGlobals.currSessionId.ToString(), GameGlobals.currGameId.ToString(), GameGlobals.currGameRoundId.ToString(), currPlayer.GetId().ToString(), currPlayer.GetName().ToString(), "ROLLED_INSTRUMENT_DICES", "-", newAlbumInstrumentValue.ToString());
 
         return newAlbumInstrumentValue;
     }
@@ -280,11 +274,13 @@ public class GameManager : MonoBehaviour {
         int marketValue = 0; 
         for(int i=0; i < 2; i++)
         {
-            int randomIncrease = GameGlobals.gameDiceNG.RollTheDice(20);
+            int randomIncrease = GameGlobals.gameDiceNG.RollTheDice(20,i);
             Sprite currDiceNumberSprite = Resources.Load<Sprite>("Animations/RollDiceForInstrumentOverlay/dice20/sprites/endingAlternatives/" + randomIncrease);
             StartCoroutine(PlayDiceUI(i, 20, dice20UI, currDiceNumberSprite, "+" + randomIncrease + " Market Value", Color.red, diceRollDelay));
             marketValue += randomIncrease;
         }
+        GameGlobals.gameLogManager.WriteEventToLog(GameGlobals.currSessionId.ToString(), GameGlobals.currGameId.ToString(), GameGlobals.currGameRoundId.ToString(), "-", "-", "ROLLED_MARKET_DICES", "-", marketValue.ToString());
+
         return marketValue;
     }
     
@@ -309,13 +305,11 @@ public class GameManager : MonoBehaviour {
         {
             if (newAlbumValue >= marketValue)
             {
-                infoScreenWinRef.DisplayPoppupWithDelay("As your album value (" + newAlbumValue + ") was HIGHER than the market value (" + marketValue + "), the album was successfully published! Congratulations! Everyone can choose to receive 3000 coins or to invest in their own marketing.", diceRollDelay);
-                GameGlobals.audioManager.PlayClip("Audio/albumVictory");
+                infoScreenWinRef.DisplayPoppupWithDelay("As your album value (" + newAlbumValue + ") was HIGHER than the market value (" + marketValue + "), the album was successfully published! Congratulations! Everyone can choose to receive 3000 coins or to invest in their own marketing.", diceRollDelay*0.8f); //the delay is reduced to account for dices animation
             }
             else
             {
-                infoScreenLossRef.DisplayPoppupWithDelay("As your album value (" + newAlbumValue + ") was LOWER than the market value (" + marketValue + "), the album could not be published. Although the band incurred in debt, everyone receives 1000 coins of the band savings.", diceRollDelay);
-                GameGlobals.audioManager.PlayClip("Audio/albumLoss");
+                infoScreenLossRef.DisplayPoppupWithDelay("As your album value (" + newAlbumValue + ") was LOWER than the market value (" + marketValue + "), the album could not be published. Although the band incurred in debt, everyone receives 1000 coins of the band savings.", diceRollDelay * 0.8f);
             }
         }
         
@@ -392,10 +386,10 @@ public class GameManager : MonoBehaviour {
             int numPlayedAlbums = GameGlobals.albums.Count;
 
             //write curr game logs
-            GameGlobals.gameLogManager.WriteAlbumResultsToLog("0", GameGlobals.currGameId.ToString(), GameGlobals.currGameRoundId.ToString(), currAlbum.GetId().ToString(), currAlbum.GetName(), currAlbum.GetMarketingState().ToString());
+            GameGlobals.gameLogManager.WriteAlbumResultsToLog(GameGlobals.currSessionId.ToString(), GameGlobals.currGameId.ToString(), GameGlobals.currGameRoundId.ToString(), currAlbum.GetId().ToString(), currAlbum.GetName(), currAlbum.GetMarketingState().ToString());
             foreach (Player player in GameGlobals.players)
             {
-                GameGlobals.gameLogManager.WritePlayerResultsToLog("0", GameGlobals.currGameId.ToString(), GameGlobals.currGameRoundId.ToString(), player.GetId().ToString(), player.GetName(), player.GetMoney().ToString());
+                GameGlobals.gameLogManager.WritePlayerResultsToLog(GameGlobals.currSessionId.ToString(), GameGlobals.currGameId.ToString(), GameGlobals.currGameRoundId.ToString(), player.GetId().ToString(), player.GetName(), player.GetMoney().ToString());
             }
 
             numPlayersToStartLastDecisions = GameGlobals.players.Count;

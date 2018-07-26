@@ -12,7 +12,7 @@ public interface ILogManager
     void WriteGameToLog(string sessionId, string gameId, string result);
     void WriteAlbumResultsToLog(string sessionId, string currGameId, string currGameRoundId, string currAlbumId, string currAlbumName, string marktingState);
     void WritePlayerResultsToLog(string sessionId, string currGameId, string currGameRoundId, string playerId, string playerName, string money);
-    void WritePlayerActionToLog(string sessionId, string currGameId, string currGameRoundId, string playerId, string playerName, string eventType, string instrument, string coins);
+    void WriteEventToLog(string sessionId, string currGameId, string currGameRoundId, string playerId, string playerName, string eventType, string instrument, string coins);
     void EndLogs();
 }
 
@@ -39,9 +39,9 @@ public class DebugLogManager : ILogManager
     {
         Debug.Log("WritePlayerResultsToLog: " + sessionId + ";" + currGameId + ";" + currGameRoundId + ";" + playerId + ";" + playerName + ";" + money);
     }
-    public void WritePlayerActionToLog(string sessionId, string currGameId, string currGameRoundId, string playerId, string playerName, string eventType, string skill, string coins)
+    public void WriteEventToLog(string sessionId, string currGameId, string currGameRoundId, string playerId, string playerName, string eventType, string skill, string coins)
     {
-        Debug.Log("WritePlayerActionToLog: " + sessionId + ";" + currGameId + ";" + currGameRoundId + ";" + playerId + ";" + playerName + ";" + eventType + ";" + skill + ";" + coins);
+        Debug.Log("WriteEventToLog: " + sessionId + ";" + currGameId + ";" + currGameRoundId + ";" + playerId + ";" + playerName + ";" + eventType + ";" + skill + ";" + coins);
     }
 
     public void EndLogs()
@@ -59,7 +59,7 @@ public class FileLogManager : ILogManager
     private StreamWriter playersLogFileWritter;
     private StreamWriter playerStatsFileWritter;
     private StreamWriter gameStatsFileWritter;
-    private StreamWriter playerActionsLogFileWritter;
+    private StreamWriter eventsLogFileWritter;
 
     
     public void InitLogs()
@@ -68,13 +68,13 @@ public class FileLogManager : ILogManager
         playersLogFileWritter = File.CreateText(Application.dataPath + "/Logs/playerStatsLog.txt");
         playerStatsFileWritter = File.CreateText(Application.dataPath + "/Logs/playerGameStatsLog.txt");
         gameStatsFileWritter = File.CreateText(Application.dataPath + "/Logs/gameStatsLog.txt");
-        playerActionsLogFileWritter = File.CreateText(Application.dataPath + "/Logs/playerActionsLog.txt");
+        eventsLogFileWritter = File.CreateText(Application.dataPath + "/Logs/eventsLog.txt");
 
         albumStatsFileWritter.WriteLine("\"SessionId\";\"GameId\";\"RoundId\";\"AlbumId\";\"AlbumName\";\"MState\"");
         playersLogFileWritter.WriteLine("\"SessionId\";\"GameId\";\"PlayerId\";\"PlayerName\";\"AIType\"");
         playerStatsFileWritter.WriteLine("\"SessionId\";\"GameId\";\"RoundId\";\"PlayerId\";\"PlayerName\";\"Money\"");
         gameStatsFileWritter.WriteLine("\"SessionId\";\"GameId\";\"Result\"");
-        playerActionsLogFileWritter.WriteLine("\"SessionId\";\"GameId\";\"RoundId\";\"PlayerId\";\"PlayerName\";\"Event Type\";\"Instrument\";\"Value\"");
+        eventsLogFileWritter.WriteLine("\"SessionId\";\"GameId\";\"RoundId\";\"PlayerId\";\"PlayerName\";\"Event Type\";\"Instrument\";\"Value\"");
     }
     public void WritePlayerToLog(string sessionId, string currGameId, string playerId, string playername, string type)
     {
@@ -108,12 +108,12 @@ public class FileLogManager : ILogManager
             playerStatsFileWritter.WriteLine(sessionId + ";" + currGameId + ";" + currGameRoundId + ";" + playerId + ";" + playerName + ";" + money);
         }
     }
-    public void WritePlayerActionToLog(string sessionId, string currGameId, string currGameRoundId, string playerId, string playerName, string eventType, string skill, string coins)
+    public void WriteEventToLog(string sessionId, string currGameId, string currGameRoundId, string playerId, string playerName, string eventType, string skill, string coins)
     {
         //prevent access after disposal
-        if (playerActionsLogFileWritter != null)
+        if (eventsLogFileWritter != null)
         {
-            playerActionsLogFileWritter.WriteLine(sessionId + ";" + currGameId + ";" + currGameRoundId + ";" + playerId + ";" + playerName + ";" + eventType + ";" + skill + ";" + coins);
+            eventsLogFileWritter.WriteLine(sessionId + ";" + currGameId + ";" + currGameRoundId + ";" + playerId + ";" + playerName + ";" + eventType + ";" + skill + ";" + coins);
         }
     }
 
@@ -123,7 +123,7 @@ public class FileLogManager : ILogManager
         albumStatsFileWritter.Flush();
         playersLogFileWritter.Flush();
         playerStatsFileWritter.Flush();
-        playerActionsLogFileWritter.Flush();
+        eventsLogFileWritter.Flush();
     }
 
 }
@@ -150,7 +150,7 @@ public class GoogleFormsLogManager : ILogManager
         Application.ExternalEval("(window.open(\"https://docs.google.com/forms/d/e/1FAIpQLSddPLzrQO1J_9vBGmGpjs1FOIGn3Z92fw23X-otjNQLG7cpSg/formResponse?usp=pp_url&entry.1243275873="+ sessionId + "&entry.67037947=" + currGameId+"&entry.1708403356="+currGameRoundId+"&entry.1264259345="+playerId+"&entry.416810127="+playerName+"&entry.724890801="+money+"&submit=Submit\", \"_blank\")).close()");
 
     }
-    public void WritePlayerActionToLog(string sessionId, string currGameId, string currGameRoundId, string playerId, string playerName, string eventType, string skill, string coins)
+    public void WriteEventToLog(string sessionId, string currGameId, string currGameRoundId, string playerId, string playerName, string eventType, string skill, string coins)
     {
         Application.ExternalEval("(window.open(\"https://docs.google.com/forms/d/e/1FAIpQLScYaTNzROIoL4P6D40B_mcpM1xZuXdJBJz_neHCvCxf0qWpLA/formResponse?usp=pp_url&entry.1243275873="+ sessionId + "&entry.67037947="+currGameId+"&entry.1708403356="+currGameRoundId+"&entry.1264259345="+playerId+"&entry.416810127="+playerName+"&entry.724890801="+eventType+"&entry.1712145275="+skill+"&entry.877028457="+coins+"&submit=Submit\", \"_blank\")).close()");
 
@@ -223,11 +223,11 @@ public class MySQLLogManager : ILogManager
         PassTableArguments(form, "arrFields", "arrValues", keys, values);
         WWW phpConnection = new WWW(phpLogServerConnectionPath, form);
     }
-    public void WritePlayerActionToLog(string sessionId, string currGameId, string currGameRoundId, string playerId, string playerName, string eventType, string skill, string coins) {
+    public void WriteEventToLog(string sessionId, string currGameId, string currGameRoundId, string playerId, string playerName, string eventType, string skill, string coins) {
         WWWForm form = new WWWForm();
         form.AddField("dbAction", "INSERT");
         form.AddField("databaseName", databaseName);
-        form.AddField("tableName", "player_actions_log");
+        form.AddField("tableName", "events_log");
 
         string[] keys = { "sessionId", "gameId", "roundId", "playerId", "playerName", "eventType", "skill", "coins" };
         string[] values = { sessionId, currGameId, currGameRoundId, playerId, playerName, eventType, skill, coins };

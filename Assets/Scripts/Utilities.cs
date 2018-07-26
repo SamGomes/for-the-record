@@ -7,6 +7,7 @@ public static class GameGlobals
     public static List<Album> albums;
     public static List<Player> players;
 
+    public static double currSessionId = System.DateTime.Now.ToOADate();
     public static int currGameId = 0;
     public static int currGameRoundId = 0;
 
@@ -67,6 +68,6 @@ public static class GameProperties
 
     //------------ Simulation --------------------
     public static bool isSimulation = false;
-    public static int numGamesToSimulate = 1000;
+    public static int numGamesToSimulate = 20;
 }
 
