@@ -16,7 +16,7 @@ public static class GameGlobals
 
     public static GameProperties.GameState currGameState;
 
-    public static IDiceNG gameDiceNG = new AlbumLossDiceNG();
+    public static IDiceNG gameDiceNG = new VictoryDiceNG();
 
     public static ILogManager gameLogManager = new FileLogManager();
     public static AudioManager audioManager = new AudioManager();
@@ -67,7 +67,7 @@ public static class GameProperties
     public static int numberOfPlayersPerGame = 3;
 
     //------------ Simulation --------------------
-    public static bool isSimulation = false;
+    public static bool isSimulation = true;
     public static int numGamesToSimulate = 20;
 }
 

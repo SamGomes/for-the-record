@@ -53,9 +53,9 @@ public class GameManager : MonoBehaviour {
         //GameGlobals.gameLogManager.InitLogs();
         GameGlobals.albums = new List<Album>(GameProperties.numberOfAlbumsPerGame);
         GameGlobals.players = new List<Player>(GameProperties.numberOfPlayersPerGame);
-        GameGlobals.players.Add(new UIPlayer("Coop Jeff"));
-        GameGlobals.players.Add(new UIPlayer("Greedy Kevin"));
-        GameGlobals.players.Add(new UIPlayer("Balanced Sam"));
+        GameGlobals.players.Add(new AIPlayerCoopStrategy("Coop Jeff"));
+        GameGlobals.players.Add(new AIPlayerCoopStrategy("Greedy Kevin"));
+        GameGlobals.players.Add(new AIPlayerCoopStrategy("Balanced Sam"));
     }
 
     public void InitGame()
@@ -305,7 +305,7 @@ public class GameManager : MonoBehaviour {
         {
             if (newAlbumValue >= marketValue)
             {
-                infoScreenWinRef.DisplayPoppupWithDelay("As your album value (" + newAlbumValue + ") was HIGHER than the market value (" + marketValue + "), the album was successfully published! Congratulations! Everyone can choose to receive 3000 coins or to invest in their own marketing.", diceRollDelay*0.8f); //the delay is reduced to account for dices animation
+                infoScreenWinRef.DisplayPoppupWithDelay("As your album value (" + newAlbumValue + ") was EQUAL or HIGHER than the market value (" + marketValue + "), the album was successfully published! Congratulations! Everyone can choose to receive 3000 coins or to invest in their own marketing.", diceRollDelay*0.8f); //the delay is reduced to account for dices animation
             }
             else
             {
@@ -428,11 +428,18 @@ public class GameManager : MonoBehaviour {
                     {
                         player.TakeAllMoney();
                     }
-                    infoScreenLossRef.DisplayPoppup("The band incurred in too much debt, therefore no more albums can be produced!");
+
+                    if (!GameProperties.isSimulation)
+                    {
+                        infoScreenLossRef.DisplayPoppup("The band incurred in too much debt, therefore no more albums can be produced!");
+                    }
                 }
                 else
                 {
-                    infoScreenWinRef.DisplayPoppup("The band had a successful journey! Congratulations!");
+                    if (!GameProperties.isSimulation)
+                    {
+                        infoScreenWinRef.DisplayPoppup("The band had a successful journey! Congratulations!");
+                    }
                 }
 
                 UIadvanceRoundButton.GetComponentInChildren<Text>().text = "Finish Game";

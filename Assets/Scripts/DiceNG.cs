@@ -29,12 +29,12 @@ public abstract class FixedDiceNG : IDiceNG
         {
             return 20;
         }
-        return random.Next(Mathf.CeilToInt(currAlbum.GetValue() / 2), diceNumbers + 1);
+        return random.Next(Mathf.CeilToInt(currAlbum.GetValue() / 2) + 1, diceNumbers + 1);
     }
     protected int GoodMarketRNG(int diceNumbers)
     {
         Album currAlbum = GameGlobals.albums[GameGlobals.albums.Count - 1];
-        return random.Next(1, Mathf.CeilToInt(currAlbum.GetValue() / 2));
+        return random.Next(1, Mathf.CeilToInt(currAlbum.GetValue() / 2) - 1);
     }
 
     protected int RollDiceFor6(int diceNumbers, int rollOrderNumber)
@@ -53,7 +53,7 @@ public abstract class FixedDiceNG : IDiceNG
     public abstract int RollTheDice(int diceNumbers, int rollOrderNumber);
 }
 
-public class AlbumVictoryDiceNG : FixedDiceNG
+public class VictoryDiceNG : FixedDiceNG
 {
     public override int RollTheDice(int diceNumbers, int rollOrderNumber)
     {
@@ -76,7 +76,7 @@ public class AlbumVictoryDiceNG : FixedDiceNG
 
     }
 }
-public class AlbumLossDiceNG : FixedDiceNG
+public class LossDiceNG : FixedDiceNG
 {
     public override int RollTheDice(int diceNumbers, int rollOrderNumber)
     {
