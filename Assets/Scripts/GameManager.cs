@@ -58,13 +58,13 @@ public class GameManager : MonoBehaviour {
     {
         GameGlobals.gameManager = this;
         //mock to test
-        GameGlobals.gameLogManager.InitLogs();
-        GameGlobals.gameDiceNG = new RandomDiceNG();
-        GameGlobals.albums = new List<Album>(GameProperties.numberOfAlbumsPerGame);
-        GameGlobals.players = new List<Player>(GameProperties.numberOfPlayersPerGame);
-        GameGlobals.players.Add(new AIPlayerCoopStrategy("Coop Jeff"));
-        GameGlobals.players.Add(new AIPlayerCoopStrategy("Greedy Kevin"));
-        GameGlobals.players.Add(new AIPlayerCoopStrategy("Balanced Sam"));
+        //GameGlobals.gameLogManager.InitLogs();
+        //GameGlobals.gameDiceNG = new RandomDiceNG();
+        //GameGlobals.albums = new List<Album>(GameProperties.numberOfAlbumsPerGame);
+        //GameGlobals.players = new List<Player>(GameProperties.numberOfPlayersPerGame);
+        //GameGlobals.players.Add(new AIPlayerCoopStrategy("Coop Jeff"));
+        //GameGlobals.players.Add(new AIPlayerCoopStrategy("Greedy Kevin"));
+        //GameGlobals.players.Add(new AIPlayerCoopStrategy("Balanced Sam"));
     }
 
     public void InterruptGame()
