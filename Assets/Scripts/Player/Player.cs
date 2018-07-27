@@ -75,6 +75,8 @@ public abstract class Player
     public abstract void PlayForInstrument(Album currAlbum);
     public abstract void LastDecisionsPhase(Album currAlbum);
 
+    public virtual void InformRollDicesValue(Player invoker, int maxValue, int obtainedValue) { }
+
 
     public int GetId()
     {

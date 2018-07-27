@@ -32,6 +32,14 @@
 					"UtteranceId": "TTS-D4E323FF0F0830A8C6F338B68722EDD5"
 				}, 
 				{
+					"CurrentState": "RollInstrumentDice",
+					"NextState": "-",
+					"Meaning": "BadLuck",
+					"Style": "-",
+					"Utterance": "Credo!",
+					"UtteranceId": "TTS-F96795AB4545163D408348877FAC3073"
+				}, 
+				{
 					"CurrentState": "ChoosePreferredInstrument",
 					"NextState": "-",
 					"Meaning": "-",
@@ -70,6 +78,22 @@
 					"Style": "Glin",
 					"Utterance": "A rolar os dados",
 					"UtteranceId": "TTS-AA28B180B2BA504BFD48C06C6251D4C4"
+				}, 
+				{
+					"CurrentState": "RollInstrumentDice",
+					"NextState": "-",
+					"Meaning": "Luck",
+					"Style": "-",
+					"Utterance": "Eish que sorte!",
+					"UtteranceId": "TTS-DF53E3BCCF04C39F2421A2A004F8B220"
+				}, 
+				{
+					"CurrentState": "RollInstrumentDice",
+					"NextState": "-",
+					"Meaning": "Neutral",
+					"Style": "-",
+					"Utterance": "Podia ter sido melhor....",
+					"UtteranceId": "TTS-DFE3D7B43DA2AB24C88944764406282C"
 				}]
 		},
 	"types": [

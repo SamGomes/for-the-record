@@ -229,6 +229,13 @@ public class GameManager : MonoBehaviour {
         }
         GameGlobals.gameLogManager.WriteEventToLog(GameGlobals.currSessionId.ToString(), GameGlobals.currGameId.ToString(), GameGlobals.currGameRoundId.ToString(), currPlayer.GetId().ToString(), currPlayer.GetName().ToString(), "ROLLED_INSTRUMENT_DICES", "-", newAlbumInstrumentValue.ToString());
 
+
+        foreach (var player in GameGlobals.players)
+        {
+            player.InformRollDicesValue(currPlayer, numTokensForInstrument * 6, newAlbumInstrumentValue);
+        }
+
+
         return newAlbumInstrumentValue;
     }
     private IEnumerator PlayDiceUI(int sequenceNumber, int diceNum, GameObject diceImagePrefab, Sprite currDiceNumberSprite, string arrowTextString, Color arrowColor, float delayToClose)

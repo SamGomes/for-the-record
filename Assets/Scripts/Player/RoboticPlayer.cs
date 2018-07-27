@@ -161,6 +161,31 @@ public class RoboticPlayerCoopStrategy : AIPlayerCoopStrategy
         base.LastDecisionsPhase(currAlbum);
         robot.decide();
     }
+
+    public override void InformRollDicesValue(Player invoker, int maxValue, int obtainedValue)
+    {
+        float luckFactor = (float) obtainedValue / (float) maxValue;
+
+        if (luckFactor > 0.7)
+        {
+            robot.perceive(new Name[] {
+            EventHelper.PropertyChange("State(Game)", "RollInstrumentDice", name),
+            EventHelper.PropertyChange("Roll(InstrumentDice)", "Luck", invoker.GetName()) });
+        }
+        else if (luckFactor > 0.35)
+        {
+            robot.perceive(new Name[] {
+            EventHelper.PropertyChange("State(Game)", "RollInstrumentDice", name),
+            EventHelper.PropertyChange("Roll(InstrumentDice)", "Neutral", invoker.GetName()) });
+        }
+        else
+        {
+            robot.perceive(new Name[] {
+            EventHelper.PropertyChange("State(Game)", "RollInstrumentDice", name),
+            EventHelper.PropertyChange("Roll(InstrumentDice)", "BadLuck", invoker.GetName()) });
+        }
+        robot.decide();
+    }
 }
 
 public class RoboticPlayerGreedyStrategy : AIPlayerGreedyStrategy
