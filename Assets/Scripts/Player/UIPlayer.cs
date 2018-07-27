@@ -176,7 +176,7 @@ public class UIPlayer : Player
         this.UIReceiveFailButton = UILastDecisionsFailScreen.transform.Find("receiveButton").gameObject.GetComponent<Button>();
 
 
-        UInameText.text = this.name + " Control Panel:";
+        UInameText.text = this.name;
         UpdateCommonUIElements();
     }
 
