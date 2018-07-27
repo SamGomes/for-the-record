@@ -1,0 +1,40 @@
+{
+	"root":
+		{
+			"classId": 0,
+			"ScenarioName": "ForTheRecord",
+			"Description": null,
+			"WorldModelSource": "",
+			"CharacterSources": ["NormalPlayer.rpc"],
+			"Dialogues": [
+				{
+					"CurrentState": "LevelUp",
+					"NextState": "-",
+					"Meaning": "-",
+					"Style": "-",
+					"Utterance": "É a minha vez melhor as skils",
+					"UtteranceId": "TTS-01286B7BA738D4260AF050984923E20A"
+				}, 
+				{
+					"CurrentState": "PlayForInstrument",
+					"NextState": "-",
+					"Meaning": "-",
+					"Style": "-",
+					"Utterance": "Agora vou rolar os dados para o meu instrumento.",
+					"UtteranceId": "TTS-E9C482711B0A948AC7593006F102237F"
+				}, 
+				{
+					"CurrentState": "LastDecisionsPhase",
+					"NextState": "-",
+					"Meaning": "-",
+					"Style": "-",
+					"Utterance": "Última decisão!",
+					"UtteranceId": "TTS-8724070BBA52BB232737BA4C80B12D66"
+				}]
+		},
+	"types": [
+		{
+			"TypeId": 0,
+			"ClassName": "IntegratedAuthoringTool.IntegratedAuthoringToolAsset, IntegratedAuthoringTool, Version=1.7.0.0, Culture=neutral, PublicKeyToken=null"
+		}]
+}

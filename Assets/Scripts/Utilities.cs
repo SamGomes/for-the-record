@@ -14,6 +14,7 @@ public static class GameGlobals
     public static int playerIdCount = 0;
 
     public static GameProperties.GameState currGameState;
+    public static string FAtiMAScenarioPath = "/Scenarios/ForTheRecord.iat";
 }
 
 public static class GameProperties
