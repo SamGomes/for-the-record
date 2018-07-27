@@ -184,6 +184,7 @@ public class MySQLLogManager : ILogManager
 
         PassTableArguments(form, "arrFields", "arrValues", keys,values);
         WWW phpConnection = new WWW(phpLogServerConnectionPath, form);
+        Debug.Log("php error: "+phpConnection.error);
         
     }
     public void WriteGameToLog(string sessionId, string gameId, string result)
@@ -198,6 +199,8 @@ public class MySQLLogManager : ILogManager
 
         PassTableArguments(form, "arrFields", "arrValues", keys, values);
         WWW phpConnection = new WWW(phpLogServerConnectionPath, form);
+        Debug.Log("php error: " + phpConnection.error);
+
     }
     public void WriteAlbumResultsToLog(string sessionId, string currGameId, string currGameRoundId, string currAlbumId, string currAlbumName, string marketingState) {
         WWWForm form = new WWWForm();
@@ -210,6 +213,8 @@ public class MySQLLogManager : ILogManager
 
         PassTableArguments(form, "arrFields", "arrValues", keys, values);
         WWW phpConnection = new WWW(phpLogServerConnectionPath, form);
+        Debug.Log("php error: " + phpConnection.error);
+
     }
     public void WritePlayerResultsToLog(string sessionId, string currGameId, string currGameRoundId, string playerId, string playerName, string money) {
         WWWForm form = new WWWForm();
@@ -222,6 +227,8 @@ public class MySQLLogManager : ILogManager
 
         PassTableArguments(form, "arrFields", "arrValues", keys, values);
         WWW phpConnection = new WWW(phpLogServerConnectionPath, form);
+        Debug.Log("php error: " + phpConnection.error);
+
     }
     public void WriteEventToLog(string sessionId, string currGameId, string currGameRoundId, string playerId, string playerName, string eventType, string skill, string coins) {
         WWWForm form = new WWWForm();
@@ -234,6 +241,8 @@ public class MySQLLogManager : ILogManager
 
         PassTableArguments(form, "arrFields", "arrValues", keys, values);
         WWW phpConnection = new WWW(phpLogServerConnectionPath, form);
+        Debug.Log("php error: " + phpConnection.error);
+
     }
     public void EndLogs() { }
 
