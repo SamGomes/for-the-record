@@ -1,12 +1,11 @@
+C:\Users\Filipa Correia\Devel\the-band-game\RoboticPlayerTClient\obj\Debug\RoboticPlayerTClient.csproj.CoreCompileInputs.cache
 C:\Users\Filipa Correia\Devel\the-band-game\RoboticPlayerTClient\bin\Debug\RoboticPlayerTClient.exe.config
 C:\Users\Filipa Correia\Devel\the-band-game\RoboticPlayerTClient\bin\Debug\RoboticPlayerTClient.exe
 C:\Users\Filipa Correia\Devel\the-band-game\RoboticPlayerTClient\bin\Debug\RoboticPlayerTClient.pdb
 C:\Users\Filipa Correia\Devel\the-band-game\RoboticPlayerTClient\bin\Debug\CookComputing.XmlRpcV2.dll
 C:\Users\Filipa Correia\Devel\the-band-game\RoboticPlayerTClient\bin\Debug\EmoteEvents.dll
-C:\Users\Filipa Correia\Devel\the-band-game\RoboticPlayerTClient\bin\Debug\Newtonsoft.Json.dll
 C:\Users\Filipa Correia\Devel\the-band-game\RoboticPlayerTClient\bin\Debug\Thalamus.dll
 C:\Users\Filipa Correia\Devel\the-band-game\RoboticPlayerTClient\obj\Debug\RoboticPlayerTClient.csprojAssemblyReference.cache
-C:\Users\Filipa Correia\Devel\the-band-game\RoboticPlayerTClient\obj\Debug\RoboticPlayerTClient.csproj.CoreCompileInputs.cache
 C:\Users\Filipa Correia\Devel\the-band-game\RoboticPlayerTClient\obj\Debug\RoboticPlayerTClient.csproj.CopyComplete
 C:\Users\Filipa Correia\Devel\the-band-game\RoboticPlayerTClient\obj\Debug\RoboticPlayerTClient.exe
 C:\Users\Filipa Correia\Devel\the-band-game\RoboticPlayerTClient\obj\Debug\RoboticPlayerTClient.pdb
