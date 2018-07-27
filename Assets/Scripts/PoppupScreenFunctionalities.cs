@@ -14,8 +14,6 @@ public class PoppupScreenFunctionalities
     public PoppupScreenFunctionalities(GameObject poppupPrefab, GameObject canvas, PlayerMonoBehaviourFunctionalities playerMonoBehaviourFunctionalities, Sprite icon, Color backgroundColor)
     {
         poppupInstance = Object.Instantiate(poppupPrefab, canvas.transform);
-
-
         Image backround = poppupInstance.transform.Find("messageBackground").GetComponent<Image>();
         backround.color = backgroundColor;
         poppupInstance.transform.Find("icon").GetComponent<Image>().sprite = icon;
@@ -27,6 +25,7 @@ public class PoppupScreenFunctionalities
         HidePoppupPanel();
         UIcloseButton.onClick.AddListener(delegate ()
         {
+            GameGlobals.gameManager.ContinueGame();
             HidePoppupPanel();
         });
 
@@ -44,6 +43,7 @@ public class PoppupScreenFunctionalities
     }
     public void DisplayPoppup(string text)
     {
+        GameGlobals.gameManager.InterruptGame();
         poppupInstance.transform.Find("text").GetComponent<Text>().text = text;
         poppupInstance.SetActive(true);
         if (audioPath != null)

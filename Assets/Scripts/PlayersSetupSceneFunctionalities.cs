@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -91,24 +90,28 @@ public class PlayersSetupSceneFunctionalities : MonoBehaviour {
                         GameGlobals.players.Add(new UIPlayer("Human1"));
                         GameGlobals.players.Add(new UIPlayer("Human2"));
                         GameGlobals.players.Add(new UIPlayer("Human3"));
+                        GameGlobals.gameDiceNG = new RandomDiceNG();
                     }
                     else if (button.gameObject.name.EndsWith("2"))
                     {
                         GameGlobals.players.Add(new RoboticPlayerGreedyStrategy("Emys"));
                         GameGlobals.players.Add(new RoboticPlayerCoopStrategy(gameObject, "Glin"));
                         GameGlobals.players.Add(new UIPlayer("Player"));
+                        GameGlobals.gameDiceNG = new RandomDiceNG();
                     }
                     else if (button.gameObject.name.EndsWith("3"))
                     {
                         GameGlobals.players.Add(new RoboticPlayerGreedyStrategy("Emys"));
                         GameGlobals.players.Add(new RoboticPlayerCoopStrategy(gameObject, "Glin"));
                         GameGlobals.players.Add(new UIPlayer("Player"));
+                        GameGlobals.gameDiceNG = new VictoryDiceNG();
                     }
                     else if (button.gameObject.name.EndsWith("4"))
                     {
                         GameGlobals.players.Add(new RoboticPlayerGreedyStrategy("Emys"));
                         GameGlobals.players.Add(new RoboticPlayerCoopStrategy(gameObject, "Glin"));
                         GameGlobals.players.Add(new UIPlayer("Player"));
+                        GameGlobals.gameDiceNG = new LossDiceNG();
                     }
                     button.interactable = false;
                     CheckForAllPlayersRegistered();

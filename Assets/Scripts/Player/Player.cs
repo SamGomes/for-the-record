@@ -63,7 +63,7 @@ public abstract class Player
 
     public virtual void InitPlayer(params object[] args)
     {
-        this.gameManagerRef = GameObject.Find("GameManager").gameObject.GetComponent<GameManager>();
+        this.gameManagerRef = GameGlobals.gameManager;
         this.playerMonoBehaviourFunctionalities = gameManagerRef.GetComponent<PlayerMonoBehaviourFunctionalities>();
         RegisterMeOnPlayersLog();
     }

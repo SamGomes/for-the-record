@@ -526,7 +526,6 @@ GameObject:
   - component: {fileID: 995545263}
   - component: {fileID: 995545262}
   - component: {fileID: 995545261}
-  - component: {fileID: 995545260}
   - component: {fileID: 995545259}
   m_Layer: 5
   m_Name: startGameButton
@@ -554,21 +553,7 @@ RectTransform:
   m_AnchoredPosition: {x: 13, y: -137}
   m_SizeDelta: {x: 464.2, y: 154.65}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!111 &995545259
-Animation:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 995545257}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Animation: {fileID: 7400000, guid: a931961365b0bc547b6e92020bfaea47, type: 2}
-  m_Animations: []
-  m_WrapMode: 0
-  m_PlayAutomatically: 1
-  m_AnimatePhysics: 0
-  m_CullingType: 0
---- !u!95 &995545260
+--- !u!95 &995545259
 Animator:
   serializedVersion: 3
   m_ObjectHideFlags: 0
@@ -577,7 +562,7 @@ Animator:
   m_GameObject: {fileID: 995545257}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 43a7f9ebc4a290349bf117b96104ae7d, type: 2}
+  m_Controller: {fileID: 9100000, guid: 2ad826d4bb7e4e04a968bf7dd9ec68fd, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0

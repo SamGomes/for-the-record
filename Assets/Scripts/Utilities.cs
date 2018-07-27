@@ -18,11 +18,12 @@ public static class GameGlobals
 
     public static string FAtiMAScenarioPath = "/Scenarios/ForTheRecord.iat";
 
-    public static IDiceNG gameDiceNG = new VictoryDiceNG();
+    public static IDiceNG gameDiceNG;
 
     public static ILogManager gameLogManager = new FileLogManager();
     public static AudioManager audioManager = new AudioManager();
-    
+    public static GameManager gameManager;
+
 }
 
 public static class GameProperties

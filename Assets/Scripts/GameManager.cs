@@ -1,8 +1,5 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEditor.Events;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.UI;
 
 
@@ -17,6 +14,7 @@ public class GameManager : MonoBehaviour {
     private int numPlayersToStartLastDecisions;
     private int numPlayersToChooseDiceRollInstrument;
     private bool canCheckAlbumResult;
+    private bool checkedAlbumResult;
 
     //------------ UI -----------------------------
     public GameObject playerUIPrefab;
@@ -41,14 +39,17 @@ public class GameManager : MonoBehaviour {
 
 
     private bool gameMainSceneFinished;
+    private int interruptionRequests; //changed whenever an interruption occurs (either a poppup, warning, etc.)
     private bool preferredInstrumentsChoosen;
 
     private Album currAlbum;
 
     private float diceRollDelay;
 
+
     void Awake()
     {
+        GameGlobals.gameManager = this;
         ////mock to test
         //GameGlobals.gameLogManager.InitLogs();
         //GameGlobals.albums = new List<Album>(GameProperties.numberOfAlbumsPerGame);
@@ -58,8 +59,19 @@ public class GameManager : MonoBehaviour {
         //GameGlobals.players.Add(new AIPlayerCoopStrategy("Balanced Sam"));
     }
 
+    public void InterruptGame()
+    {
+        interruptionRequests++;
+    }
+    public void ContinueGame()
+    {
+        interruptionRequests--;
+    }
+
     public void InitGame()
     {
+        interruptionRequests = 0;
+
         warningScreenRef = new PoppupScreenFunctionalities(poppupPrefab,canvas, this.GetComponent<PlayerMonoBehaviourFunctionalities>(),Resources.Load<Sprite>("Textures/UI/Icons/Warning"), new Color(0.9f, 0.8f, 0.8f));
 
         infoScreenLossRef = new PoppupScreenFunctionalities(poppupPrefab,canvas, this.GetComponent<PlayerMonoBehaviourFunctionalities>(),Resources.Load<Sprite>("Textures/UI/Icons/InfoLoss"), new Color(0.9f, 0.8f, 0.8f), "Audio/albumLoss");
@@ -71,6 +83,7 @@ public class GameManager : MonoBehaviour {
         diceRollDelay = 6.0f;
 
         canCheckAlbumResult = false;
+        checkedAlbumResult = false;
         int numPlayers = GameGlobals.players.Count;
 
         Player currPlayer = null;
@@ -197,7 +210,6 @@ public class GameManager : MonoBehaviour {
 
         //UI stuff
         UIRollDiceForInstrumentOverlay.transform.Find("title/Text").GetComponent<Text>().text = currPlayer.GetName() + " rolling "+ numTokensForInstrument + " dice(s) for " + instrument.ToString() + " ...";
-        List<Sprite> diceNumSprites = new List<Sprite>();
         
         for (int i = 0; i < numTokensForInstrument; i++)
         {
@@ -219,9 +231,10 @@ public class GameManager : MonoBehaviour {
 
         return newAlbumInstrumentValue;
     }
-    private IEnumerator PlayDiceUI(int sequenceNumber, int diceNum, GameObject diceImagePrefab, Sprite currDiceNumberSprite, string arrowTextString, Color arrowColor, float delayToClose) 
+    private IEnumerator PlayDiceUI(int sequenceNumber, int diceNum, GameObject diceImagePrefab, Sprite currDiceNumberSprite, string arrowTextString, Color arrowColor, float delayToClose)
     //the sequence number aims to void dice overlaps as it represents the order for which this dice is going to be rolled. We do not want to roll a dice two times for the same place
     {
+        InterruptGame();
 
         UIRollDiceForInstrumentOverlay.SetActive(true);
         GameObject diceImageClone = Instantiate(diceImagePrefab, UIRollDiceForInstrumentOverlay.transform);
@@ -262,7 +275,8 @@ public class GameManager : MonoBehaviour {
         arrowAnimator.speed = 1;
 
         yield return new WaitForSeconds(delayToClose);
-        
+
+        ContinueGame();
         UIRollDiceForInstrumentOverlay.SetActive(false);
         Destroy(diceImageClone);
     }
@@ -328,7 +342,7 @@ public class GameManager : MonoBehaviour {
                 GameGlobals.currGameState = GameProperties.GameState.VICTORY;
             }
         }
-
+        this.checkedAlbumResult = true;
     }
 
     private void ResetAllPlayers()
@@ -343,14 +357,16 @@ public class GameManager : MonoBehaviour {
     void Update () {
         
         //avoid rerun in this case because load scene is asyncronous
-        if (this.gameMainSceneFinished)
+        if (this.gameMainSceneFinished || this.interruptionRequests>0)
         {
+            //Debug.Log("pause...");
             return;
         }
-
         //end of first phase; trigger second phase
-        if(!preferredInstrumentsChoosen && numPlayersToChooseDiceRollInstrument == 0)
+        if (!preferredInstrumentsChoosen && numPlayersToChooseDiceRollInstrument == 0)
         {
+
+            Debug.Log("running1...");
             StartLevelingUpPhase();
             //numPlayersToChooseDiceRollInstrument = GameGlobals.players.Count; //is not performed to ensure this phase is only played once
             preferredInstrumentsChoosen = true;
@@ -360,6 +376,8 @@ public class GameManager : MonoBehaviour {
         //end of first phase; trigger second phase
         if (numPlayersToLevelUp == 0)
         {
+
+            Debug.Log("running2...");
             StartPlayForInstrumentPhase();
             numPlayersToLevelUp = GameGlobals.players.Count;
         }
@@ -367,22 +385,34 @@ public class GameManager : MonoBehaviour {
         //end of second phase;
         if (numPlayersToPlayForInstrument == 0)
         {
-            //make phase UI active (this step is interim but must be done before last phase)
-            UIRollDiceForMarketValueScreen.SetActive(true);
+            if (checkedAlbumResult)
+            {
+                Debug.Log("running3...");
+                checkedAlbumResult = false;
+                StartLastDecisionsPhase();
+                numPlayersToPlayForInstrument = GameGlobals.players.Count;
+            }
+            else
+            {
+                //make phase UI active (this step is interim but must be done before last phase)
+                UIRollDiceForMarketValueScreen.SetActive(true);
+            }
+            
             if (canCheckAlbumResult || GameProperties.isSimulation)
             {
                 CheckAlbumResult();
                 canCheckAlbumResult = false;
                 UIRollDiceForMarketValueScreen.SetActive(false);
-
-                StartLastDecisionsPhase();
-                numPlayersToPlayForInstrument = GameGlobals.players.Count;
+                
             }
+            
         }
 
         //end of third phase; trigger and log album result
         if (numPlayersToStartLastDecisions == 0)
         {
+
+            Debug.Log("running4...");
             int numPlayedAlbums = GameGlobals.albums.Count;
 
             //write curr game logs
@@ -528,7 +558,9 @@ public class GameManager : MonoBehaviour {
         }
 
         Player nextPlayer = ChangeToNextPlayer(invoker);
+
         numPlayersToPlayForInstrument--;
+
         if (numPlayersToPlayForInstrument > 0)
         {
             nextPlayer.PlayForInstrumentRequest(currAlbum);
