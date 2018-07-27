@@ -6,12 +6,12 @@ using UnityEngine.UI;
 public class StartScreenFunctionalities : MonoBehaviour {
 
     private Button UIStartGameButton;
-    
+
+
     private void InitGameGlobals()
     {
         GameGlobals.albums = new List<Album>(GameProperties.numberOfAlbumsPerGame);
         GameGlobals.players = new List<Player>(GameProperties.numberOfPlayersPerGame);
-        
     }
 
     private void StartGame()
@@ -19,7 +19,7 @@ public class StartScreenFunctionalities : MonoBehaviour {
         InitGameGlobals();
         if (GameGlobals.currGameId == 0)
         {
-            GameProperties.gameLogManager.InitLogs();
+            GameGlobals.gameLogManager.InitLogs();
         }
         //GameGlobals.playerIdCount = 0;
         //GameGlobals.albumIdCount = 0;
@@ -31,6 +31,9 @@ public class StartScreenFunctionalities : MonoBehaviour {
         this.UIStartGameButton = GameObject.Find("Canvas/StartScreen/startGameButton").gameObject.GetComponent<Button>();
         if (!GameProperties.isSimulation)
         {
+            //play theme song
+            //GameGlobals.audioManager.PlayInfinitClip("Audio/theme/themeIntro", "Audio/theme/themeLoop");
+
             UIStartGameButton.onClick.AddListener(delegate () { StartGame(); });
         }
         else

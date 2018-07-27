@@ -6,15 +6,23 @@ public static class GameGlobals
 {
     public static List<Album> albums;
     public static List<Player> players;
-    
 
+    public static double currSessionId = System.DateTime.Now.ToOADate();
     public static int currGameId = 0;
+    public static int currGameRoundId = 0;
 
     public static int albumIdCount = 0;
     public static int playerIdCount = 0;
 
     public static GameProperties.GameState currGameState;
+
     public static string FAtiMAScenarioPath = "/Scenarios/ForTheRecord.iat";
+
+    public static IDiceNG gameDiceNG = new VictoryDiceNG();
+
+    public static ILogManager gameLogManager = new FileLogManager();
+    public static AudioManager audioManager = new AudioManager();
+    
 }
 
 public static class GameProperties
@@ -60,33 +68,8 @@ public static class GameProperties
     public static int numberOfAlbumsPerGame = 5;
     public static int numberOfPlayersPerGame = 3;
 
-
     //------------ Simulation --------------------
     public static bool isSimulation = false;
     public static int numGamesToSimulate = 20;
-
-    public static LogManager gameLogManager = new DebugLogManager();
 }
 
-public interface IUtilities
-{
-    int RollTheDice(int diceNumbers);
-}
-
-public class RandomUtilities: IUtilities{
-    private System.Random random = new System.Random();
-
-    public int RollTheDice(int diceNumbers)
-    {
-        return random.Next(1,diceNumbers+1);
-    }
-}
-
-public class FixedUtilities : IUtilities{
-    int numberOfDiceRolls = 0;
-    public int RollTheDice(int diceNumbers)
-    {
-        numberOfDiceRolls++;
-        return numberOfDiceRolls%diceNumbers;
-    }
-}

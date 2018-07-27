@@ -9,6 +9,7 @@ public class UIPlayer : Player
     private GameObject playerUI;
     private GameObject playerMarkerUI;
     private GameObject playerDisablerUI;
+    private GameObject playerSelfDisablerUI;
 
     private Button UIplayerActionButton;
 
@@ -17,8 +18,9 @@ public class UIPlayer : Player
     
     private Text[] UISkillLevelsTexts;
     private List<Button> UISkillIconsButtons;
-    //private Text UIContributionsTexts;
+    
 
+    private GameObject UIChooseDiceRollInstrumentScreen;
     private GameObject UILevelUpScreen;
     private GameObject UIPlayForInstrumentScreen;
     private GameObject UILastDecisionsScreen;
@@ -33,13 +35,15 @@ public class UIPlayer : Player
     protected Button UIspendTokenButton;
 
     protected Button UIbuyTokenButton;
-    private Text UInumTokensValue;
     protected Button UIdiscardChangesButton;
-    
+
+    protected Button UIspendTokenInInstrumentButton;
+    protected Button UIspendTokenInMarketingButton;
+
     protected Button UInotRollDicesButton;
+    protected Button UIrollForPreferredInstrumentButton;
 
-
-    private WarningScreenFunctionalities warningScreenRef;
+    private PoppupScreenFunctionalities warningScreenRef;
 
 
     public UIPlayer(string name) : base(name)
@@ -60,13 +64,16 @@ public class UIPlayer : Player
         return this.playerDisablerUI;
     }
 
-    public void InitUI(GameObject playerUIPrefab, GameObject canvas, WarningScreenFunctionalities warningScreenRef)
+
+    public virtual void InitUI(GameObject playerUIPrefab, GameObject canvas, PoppupScreenFunctionalities warningScreenRef)
     {
         this.warningScreenRef = warningScreenRef;
 
         this.playerUI = Object.Instantiate(playerUIPrefab, canvas.transform);
         this.playerMarkerUI = playerUI.transform.Find("marker").gameObject;
         this.playerDisablerUI = playerUI.transform.Find("disabler").gameObject;
+        this.playerSelfDisablerUI = playerUI.transform.Find("selfDisabler").gameObject;
+        playerSelfDisablerUI.SetActive(false); //provide interaction by default
 
         this.UIplayerActionButton = playerUI.transform.Find("playerActionSection/playerActionButton").gameObject.GetComponent<Button>();
 
@@ -75,20 +82,68 @@ public class UIPlayer : Player
 
         this.UISkillLevelsTexts = playerUI.transform.Find("playerStateSection/skillTable/skillLevels").GetComponentsInChildren<Text>();
         this.UISkillIconsButtons = new List<Button>(playerUI.transform.Find("playerStateSection/skillTable/skillIcons").GetComponentsInChildren<Button>());
-        
+        foreach(Button button in UISkillIconsButtons)
+        {
+            button.GetComponent<Outline>().enabled = false;
+        }
+        this.UIChooseDiceRollInstrumentScreen = playerUI.transform.Find("playerActionSection/chooseDiceRollInstrumentPhaseUI").gameObject;
+
+
+
 
         this.UILevelUpScreen = playerUI.transform.Find("playerActionSection/levelUpPhaseUI").gameObject;
-        this.UInumTokensValue = UILevelUpScreen.transform.Find("numTokensValue").GetComponent<Text>();
+
+        //--------------------this is disabled in this version-----------------------------
         this.UIbuyTokenButton = UILevelUpScreen.transform.Find("buyTokenSelection/buyTokenButton").GetComponent<Button>();
-        UIbuyTokenButton.onClick.AddListener(delegate () {
+        UIbuyTokenButton.onClick.AddListener(delegate ()
+        {
+            GameGlobals.audioManager.PlayClip("Audio/snap");
             BuyTokens(1);
             UpdateCommonUIElements();
         });
         this.UIdiscardChangesButton = UILevelUpScreen.transform.Find("buyTokenSelection/discardChangesButton").GetComponent<Button>();
         UIdiscardChangesButton.onClick.AddListener(delegate ()
         {
+            GameGlobals.audioManager.PlayClip("Audio/snap");
             RollBackChangesToPhaseStart();
             UpdateCommonUIElements();
+        });
+        this.UIbuyTokenButton.enabled = false;
+        this.UIdiscardChangesButton.enabled = false;
+        //--------------------------------------------------------------------------------
+
+
+        this.UIspendTokenInInstrumentButton = UILevelUpScreen.transform.Find("spendTokenSelection/spendTokenInPreferredInstrumentButton").GetComponent<Button>();
+        UIspendTokenInInstrumentButton.onClick.AddListener(delegate ()
+        {
+            GameGlobals.audioManager.PlayClip("Audio/snap");
+            if (numTokens == 0 && money >= GameProperties.tokenValue)
+            {
+                BuyTokens(1);
+            }
+            SpendToken(preferredInstrument);
+            UpdateCommonUIElements();
+            //auto pass phase
+            if (numTokens == 0)
+            {
+                SendLevelUpResponse();
+            }
+        });
+        this.UIspendTokenInMarketingButton = UILevelUpScreen.transform.Find("spendTokenSelection/spendTokenInMarketingButton").GetComponent<Button>();
+        UIspendTokenInMarketingButton.onClick.AddListener(delegate ()
+        {
+            GameGlobals.audioManager.PlayClip("Audio/snap");
+            if (numTokens == 0 && money >= GameProperties.tokenValue)
+            {
+                BuyTokens(1);
+            }
+            SpendToken(GameProperties.Instrument.MARKETING);
+            UpdateCommonUIElements();
+            //auto pass phase
+            if (numTokens == 0)
+            {
+                SendLevelUpResponse();
+            }
         });
 
 
@@ -98,10 +153,19 @@ public class UIPlayer : Player
         this.UInotRollDicesButton = UIPlayForInstrumentScreen.transform.Find("notRollDicesButton").GetComponent<Button>();
         UInotRollDicesButton.onClick.AddListener(delegate ()
         {
-            this.diceRollInstrument = GameProperties.Instrument.NONE;
+            GameGlobals.audioManager.PlayClip("Audio/snap");
+            ChangeDiceRollInstrument(GameProperties.Instrument.NONE);
             UpdateCommonUIElements();
+            SendPlayForInstrumentResponse();
         });
-
+        this.UIrollForPreferredInstrumentButton = UIPlayForInstrumentScreen.transform.Find("rollForPreferredInstrumentButton").GetComponent<Button>();
+        UIrollForPreferredInstrumentButton.onClick.AddListener(delegate ()
+        {
+            GameGlobals.audioManager.PlayClip("Audio/snap");
+            ChangeDiceRollInstrument(this.preferredInstrument);
+            UpdateCommonUIElements();
+            SendPlayForInstrumentResponse();
+        });
 
         this.UILastDecisionsScreen = playerUI.transform.Find("playerActionSection/lastDecisionsUI").gameObject;
         this.UILastDecisionsMegaHitScreen = UILastDecisionsScreen.transform.Find("earnMoneyQuestion/megaHitQuestion").gameObject;
@@ -113,80 +177,116 @@ public class UIPlayer : Player
         this.UIReceiveFailButton = UILastDecisionsFailScreen.transform.Find("receiveButton").gameObject.GetComponent<Button>();
 
 
-
         UInameText.text = this.name + " Control Panel:";
         UpdateCommonUIElements();
     }
-    
+
+    public override void RegisterMeOnPlayersLog()
+    {
+        GameGlobals.gameLogManager.WritePlayerToLog(GameGlobals.currSessionId.ToString(), GameGlobals.currGameId.ToString(), this.id.ToString(), this.name, "-");
+    }
 
     public void UpdateCommonUIElements()
     {
         UImoneyValue.text = money.ToString();
-        UInumTokensValue.text = numTokens.ToString();
 
         foreach (GameProperties.Instrument instrument in skillSet.Keys)
         {
-            UISkillLevelsTexts[(int)instrument].text = "  " + skillSet[instrument].ToString();
-            UISkillIconsButtons[(int)instrument].GetComponent<Outline>().enabled = (instrument == diceRollInstrument);
+            int currSkillLevel = skillSet[instrument];
+            UISkillLevelsTexts[(int)instrument].text = (currSkillLevel>0)? "  " + skillSet[instrument].ToString() : "";
         }
-
     }
 
-    public new bool SpendToken(GameProperties.Instrument instrument)
+    public override int SpendToken(GameProperties.Instrument instrument)
     {
-        bool result = base.SpendToken(instrument);
-        if (result == false) //handle the error in the UI
+        int result = base.SpendToken(instrument);
+        if (result != 0) //handle the error in the UI
         {
-            if (numTokens == 0)
+            switch (result)
             {
-                warningScreenRef.DisplayWarning("You have no more tokens to level up your skills!");
+                case 1:
+                    warningScreenRef.DisplayPoppup("You cannot level up more skills in this round!");
+                    break;
+                case 2:
+                    warningScreenRef.DisplayPoppup("You cannot develop the same skill more than " + GameProperties.maximumSkillLevelPerInstrument + " times!");
+                    break;
             }
-            else if (skillSet[instrument] == GameProperties.maximumSkillLevelPerInstrument)
+        }
+        return result;
+    }
+    public override int ConvertTokensToMoney(int numTokensToConvert)
+    {
+        int result = base.ConvertTokensToMoney(numTokensToConvert);
+        if (result != 0) //handle the error in the UI
+        {
+            switch (result)
             {
-                warningScreenRef.DisplayWarning("You cannot develop the same skill more than " + GameProperties.maximumSkillLevelPerInstrument + " times!");
+                case 1:
+                    warningScreenRef.DisplayPoppup("You have no more skill levels to convert to money!");
+                    break;
+            }
+        }
+        return result;
+    }
+    public override int BuyTokens(int numTokensToBuy)
+    {
+        int result = base.BuyTokens(numTokensToBuy);
+        if (result != 0) //handle the error in the UI
+        {
+            switch (result)
+            {
+                case 1:
+                    warningScreenRef.DisplayPoppup("You can only convert money to one skill level per round!");
+                    break;
+
+                case 2:
+                    warningScreenRef.DisplayPoppup("You have no more money to convert to skill levels!");
+                    break;
             }
         }
         return result;
     }
 
-    public new bool ConvertTokensToMoney(int numTokensToConvert)
+    public override int SendChoosePreferredInstrumentResponse()
     {
-        bool result = base.ConvertTokensToMoney(numTokensToConvert);
-        if (result == false) //handle the error in the UI
+        int success = base.SendChoosePreferredInstrumentResponse();
+        if (success!=0) //handle the error in the ui
         {
-            warningScreenRef.DisplayWarning("You have no more tokens to convert!");
-        }
-        return result;
-    }
-
-    public new bool BuyTokens(int numTokensToBuy)
-    {
-        bool result = base.BuyTokens(numTokensToBuy);
-        if (result == false) //handle the error in the UI
-        {
-            int moneyToSpend = numTokensToBuy * GameProperties.tokenValue;
-            if (tokensBoughtOnCurrRound >= GameProperties.allowedPlayerTokenBuysPerRound)
+            switch (success)
             {
-                warningScreenRef.DisplayWarning("You can only convert money to one token per round!");
-            }
-
-            if (money < moneyToSpend)
-            {
-                warningScreenRef.DisplayWarning("You have no money to convert!");
+                case 1:
+                    warningScreenRef.DisplayPoppup("No preferred instrument selected!");
+                    break;
             }
         }
-        return result;
-    }
-
-
-    public new bool SendLevelUpResponse()
-    {
-        bool success = base.SendLevelUpResponse();
-        if (!success) //handle the error in the ui
+        else
         {
-            if (numTokens != 0)
+            //disable instrument button renderer objects except the chosen one. Also remove its outline
+            foreach (GameProperties.Instrument instrument in skillSet.Keys)
             {
-                warningScreenRef.DisplayWarning("You have to spend all your tokens before you finish leveling up!");
+                Button currButton = UISkillIconsButtons[(int)instrument];
+                if(instrument == preferredInstrument || instrument == GameProperties.Instrument.MARKETING)
+                {
+                    currButton.GetComponent<Outline>().enabled = false;
+                    continue;
+                }
+                currButton.transform.gameObject.SetActive(false); //take off the other instruments
+                UISkillLevelsTexts[(int)instrument].transform.gameObject.SetActive(false);
+            }
+            UpdateCommonUIElements();
+        }
+        return success;
+    }
+    public override int SendLevelUpResponse()
+    {
+        int success = base.SendLevelUpResponse();
+        if (success!=0) //handle the error in the ui
+        {
+            switch (success)
+            {
+                case 1:
+                    warningScreenRef.DisplayPoppup("You have to spend all your tokens before you finish leveling up!");
+                    break;
             }
         }
         else
@@ -198,21 +298,33 @@ public class UIPlayer : Player
         }
         return success;
     }
-    public new bool SendPlayForInstrumentResponse()
+    public override int SendPlayForInstrumentResponse()
     {
-        bool success = base.SendPlayForInstrumentResponse();
-        if (success)
+        int success = base.SendPlayForInstrumentResponse();
+        if (success!=0) //handle the error in the ui
+        {
+            //do nothing, no possible errors yet!
+        }
+        else
         {
             UIplayerActionButton.interactable = false;
             UInotRollDicesButton.interactable = false;
             UpdateCommonUIElements();
+            if (diceRollInstrument != GameProperties.Instrument.NONE)
+            {
+                UISkillIconsButtons[(int) diceRollInstrument].GetComponent<Outline>().enabled = false;
+            }
         }
         return success;
     }
-    public new bool SendLastDecisionsPhaseResponse(int condition)
+    public override int SendLastDecisionsPhaseResponse(int condition)
     {
-        bool success = base.SendLastDecisionsPhaseResponse(condition);
-        if (success)
+        int success = base.SendLastDecisionsPhaseResponse(condition);
+        if (success != 0) //handle the error in the ui
+        {
+            //do nothing, no possible errors yet!
+        }
+        else
         {
             UIplayerActionButton.interactable = false;
             UIReceiveFailButton.interactable = false;
@@ -224,26 +336,90 @@ public class UIPlayer : Player
     }
 
 
-    public new bool ChangeDiceRollInstrument(GameProperties.Instrument instrument)
+    public override int ChangeDiceRollInstrument(GameProperties.Instrument instrument)
     {
-        bool success = base.ChangeDiceRollInstrument(instrument);
-        if (!success) //handle the error in the ui
+        int success = base.ChangeDiceRollInstrument(instrument);
+        if (success!=0) //handle the error in the ui
         {
-            if (instrument == GameProperties.Instrument.MARKETING)
+            switch(success)
             {
-                warningScreenRef.DisplayWarning("The dices for marketing are rolled only after knowing the album result.");
-            }else if (skillSet[instrument] == 0)
+                case 1:
+                    warningScreenRef.DisplayPoppup("The dices for marketing are rolled only after knowing the album result.");
+                    break;
+                case 2:
+                    warningScreenRef.DisplayPoppup("You cannot roll dices for an unevolved skill!");
+                    break;
+            }
+        }
+        else
+        {
+            //enable outline only in this button
+            for (int j = 0; j < UISkillIconsButtons.Count; j++)
             {
-                warningScreenRef.DisplayWarning("You cannot roll dices for an unevolved skill!");
+                Button button = UISkillIconsButtons[j];
+                button.GetComponent<Outline>().enabled = ((int)instrument == j);
+            }
+        }
+        return success;
+    }
+    public override int ChangePreferredInstrument(GameProperties.Instrument instrument)
+    {
+        int success = base.ChangePreferredInstrument(instrument);
+        if (success!=0) //handle the error in the ui
+        {
+            switch(success)
+            {
+                case 1:
+                    warningScreenRef.DisplayPoppup("Marketing is not a playable instrument, it's a skill!");
+                    break;
+                case 2:
+                    warningScreenRef.DisplayPoppup("This instrument is already played by someone!");
+                    break;
+            }
+        }
+        else
+        {
+            //enable outline only in this button
+            for (int j = 0; j < UISkillIconsButtons.Count; j++)
+            {
+                Button button = UISkillIconsButtons[j];
+                button.GetComponent<Outline>().enabled = ((int)instrument == j);
             }
         }
         return success;
     }
 
+    public override void ChoosePreferredInstrument(Album currAlbum) {
+        
+        UIplayerActionButton.gameObject.SetActive(true);
+        UIChooseDiceRollInstrumentScreen.SetActive(true);
+        UILevelUpScreen.SetActive(false);
+        UIPlayForInstrumentScreen.SetActive(false);
+        UILastDecisionsScreen.SetActive(false);
 
+        for (int i = 0; i < UISkillIconsButtons.Count; i++)
+        {
+            Button currButton = UISkillIconsButtons[i];
+            currButton.onClick.RemoveAllListeners();
+            currButton.onClick.AddListener(delegate {
+                GameGlobals.audioManager.PlayClip("Audio/snap");
+                int currButtonIndex = UISkillIconsButtons.IndexOf(currButton);
+                ChangePreferredInstrument((GameProperties.Instrument) currButtonIndex);
+                UpdateCommonUIElements();
+            });
+        }
+
+        UIplayerActionButton.onClick.RemoveAllListeners();
+        UIplayerActionButton.interactable = true;
+        UIplayerActionButton.onClick.AddListener(delegate {
+            GameGlobals.audioManager.PlayClip("Audio/snap");
+            SendChoosePreferredInstrumentResponse();
+        });
+    }
     public override void LevelUp(Album currAlbum)
     {
-        UIplayerActionButton.gameObject.SetActive(true);
+        UIplayerActionButton.gameObject.SetActive(false);
+        UIChooseDiceRollInstrumentScreen.SetActive(false);
         UILevelUpScreen.SetActive(true);
         UIPlayForInstrumentScreen.SetActive(false);
         UILastDecisionsScreen.SetActive(false);
@@ -253,6 +429,7 @@ public class UIPlayer : Player
             Button currButton = UISkillIconsButtons[i];
             currButton.onClick.RemoveAllListeners();
             currButton.onClick.AddListener(delegate {
+                GameGlobals.audioManager.PlayClip("Audio/snap");
                 SpendToken((GameProperties.Instrument) UISkillIconsButtons.IndexOf(currButton));
                 UpdateCommonUIElements();
             });
@@ -263,6 +440,7 @@ public class UIPlayer : Player
         UIdiscardChangesButton.interactable = true;
         UIbuyTokenButton.interactable = true;
         UIplayerActionButton.onClick.AddListener(delegate {
+            GameGlobals.audioManager.PlayClip("Audio/snap");
             SendLevelUpResponse();
         });
 
@@ -281,18 +459,32 @@ public class UIPlayer : Player
     }
     public override void PlayForInstrument(Album currAlbum)
     {
-        UIplayerActionButton.gameObject.SetActive(true);
+        UIplayerActionButton.gameObject.SetActive(false);
+        UIChooseDiceRollInstrumentScreen.SetActive(false);
         UILevelUpScreen.SetActive(false);
         UIPlayForInstrumentScreen.SetActive(true);
         UILastDecisionsScreen.SetActive(false);
 
+
+        if (skillSet[preferredInstrument] == 0)
+        {
+            UIrollForPreferredInstrumentButton.gameObject.SetActive(false);
+            UInotRollDicesButton.gameObject.SetActive(true);
+        }
+        else
+        {
+            UIrollForPreferredInstrumentButton.gameObject.SetActive(true);
+            UInotRollDicesButton.gameObject.SetActive(false);
+        }
 
         for (int i = 0; i < UISkillIconsButtons.Count; i++)
         {
             Button currButton = UISkillIconsButtons[i];
             currButton.onClick.RemoveAllListeners();
             currButton.onClick.AddListener(delegate {
-                ChangeDiceRollInstrument((GameProperties.Instrument) UISkillIconsButtons.IndexOf(currButton));
+                GameGlobals.audioManager.PlayClip("Audio/snap");
+                int currButtonIndex = UISkillIconsButtons.IndexOf(currButton);
+                ChangeDiceRollInstrument((GameProperties.Instrument)currButtonIndex);
                 UpdateCommonUIElements();
             });
         }
@@ -302,6 +494,7 @@ public class UIPlayer : Player
         UIplayerActionButton.interactable = true;
         UInotRollDicesButton.interactable = true;
         UIplayerActionButton.onClick.AddListener(delegate {
+            GameGlobals.audioManager.PlayClip("Audio/snap");
             SendPlayForInstrumentResponse();
         });
         UpdateCommonUIElements();
@@ -309,6 +502,7 @@ public class UIPlayer : Player
     public override void LastDecisionsPhase(Album currAlbum)
     {
         UIplayerActionButton.gameObject.SetActive(false);
+        UIChooseDiceRollInstrumentScreen.SetActive(false);
         UILevelUpScreen.SetActive(false);
         UIPlayForInstrumentScreen.SetActive(false);
         UILastDecisionsScreen.SetActive(true);
@@ -348,10 +542,46 @@ public class UIPlayer : Player
         UIStickWithMarketingMegaHitButton.onClick.RemoveAllListeners();
         UIReceiveFailButton.onClick.RemoveAllListeners();
 
-        UIReceiveMegaHitButton.onClick.AddListener(delegate { SendLastDecisionsPhaseResponse(0); });
-        UIStickWithMarketingMegaHitButton.onClick.AddListener(delegate { SendLastDecisionsPhaseResponse(1); });
-        UIReceiveFailButton.onClick.AddListener(delegate { SendLastDecisionsPhaseResponse(2); });
+        UIReceiveMegaHitButton.onClick.AddListener(delegate {
+            GameGlobals.audioManager.PlayClip("Audio/chaChing");
+            SendLastDecisionsPhaseResponse(0);
+        });
+        UIStickWithMarketingMegaHitButton.onClick.AddListener(delegate {
+            GameGlobals.audioManager.PlayClip("Audio/chaChing");
+            SendLastDecisionsPhaseResponse(1);
+        });
+        UIReceiveFailButton.onClick.AddListener(delegate {
+            GameGlobals.audioManager.PlayClip("Audio/chaChing");
+            SendLastDecisionsPhaseResponse(2);
+        });
         UpdateCommonUIElements();
     }
 
+    public void ClearActionUI()
+    {
+        UIChooseDiceRollInstrumentScreen.SetActive(false);
+        UILevelUpScreen.SetActive(false);
+        UIPlayForInstrumentScreen.SetActive(false);
+        UILastDecisionsScreen.SetActive(false);
+        UIplayerActionButton.gameObject.SetActive(false);
+    }
+
+    public void DisableAllInputs()
+    {
+        playerSelfDisablerUI.SetActive(true);
+    }
+    public void EnableAllInputs()
+    {
+        playerSelfDisablerUI.SetActive(false);
+    }
+
+    public override void InitPlayer(params object[] args)
+    {
+        base.InitPlayer(args);
+        InitUI((GameObject)args[0], (GameObject)args[1], (PoppupScreenFunctionalities)args[2]);
+    }
+    public override void ResetPlayer(params object[] args)
+    {
+        ClearActionUI();
+    }
 }

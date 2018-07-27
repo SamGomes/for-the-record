@@ -59,7 +59,7 @@ public class PlayersSetupSceneFunctionalities : MonoBehaviour {
                 button.onClick.AddListener(delegate
                 {
                     int index = new List<Button>(UIAIPlayerSelectionButtons).IndexOf(button);
-                    AIPlayer newPlayer = new AIPlayer("");
+                    UIPlayer newPlayer = new UIPlayer("");
                     switch ((GameProperties.AIPlayerType) (index+1))
                     {
                         case GameProperties.AIPlayerType.SIMPLE:

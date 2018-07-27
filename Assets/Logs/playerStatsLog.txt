@@ -1,0 +1,4 @@
+"SessionId";"GameId";"PlayerId";"PlayerName";"AIType"
+43308.4562790778;1;0;Human1;-
+43308.4562790778;1;1;Human2;-
+43308.4562790778;1;2;Human3;-

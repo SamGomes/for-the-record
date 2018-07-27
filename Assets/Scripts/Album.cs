@@ -69,6 +69,11 @@ public class Album {
         }
     }
 
+
+    public int GetValue()
+    {
+        return this.value;
+    }
     public string GetName()
     {
         return this.name;
@@ -108,6 +113,7 @@ public class Album {
     {
         instrumentValues[instrument] = value;
         UIinstrumentValuesTable.GetComponentsInChildren<Text>()[(int)instrument].text = value.ToString();
+        this.value = CalcAlbumValue();
     }
     public void SetMarketingState(GameProperties.AlbumMarketingState marketingState)
     {
