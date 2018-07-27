@@ -18,7 +18,6 @@ public class EmotionalRoboticPlayer : MonoBehaviour
     private RolePlayCharacterAsset rpc;
     private Thread rpcThread;
     private bool isStopped;
-    private string name;
 
     private void Awake()
     {
