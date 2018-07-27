@@ -92,6 +92,7 @@ public class UIPlayer : Player
 
         this.UILevelUpScreen = playerUI.transform.Find("playerActionSection/levelUpPhaseUI").gameObject;
 
+
         //--------------------this is disabled in this version-----------------------------
         this.UIbuyTokenButton = UILevelUpScreen.transform.Find("buyTokenSelection/buyTokenButton").GetComponent<Button>();
         UIbuyTokenButton.onClick.AddListener(delegate ()
@@ -129,7 +130,8 @@ public class UIPlayer : Player
             }
         });
         this.UIspendTokenInMarketingButton = UILevelUpScreen.transform.Find("spendTokenSelection/spendTokenInMarketingButton").GetComponent<Button>();
-        UIspendTokenInMarketingButton.onClick.AddListener(delegate ()
+        UIspendTokenInMarketingButton.transform.GetChild(0).GetComponent<Image>().sprite = UISkillIconsButtons[(int)GameProperties.Instrument.MARKETING].transform.GetComponent<Image>().sprite;
+         UIspendTokenInMarketingButton.onClick.AddListener(delegate ()
         {
             GameGlobals.audioManager.PlayClip("Audio/snap");
             if (numTokens == 0 && money >= GameProperties.tokenValue)
@@ -412,6 +414,8 @@ public class UIPlayer : Player
         UIplayerActionButton.interactable = true;
         UIplayerActionButton.onClick.AddListener(delegate {
             GameGlobals.audioManager.PlayClip("Audio/snap");
+            //assign correct level up instrument image to button
+            UIspendTokenInInstrumentButton.transform.GetChild(0).GetComponent<Image>().sprite = UISkillIconsButtons[(int)preferredInstrument].transform.GetComponent<Image>().sprite;
             SendChoosePreferredInstrumentResponse();
         });
     }

@@ -58,13 +58,13 @@ public class GameManager : MonoBehaviour {
     {
         GameGlobals.gameManager = this;
         //mock to test
-        //GameGlobals.gameLogManager.InitLogs();
-        //GameGlobals.gameDiceNG = new RandomDiceNG();
-        //GameGlobals.albums = new List<Album>(GameProperties.numberOfAlbumsPerGame);
-        //GameGlobals.players = new List<Player>(GameProperties.numberOfPlayersPerGame);
-        //GameGlobals.players.Add(new AIPlayerCoopStrategy("Coop Jeff"));
-        //GameGlobals.players.Add(new AIPlayerCoopStrategy("Greedy Kevin"));
-        //GameGlobals.players.Add(new AIPlayerCoopStrategy("Balanced Sam"));
+        GameGlobals.gameLogManager.InitLogs();
+        GameGlobals.gameDiceNG = new VictoryDiceNG();
+        GameGlobals.albums = new List<Album>(GameProperties.numberOfAlbumsPerGame);
+        GameGlobals.players = new List<Player>(GameProperties.numberOfPlayersPerGame);
+        GameGlobals.players.Add(new UIPlayer("Coop Jeff"));
+        GameGlobals.players.Add(new UIPlayer("Greedy Kevin"));
+        GameGlobals.players.Add(new UIPlayer("Balanced Sam"));
     }
 
     public void InterruptGame()
@@ -236,7 +236,14 @@ public class GameManager : MonoBehaviour {
             else
             {
                 Debug.Log(randomIncrease);
-                StartCoroutine(PlayDiceUI(i, 6, dice6UI, currDiceNumberSprite, "+"+randomIncrease+" Album Value", Color.yellow, diceRollDelay));
+                if (instrument != GameProperties.Instrument.MARKETING)
+                {
+                    StartCoroutine(PlayDiceUI(i, 6, dice6UI, currDiceNumberSprite, "+" + randomIncrease + " Album Value", Color.yellow, diceRollDelay));
+                }
+                else
+                {
+                    StartCoroutine(PlayDiceUI(i, 6, dice6UI, currDiceNumberSprite, "+" + randomIncrease*GameProperties.tokenValue + " Coins", Color.yellow, diceRollDelay));
+                }
             }
         }
         GameGlobals.gameLogManager.WriteEventToLog(GameGlobals.currSessionId.ToString(), GameGlobals.currGameId.ToString(), GameGlobals.currGameRoundId.ToString(), currPlayer.GetId().ToString(), currPlayer.GetName().ToString(), "ROLLED_INSTRUMENT_DICES", "-", newAlbumInstrumentValue.ToString());
