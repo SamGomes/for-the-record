@@ -9,7 +9,7 @@
 					"Layer": "-",
 					"Conditions":
 						{
-							"Set": ["State(Game) = [cs]", "ValidDialogue([cs], [ns], [m], [s]) = True"]
+							"Set": ["State(Game) = [cs]", "ValidDialogue([cs], [ns], [m], [s]) = True", "Character(Name) = [s]"]
 						},
 					"Priority": 1
 				}]

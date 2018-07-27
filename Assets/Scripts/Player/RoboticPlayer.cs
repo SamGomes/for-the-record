@@ -129,6 +129,15 @@ public class RoboticPlayerCoopStrategy : AIPlayerCoopStrategy
         robot.InitThalamusConnectorOnPort(7000, name);
     }
 
+    public override void ChoosePreferredInstrument(Album currAlbum)
+    {
+        robot.perceive(new Name[] {
+            EventHelper.PropertyChange("Character(Name)", name, name),
+            EventHelper.PropertyChange("State(Game)", "ChoosePreferredInstrument", name) });
+        base.ChoosePreferredInstrument(currAlbum);
+        robot.decide();
+    }
+
     public override void LevelUp(Album currAlbum)
     {
         robot.perceive(new Name[] {
@@ -163,6 +172,15 @@ public class RoboticPlayerGreedyStrategy : AIPlayerGreedyStrategy
         GameObject erp = new GameObject("EmotionalRoboticPlayer");
         robot = erp.AddComponent<EmotionalRoboticPlayer>();
         robot.InitThalamusConnectorOnPort(7002, name);
+    }
+
+    public override void ChoosePreferredInstrument(Album currAlbum)
+    {
+        robot.perceive(new Name[] {
+            EventHelper.PropertyChange("Character(Name)", name, name),
+            EventHelper.PropertyChange("State(Game)", "ChoosePreferredInstrument", name) });
+        base.ChoosePreferredInstrument(currAlbum);
+        robot.decide();
     }
 
     public override void LevelUp(Album currAlbum)
