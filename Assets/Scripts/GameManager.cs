@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -42,6 +43,12 @@ public class GameManager : MonoBehaviour {
     private int interruptionRequests; //changed whenever an interruption occurs (either a poppup, warning, etc.)
     private bool preferredInstrumentsChoosen;
 
+    private bool choosePreferedInstrumentResponseReceived;
+    private bool playForInstrumentResponseReceived;
+    private bool levelUpResponseReceived;
+    private bool lastDecisionResponseReceived;
+    private int currPlayerIndex;
+
     private Album currAlbum;
 
     private float diceRollDelay;
@@ -50,13 +57,14 @@ public class GameManager : MonoBehaviour {
     void Awake()
     {
         GameGlobals.gameManager = this;
-        ////mock to test
-        //GameGlobals.gameLogManager.InitLogs();
-        //GameGlobals.albums = new List<Album>(GameProperties.numberOfAlbumsPerGame);
-        //GameGlobals.players = new List<Player>(GameProperties.numberOfPlayersPerGame);
-        //GameGlobals.players.Add(new AIPlayerCoopStrategy("Coop Jeff"));
-        //GameGlobals.players.Add(new AIPlayerCoopStrategy("Greedy Kevin"));
-        //GameGlobals.players.Add(new AIPlayerCoopStrategy("Balanced Sam"));
+        //mock to test
+        GameGlobals.gameLogManager.InitLogs();
+        GameGlobals.gameDiceNG = new RandomDiceNG();
+        GameGlobals.albums = new List<Album>(GameProperties.numberOfAlbumsPerGame);
+        GameGlobals.players = new List<Player>(GameProperties.numberOfPlayersPerGame);
+        GameGlobals.players.Add(new AIPlayerCoopStrategy("Coop Jeff"));
+        GameGlobals.players.Add(new AIPlayerCoopStrategy("Greedy Kevin"));
+        GameGlobals.players.Add(new AIPlayerCoopStrategy("Balanced Sam"));
     }
 
     public void InterruptGame()
@@ -70,6 +78,12 @@ public class GameManager : MonoBehaviour {
 
     public void InitGame()
     {
+        choosePreferedInstrumentResponseReceived = false;
+        playForInstrumentResponseReceived = false;
+        levelUpResponseReceived = false;
+        lastDecisionResponseReceived = false;
+        currPlayerIndex = 0;
+
         interruptionRequests = 0;
 
         warningScreenRef = new PoppupScreenFunctionalities(poppupPrefab,canvas, this.GetComponent<PlayerMonoBehaviourFunctionalities>(),Resources.Load<Sprite>("Textures/UI/Icons/Warning"), new Color(0.9f, 0.8f, 0.8f));
@@ -102,10 +116,8 @@ public class GameManager : MonoBehaviour {
             }
             currPlayer.ReceiveTokens(1);
         }
-        if (currPlayer != null)
-        {
-            ChangeToNextPlayer(((UIPlayer)currPlayer)); //init marker to first player
-        }
+
+        ChangeActivePlayerUI(((UIPlayer)(GameGlobals.players[0])), 2.0f);
 
         GameGlobals.currGameRoundId = 0; //first round
         numMegaHits = 0;
@@ -373,6 +385,52 @@ public class GameManager : MonoBehaviour {
 
         }
 
+        //middle of the phases
+        if (choosePreferedInstrumentResponseReceived)
+        {
+            Player currPlayer = GameGlobals.players[currPlayerIndex];
+            Player nextPlayer = ChangeToNextPlayer(currPlayer);
+            numPlayersToChooseDiceRollInstrument--;
+            if (numPlayersToChooseDiceRollInstrument > 0)
+            {
+                nextPlayer.ChoosePreferredInstrumentRequest(currAlbum);
+            }
+            choosePreferedInstrumentResponseReceived = false;
+        }
+        if (levelUpResponseReceived)
+        {
+            Player currPlayer = GameGlobals.players[currPlayerIndex];
+            Player nextPlayer = ChangeToNextPlayer(currPlayer);
+            numPlayersToLevelUp--;
+            if (numPlayersToLevelUp > 0)
+            {
+                nextPlayer.LevelUpRequest(currAlbum);
+            }
+            levelUpResponseReceived = false;
+        }
+        if (playForInstrumentResponseReceived)
+        {
+            Player currPlayer = GameGlobals.players[currPlayerIndex];
+            Player nextPlayer = ChangeToNextPlayer(currPlayer);
+            numPlayersToPlayForInstrument--;
+            if (numPlayersToPlayForInstrument > 0)
+            {
+                nextPlayer.PlayForInstrumentRequest(currAlbum);
+            }
+            playForInstrumentResponseReceived = false;
+        }
+        if (lastDecisionResponseReceived)
+        {
+            Player currPlayer = GameGlobals.players[currPlayerIndex];
+            Player nextPlayer = ChangeToNextPlayer(currPlayer);
+            numPlayersToStartLastDecisions--;
+            if (numPlayersToStartLastDecisions > 0)
+            {
+                nextPlayer.LastDecisionsPhaseRequest(currAlbum);
+            }
+            lastDecisionResponseReceived = false;
+        }
+
         //end of first phase; trigger second phase
         if (numPlayersToLevelUp == 0)
         {
@@ -403,7 +461,6 @@ public class GameManager : MonoBehaviour {
                 CheckAlbumResult();
                 canCheckAlbumResult = false;
                 UIRollDiceForMarketValueScreen.SetActive(false);
-                
             }
             
         }
@@ -531,21 +588,11 @@ public class GameManager : MonoBehaviour {
     //------------------------------------------Responses---------------------------------------
     public void ChoosePreferredInstrumentResponse(Player invoker)
     {
-        Player nextPlayer = ChangeToNextPlayer(invoker);
-        numPlayersToChooseDiceRollInstrument--;
-        if (numPlayersToChooseDiceRollInstrument > 0)
-        {
-            nextPlayer.ChoosePreferredInstrumentRequest(currAlbum);
-        }
+        choosePreferedInstrumentResponseReceived = true;
     }
     public void LevelUpResponse(Player invoker)
-    {
-        Player nextPlayer = ChangeToNextPlayer(invoker);
-        numPlayersToLevelUp--;
-        if (numPlayersToLevelUp > 0)
-        {
-            nextPlayer.LevelUpRequest(currAlbum);
-        }
+    {   
+        levelUpResponseReceived = true;
     }
     public void PlayerPlayForInstrumentResponse(Player invoker)
     {
@@ -556,55 +603,27 @@ public class GameManager : MonoBehaviour {
             invoker.SetAlbumContribution(rollDiceInstrument, newAlbumInstrumentValue);
             currAlbum.SetInstrumentValue(invoker.GetDiceRollInstrument(), newAlbumInstrumentValue);
         }
-
-        Player nextPlayer = ChangeToNextPlayer(invoker);
-
-        numPlayersToPlayForInstrument--;
-
-        if (numPlayersToPlayForInstrument > 0)
-        {
-            nextPlayer.PlayForInstrumentRequest(currAlbum);
-        }
+        playForInstrumentResponseReceived = true;
     }
     public void LastDecisionsPhaseGet1000Response(Player invoker)
     {
         //receive 1000
         invoker.ReceiveMoney(GameProperties.tokenValue);
-
-        Player nextPlayer = ChangeToNextPlayer(invoker);
-        numPlayersToStartLastDecisions--;
-        if (numPlayersToStartLastDecisions > 0)
-        {
-            nextPlayer.LastDecisionsPhaseRequest(currAlbum);
-        }
+        lastDecisionResponseReceived = true;
     }
     public void LastDecisionsPhaseGet3000Response(Player invoker)
     {
         //receive 3000
         invoker.ReceiveMoney(GameProperties.tokenValue*3);
-
-        Player nextPlayer = ChangeToNextPlayer(invoker);
-        numPlayersToStartLastDecisions--;
-        if (numPlayersToStartLastDecisions > 0)
-        {
-            nextPlayer.LastDecisionsPhaseRequest(currAlbum);
-        }
-
+        lastDecisionResponseReceived = true;
     }
     public void LastDecisionsPhaseGetMarketingResponse(Player invoker)
     {
         //roll dices for marketing
         int marktingValue = RollDicesForInstrument(invoker, GameProperties.Instrument.MARKETING);
-            
         invoker.SetAlbumContribution(GameProperties.Instrument.MARKETING, marktingValue);
         invoker.ReceiveMoney(GameProperties.tokenValue * marktingValue);
-
-        Player nextPlayer = ChangeToNextPlayer(invoker);
-        numPlayersToStartLastDecisions--;
-        if (numPlayersToStartLastDecisions > 0)
-        {
-            nextPlayer.LastDecisionsPhaseRequest(currAlbum);
-        }
+        lastDecisionResponseReceived = true;
     }
 
 
@@ -612,7 +631,7 @@ public class GameManager : MonoBehaviour {
     {
         Player nextPlayer = GameGlobals.players[(GameGlobals.players.IndexOf(currPlayer) + 1) % GameGlobals.players.Count];
         ChangeActivePlayerUI((UIPlayer) nextPlayer, 2.0f);
-
+        currPlayerIndex = (currPlayerIndex + 1) % GameGlobals.players.Count;
         return nextPlayer;
     }
 

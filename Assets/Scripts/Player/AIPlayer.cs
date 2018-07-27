@@ -15,8 +15,8 @@ public abstract class AIPlayer : UIPlayer
     public AIPlayer(string name) : base(name) {
         choosePreferredInstrumentDelay = 2.0f;
         levelUpThinkingDelay = 2.0f;
-        playForInstrumentThinkingDelay = 2.0f;
-        lastDecisionThinkingDelay = 2.0f;
+        playForInstrumentThinkingDelay = 0.5f;
+        lastDecisionThinkingDelay = 1.0f;
 
         sendResponsesDelay = 0.5f;
     }
