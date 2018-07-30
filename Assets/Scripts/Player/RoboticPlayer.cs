@@ -139,11 +139,28 @@ public class RoboticPlayerCoopStrategy : AIPlayerCoopStrategy
         robot.decide();
     }
 
+    public override void LevelUpRequest(Player currentPlayer, Album currAlbum)
+    {
+        if (currentPlayer == this)
+        {
+            LevelUp(currAlbum);
+        }
+        else
+        {
+            Debug.Log(name + ": É a vez do " + currentPlayer.GetName());
+            robot.perceive(new Name[] {
+            EventHelper.PropertyChange("CurrentPlayer(Name)", currentPlayer.GetName(), name),
+            EventHelper.PropertyChange("State(Game)", "LevelUp", name) });
+            robot.decide();
+        }
+    }
+
     public override void LevelUp(Album currAlbum)
     {
-        robot.perceive(new Name[] {
-            EventHelper.PropertyChange("State(Game)", "LevelUp", name) });
         base.LevelUp(currAlbum);
+        robot.perceive(new Name[] {
+            EventHelper.PropertyChange("CurrentPlayer(Name)", name, name),
+            EventHelper.PropertyChange("State(Game)", "LevelUp", name) });
         robot.decide();
     }
 
@@ -246,11 +263,28 @@ public class RoboticPlayerGreedyStrategy : AIPlayerGreedyStrategy
         robot.decide();
     }
 
+    public override void LevelUpRequest(Player currentPlayer, Album currAlbum)
+    {
+        if (currentPlayer == this)
+        {
+            LevelUp(currAlbum);
+        }
+        else
+        {
+            Debug.Log(name + ": É a vez do " + currentPlayer.GetName());
+            robot.perceive(new Name[] {
+            EventHelper.PropertyChange("CurrentPlayer(Name)", currentPlayer.GetName(), name),
+            EventHelper.PropertyChange("State(Game)", "LevelUp", name) });
+            robot.decide();
+        }
+    }
+
     public override void LevelUp(Album currAlbum)
     {
-        robot.perceive(new Name[] {
-            EventHelper.PropertyChange("State(Game)", "LevelUp", name) });
         base.LevelUp(currAlbum);
+        robot.perceive(new Name[] {
+            EventHelper.PropertyChange("CurrentPlayer(Name)", name, name),
+            EventHelper.PropertyChange("State(Game)", "LevelUp", name) });
         robot.decide();
     }
 

@@ -99,9 +99,12 @@ public abstract class Player
         this.preferredInstrument = GameProperties.Instrument.NONE;
         ChoosePreferredInstrument(currAlbum);
     }
-    public void LevelUpRequest(Album currAlbum)
+    virtual public void LevelUpRequest(Player currentPlayer, Album currAlbum)
     {
-        LevelUp(currAlbum);
+        if (currentPlayer == this)
+        {
+            LevelUp(currAlbum);
+        }
     }
     public void PlayForInstrumentRequest(Album currAlbum)
     {

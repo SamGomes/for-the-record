@@ -418,7 +418,10 @@ public class GameManager : MonoBehaviour {
             numPlayersToLevelUp--;
             if (numPlayersToLevelUp > 0)
             {
-                nextPlayer.LevelUpRequest(currAlbum);
+                foreach (var player in GameGlobals.players)
+                {
+                    player.LevelUpRequest(nextPlayer, currAlbum);
+                }
             }
             levelUpResponseReceived = false;
         }
@@ -597,11 +600,12 @@ public class GameManager : MonoBehaviour {
     {
         ResetAllPlayers();
         int numPlayers = GameGlobals.players.Count;
-        //for (int i = 0; i < numPlayers; i++)
-        //{
-            Player currPlayer = GameGlobals.players[0];
-            currPlayer.LevelUpRequest(currAlbum);
-        //}
+        Player currPlayer = GameGlobals.players[0];
+        
+        foreach (var player in GameGlobals.players)
+        {
+            player.LevelUpRequest(currPlayer, currAlbum);
+        }
     }
     public void StartPlayForInstrumentPhase()
     {

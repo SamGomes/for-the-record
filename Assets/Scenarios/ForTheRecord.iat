@@ -18,18 +18,10 @@
 				{
 					"CurrentState": "LevelUp",
 					"NextState": "-",
-					"Meaning": "-",
-					"Style": "Glin",
-					"Utterance": "Vou melhorar o meu instrumento.",
-					"UtteranceId": "TTS-9AB53EFDD2F83A5B3CB7A55A045FEC73"
-				}, 
-				{
-					"CurrentState": "LevelUp",
-					"NextState": "-",
-					"Meaning": "-",
-					"Style": "Emys",
-					"Utterance": "Vou melhorar o marketing",
-					"UtteranceId": "TTS-D4E323FF0F0830A8C6F338B68722EDD5"
+					"Meaning": "Other",
+					"Style": "-",
+					"Utterance": "És tu!",
+					"UtteranceId": "TTS-D21116A64C78BDC760B490230FB8180B"
 				}, 
 				{
 					"CurrentState": "RollInstrumentDice",
@@ -128,6 +120,14 @@
 					"UtteranceId": "TTS-AD0834C9B463968E3F481E6912AF14AA"
 				}, 
 				{
+					"CurrentState": "LevelUp",
+					"NextState": "-",
+					"Meaning": "Me",
+					"Style": "Glin",
+					"Utterance": "Vou melhorar o meu instrumento.",
+					"UtteranceId": "TTS-9AB53EFDD2F83A5B3CB7A55A045FEC73"
+				}, 
+				{
 					"CurrentState": "RollMarketDice",
 					"NextState": "-",
 					"Meaning": "Success",
@@ -182,6 +182,22 @@
 					"Style": "Emys",
 					"Utterance": "Perdemos!",
 					"UtteranceId": "TTS-8C6EC8F75ADF7EB8C8727D6250673CFB"
+				}, 
+				{
+					"CurrentState": "LevelUp",
+					"NextState": "-",
+					"Meaning": "Me",
+					"Style": "Emys",
+					"Utterance": "Vou melhorar o marketing",
+					"UtteranceId": "TTS-D4E323FF0F0830A8C6F338B68722EDD5"
+				}, 
+				{
+					"CurrentState": "LevelUp",
+					"NextState": "-",
+					"Meaning": "Other",
+					"Style": "-",
+					"Utterance": "É a tua vez!",
+					"UtteranceId": "TTS-F7935E2A7FA455DB580AC13D65AC82AF"
 				}]
 		},
 	"types": [
