@@ -25,16 +25,12 @@ public abstract class FixedDiceNG : IDiceNG
     protected int BadMarketRNG(int diceNumbers)
     {
         Album currAlbum = GameGlobals.albums[GameGlobals.albums.Count - 1];
-        if (currAlbum.GetValue() >= 40)
-        {
-            return 20;
-        }
-        return random.Next(Mathf.CeilToInt(currAlbum.GetValue() / 2) + 1, diceNumbers + 1);
+        return random.Next(Mathf.CeilToInt(currAlbum.GetValue() / GameProperties.numMarketDices) + 1, diceNumbers + 1);
     }
     protected int GoodMarketRNG(int diceNumbers)
     {
         Album currAlbum = GameGlobals.albums[GameGlobals.albums.Count - 1];
-        return random.Next(1, Mathf.CeilToInt(currAlbum.GetValue() / 2) - 1);
+        return random.Next(1, Mathf.CeilToInt(currAlbum.GetValue() / GameProperties.numMarketDices) - 1);
     }
 
     protected int RollDiceFor6(int diceNumbers, int rollOrderNumber)

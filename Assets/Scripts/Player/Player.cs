@@ -89,16 +89,16 @@ public abstract class Player
 
     public void ChoosePreferredInstrumentRequest(Album currAlbum)
     {
-        this.preferredInstrument = GameProperties.Instrument.NONE;
-        ChoosePreferredInstrument(currAlbum);
-    }
-    public void LevelUpRequest(Album currAlbum)
-    {
         //save player state before changes
         unchangedSkillSetInstruments = new Dictionary<GameProperties.Instrument, int>();
         unchangedMoney = money;
         unchangedNumTokens = numTokens;
 
+        this.preferredInstrument = GameProperties.Instrument.NONE;
+        ChoosePreferredInstrument(currAlbum);
+    }
+    public void LevelUpRequest(Album currAlbum)
+    {
         LevelUp(currAlbum);
     }
     public void PlayForInstrumentRequest(Album currAlbum)
