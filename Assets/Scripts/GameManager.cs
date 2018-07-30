@@ -58,13 +58,13 @@ public class GameManager : MonoBehaviour {
     {
         GameGlobals.gameManager = this;
         //mock to test
-        GameGlobals.gameLogManager.InitLogs();
-        GameGlobals.gameDiceNG = new VictoryDiceNG();
-        GameGlobals.albums = new List<Album>(GameProperties.numberOfAlbumsPerGame);
-        GameGlobals.players = new List<Player>(GameProperties.numberOfPlayersPerGame);
-        GameGlobals.players.Add(new UIPlayer("Coop Jeff"));
-        GameGlobals.players.Add(new UIPlayer("Greedy Kevin"));
-        GameGlobals.players.Add(new UIPlayer("Balanced Sam"));
+        //GameGlobals.gameLogManager.InitLogs();
+        //GameGlobals.gameDiceNG = new VictoryDiceNG();
+        //GameGlobals.albums = new List<Album>(GameProperties.numberOfAlbumsPerGame);
+        //GameGlobals.players = new List<Player>(GameProperties.numberOfPlayersPerGame);
+        //GameGlobals.players.Add(new UIPlayer("Coop Jeff"));
+        //GameGlobals.players.Add(new UIPlayer("Greedy Kevin"));
+        //GameGlobals.players.Add(new UIPlayer("Balanced Sam"));
     }
 
     public void InterruptGame()
@@ -352,7 +352,12 @@ public class GameManager : MonoBehaviour {
                 infoScreenLossRef.DisplayPoppupWithDelay("As your album value (" + newAlbumValue + ") was LOWER than the market value (" + marketValue + "), the album could not be published. Although the band incurred in debt, everyone receives 1000 coins of the band savings.", diceRollDelay * 0.8f);
             }
         }
-        
+
+        foreach (var player in GameGlobals.players)
+        {
+            player.InformAlbumResult(newAlbumValue, marketValue);
+        }
+
 
         //check for game loss (collapse) or victory on album registry
         float victoryThreshold = Mathf.Ceil(GameProperties.numberOfAlbumsPerGame / 2.0f);

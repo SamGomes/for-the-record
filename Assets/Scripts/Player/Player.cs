@@ -76,6 +76,7 @@ public abstract class Player
     public abstract void LastDecisionsPhase(Album currAlbum);
 
     public virtual void InformRollDicesValue(Player invoker, int maxValue, int obtainedValue) { }
+    public virtual void InformAlbumResult(int albumValue, int marketValue) { }
 
 
     public int GetId()

@@ -164,25 +164,45 @@ public class RoboticPlayerCoopStrategy : AIPlayerCoopStrategy
 
     public override void InformRollDicesValue(Player invoker, int maxValue, int obtainedValue)
     {
-        float luckFactor = (float) obtainedValue / (float) maxValue;
-
-        if (luckFactor > 0.7)
+        if (invoker == this)
         {
-            robot.perceive(new Name[] {
+            float luckFactor = (float)obtainedValue / (float)maxValue;
+
+            if (luckFactor > 0.7)
+            {
+                robot.perceive(new Name[] {
             EventHelper.PropertyChange("State(Game)", "RollInstrumentDice", name),
             EventHelper.PropertyChange("Roll(InstrumentDice)", "Luck", invoker.GetName()) });
-        }
-        else if (luckFactor > 0.35)
-        {
-            robot.perceive(new Name[] {
+            }
+            else if (luckFactor > 0.35)
+            {
+                robot.perceive(new Name[] {
             EventHelper.PropertyChange("State(Game)", "RollInstrumentDice", name),
             EventHelper.PropertyChange("Roll(InstrumentDice)", "Neutral", invoker.GetName()) });
+            }
+            else
+            {
+                robot.perceive(new Name[] {
+            EventHelper.PropertyChange("State(Game)", "RollInstrumentDice", name),
+            EventHelper.PropertyChange("Roll(InstrumentDice)", "BadLuck", invoker.GetName()) });
+            }
+            robot.decide();
+        }
+    }
+
+    public override void InformAlbumResult(int albumValue, int marketValue)
+    {
+        if (albumValue >= marketValue)
+        {
+            robot.perceive(new Name[] {
+            EventHelper.PropertyChange("State(Game)", "RollMarketDice", name),
+            EventHelper.PropertyChange("Roll(MarketDice)", "Success", name) });
         }
         else
         {
             robot.perceive(new Name[] {
-            EventHelper.PropertyChange("State(Game)", "RollInstrumentDice", name),
-            EventHelper.PropertyChange("Roll(InstrumentDice)", "BadLuck", invoker.GetName()) });
+            EventHelper.PropertyChange("State(Game)", "RollMarketDice", name),
+            EventHelper.PropertyChange("Roll(MarketDice)", "Fail", name) });
         }
         robot.decide();
     }
@@ -230,5 +250,33 @@ public class RoboticPlayerGreedyStrategy : AIPlayerGreedyStrategy
             EventHelper.PropertyChange("State(Game)", "LastDecisionsPhase", name) });
         base.LastDecisionsPhase(currAlbum);
         robot.decide();
+    }
+
+    public override void InformRollDicesValue(Player invoker, int maxValue, int obtainedValue)
+    {
+        if (invoker == this)
+        {
+            float luckFactor = (float)obtainedValue / (float)maxValue;
+
+            if (luckFactor > 0.7)
+            {
+                robot.perceive(new Name[] {
+            EventHelper.PropertyChange("State(Game)", "RollInstrumentDice", name),
+            EventHelper.PropertyChange("Roll(InstrumentDice)", "Luck", invoker.GetName()) });
+            }
+            else if (luckFactor > 0.35)
+            {
+                robot.perceive(new Name[] {
+            EventHelper.PropertyChange("State(Game)", "RollInstrumentDice", name),
+            EventHelper.PropertyChange("Roll(InstrumentDice)", "Neutral", invoker.GetName()) });
+            }
+            else
+            {
+                robot.perceive(new Name[] {
+            EventHelper.PropertyChange("State(Game)", "RollInstrumentDice", name),
+            EventHelper.PropertyChange("Roll(InstrumentDice)", "BadLuck", invoker.GetName()) });
+            }
+            robot.decide();
+        }
     }
 }

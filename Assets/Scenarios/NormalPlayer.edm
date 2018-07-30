@@ -9,7 +9,7 @@
 					"Layer": "-",
 					"Conditions":
 						{
-							"Set": ["State(Game) = [cs]", "ValidDialogue([cs], [ns], [m], [s]) = True", "Character(Name) = [s]", "[cs] != RollInstrumentDice"]
+							"Set": ["State(Game) = [cs]", "ValidDialogue([cs], [ns], [m], [s]) = True", "Character(Name) = [s]", "[cs] != RollInstrumentDice", "[cs] != RollMarketDice"]
 						},
 					"Priority": 1
 				}, 
@@ -19,7 +19,17 @@
 					"Layer": "-",
 					"Conditions":
 						{
-							"Set": ["ValidDialogue([cs], [ns], [m], [s]) = True", "State(Game) = [cs]", "Roll(InstrumentDice) = [m]"]
+							"Set": ["ValidDialogue(RollInstrumentDice, [ns], [m], [s]) = True", "State(Game) = RollInstrumentDice", "Roll(InstrumentDice) = [m]", "Character(Name) = [s]"]
+						},
+					"Priority": 1
+				}, 
+				{
+					"Action": "Speak(RollMarketDice, [ns], [m], [s])",
+					"Target": "-",
+					"Layer": "-",
+					"Conditions":
+						{
+							"Set": ["ValidDialogue(RollMarketDice, [ns], [m], [s]) = True", "State(Game) = RollMarketDice", "Roll(MarketDice) = [m]", "Character(Name) = [s]"]
 						},
 					"Priority": 1
 				}]

@@ -34,10 +34,10 @@
 				{
 					"CurrentState": "RollInstrumentDice",
 					"NextState": "-",
-					"Meaning": "BadLuck",
-					"Style": "-",
-					"Utterance": "Credo!",
-					"UtteranceId": "TTS-F96795AB4545163D408348877FAC3073"
+					"Meaning": "Neutral",
+					"Style": "Emys",
+					"Utterance": "Podia ter sido melhor....",
+					"UtteranceId": "TTS-DFE3D7B43DA2AB24C88944764406282C"
 				}, 
 				{
 					"CurrentState": "ChoosePreferredInstrument",
@@ -80,20 +80,76 @@
 					"UtteranceId": "TTS-AA28B180B2BA504BFD48C06C6251D4C4"
 				}, 
 				{
+					"CurrentState": "RollMarketDice",
+					"NextState": "-",
+					"Meaning": "Success",
+					"Style": "Emys",
+					"Utterance": "puntsce puntsce puntsce puntsce woho, mega hit!",
+					"UtteranceId": "TTS-D837C005AD8245E73BEFD04D42F3CE18"
+				}, 
+				{
 					"CurrentState": "RollInstrumentDice",
 					"NextState": "-",
 					"Meaning": "Luck",
-					"Style": "-",
-					"Utterance": "Eish que sorte!",
-					"UtteranceId": "TTS-DF53E3BCCF04C39F2421A2A004F8B220"
+					"Style": "Emys",
+					"Utterance": "Que sorte!",
+					"UtteranceId": "TTS-42BC3C097C016744EB6BE2645B2330F9"
+				}, 
+				{
+					"CurrentState": "RollInstrumentDice",
+					"NextState": "-",
+					"Meaning": "BadLuck",
+					"Style": "Emys",
+					"Utterance": "Credo!",
+					"UtteranceId": "TTS-F96795AB4545163D408348877FAC3073"
+				}, 
+				{
+					"CurrentState": "RollInstrumentDice",
+					"NextState": "-",
+					"Meaning": "Luck",
+					"Style": "Glin",
+					"Utterance": "Nada mau...",
+					"UtteranceId": "TTS-B5B0821D104A41568D185281B81C194A"
+				}, 
+				{
+					"CurrentState": "RollInstrumentDice",
+					"NextState": "-",
+					"Meaning": "BadLuck",
+					"Style": "Glin",
+					"Utterance": "Eish",
+					"UtteranceId": "TTS-22FEF7F25841E0581D02158128D8E5E0"
 				}, 
 				{
 					"CurrentState": "RollInstrumentDice",
 					"NextState": "-",
 					"Meaning": "Neutral",
-					"Style": "-",
-					"Utterance": "Podia ter sido melhor....",
-					"UtteranceId": "TTS-DFE3D7B43DA2AB24C88944764406282C"
+					"Style": "Glin",
+					"Utterance": "Que fraco",
+					"UtteranceId": "TTS-AD0834C9B463968E3F481E6912AF14AA"
+				}, 
+				{
+					"CurrentState": "RollMarketDice",
+					"NextState": "-",
+					"Meaning": "Success",
+					"Style": "Glin",
+					"Utterance": "ninguém nos pára",
+					"UtteranceId": "TTS-A1275FE91947DB47DBFCA542CB019FF3"
+				}, 
+				{
+					"CurrentState": "RollMarketDice",
+					"NextState": "-",
+					"Meaning": "Fail",
+					"Style": "Glin",
+					"Utterance": "oh não...",
+					"UtteranceId": "TTS-568ED6A1A834C03ADE1F517217E59AEC"
+				}, 
+				{
+					"CurrentState": "RollMarketDice",
+					"NextState": "-",
+					"Meaning": "Fail",
+					"Style": "Emys",
+					"Utterance": "fracassámos? Como assim?",
+					"UtteranceId": "TTS-126933EE1FF2C38850B8DF095949F2E9"
 				}]
 		},
 	"types": [
