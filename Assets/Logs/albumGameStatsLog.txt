@@ -1,0 +1,4 @@
+"SessionId";"GameId";"RoundId";"AlbumId";"AlbumName";"MState"
+43311.7982843608;0;0;0;;FAIL
+43311.7982843608;0;1;1;;MEGA_HIT
+43311.7982843608;0;2;2;;MEGA_HIT

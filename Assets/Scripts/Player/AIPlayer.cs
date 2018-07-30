@@ -224,7 +224,7 @@ public class AIPlayerCoopStrategy : AIPlayer
         //if there is money left spend it
         if (skillSet[preferredInstrument] < GameProperties.maximumSkillLevelPerInstrument)
         {
-            if (money > 0)
+            if (money >= 0)
             {
                 BuyTokens(1);
             }

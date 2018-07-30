@@ -37,6 +37,7 @@ public class GameManager : MonoBehaviour {
 
     public GameObject poppupPrefab;
     public PoppupScreenFunctionalities warningScreenRef;
+    public PoppupScreenFunctionalities infoScreenNeutralRef;
     public PoppupScreenFunctionalities infoScreenLossRef;
     public PoppupScreenFunctionalities infoScreenWinRef;
 
@@ -60,13 +61,13 @@ public class GameManager : MonoBehaviour {
     {
         GameGlobals.gameManager = this;
         //mock to test
-        GameGlobals.gameLogManager.InitLogs();
-        GameGlobals.gameDiceNG = new VictoryDiceNG();
-        GameGlobals.albums = new List<Album>(GameProperties.numberOfAlbumsPerGame);
-        GameGlobals.players = new List<Player>(GameProperties.numberOfPlayersPerGame);
-        GameGlobals.players.Add(new AIPlayerCoopStrategy("Coop Jeff"));
-        GameGlobals.players.Add(new AIPlayerCoopStrategy("Greedy Kevin"));
-        GameGlobals.players.Add(new UIPlayer("Balanced Sam"));
+        //GameGlobals.gameLogManager.InitLogs();
+        //GameGlobals.gameDiceNG = new VictoryDiceNG();
+        //GameGlobals.albums = new List<Album>(GameProperties.numberOfAlbumsPerGame);
+        //GameGlobals.players = new List<Player>(GameProperties.numberOfPlayersPerGame);
+        //GameGlobals.players.Add(new AIPlayerCoopStrategy("Coop Jeff"));
+        //GameGlobals.players.Add(new AIPlayerCoopStrategy("Greedy Kevin"));
+        //GameGlobals.players.Add(new UIPlayer("Balanced Sam"));
     }
 
     public void InterruptGame()
@@ -92,6 +93,7 @@ public class GameManager : MonoBehaviour {
 
         infoScreenLossRef = new PoppupScreenFunctionalities(poppupPrefab,canvas, this.GetComponent<PlayerMonoBehaviourFunctionalities>(),Resources.Load<Sprite>("Textures/UI/Icons/InfoLoss"), new Color(0.9f, 0.8f, 0.8f), "Audio/albumLoss");
         infoScreenWinRef = new PoppupScreenFunctionalities(poppupPrefab,canvas, this.GetComponent<PlayerMonoBehaviourFunctionalities>(),Resources.Load<Sprite>("Textures/UI/Icons/InfoWin"), new Color(0.9f, 0.9f, 0.8f), "Audio/albumVictory");
+        infoScreenNeutralRef = new PoppupScreenFunctionalities(poppupPrefab,canvas, this.GetComponent<PlayerMonoBehaviourFunctionalities>(),Resources.Load<Sprite>("Textures/UI/Icons/Info"), new Color(0.9f, 0.9f, 0.9f));
 
         gameMainSceneFinished = false;
         preferredInstrumentsChoosen = false;
@@ -246,7 +248,7 @@ public class GameManager : MonoBehaviour {
                 }
                 else
                 {
-                    StartCoroutine(PlayDiceUI(i, 6, dice6UI, currDiceNumberSprite, "+" + randomIncrease*GameProperties.tokenValue + " Coins", Color.yellow, diceRollDelay));
+                    StartCoroutine(PlayDiceUI(i, 6, dice6UI, currDiceNumberSprite, "+" + randomIncrease*GameProperties.marketingPointValue + " $", Color.yellow, diceRollDelay));
                 }
             }
         }
@@ -349,11 +351,11 @@ public class GameManager : MonoBehaviour {
         {
             if (newAlbumValue >= marketValue)
             {
-                infoScreenWinRef.DisplayPoppupWithDelay("As your album value (" + newAlbumValue + ") was EQUAL or HIGHER than the market value (" + marketValue + "), the album was successfully published! Congratulations! Everyone can choose to receive 3000 coins or to invest in their own marketing.", diceRollDelay*0.8f); //the delay is reduced to account for dices animation
+                infoScreenWinRef.DisplayPoppupWithDelay("As your album value (" + newAlbumValue + ") was EQUAL or HIGHER than the market value (" + marketValue + "), the album was successfully published! Congratulations! Everyone can choose to receive 3000 $ or to invest in their own marketing.", diceRollDelay*0.8f); //the delay is reduced to account for dices animation
             }
             else
             {
-                infoScreenLossRef.DisplayPoppupWithDelay("As your album value (" + newAlbumValue + ") was LOWER than the market value (" + marketValue + "), the album could not be published. Although the band incurred in debt, everyone receives 1000 coins of the band savings.", diceRollDelay * 0.8f);
+                infoScreenLossRef.DisplayPoppupWithDelay("As your album value (" + newAlbumValue + ") was LOWER than the market value (" + marketValue + "), the album could not be published. Although the band incurred in debt, everyone receives 1000 $ of the band savings.", diceRollDelay * 0.8f);
             }
         }
         
@@ -480,7 +482,7 @@ public class GameManager : MonoBehaviour {
                 {
                     int oldNumMarketDices = GameProperties.numMarketDices;
                     GameProperties.numMarketDices++;
-                    warningScreenRef.DisplayPoppup("You tried to published more than " + marketLimit + " album(s) and so you are going to try your luck on international market. "+ GameProperties.numMarketDices + " dices instead of "+ oldNumMarketDices + " are now rolled for the market");
+                    infoScreenNeutralRef.DisplayPoppup("You gained some experience publishing " + marketLimit + " album(s) and so you will try your luck on the international market. From now on, "+ GameProperties.numMarketDices + " dices (instead of "+ oldNumMarketDices + ") are rolled for the market");
                     
                 }
                 canSelectToCheckAlbumResult = false;
@@ -638,24 +640,24 @@ public class GameManager : MonoBehaviour {
         }
         playForInstrumentResponseReceived = true;
     }
-    public void LastDecisionsPhaseGet1000Response(Player invoker)
+    public void LastDecisionsPhaseGet0Response(Player invoker)
     {
-        //receive 1000
-        invoker.ReceiveMoney(GameProperties.tokenValue);
+    //    //receive 1000
+    //    invoker.ReceiveMoney(GameProperties.tokenValue);
         lastDecisionResponseReceived = true;
     }
     public void LastDecisionsPhaseGet3000Response(Player invoker)
     {
         //receive 3000
-        invoker.ReceiveMoney(GameProperties.tokenValue*3);
+        invoker.ReceiveMoney(3000);
         lastDecisionResponseReceived = true;
     }
     public void LastDecisionsPhaseGetMarketingResponse(Player invoker)
     {
         //roll dices for marketing
-        int marktingValue = RollDicesForInstrument(invoker, GameProperties.Instrument.MARKETING);
-        invoker.SetAlbumContribution(GameProperties.Instrument.MARKETING, marktingValue);
-        invoker.ReceiveMoney(GameProperties.tokenValue * marktingValue);
+        int marketingValue = RollDicesForInstrument(invoker, GameProperties.Instrument.MARKETING);
+        invoker.SetAlbumContribution(GameProperties.Instrument.MARKETING, marketingValue);
+        invoker.ReceiveMoney(GameProperties.marketingPointValue * marketingValue);
 
         lastDecisionResponseReceived = true;
     }
