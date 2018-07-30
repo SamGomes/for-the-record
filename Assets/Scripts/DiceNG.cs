@@ -19,7 +19,7 @@ public class RandomDiceNG : IDiceNG
 
 public abstract class FixedDiceNG : IDiceNG
 {
-    private int[,] seriesForDices6 = new int[,]{{ 2, 5, 6, 2, 1, 3 },{ 4, 3, 1, 2, 6, 2 },{ 3, 2, 1, 5, 6, 4 }};
+    private int[,] seriesForDices6 = new int[,]{{ 2, 5, 6, 2, 1, 3 },{ 4, 3, 1, 2, 6, 2 },{ 3, 2, 1, 5, 6, 4 }, { 2, 1, 4, 3, 5, 2 }, { 6, 3, 2, 4, 1, 2 } };
     private int throwSeriesIndex;
     protected System.Random random = new System.Random();
     protected int BadMarketRNG(int diceNumbers)

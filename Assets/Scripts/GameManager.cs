@@ -64,8 +64,8 @@ public class GameManager : MonoBehaviour {
         GameGlobals.gameDiceNG = new VictoryDiceNG();
         GameGlobals.albums = new List<Album>(GameProperties.numberOfAlbumsPerGame);
         GameGlobals.players = new List<Player>(GameProperties.numberOfPlayersPerGame);
-        GameGlobals.players.Add(new UIPlayer("Coop Jeff"));
-        GameGlobals.players.Add(new UIPlayer("Greedy Kevin"));
+        GameGlobals.players.Add(new AIPlayerCoopStrategy("Coop Jeff"));
+        GameGlobals.players.Add(new AIPlayerCoopStrategy("Greedy Kevin"));
         GameGlobals.players.Add(new UIPlayer("Balanced Sam"));
     }
 
