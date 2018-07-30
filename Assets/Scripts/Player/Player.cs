@@ -158,7 +158,7 @@ public abstract class Player
                 gameManagerRef.LastDecisionsPhaseGetMarketingResponse(this);
                 break;
             case 2:
-                gameManagerRef.LastDecisionsPhaseGet1000Response(this);
+                gameManagerRef.LastDecisionsPhaseGet0Response(this);
                 break;
         }
         return 0;

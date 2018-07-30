@@ -845,7 +845,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &1735448218387584
 GameObject:
   m_ObjectHideFlags: 1
@@ -1930,7 +1930,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Receive 3000 coins
+  m_Text: Receive 3000 $
 --- !u!114 &114303791420748904
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2570,7 +2570,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Receive 1000 coins
+  m_Text: Receive 0 $
 --- !u!114 &114585840855349308
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -4094,8 +4094,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -0.000030517578, y: -0.000015258789}
-  m_SizeDelta: {x: -99.7, y: -17.7}
+  m_AnchoredPosition: {x: -2.399994, y: -0.79999924}
+  m_SizeDelta: {x: -95, y: -28.6}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224267045967393814
 RectTransform:

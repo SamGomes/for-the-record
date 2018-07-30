@@ -81,9 +81,10 @@ public class UIPlayer : Player
 
         this.UISkillLevelsTexts = playerUI.transform.Find("playerStateSection/skillTable/skillLevels").GetComponentsInChildren<Text>();
         this.UISkillIconsButtons = new List<Button>(playerUI.transform.Find("playerStateSection/skillTable/skillIcons").GetComponentsInChildren<Button>());
-        foreach(Button button in UISkillIconsButtons)
+        foreach(GameProperties.Instrument instrument in skillSet.Keys)
         {
-            button.GetComponent<Outline>().enabled = false;
+            UISkillIconsButtons[(int)instrument].GetComponent<Outline>().enabled = false;
+            UISkillLevelsTexts[(int)instrument].transform.gameObject.SetActive(false);
         }
         this.UIChooseDiceRollInstrumentScreen = playerUI.transform.Find("playerActionSection/chooseDiceRollInstrumentPhaseUI").gameObject;
 
@@ -132,7 +133,7 @@ public class UIPlayer : Player
         });
         this.UIspendTokenInMarketingButton = UILevelUpScreen.transform.Find("spendTokenSelection/spendTokenInMarketingButton").GetComponent<Button>();
         UIspendTokenInMarketingButton.transform.GetChild(0).GetComponent<Image>().sprite = UISkillIconsButtons[(int)GameProperties.Instrument.MARKETING].transform.GetComponent<Image>().sprite;
-         UIspendTokenInMarketingButton.onClick.AddListener(delegate ()
+        UIspendTokenInMarketingButton.onClick.AddListener(delegate ()
         {
             GameGlobals.audioManager.PlayClip("Audio/snap");
             if (numTokens == 0 && money >= GameProperties.tokenValue)
@@ -265,12 +266,13 @@ public class UIPlayer : Player
         {
             //assign correct level up instrument image to button
             UIspendTokenInInstrumentButton.transform.GetChild(0).GetComponent<Image>().sprite = UISkillIconsButtons[(int)preferredInstrument].transform.GetComponent<Image>().sprite;
-            
+
             //disable instrument button renderer objects except the chosen one. Also remove its outline
             foreach (GameProperties.Instrument instrument in skillSet.Keys)
             {
                 Button currButton = UISkillIconsButtons[(int)instrument];
-                if(instrument == preferredInstrument || instrument == GameProperties.Instrument.MARKETING)
+                UISkillLevelsTexts[(int)instrument].transform.gameObject.SetActive(true);
+                if (instrument == preferredInstrument || instrument == GameProperties.Instrument.MARKETING)
                 {
                     currButton.GetComponent<Outline>().enabled = false;
                     continue;
