@@ -116,6 +116,7 @@ public class UIPlayer : Player
         this.UIspendTokenInInstrumentButton = UILevelUpScreen.transform.Find("spendTokenSelection/spendTokenInPreferredInstrumentButton").GetComponent<Button>();
         UIspendTokenInInstrumentButton.onClick.AddListener(delegate ()
         {
+            Debug.Log("pressed");
             GameGlobals.audioManager.PlayClip("Audio/snap");
             if (numTokens == 0 && money >= GameProperties.tokenValue)
             {
@@ -194,7 +195,7 @@ public class UIPlayer : Player
         foreach (GameProperties.Instrument instrument in skillSet.Keys)
         {
             int currSkillLevel = skillSet[instrument];
-            UISkillLevelsTexts[(int)instrument].text = (currSkillLevel>0)? "  " + skillSet[instrument].ToString() : "";
+            UISkillLevelsTexts[(int)instrument].text = "  " + skillSet[instrument].ToString();
         }
     }
 
@@ -262,6 +263,9 @@ public class UIPlayer : Player
         }
         else
         {
+            //assign correct level up instrument image to button
+            UIspendTokenInInstrumentButton.transform.GetChild(0).GetComponent<Image>().sprite = UISkillIconsButtons[(int)preferredInstrument].transform.GetComponent<Image>().sprite;
+            
             //disable instrument button renderer objects except the chosen one. Also remove its outline
             foreach (GameProperties.Instrument instrument in skillSet.Keys)
             {
@@ -414,9 +418,7 @@ public class UIPlayer : Player
         UIplayerActionButton.interactable = true;
         UIplayerActionButton.onClick.AddListener(delegate {
             GameGlobals.audioManager.PlayClip("Audio/snap");
-            //assign correct level up instrument image to button
-            UIspendTokenInInstrumentButton.transform.GetChild(0).GetComponent<Image>().sprite = UISkillIconsButtons[(int)preferredInstrument].transform.GetComponent<Image>().sprite;
-            SendChoosePreferredInstrumentResponse();
+            SendChoosePreferredInstrumentResponse();            
         });
     }
     public override void LevelUp(Album currAlbum)
