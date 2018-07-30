@@ -14,6 +14,8 @@ public class GameManager : MonoBehaviour {
     private int numPlayersToPlayForInstrument;
     private int numPlayersToStartLastDecisions;
     private int numPlayersToChooseDiceRollInstrument;
+
+    private bool canSelectToCheckAlbumResult;
     private bool canCheckAlbumResult;
     private bool checkedAlbumResult;
 
@@ -94,10 +96,12 @@ public class GameManager : MonoBehaviour {
         gameMainSceneFinished = false;
         preferredInstrumentsChoosen = false;
 
-        diceRollDelay = 6.0f;
+        //diceRollDelay = UIRollDiceForInstrumentOverlay.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).length;
+        diceRollDelay = 4.5f;
 
         canCheckAlbumResult = false;
         checkedAlbumResult = false;
+        canSelectToCheckAlbumResult = true;
         int numPlayers = GameGlobals.players.Count;
 
         Player currPlayer = null;
@@ -312,7 +316,7 @@ public class GameManager : MonoBehaviour {
         UIRollDiceForInstrumentOverlay.transform.Find("title/Text").GetComponent<Text>().text = "Rolling dices for market...";
 
         int marketValue = 0; 
-        for(int i=0; i < 2; i++)
+        for(int i=0; i < GameProperties.numMarketDices; i++)
         {
             int randomIncrease = GameGlobals.gameDiceNG.RollTheDice(20,i);
             Sprite currDiceNumberSprite = Resources.Load<Sprite>("Animations/RollDiceForInstrumentOverlay/dice20/sprites/endingAlternatives/" + randomIncrease);
@@ -393,16 +397,7 @@ public class GameManager : MonoBehaviour {
             //Debug.Log("pause...");
             return;
         }
-        //end of first phase; trigger second phase
-        if (!preferredInstrumentsChoosen && numPlayersToChooseDiceRollInstrument == 0)
-        {
-
-            Debug.Log("running1...");
-            StartLevelingUpPhase();
-            //numPlayersToChooseDiceRollInstrument = GameGlobals.players.Count; //is not performed to ensure this phase is only played once
-            preferredInstrumentsChoosen = true;
-
-        }
+        
 
         //middle of the phases
         if (choosePreferedInstrumentResponseReceived)
@@ -416,7 +411,7 @@ public class GameManager : MonoBehaviour {
             }
             choosePreferedInstrumentResponseReceived = false;
         }
-        if (levelUpResponseReceived)
+        if (levelUpResponseReceived) 
         {
             Player currPlayer = GameGlobals.players[currPlayerIndex];
             Player nextPlayer = ChangeToNextPlayer(currPlayer);
@@ -451,15 +446,25 @@ public class GameManager : MonoBehaviour {
         }
 
         //end of first phase; trigger second phase
-        if (numPlayersToLevelUp == 0)
+        if (!preferredInstrumentsChoosen && numPlayersToChooseDiceRollInstrument == 0)
         {
 
+            Debug.Log("running1...");
+            StartPlayForInstrumentPhase(); //choose instrument phase skips level up phase
+            //numPlayersToChooseDiceRollInstrument = GameGlobals.players.Count; //is not performed to ensure this phase is only played once
+            preferredInstrumentsChoosen = true;
+
+        }
+
+        //end of second phase; trigger third phase
+        if (numPlayersToLevelUp == 0)
+        {
             Debug.Log("running2...");
             StartPlayForInstrumentPhase();
             numPlayersToLevelUp = GameGlobals.players.Count;
         }
         
-        //end of second phase;
+        //end of third phase;
         if (numPlayersToPlayForInstrument == 0)
         {
             if (checkedAlbumResult)
@@ -469,25 +474,36 @@ public class GameManager : MonoBehaviour {
                 StartLastDecisionsPhase();
                 numPlayersToPlayForInstrument = GameGlobals.players.Count;
             }
-            else
+            else if(canSelectToCheckAlbumResult)
             {
                 //make phase UI active (this step is interim but must be done before last phase)
                 UIRollDiceForMarketValueScreen.SetActive(true);
+
+                int marketLimit = Mathf.FloorToInt(GameProperties.numberOfAlbumsPerGame / 2.0f);
+                //enter international market
+                if (GameGlobals.currGameRoundId == marketLimit)
+                {
+                    int oldNumMarketDices = GameProperties.numMarketDices;
+                    GameProperties.numMarketDices++;
+                    warningScreenRef.DisplayPoppup("You tried to published more than " + marketLimit + " album(s) and so you are going to try your luck on international market. "+ GameProperties.numMarketDices + " dices instead of "+ oldNumMarketDices + " are now rolled for the market");
+                    
+                }
+                canSelectToCheckAlbumResult = false;
             }
             
             if (canCheckAlbumResult || GameProperties.isSimulation)
             {
                 CheckAlbumResult();
                 canCheckAlbumResult = false;
+                canSelectToCheckAlbumResult = true;
                 UIRollDiceForMarketValueScreen.SetActive(false);
             }
             
         }
 
-        //end of third phase; trigger and log album result
+        //end of forth phase; trigger and log album result
         if (numPlayersToStartLastDecisions == 0)
         {
-
             Debug.Log("running4...");
             int numPlayedAlbums = GameGlobals.albums.Count;
 
@@ -607,6 +623,9 @@ public class GameManager : MonoBehaviour {
     //------------------------------------------Responses---------------------------------------
     public void ChoosePreferredInstrumentResponse(Player invoker)
     {
+        //auto level up after choosing instrument
+        invoker.SpendToken(invoker.GetPreferredInstrument());
+
         choosePreferedInstrumentResponseReceived = true;
     }
     public void LevelUpResponse(Player invoker)
@@ -642,6 +661,7 @@ public class GameManager : MonoBehaviour {
         int marktingValue = RollDicesForInstrument(invoker, GameProperties.Instrument.MARKETING);
         invoker.SetAlbumContribution(GameProperties.Instrument.MARKETING, marktingValue);
         invoker.ReceiveMoney(GameProperties.tokenValue * marktingValue);
+
         lastDecisionResponseReceived = true;
     }
 
