@@ -49,8 +49,10 @@ public class EmotionalRoboticPlayer : MonoBehaviour
     public void decide ()
     {
         IEnumerable<ActionLibrary.IAction> possibleActions = rpc.Decide();
+        ActionLibrary.IAction chosenAction = possibleActions.FirstOrDefault();
 
-        if (possibleActions == null)
+
+        if (chosenAction == null)
         {
             Console.WriteLine("No action");
             //saveToFile();
@@ -58,7 +60,6 @@ public class EmotionalRoboticPlayer : MonoBehaviour
         }
         else
         {
-            ActionLibrary.IAction chosenAction = possibleActions.FirstOrDefault();
             //saveToFile();
 
 
@@ -206,6 +207,23 @@ public class RoboticPlayerCoopStrategy : AIPlayerCoopStrategy
         }
         robot.decide();
     }
+
+    public override void InformGameResult(GameProperties.GameState state)
+    {
+        if (state == GameProperties.GameState.VICTORY)
+        {
+            robot.perceive(new Name[] {
+            EventHelper.PropertyChange("State(Game)", "GameEnd", name),
+            EventHelper.PropertyChange("Game(Result)", "Victory", name) });
+        }
+        else if (state == GameProperties.GameState.LOSS)
+        {
+            robot.perceive(new Name[] {
+            EventHelper.PropertyChange("State(Game)", "GameEnd", name),
+            EventHelper.PropertyChange("Game(Result)", "Loss", name) });
+        }
+        robot.decide();
+    }
 }
 
 public class RoboticPlayerGreedyStrategy : AIPlayerGreedyStrategy
@@ -278,5 +296,39 @@ public class RoboticPlayerGreedyStrategy : AIPlayerGreedyStrategy
             }
             robot.decide();
         }
+    }
+
+    public override void InformAlbumResult(int albumValue, int marketValue)
+    {
+        if (albumValue >= marketValue)
+        {
+            robot.perceive(new Name[] {
+            EventHelper.PropertyChange("State(Game)", "RollMarketDice", name),
+            EventHelper.PropertyChange("Roll(MarketDice)", "Success", name) });
+        }
+        else
+        {
+            robot.perceive(new Name[] {
+            EventHelper.PropertyChange("State(Game)", "RollMarketDice", name),
+            EventHelper.PropertyChange("Roll(MarketDice)", "Fail", name) });
+        }
+        robot.decide();
+    }
+
+    public override void InformGameResult(GameProperties.GameState state)
+    {
+        if (state == GameProperties.GameState.VICTORY)
+        {
+            robot.perceive(new Name[] {
+            EventHelper.PropertyChange("State(Game)", "GameEnd", name),
+            EventHelper.PropertyChange("Game(Result)", "Victory", name) });
+        }
+        else if (state == GameProperties.GameState.LOSS)
+        {
+            robot.perceive(new Name[] {
+            EventHelper.PropertyChange("State(Game)", "GameEnd", name),
+            EventHelper.PropertyChange("Game(Result)", "Loss", name) });
+        }
+        robot.decide();
     }
 }

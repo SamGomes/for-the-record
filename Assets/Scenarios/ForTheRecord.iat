@@ -150,6 +150,38 @@
 					"Style": "Emys",
 					"Utterance": "fracassámos? Como assim?",
 					"UtteranceId": "TTS-126933EE1FF2C38850B8DF095949F2E9"
+				}, 
+				{
+					"CurrentState": "GameEnd",
+					"NextState": "-",
+					"Meaning": "Victory",
+					"Style": "Emys",
+					"Utterance": "Ganhámos!",
+					"UtteranceId": "TTS-CB4A9FA91DD4A3AA2C7EF6676DB66B8D"
+				}, 
+				{
+					"CurrentState": "GameEnd",
+					"NextState": "-",
+					"Meaning": "Victory",
+					"Style": "Glin",
+					"Utterance": "Ganhámos!",
+					"UtteranceId": "TTS-CB4A9FA91DD4A3AA2C7EF6676DB66B8D"
+				}, 
+				{
+					"CurrentState": "GameEnd",
+					"NextState": "-",
+					"Meaning": "Loss",
+					"Style": "Glin",
+					"Utterance": "Perdemos!",
+					"UtteranceId": "TTS-8C6EC8F75ADF7EB8C8727D6250673CFB"
+				}, 
+				{
+					"CurrentState": "GameEnd",
+					"NextState": "-",
+					"Meaning": "Loss",
+					"Style": "Emys",
+					"Utterance": "Perdemos!",
+					"UtteranceId": "TTS-8C6EC8F75ADF7EB8C8727D6250673CFB"
 				}]
 		},
 	"types": [

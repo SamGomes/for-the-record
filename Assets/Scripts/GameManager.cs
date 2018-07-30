@@ -564,6 +564,12 @@ public class GameManager : MonoBehaviour {
                     }
                 }
 
+
+                foreach (Player player in GameGlobals.players)
+                {
+                    player.InformGameResult(GameGlobals.currGameState);
+                }
+
                 UIadvanceRoundButton.GetComponentInChildren<Text>().text = "Finish Game";
                 this.gameMainSceneFinished = true;
 

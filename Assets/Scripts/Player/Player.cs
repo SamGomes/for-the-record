@@ -77,6 +77,7 @@ public abstract class Player
 
     public virtual void InformRollDicesValue(Player invoker, int maxValue, int obtainedValue) { }
     public virtual void InformAlbumResult(int albumValue, int marketValue) { }
+    public virtual void InformGameResult(GameProperties.GameState state) { }
 
 
     public int GetId()
