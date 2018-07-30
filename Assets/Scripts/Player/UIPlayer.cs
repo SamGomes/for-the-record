@@ -195,7 +195,7 @@ public class UIPlayer : Player
         foreach (GameProperties.Instrument instrument in skillSet.Keys)
         {
             int currSkillLevel = skillSet[instrument];
-            UISkillLevelsTexts[(int)instrument].text = (currSkillLevel>0)? "  " + skillSet[instrument].ToString() : "";
+            UISkillLevelsTexts[(int)instrument].text = "  " + skillSet[instrument].ToString();
         }
     }
 

@@ -845,7 +845,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!1 &1735448218387584
 GameObject:
   m_ObjectHideFlags: 1
@@ -1699,7 +1699,7 @@ MonoBehaviour:
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
-    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+    m_Font: {fileID: 12800000, guid: d74b7204688f2a84fa8436890cc6d2bb, type: 3}
     m_FontSize: 20
     m_FontStyle: 1
     m_BestFit: 0
@@ -1711,7 +1711,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Play for Instrument:'
+  m_Text: 'Record  my  Instrument:'
 --- !u!114 &114175068120388598
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3903,8 +3903,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 32, y: -167}
-  m_SizeDelta: {x: 219.6, y: 30}
+  m_AnchoredPosition: {x: 25.7, y: -163.7}
+  m_SizeDelta: {x: 227.2, y: 34}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224089779162006980
 RectTransform:
