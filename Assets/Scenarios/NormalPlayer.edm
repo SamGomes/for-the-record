@@ -29,7 +29,7 @@
 					"Layer": "-",
 					"Conditions":
 						{
-							"Set": ["ValidDialogue(GameEnd, [ns], [m], [s]) = True", "State(Game) = GameEnd", "Game(Result) = [m]", "Character(Name) = [s]"]
+							"Set": ["ValidDialogue(GameEnd, [ns], [m], [s]) = True", "State(Game) = GameEnd", "Game(Result) = [m]"]
 						},
 					"Priority": 3
 				}, 
