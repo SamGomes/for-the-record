@@ -75,9 +75,9 @@ public abstract class Player
     public abstract void PlayForInstrument(Album currAlbum);
     public abstract void LastDecisionsPhase(Album currAlbum);
 
-    public virtual void InformRollDicesValue(Player invoker, int maxValue, int obtainedValue) { }
-    public virtual void InformAlbumResult(int albumValue, int marketValue) { }
-    public virtual void InformGameResult(GameProperties.GameState state) { }
+    public virtual void InformRollDicesValue(Player invoker, int maxValue, int obtainedValue, int speakingRobotId) { }
+    public virtual void InformAlbumResult(int albumValue, int marketValue, int speakingRobotId) { }
+    public virtual void InformGameResult(GameProperties.GameState state, int speakingRobotId) { }
 
 
     public int GetId()
@@ -99,7 +99,7 @@ public abstract class Player
         this.preferredInstrument = GameProperties.Instrument.NONE;
         ChoosePreferredInstrument(currAlbum);
     }
-    virtual public void LevelUpRequest(Player currentPlayer, Album currAlbum)
+    virtual public void LevelUpRequest(Player currentPlayer, Album currAlbum, int speakingRobotId)
     {
         if (currentPlayer == this)
         {

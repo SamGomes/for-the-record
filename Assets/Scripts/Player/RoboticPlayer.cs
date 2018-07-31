@@ -123,9 +123,11 @@ public class EmotionalRoboticPlayer : MonoBehaviour
 public class RoboticPlayerCoopStrategy : AIPlayerCoopStrategy
 {
     private EmotionalRoboticPlayer robot;
+    private int id;
 
-    public RoboticPlayerCoopStrategy(string name) : base(name)
+    public RoboticPlayerCoopStrategy(int id, string name) : base(name)
     {
+        this.id = id;
         GameObject erp = new GameObject("EmotionalRoboticPlayer");
         robot = erp.AddComponent<EmotionalRoboticPlayer>();
         robot.InitThalamusConnectorOnPort(7000, name);
@@ -159,7 +161,7 @@ public class RoboticPlayerCoopStrategy : AIPlayerCoopStrategy
         ChangePreferredInstrument(preferredIntrument);
     }
 
-    public override void LevelUpRequest(Player currentPlayer, Album currAlbum)
+    public override void LevelUpRequest(Player currentPlayer, Album currAlbum, int speakingRobotId)
     {
         if (currentPlayer == this)
         {
@@ -167,11 +169,18 @@ public class RoboticPlayerCoopStrategy : AIPlayerCoopStrategy
         }
         else
         {
-            Debug.Log(name + ": É a vez do " + currentPlayer.GetName());
-            robot.perceive(new Name[] {
-            EventHelper.PropertyChange("CurrentPlayer(Name)", currentPlayer.GetName(), name),
-            EventHelper.PropertyChange("State(Game)", "LevelUp", name) });
-            robot.decide();
+            if (speakingRobotId == id)
+            {
+                Debug.Log(name + ": É a vez do " + currentPlayer.GetName());
+                robot.perceive(new Name[] {
+                    EventHelper.PropertyChange("CurrentPlayer(Name)", currentPlayer.GetName(), name),
+                    EventHelper.PropertyChange("State(Game)", "LevelUp", name) });
+                robot.decide();
+            }
+            else
+            {
+                Debug.Log(name + " gazes at " + currentPlayer.GetName());
+            }
         }
     }
 
@@ -200,9 +209,9 @@ public class RoboticPlayerCoopStrategy : AIPlayerCoopStrategy
         robot.decide();
     }
 
-    public override void InformRollDicesValue(Player invoker, int maxValue, int obtainedValue)
+    public override void InformRollDicesValue(Player invoker, int maxValue, int obtainedValue, int speakingRobotId)
     {
-        if (invoker == this)
+        if (speakingRobotId == id)
         {
             float luckFactor = (float)obtainedValue / (float)maxValue;
 
@@ -228,7 +237,7 @@ public class RoboticPlayerCoopStrategy : AIPlayerCoopStrategy
         }
     }
 
-    public override void InformAlbumResult(int albumValue, int marketValue)
+    public override void InformAlbumResult(int albumValue, int marketValue, int speakingRobotId)
     {
         if (albumValue >= marketValue)
         {
@@ -242,10 +251,18 @@ public class RoboticPlayerCoopStrategy : AIPlayerCoopStrategy
             EventHelper.PropertyChange("State(Game)", "RollMarketDice", name),
             EventHelper.PropertyChange("Roll(MarketDice)", "Fail", name) });
         }
-        robot.decide();
+
+        if (speakingRobotId == id)
+        {
+            robot.decide();
+        }
+        else
+        {
+            //gaze
+        }
     }
 
-    public override void InformGameResult(GameProperties.GameState state)
+    public override void InformGameResult(GameProperties.GameState state, int speakingRobotId)
     {
         if (state == GameProperties.GameState.VICTORY)
         {
@@ -259,16 +276,26 @@ public class RoboticPlayerCoopStrategy : AIPlayerCoopStrategy
             EventHelper.PropertyChange("State(Game)", "GameEnd", name),
             EventHelper.PropertyChange("Game(Result)", "Loss", name) });
         }
-        robot.decide();
+
+        if (speakingRobotId == id)
+        {
+            robot.decide();
+        }
+        else
+        {
+            //gaze
+        }
     }
 }
 
 public class RoboticPlayerGreedyStrategy : AIPlayerGreedyStrategy
 {
     private EmotionalRoboticPlayer robot;
+    private int id;
 
-    public RoboticPlayerGreedyStrategy(string name) : base(name)
+    public RoboticPlayerGreedyStrategy(int id, string name) : base(name)
     {
+        this.id = id;
         GameObject erp = new GameObject("EmotionalRoboticPlayer");
         robot = erp.AddComponent<EmotionalRoboticPlayer>();
         robot.InitThalamusConnectorOnPort(7002, name);
@@ -302,7 +329,7 @@ public class RoboticPlayerGreedyStrategy : AIPlayerGreedyStrategy
         ChangePreferredInstrument(preferredIntrument);
     }
 
-    public override void LevelUpRequest(Player currentPlayer, Album currAlbum)
+    public override void LevelUpRequest(Player currentPlayer, Album currAlbum, int speakingRobotId)
     {
         if (currentPlayer == this)
         {
@@ -310,11 +337,18 @@ public class RoboticPlayerGreedyStrategy : AIPlayerGreedyStrategy
         }
         else
         {
-            Debug.Log(name + ": É a vez do " + currentPlayer.GetName());
-            robot.perceive(new Name[] {
-            EventHelper.PropertyChange("CurrentPlayer(Name)", currentPlayer.GetName(), name),
-            EventHelper.PropertyChange("State(Game)", "LevelUp", name) });
-            robot.decide();
+            if (speakingRobotId == id)
+            {
+                Debug.Log(name + ": É a vez do " + currentPlayer.GetName());
+                robot.perceive(new Name[] {
+                    EventHelper.PropertyChange("CurrentPlayer(Name)", currentPlayer.GetName(), name),
+                    EventHelper.PropertyChange("State(Game)", "LevelUp", name) });
+                robot.decide();
+            }
+            else
+            {
+                Debug.Log(name + " gazes at " + currentPlayer.GetName());
+            }
         }
     }
 
@@ -343,9 +377,9 @@ public class RoboticPlayerGreedyStrategy : AIPlayerGreedyStrategy
         robot.decide();
     }
 
-    public override void InformRollDicesValue(Player invoker, int maxValue, int obtainedValue)
+    public override void InformRollDicesValue(Player invoker, int maxValue, int obtainedValue, int speakingRobotId)
     {
-        if (invoker == this)
+        if (speakingRobotId == id)
         {
             float luckFactor = (float)obtainedValue / (float)maxValue;
 
@@ -371,7 +405,7 @@ public class RoboticPlayerGreedyStrategy : AIPlayerGreedyStrategy
         }
     }
 
-    public override void InformAlbumResult(int albumValue, int marketValue)
+    public override void InformAlbumResult(int albumValue, int marketValue, int speakingRobotId)
     {
         if (albumValue >= marketValue)
         {
@@ -385,10 +419,18 @@ public class RoboticPlayerGreedyStrategy : AIPlayerGreedyStrategy
             EventHelper.PropertyChange("State(Game)", "RollMarketDice", name),
             EventHelper.PropertyChange("Roll(MarketDice)", "Fail", name) });
         }
-        robot.decide();
+
+        if (speakingRobotId == id)
+        {
+            robot.decide();
+        }
+        else
+        {
+            //gaze
+        }
     }
 
-    public override void InformGameResult(GameProperties.GameState state)
+    public override void InformGameResult(GameProperties.GameState state, int speakingRobotId)
     {
         if (state == GameProperties.GameState.VICTORY)
         {
@@ -402,6 +444,14 @@ public class RoboticPlayerGreedyStrategy : AIPlayerGreedyStrategy
             EventHelper.PropertyChange("State(Game)", "GameEnd", name),
             EventHelper.PropertyChange("Game(Result)", "Loss", name) });
         }
-        robot.decide();
+
+        if (speakingRobotId == id)
+        {
+            robot.decide();
+        }
+        else
+        {
+            //gaze
+        }
     }
 }

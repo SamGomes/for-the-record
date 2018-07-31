@@ -255,9 +255,10 @@ public class GameManager : MonoBehaviour {
         GameGlobals.gameLogManager.WriteEventToLog(GameGlobals.currSessionId.ToString(), GameGlobals.currGameId.ToString(), GameGlobals.currGameRoundId.ToString(), currPlayer.GetId().ToString(), currPlayer.GetName().ToString(), "ROLLED_INSTRUMENT_DICES", "-", newAlbumInstrumentValue.ToString());
 
 
+        int speakingRobotId = Random.Range(0, GameGlobals.numberOfSpeakingPlayers);
         foreach (var player in GameGlobals.players)
         {
-            player.InformRollDicesValue(currPlayer, numTokensForInstrument * 6, newAlbumInstrumentValue);
+            player.InformRollDicesValue(currPlayer, numTokensForInstrument * 6, newAlbumInstrumentValue, speakingRobotId);
         }
 
 
@@ -359,9 +360,11 @@ public class GameManager : MonoBehaviour {
             }
         }
 
+
+        int speakingRobotId = Random.Range(0, GameGlobals.numberOfSpeakingPlayers);
         foreach (var player in GameGlobals.players)
         {
-            player.InformAlbumResult(newAlbumValue, marketValue);
+            player.InformAlbumResult(newAlbumValue, marketValue, speakingRobotId);
         }
 
 
@@ -420,9 +423,10 @@ public class GameManager : MonoBehaviour {
             numPlayersToLevelUp--;
             if (numPlayersToLevelUp > 0)
             {
+                int speakingRobotId = Random.Range(0, GameGlobals.numberOfSpeakingPlayers);
                 foreach (var player in GameGlobals.players)
                 {
-                    player.LevelUpRequest(nextPlayer, currAlbum);
+                    player.LevelUpRequest(nextPlayer, currAlbum, speakingRobotId);
                 }
             }
             levelUpResponseReceived = false;
@@ -570,9 +574,10 @@ public class GameManager : MonoBehaviour {
                 }
 
 
+                int speakingRobotId = Random.Range(0, GameGlobals.numberOfSpeakingPlayers);
                 foreach (Player player in GameGlobals.players)
                 {
-                    player.InformGameResult(GameGlobals.currGameState);
+                    player.InformGameResult(GameGlobals.currGameState, speakingRobotId);
                 }
 
                 UIadvanceRoundButton.GetComponentInChildren<Text>().text = "Finish Game";
@@ -603,10 +608,11 @@ public class GameManager : MonoBehaviour {
         ResetAllPlayers();
         int numPlayers = GameGlobals.players.Count;
         Player currPlayer = GameGlobals.players[0];
-        
+        int speakingRobotId = Random.Range(0, GameGlobals.numberOfSpeakingPlayers);
+
         foreach (var player in GameGlobals.players)
         {
-            player.LevelUpRequest(currPlayer, currAlbum);
+            player.LevelUpRequest(currPlayer, currAlbum, speakingRobotId);
         }
     }
     public void StartPlayForInstrumentPhase()

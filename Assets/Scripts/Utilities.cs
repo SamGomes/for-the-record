@@ -17,6 +17,7 @@ public static class GameGlobals
     public static GameProperties.GameState currGameState;
 
     public static string FAtiMAScenarioPath = "/Scenarios/ForTheRecord.iat";
+    public static int numberOfSpeakingPlayers = 0;
 
     public static IDiceNG gameDiceNG;
 

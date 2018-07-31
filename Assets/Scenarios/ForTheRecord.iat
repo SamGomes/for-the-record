@@ -40,6 +40,14 @@
 					"UtteranceId": "TTS-3BEA6AE634F32E31C1B31516905A396C"
 				}, 
 				{
+					"CurrentState": "PlayForInstrument",
+					"NextState": "-",
+					"Meaning": "-",
+					"Style": "Glin",
+					"Utterance": "tum tum tum tum, tum tum tum tum, bora!",
+					"UtteranceId": "TTS-DA08E261B37EFF64792C982506D2126E"
+				}, 
+				{
 					"CurrentState": "LastDecisionsPhase",
 					"NextState": "-",
 					"Meaning": "-",
@@ -198,14 +206,6 @@
 					"Style": "Emys",
 					"Utterance": "Eu quero ser o vocalista.",
 					"UtteranceId": "TTS-106EA35EB7B533E6170BE2B31ADAA7E5"
-				}, 
-				{
-					"CurrentState": "PlayForInstrument",
-					"NextState": "-",
-					"Meaning": "-",
-					"Style": "Glin",
-					"Utterance": "tum tum tum tum, tum tum tum tum, tum tum tum tum, bora!",
-					"UtteranceId": "TTS-519049AE056D2B370A4C990BAFCFA4A5"
 				}, 
 				{
 					"CurrentState": "PlayForInstrument",
