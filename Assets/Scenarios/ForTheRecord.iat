@@ -50,18 +50,18 @@
 				{
 					"CurrentState": "LastDecisionsPhase",
 					"NextState": "-",
-					"Meaning": "-",
+					"Meaning": "Success",
 					"Style": "Glin",
-					"Utterance": "Última decisão do Glin!",
-					"UtteranceId": "TTS-6CD7E828B1365683EC005B10F11D8F1B"
+					"Utterance": "O baixista a receber dinheiro",
+					"UtteranceId": "TTS-C4B08AB3E1E43D13FBA568D9CD3C3072"
 				}, 
 				{
 					"CurrentState": "LastDecisionsPhase",
 					"NextState": "-",
-					"Meaning": "-",
+					"Meaning": "Success",
 					"Style": "Emys",
-					"Utterance": "Última decisão do Émys!",
-					"UtteranceId": "TTS-0EC04C63F335873F7BB929048C19CE74"
+					"Utterance": "Acho que vou testar a minha skill de marketing",
+					"UtteranceId": "TTS-91E8689378DA737C69A1132E79360B01"
 				}, 
 				{
 					"CurrentState": "PlayForInstrument",
@@ -214,6 +214,22 @@
 					"Style": "Emys",
 					"Utterance": "Oiçam esta voz de rouxinol.",
 					"UtteranceId": "TTS-5DBFF79DF44B209FE2847EC27ED0170B"
+				}, 
+				{
+					"CurrentState": "LastDecisionsPhase",
+					"NextState": "-",
+					"Meaning": "Fail",
+					"Style": "Emys",
+					"Utterance": "Isto não está a correr muito bem...",
+					"UtteranceId": "TTS-9E95674D9B79AA6E2C00016A38125936"
+				}, 
+				{
+					"CurrentState": "LastDecisionsPhase",
+					"NextState": "-",
+					"Meaning": "Fail",
+					"Style": "Glin",
+					"Utterance": "Assim, esta banda não vai longe.",
+					"UtteranceId": "TTS-89C2B0B9F79DD18BBC2B80BBEF674228"
 				}]
 		},
 	"types": [

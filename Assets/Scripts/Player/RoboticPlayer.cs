@@ -203,9 +203,20 @@ public class RoboticPlayerCoopStrategy : AIPlayerCoopStrategy
 
     public override void LastDecisionsPhase(Album currAlbum)
     {
-        robot.perceive(new Name[] {
-            EventHelper.PropertyChange("State(Game)", "LastDecisionsPhase", name) });
         base.LastDecisionsPhase(currAlbum);
+
+        if (currAlbum.GetMarketingState() == GameProperties.AlbumMarketingState.MEGA_HIT)
+        {
+            robot.perceive(new Name[] {
+            EventHelper.PropertyChange("State(Game)", "LastDecisionsPhase", name),
+            EventHelper.PropertyChange("Album(Result)", "Success", name) });
+        }
+        else
+        {
+            robot.perceive(new Name[] {
+            EventHelper.PropertyChange("State(Game)", "LastDecisionsPhase", name),
+            EventHelper.PropertyChange("Album(Result)", "Fail", name) });
+        }
         robot.decide();
     }
 
@@ -371,9 +382,20 @@ public class RoboticPlayerGreedyStrategy : AIPlayerGreedyStrategy
 
     public override void LastDecisionsPhase(Album currAlbum)
     {
-        robot.perceive(new Name[] {
-            EventHelper.PropertyChange("State(Game)", "LastDecisionsPhase", name) });
         base.LastDecisionsPhase(currAlbum);
+
+        if (currAlbum.GetMarketingState() == GameProperties.AlbumMarketingState.MEGA_HIT)
+        {
+            robot.perceive(new Name[] {
+            EventHelper.PropertyChange("State(Game)", "LastDecisionsPhase", name),
+            EventHelper.PropertyChange("Album(Result)", "Success", name) });
+        }
+        else
+        {
+            robot.perceive(new Name[] {
+            EventHelper.PropertyChange("State(Game)", "LastDecisionsPhase", name),
+            EventHelper.PropertyChange("Album(Result)", "Fail", name) });
+        }
         robot.decide();
     }
 
