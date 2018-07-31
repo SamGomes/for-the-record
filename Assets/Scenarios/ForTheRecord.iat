@@ -11,49 +11,33 @@
 					"CurrentState": "PlayForInstrument",
 					"NextState": "-",
 					"Meaning": "-",
-					"Style": "Emys",
-					"Utterance": "Vamos ver se tenho sorte neste lançamento.",
-					"UtteranceId": "TTS-B7735AEFF489D318ED2F14811C585C26"
-				}, 
-				{
-					"CurrentState": "LevelUp",
-					"NextState": "-",
-					"Meaning": "-",
 					"Style": "Glin",
-					"Utterance": "Vou melhorar o meu instrumento.",
-					"UtteranceId": "TTS-9AB53EFDD2F83A5B3CB7A55A045FEC73"
+					"Utterance": "Preparem-se que o baixista vai arrasar.",
+					"UtteranceId": "TTS-5AC959FF77D9E775AADC755080531C23"
 				}, 
 				{
 					"CurrentState": "LevelUp",
 					"NextState": "-",
-					"Meaning": "-",
-					"Style": "Emys",
-					"Utterance": "Vou melhorar o marketing",
-					"UtteranceId": "TTS-D4E323FF0F0830A8C6F338B68722EDD5"
+					"Meaning": "Other",
+					"Style": "-",
+					"Utterance": "És tu!",
+					"UtteranceId": "TTS-D21116A64C78BDC760B490230FB8180B"
 				}, 
 				{
 					"CurrentState": "RollInstrumentDice",
 					"NextState": "-",
-					"Meaning": "BadLuck",
-					"Style": "-",
-					"Utterance": "Credo!",
-					"UtteranceId": "TTS-F96795AB4545163D408348877FAC3073"
+					"Meaning": "Neutral",
+					"Style": "Emys",
+					"Utterance": "Podia ter sido melhor....",
+					"UtteranceId": "TTS-DFE3D7B43DA2AB24C88944764406282C"
 				}, 
 				{
 					"CurrentState": "ChoosePreferredInstrument",
 					"NextState": "-",
 					"Meaning": "-",
 					"Style": "Glin",
-					"Utterance": "Acho que vou escolher...",
-					"UtteranceId": "TTS-9B18427A21FBFC4DDE115BC12FAE1C14"
-				}, 
-				{
-					"CurrentState": "ChoosePreferredInstrument",
-					"NextState": "-",
-					"Meaning": "-",
-					"Style": "Emys",
-					"Utterance": "Qual é o meu instrumento preferido?",
-					"UtteranceId": "TTS-50E68DDE7CABD555E07A632379D60A72"
+					"Utterance": "Eu vou escolher o baixo,",
+					"UtteranceId": "TTS-3BEA6AE634F32E31C1B31516905A396C"
 				}, 
 				{
 					"CurrentState": "LastDecisionsPhase",
@@ -75,25 +59,161 @@
 					"CurrentState": "PlayForInstrument",
 					"NextState": "-",
 					"Meaning": "-",
-					"Style": "Glin",
-					"Utterance": "A rolar os dados",
-					"UtteranceId": "TTS-AA28B180B2BA504BFD48C06C6251D4C4"
+					"Style": "Emys",
+					"Utterance": "Dó ré mi fá sol lá siiii",
+					"UtteranceId": "TTS-80181F8C64B1D70A147D859DEB9FF771"
+				}, 
+				{
+					"CurrentState": "RollMarketDice",
+					"NextState": "-",
+					"Meaning": "Success",
+					"Style": "Emys",
+					"Utterance": "puntsce puntsce puntsce puntsce woho, mega hit!",
+					"UtteranceId": "TTS-D837C005AD8245E73BEFD04D42F3CE18"
 				}, 
 				{
 					"CurrentState": "RollInstrumentDice",
 					"NextState": "-",
 					"Meaning": "Luck",
-					"Style": "-",
-					"Utterance": "Eish que sorte!",
-					"UtteranceId": "TTS-DF53E3BCCF04C39F2421A2A004F8B220"
+					"Style": "Emys",
+					"Utterance": "Que sorte!",
+					"UtteranceId": "TTS-42BC3C097C016744EB6BE2645B2330F9"
+				}, 
+				{
+					"CurrentState": "RollInstrumentDice",
+					"NextState": "-",
+					"Meaning": "BadLuck",
+					"Style": "Emys",
+					"Utterance": "Credo!",
+					"UtteranceId": "TTS-F96795AB4545163D408348877FAC3073"
+				}, 
+				{
+					"CurrentState": "RollInstrumentDice",
+					"NextState": "-",
+					"Meaning": "Luck",
+					"Style": "Glin",
+					"Utterance": "Nada mau...",
+					"UtteranceId": "TTS-B5B0821D104A41568D185281B81C194A"
+				}, 
+				{
+					"CurrentState": "RollInstrumentDice",
+					"NextState": "-",
+					"Meaning": "BadLuck",
+					"Style": "Glin",
+					"Utterance": "Eish",
+					"UtteranceId": "TTS-22FEF7F25841E0581D02158128D8E5E0"
 				}, 
 				{
 					"CurrentState": "RollInstrumentDice",
 					"NextState": "-",
 					"Meaning": "Neutral",
+					"Style": "Glin",
+					"Utterance": "Que fraco",
+					"UtteranceId": "TTS-AD0834C9B463968E3F481E6912AF14AA"
+				}, 
+				{
+					"CurrentState": "LevelUp",
+					"NextState": "-",
+					"Meaning": "Me",
+					"Style": "Glin",
+					"Utterance": "Vou melhorar o meu instrumento.",
+					"UtteranceId": "TTS-9AB53EFDD2F83A5B3CB7A55A045FEC73"
+				}, 
+				{
+					"CurrentState": "RollMarketDice",
+					"NextState": "-",
+					"Meaning": "Success",
+					"Style": "Glin",
+					"Utterance": "ninguém nos pára",
+					"UtteranceId": "TTS-A1275FE91947DB47DBFCA542CB019FF3"
+				}, 
+				{
+					"CurrentState": "RollMarketDice",
+					"NextState": "-",
+					"Meaning": "Fail",
+					"Style": "Glin",
+					"Utterance": "oh não...",
+					"UtteranceId": "TTS-568ED6A1A834C03ADE1F517217E59AEC"
+				}, 
+				{
+					"CurrentState": "RollMarketDice",
+					"NextState": "-",
+					"Meaning": "Fail",
+					"Style": "Emys",
+					"Utterance": "fracassámos? Como assim?",
+					"UtteranceId": "TTS-126933EE1FF2C38850B8DF095949F2E9"
+				}, 
+				{
+					"CurrentState": "GameEnd",
+					"NextState": "-",
+					"Meaning": "Victory",
+					"Style": "Emys",
+					"Utterance": "Ganhámos!",
+					"UtteranceId": "TTS-CB4A9FA91DD4A3AA2C7EF6676DB66B8D"
+				}, 
+				{
+					"CurrentState": "GameEnd",
+					"NextState": "-",
+					"Meaning": "Victory",
+					"Style": "Glin",
+					"Utterance": "Ganhámos!",
+					"UtteranceId": "TTS-CB4A9FA91DD4A3AA2C7EF6676DB66B8D"
+				}, 
+				{
+					"CurrentState": "GameEnd",
+					"NextState": "-",
+					"Meaning": "Loss",
+					"Style": "Glin",
+					"Utterance": "Perdemos!",
+					"UtteranceId": "TTS-8C6EC8F75ADF7EB8C8727D6250673CFB"
+				}, 
+				{
+					"CurrentState": "GameEnd",
+					"NextState": "-",
+					"Meaning": "Loss",
+					"Style": "Emys",
+					"Utterance": "Perdemos!",
+					"UtteranceId": "TTS-8C6EC8F75ADF7EB8C8727D6250673CFB"
+				}, 
+				{
+					"CurrentState": "LevelUp",
+					"NextState": "-",
+					"Meaning": "Me",
+					"Style": "Emys",
+					"Utterance": "Vou melhorar o marketing",
+					"UtteranceId": "TTS-D4E323FF0F0830A8C6F338B68722EDD5"
+				}, 
+				{
+					"CurrentState": "LevelUp",
+					"NextState": "-",
+					"Meaning": "Other",
 					"Style": "-",
-					"Utterance": "Podia ter sido melhor....",
-					"UtteranceId": "TTS-DFE3D7B43DA2AB24C88944764406282C"
+					"Utterance": "É a tua vez!",
+					"UtteranceId": "TTS-F7935E2A7FA455DB580AC13D65AC82AF"
+				}, 
+				{
+					"CurrentState": "ChoosePreferredInstrument",
+					"NextState": "-",
+					"Meaning": "-",
+					"Style": "Emys",
+					"Utterance": "Eu quero ser o vocalista.",
+					"UtteranceId": "TTS-106EA35EB7B533E6170BE2B31ADAA7E5"
+				}, 
+				{
+					"CurrentState": "PlayForInstrument",
+					"NextState": "-",
+					"Meaning": "-",
+					"Style": "Glin",
+					"Utterance": "tum tum tum tum, tum tum tum tum, tum tum tum tum, bora!",
+					"UtteranceId": "TTS-519049AE056D2B370A4C990BAFCFA4A5"
+				}, 
+				{
+					"CurrentState": "PlayForInstrument",
+					"NextState": "-",
+					"Meaning": "-",
+					"Style": "Emys",
+					"Utterance": "Oiçam esta voz de rouxinol.",
+					"UtteranceId": "TTS-5DBFF79DF44B209FE2847EC27ED0170B"
 				}]
 		},
 	"types": [

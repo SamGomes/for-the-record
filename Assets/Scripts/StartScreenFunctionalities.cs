@@ -18,7 +18,7 @@ public class StartScreenFunctionalities : MonoBehaviour {
         InitGameGlobals();
         if (GameGlobals.currGameId == 0)
         {
-            GameGlobals.gameLogManager.InitLogs();
+            //GameGlobals.gameLogManager.InitLogs();
         }
         //GameGlobals.playerIdCount = 0;
         //GameGlobals.albumIdCount = 0;

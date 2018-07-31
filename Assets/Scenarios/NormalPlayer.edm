@@ -4,22 +4,62 @@
 			"classId": 0,
 			"ActionTendencies": [
 				{
-					"Action": "Speak([cs], [ns], [m], [s])",
-					"Target": "-",
-					"Layer": "-",
-					"Conditions":
-						{
-							"Set": ["State(Game) = [cs]", "ValidDialogue([cs], [ns], [m], [s]) = True", "Character(Name) = [s]", "[cs] != RollInstrumentDice"]
-						},
-					"Priority": 1
-				}, 
-				{
 					"Action": "Speak(RollInstrumentDice, [ns], [m], [s])",
 					"Target": "-",
 					"Layer": "-",
 					"Conditions":
 						{
-							"Set": ["ValidDialogue([cs], [ns], [m], [s]) = True", "State(Game) = [cs]", "Roll(InstrumentDice) = [m]"]
+							"Set": ["ValidDialogue(RollInstrumentDice, [ns], [m], [s]) = True", "State(Game) = RollInstrumentDice", "Roll(InstrumentDice) = [m]", "Character(Name) = [s]"]
+						},
+					"Priority": 3
+				}, 
+				{
+					"Action": "Speak(RollMarketDice, [ns], [m], [s])",
+					"Target": "-",
+					"Layer": "-",
+					"Conditions":
+						{
+							"Set": ["ValidDialogue(RollMarketDice, [ns], [m], [s]) = True", "State(Game) = RollMarketDice", "Roll(MarketDice) = [m]", "Character(Name) = [s]"]
+						},
+					"Priority": 3
+				}, 
+				{
+					"Action": "Speak(GameEnd, [ns], [m], [s])",
+					"Target": "-",
+					"Layer": "-",
+					"Conditions":
+						{
+							"Set": ["ValidDialogue(GameEnd, [ns], [m], [s]) = True", "State(Game) = GameEnd", "Game(Result) = [m]", "Character(Name) = [s]"]
+						},
+					"Priority": 3
+				}, 
+				{
+					"Action": "Speak(LevelUp, [ns], Me, [s])",
+					"Target": "-",
+					"Layer": "-",
+					"Conditions":
+						{
+							"Set": ["ValidDialogue(LevelUp, [ns], Me, [s]) = True", "Character(Name) = CurrentPlayer(Name)", "State(Game) = LevelUp", "Character(Name) = [s]"]
+						},
+					"Priority": 3
+				}, 
+				{
+					"Action": "Speak(LevelUp, [ns], Other, [s])",
+					"Target": "-",
+					"Layer": "-",
+					"Conditions":
+						{
+							"Set": ["ValidDialogue(LevelUp, [ns], Other, [s]) = True", "Character(Name) != CurrentPlayer(Name)", "State(Game) = LevelUp"]
+						},
+					"Priority": 3
+				}, 
+				{
+					"Action": "Speak([cs], [ns], [m], [s])",
+					"Target": "-",
+					"Layer": "-",
+					"Conditions":
+						{
+							"Set": ["ValidDialogue([cs], [ns], [m], [s]) = True", "State(Game) = [cs]", "Character(Name) = [s]", "[cs] != RollInstrumentDice", "[cs] != RollMarketDice", "[cs] != LevelUp"]
 						},
 					"Priority": 1
 				}]

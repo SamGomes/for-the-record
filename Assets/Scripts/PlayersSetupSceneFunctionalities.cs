@@ -95,21 +95,21 @@ public class PlayersSetupSceneFunctionalities : MonoBehaviour {
                     else if (button.gameObject.name.EndsWith("2"))
                     {
                         GameGlobals.players.Add(new RoboticPlayerGreedyStrategy("Emys"));
-                        GameGlobals.players.Add(new RoboticPlayerCoopStrategy(gameObject, "Glin"));
+                        GameGlobals.players.Add(new RoboticPlayerCoopStrategy("Glin"));
                         GameGlobals.players.Add(new UIPlayer("Player"));
                         GameGlobals.gameDiceNG = new RandomDiceNG();
                     }
                     else if (button.gameObject.name.EndsWith("3"))
                     {
                         GameGlobals.players.Add(new RoboticPlayerGreedyStrategy("Emys"));
-                        GameGlobals.players.Add(new RoboticPlayerCoopStrategy(gameObject, "Glin"));
+                        GameGlobals.players.Add(new RoboticPlayerCoopStrategy("Glin"));
                         GameGlobals.players.Add(new UIPlayer("Player"));
                         GameGlobals.gameDiceNG = new VictoryDiceNG();
                     }
                     else if (button.gameObject.name.EndsWith("4"))
                     {
                         GameGlobals.players.Add(new RoboticPlayerGreedyStrategy("Emys"));
-                        GameGlobals.players.Add(new RoboticPlayerCoopStrategy(gameObject, "Glin"));
+                        GameGlobals.players.Add(new RoboticPlayerCoopStrategy("Glin"));
                         GameGlobals.players.Add(new UIPlayer("Player"));
                         GameGlobals.gameDiceNG = new LossDiceNG();
                     }

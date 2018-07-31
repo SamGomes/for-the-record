@@ -358,7 +358,12 @@ public class GameManager : MonoBehaviour {
                 infoScreenLossRef.DisplayPoppupWithDelay("As your album value (" + newAlbumValue + ") was LOWER than the market value (" + marketValue + "), the album could not be published. Although the band incurred in debt, everyone receives 1000 $ of the band savings.", diceRollDelay * 0.8f);
             }
         }
-        
+
+        foreach (var player in GameGlobals.players)
+        {
+            player.InformAlbumResult(newAlbumValue, marketValue);
+        }
+
 
         //check for game loss (collapse) or victory on album registry
         float victoryThreshold = Mathf.Ceil(GameProperties.numberOfAlbumsPerGame / 2.0f);
@@ -415,7 +420,10 @@ public class GameManager : MonoBehaviour {
             numPlayersToLevelUp--;
             if (numPlayersToLevelUp > 0)
             {
-                nextPlayer.LevelUpRequest(currAlbum);
+                foreach (var player in GameGlobals.players)
+                {
+                    player.LevelUpRequest(nextPlayer, currAlbum);
+                }
             }
             levelUpResponseReceived = false;
         }
@@ -561,6 +569,12 @@ public class GameManager : MonoBehaviour {
                     }
                 }
 
+
+                foreach (Player player in GameGlobals.players)
+                {
+                    player.InformGameResult(GameGlobals.currGameState);
+                }
+
                 UIadvanceRoundButton.GetComponentInChildren<Text>().text = "Finish Game";
                 this.gameMainSceneFinished = true;
 
@@ -588,11 +602,12 @@ public class GameManager : MonoBehaviour {
     {
         ResetAllPlayers();
         int numPlayers = GameGlobals.players.Count;
-        //for (int i = 0; i < numPlayers; i++)
-        //{
-            Player currPlayer = GameGlobals.players[0];
-            currPlayer.LevelUpRequest(currAlbum);
-        //}
+        Player currPlayer = GameGlobals.players[0];
+        
+        foreach (var player in GameGlobals.players)
+        {
+            player.LevelUpRequest(currPlayer, currAlbum);
+        }
     }
     public void StartPlayForInstrumentPhase()
     {

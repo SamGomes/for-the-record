@@ -18,7 +18,7 @@ public abstract class AIPlayer : UIPlayer
         playForInstrumentThinkingDelay = 0.5f;
         lastDecisionThinkingDelay = 1.0f;
 
-        sendResponsesDelay = 0.5f;
+        sendResponsesDelay = 1.0f;
     }
 
     public override void RegisterMeOnPlayersLog()
