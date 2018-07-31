@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -103,18 +104,28 @@ public class PlayersSetupSceneFunctionalities : MonoBehaviour {
                     else if (button.gameObject.name.EndsWith("3"))
                     {
                         GameGlobals.numberOfSpeakingPlayers = 2;
-                        GameGlobals.players.Add(new RoboticPlayerGreedyStrategy(0, "Emys"));
-                        GameGlobals.players.Add(new RoboticPlayerCoopStrategy(1, "Glin"));
+                        RoboticPlayerGreedyStrategy emys = new RoboticPlayerGreedyStrategy(0, "Emys");
+                        GameGlobals.players.Add(emys);
+                        RoboticPlayerCoopStrategy glin = new RoboticPlayerCoopStrategy(1, "Glin");
+                        GameGlobals.players.Add(glin);
                         GameGlobals.players.Add(new UIPlayer("Player"));
                         GameGlobals.gameDiceNG = new VictoryDiceNG();
+                        emys.FlushRobotUtterance("Eu sou o émys!");
+                        Thread.Sleep(1000);
+                        glin.FlushRobotUtterance("E eu sou o Glin! Vamos lá formar uma banda e ver se conseguimos triunfar!");
                     }
                     else if (button.gameObject.name.EndsWith("4"))
                     {
                         GameGlobals.numberOfSpeakingPlayers = 2;
-                        GameGlobals.players.Add(new RoboticPlayerGreedyStrategy(0, "Emys"));
-                        GameGlobals.players.Add(new RoboticPlayerCoopStrategy(1, "Glin"));
+                        RoboticPlayerGreedyStrategy emys = new RoboticPlayerGreedyStrategy(0, "Emys");
+                        GameGlobals.players.Add(emys);
+                        RoboticPlayerCoopStrategy glin = new RoboticPlayerCoopStrategy(1, "Glin");
+                        GameGlobals.players.Add(glin);
                         GameGlobals.players.Add(new UIPlayer("Player"));
                         GameGlobals.gameDiceNG = new LossDiceNG();
+                        emys.FlushRobotUtterance("Eu sou o émys!");
+                        Thread.Sleep(1000);
+                        glin.FlushRobotUtterance("E eu sou o Glin! Vamos lá formar uma banda e ver se conseguimos triunfar!");
                     }
                     button.interactable = false;
                     CheckForAllPlayersRegistered();

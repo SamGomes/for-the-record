@@ -118,6 +118,11 @@ public class EmotionalRoboticPlayer : MonoBehaviour
             isStopped = true;
         }
     }
+
+    public void FlushRobotUtterance(string text)
+    {
+        thalamusConnector.PerformUtterance(text);
+    }
 }
 
 public class RoboticPlayerCoopStrategy : AIPlayerCoopStrategy
@@ -130,6 +135,11 @@ public class RoboticPlayerCoopStrategy : AIPlayerCoopStrategy
         GameObject erp = new GameObject("EmotionalRoboticPlayer");
         robot = erp.AddComponent<EmotionalRoboticPlayer>();
         robot.InitThalamusConnectorOnPort(7000, name);
+    }
+
+    public void FlushRobotUtterance(string text)
+    {
+        robot.FlushRobotUtterance(text);
     }
 
     public override void ChoosePreferredInstrument(Album currAlbum)
@@ -340,6 +350,11 @@ public class RoboticPlayerGreedyStrategy : AIPlayerGreedyStrategy
         GameObject erp = new GameObject("EmotionalRoboticPlayer");
         robot = erp.AddComponent<EmotionalRoboticPlayer>();
         robot.InitThalamusConnectorOnPort(7002, name);
+    }
+
+    public void FlushRobotUtterance(string text)
+    {
+        robot.FlushRobotUtterance(text);
     }
 
     public override void ChoosePreferredInstrument(Album currAlbum)
