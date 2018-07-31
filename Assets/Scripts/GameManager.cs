@@ -61,13 +61,13 @@ public class GameManager : MonoBehaviour {
     {
         GameGlobals.gameManager = this;
         //mock to test
-        //GameGlobals.gameLogManager.InitLogs();
-        //GameGlobals.gameDiceNG = new VictoryDiceNG();
-        //GameGlobals.albums = new List<Album>(GameProperties.numberOfAlbumsPerGame);
-        //GameGlobals.players = new List<Player>(GameProperties.numberOfPlayersPerGame);
-        //GameGlobals.players.Add(new AIPlayerCoopStrategy("Coop Jeff"));
-        //GameGlobals.players.Add(new AIPlayerCoopStrategy("Greedy Kevin"));
-        //GameGlobals.players.Add(new UIPlayer("Balanced Sam"));
+        GameGlobals.gameLogManager.InitLogs();
+        GameGlobals.gameDiceNG = new VictoryDiceNG();
+        GameGlobals.albums = new List<Album>(GameProperties.numberOfAlbumsPerGame);
+        GameGlobals.players = new List<Player>(GameProperties.numberOfPlayersPerGame);
+        GameGlobals.players.Add(new AIPlayerCoopStrategy("Coop Jeff"));
+        GameGlobals.players.Add(new AIPlayerCoopStrategy("Greedy Kevin"));
+        GameGlobals.players.Add(new UIPlayer("Balanced Sam"));
     }
 
     public void InterruptGame()
@@ -476,13 +476,13 @@ public class GameManager : MonoBehaviour {
                 //make phase UI active (this step is interim but must be done before last phase)
                 UIRollDiceForMarketValueScreen.SetActive(true);
 
-                int marketLimit = Mathf.FloorToInt(GameProperties.numberOfAlbumsPerGame / 2.0f);
+                int marketLimit = Mathf.FloorToInt(GameProperties.numberOfAlbumsPerGame * 4.0f / 5.0f);
                 //enter international market
-                if (GameGlobals.currGameRoundId == marketLimit)
+                if (GameGlobals.currGameRoundId == (marketLimit-1))
                 {
                     int oldNumMarketDices = GameProperties.numMarketDices;
                     GameProperties.numMarketDices++;
-                    infoScreenNeutralRef.DisplayPoppup("You gained some experience publishing " + marketLimit + " album(s) and so you will try your luck on the international market. From now on, "+ GameProperties.numMarketDices + " dices (instead of "+ oldNumMarketDices + ") are rolled for the market");
+                    infoScreenNeutralRef.DisplayPoppup("You gained some experience publishing " + (marketLimit -1) + " album(s) and so you will try your luck on the international market. From now on, "+ GameProperties.numMarketDices + " dices (instead of "+ oldNumMarketDices + ") are rolled for the market");
                     
                 }
                 canSelectToCheckAlbumResult = false;
