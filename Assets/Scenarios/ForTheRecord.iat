@@ -24,6 +24,14 @@
 					"UtteranceId": "TTS-D21116A64C78BDC760B490230FB8180B"
 				}, 
 				{
+					"CurrentState": "NewAlbum",
+					"NextState": "-",
+					"Meaning": "Middle",
+					"Style": "-",
+					"Utterance": "Vamos lá, mais um álbum?",
+					"UtteranceId": "TTS-0E3D410EF0C59EE986923709EE600C4F"
+				}, 
+				{
 					"CurrentState": "LastDecisionsPhase",
 					"NextState": "-",
 					"Meaning": "Fail",
@@ -60,8 +68,8 @@
 					"NextState": "-",
 					"Meaning": "-",
 					"Style": "Glin",
-					"Utterance": "É a vez do baixista.",
-					"UtteranceId": "TTS-6A152A3BE5D84D1D304AFEC0AB1F45CA"
+					"Utterance": "Deixa ver o que sai.",
+					"UtteranceId": "TTS-B817B5B3D364AD5A2E17FFF5D319C231"
 				}, 
 				{
 					"CurrentState": "GameEnd",
@@ -102,6 +110,14 @@
 					"Style": "Glin",
 					"Utterance": "Eish",
 					"UtteranceId": "TTS-22FEF7F25841E0581D02158128D8E5E0"
+				}, 
+				{
+					"CurrentState": "PlayForInstrument",
+					"NextState": "-",
+					"Meaning": "-",
+					"Style": "Glin",
+					"Utterance": "Vou gravar o baixo",
+					"UtteranceId": "TTS-21487724EAD0163908F859BF0603BAD0"
 				}, 
 				{
 					"CurrentState": "LevelUp",
@@ -160,6 +176,14 @@
 					"UtteranceId": "TTS-47F41F3F2513BCB47038C9EF9AB7F320"
 				}, 
 				{
+					"CurrentState": "NewAlbum",
+					"NextState": "-",
+					"Meaning": "Middle",
+					"Style": "-",
+					"Utterance": "Mais um álbum para a nossa banda...",
+					"UtteranceId": "TTS-0F380F3C7CC2E9556BA680BA3F2E2E94"
+				}, 
+				{
 					"CurrentState": "LevelUp",
 					"NextState": "-",
 					"Meaning": "Me",
@@ -188,16 +212,8 @@
 					"NextState": "-",
 					"Meaning": "Middle",
 					"Style": "-",
-					"Utterance": "Mais um álbum",
-					"UtteranceId": "TTS-E994B0DC31E27237E516781F55802528"
-				}, 
-				{
-					"CurrentState": "PlayForInstrument",
-					"NextState": "-",
-					"Meaning": "-",
-					"Style": "Glins",
-					"Utterance": "Deixa ver o que sai.",
-					"UtteranceId": "TTS-B817B5B3D364AD5A2E17FFF5D319C231"
+					"Utterance": "Bora gravar um álbum novo",
+					"UtteranceId": "TTS-4AEE258F8156734F0AB1BCC897D5CC88"
 				}, 
 				{
 					"CurrentState": "LastDecisionsPhase",

@@ -500,8 +500,7 @@ public class GameManager : MonoBehaviour {
                 {
                     int oldNumMarketDices = GameProperties.numMarketDices;
                     GameProperties.numMarketDices++;
-                    infoScreenNeutralRef.DisplayPoppup("You gained some experience publishing " + (marketLimit -1) + " album(s) and so you will try your luck on the international market. From now on, "+ GameProperties.numMarketDices + " dices (instead of "+ oldNumMarketDices + ") are rolled for the market.");
-                    
+
                 }
                 canSelectToCheckAlbumResult = false;
             }
@@ -549,7 +548,10 @@ public class GameManager : MonoBehaviour {
                 player.InformNewAlbum(speakingRobotId);
             }
 
-
+            if (GameGlobals.albums.Count == 3)
+            {
+                infoScreenNeutralRef.DisplayPoppup("You gained some experience publishing your last albums and so you will try your luck on the international market. From now on, 3 dices (instead of 2) are rolled for the market.");
+            }
 
 
             //reinit some things for next game if game result is known or max albums are achieved
