@@ -169,7 +169,7 @@ public class RoboticPlayerCoopStrategy : AIPlayerCoopStrategy
         }
         else
         {
-            if (speakingRobotId == id)
+            if (speakingRobotId == id && currentPlayer.GetName() == "Player")
             {
                 Debug.Log(name + ": É a vez do " + currentPlayer.GetName());
                 robot.perceive(new Name[] {
@@ -374,7 +374,7 @@ public class RoboticPlayerGreedyStrategy : AIPlayerGreedyStrategy
         }
         else
         {
-            if (speakingRobotId == id)
+            if (speakingRobotId == id && currentPlayer.GetName() == "Player")
             {
                 Debug.Log(name + ": É a vez do " + currentPlayer.GetName());
                 robot.perceive(new Name[] {
