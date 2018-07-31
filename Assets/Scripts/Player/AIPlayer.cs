@@ -10,6 +10,12 @@ public abstract class AIPlayer : UIPlayer
     protected float playForInstrumentThinkingDelay;
     protected float lastDecisionThinkingDelay;
 
+    //more specific ones can be used
+    protected float informDiceRollDelay;
+    protected float informAlbumResultDelay;
+    protected float informGameResultDelay;
+
+
     protected float sendResponsesDelay;
 
     public AIPlayer(string name) : base(name) {
@@ -17,6 +23,11 @@ public abstract class AIPlayer : UIPlayer
         levelUpThinkingDelay = 2.0f;
         playForInstrumentThinkingDelay = 0.5f;
         lastDecisionThinkingDelay = 1.0f;
+
+
+        informDiceRollDelay = 3.0f;
+        informAlbumResultDelay = 3.0f;
+        informGameResultDelay = 3.0f;
 
         sendResponsesDelay = 1.0f;
     }
@@ -32,8 +43,81 @@ public abstract class AIPlayer : UIPlayer
         this.DisableAllInputs();
     }
 
+
+
+    //----------------------------------[INFORM METHODS]-----------------------------------
+
+    public override void InformRollDicesValue(Player invoker, int maxValue, int obtainedValue, int speakingRobotId) {
+        //base.InformRollDicesValue(invoker, maxValue, obtainedValue, speakingRobotId);
+        if (!GameProperties.isSimulation)
+        {
+            playerMonoBehaviourFunctionalities.StartCoroutine(DelayedInformRollDicesValueActions(invoker, maxValue, obtainedValue, speakingRobotId, informDiceRollDelay, true));
+        }
+        else
+        {
+            InformRollDicesValueActions(invoker, maxValue, obtainedValue, speakingRobotId);
+        }
+    }
+    public override void InformAlbumResult(int albumValue, int marketValue, int speakingRobotId) {
+        //base.InformRollDicesValue(invoker, maxValue, obtainedValue, speakingRobotId);
+        if (!GameProperties.isSimulation)
+        {
+            playerMonoBehaviourFunctionalities.StartCoroutine(DelayedInformAlbumResultActions(albumValue, marketValue, speakingRobotId, informAlbumResultDelay, true));
+        }
+        else
+        {
+            InformAlbumResultActions(albumValue, marketValue, speakingRobotId);
+        }
+    }
+    public override void InformGameResult(GameProperties.GameState state, int speakingRobotId) {
+        //base.InformRollDicesValue(invoker, maxValue, obtainedValue, speakingRobotId);
+        if (!GameProperties.isSimulation)
+        {
+            playerMonoBehaviourFunctionalities.StartCoroutine(DelayedGameResultActions(state, speakingRobotId, informGameResultDelay, true));
+        }
+        else
+        {
+            InformGameResultActions(state, speakingRobotId);
+        }
+    }
+
+    protected virtual void InformRollDicesValueActions(Player invoker, int maxValue, int obtainedValue, int speakingRobotId)
+    {
+
+    }
+    protected virtual void InformAlbumResultActions(int albumValue, int marketValue, int speakingRobotId)
+    {
+
+    }
+    protected virtual void InformGameResultActions(GameProperties.GameState state, int speakingRobotId)
+    {
+
+    }
+
+    private IEnumerator DelayedInformRollDicesValueActions(Player invoker, int maxValue, int obtainedValue, int speakingRobotId, float delay, bool isInformDelayed)
+    {
+        yield return new WaitForSeconds(delay);
+        InformRollDicesValueActions(invoker, maxValue, obtainedValue, speakingRobotId);
+        
+    }
+    private IEnumerator DelayedInformAlbumResultActions(int albumValue, int marketValue, int speakingRobotId, float delay, bool isInformDelayed)
+    {
+        yield return new WaitForSeconds(delay);
+        InformAlbumResultActions(albumValue,  marketValue,  speakingRobotId);
+
+    }
+    private IEnumerator DelayedGameResultActions(GameProperties.GameState state, int speakingRobotId, float delay, bool isInformDelayed)
+    {
+        yield return new WaitForSeconds(delay);
+        InformGameResultActions(state, speakingRobotId);
+    }
+
+
+    //------------------------------------[RESPONSE METHODS]---------------------------------------------------
+
     //All AI players pick one of the available instruments similarly
-    public virtual void ChoosePreferredInstrumentActions(Album currAlbum) {
+    //All AI players play for the available instruments similarly
+    protected virtual void ChoosePreferredInstrumentActions(Album currAlbum) {
 
         foreach (GameProperties.Instrument instrument in skillSet.Keys)
         {
@@ -59,11 +143,8 @@ public abstract class AIPlayer : UIPlayer
         }
 
     }
-
-    public virtual void LevelUpActions(Album currAlbum) { }
-
-    //All AI players play for the available instruments similarly
-    public virtual void PlayforInstrumentActions(Album currAlbum) {
+    protected virtual void LevelUpActions(Album currAlbum) { }
+    protected virtual void PlayforInstrumentActions(Album currAlbum) {
         if (skillSet[preferredInstrument] > 0)
         {
             ChangeDiceRollInstrument(preferredInstrument);
@@ -73,9 +154,7 @@ public abstract class AIPlayer : UIPlayer
             ChangeDiceRollInstrument(GameProperties.Instrument.NONE);
         }
     }
-
-    public virtual int LastDecisionsActions(Album currAlbum) { return 0; }
-
+    protected virtual int LastDecisionsActions(Album currAlbum) { return 0; }
 
     public override void ChoosePreferredInstrument(Album currAlbum)
     {
@@ -131,7 +210,7 @@ public abstract class AIPlayer : UIPlayer
     }
 
     //predicting hri-s
-    public IEnumerator ThinkBeforeChoosingPreferredInstrument(Album currAlbum, float delay, bool isSendingResponse)
+    private IEnumerator ThinkBeforeChoosingPreferredInstrument(Album currAlbum, float delay, bool isSendingResponse)
     {
         yield return new WaitForSeconds(delay);
         if (!isSendingResponse)
@@ -144,7 +223,7 @@ public abstract class AIPlayer : UIPlayer
             SendChoosePreferredInstrumentResponse();
         }
     }
-    public IEnumerator ThinkBeforeLevelingUp(Album currAlbum, float delay, bool isSendingResponse)
+    private IEnumerator ThinkBeforeLevelingUp(Album currAlbum, float delay, bool isSendingResponse)
     {
         yield return new WaitForSeconds(delay);
         if (!isSendingResponse)
@@ -157,7 +236,7 @@ public abstract class AIPlayer : UIPlayer
             SendLevelUpResponse();
         }
     }
-    public IEnumerator ThinkBeforePlayForInstrument(Album currAlbum, float delay, bool isSendingResponse)
+    private IEnumerator ThinkBeforePlayForInstrument(Album currAlbum, float delay, bool isSendingResponse)
     {
         yield return new WaitForSeconds(delay);
         if (!isSendingResponse)
@@ -170,7 +249,7 @@ public abstract class AIPlayer : UIPlayer
             SendPlayForInstrumentResponse();
         }
     }
-    public IEnumerator ThinkBeforeLastDecisionPhase(Album currAlbum, float delay, bool isSendingResponse, int receivedCondition)
+    private IEnumerator ThinkBeforeLastDecisionPhase(Album currAlbum, float delay, bool isSendingResponse, int receivedCondition)
     {
         yield return new WaitForSeconds(delay);
         if (!isSendingResponse)
@@ -192,12 +271,12 @@ public class AIPlayerSimple : AIPlayer
         this.type = GameProperties.AIPlayerType.SIMPLE;
     }
 
-    public override void LevelUpActions(Album currAlbum)
+    protected override void LevelUpActions(Album currAlbum)
     {
         SpendToken(GameProperties.Instrument.GUITAR);
 
     }
-    public override int LastDecisionsActions(Album currAlbum)
+    protected override int LastDecisionsActions(Album currAlbum)
     {
         int condition = 0;
         if (currAlbum.GetMarketingState() == GameProperties.AlbumMarketingState.MEGA_HIT)
@@ -219,7 +298,7 @@ public class AIPlayerCoopStrategy : AIPlayer
         this.type = GameProperties.AIPlayerType.COOPERATIVE;
     }
 
-    public override void LevelUpActions(Album currAlbum)
+    protected override void LevelUpActions(Album currAlbum)
     {
         //if there is money left spend it
         if (skillSet[preferredInstrument] < GameProperties.maximumSkillLevelPerInstrument)
@@ -231,7 +310,7 @@ public class AIPlayerCoopStrategy : AIPlayer
             SpendToken(preferredInstrument);
         }
     }
-    public override int LastDecisionsActions(Album currAlbum)
+    protected override int LastDecisionsActions(Album currAlbum)
     {
         int condition = 0;
         if (currAlbum.GetMarketingState() == GameProperties.AlbumMarketingState.MEGA_HIT)
@@ -254,7 +333,7 @@ public class AIPlayerGreedyStrategy : AIPlayer
         this.type = GameProperties.AIPlayerType.GREEDY;
     }
 
-    public override void LevelUpActions(Album currAlbum)
+    protected override void LevelUpActions(Album currAlbum)
     {
         if (money >= 0)
         {
@@ -262,7 +341,7 @@ public class AIPlayerGreedyStrategy : AIPlayer
         }
         SpendToken(GameProperties.Instrument.MARKETING);
     }
-    public override int LastDecisionsActions(Album currAlbum)
+    protected override int LastDecisionsActions(Album currAlbum)
     {
         int condition = 0;
         if (currAlbum.GetMarketingState() == GameProperties.AlbumMarketingState.MEGA_HIT)
@@ -283,8 +362,8 @@ public class AIPlayerBalancedStrategy : AIPlayer
     {
         this.type = GameProperties.AIPlayerType.BALANCED;
     }
-   
-    public override void LevelUpActions(Album currAlbum)
+
+    protected override void LevelUpActions(Album currAlbum)
     {
         //on first round put one token on instrument and one token on marketing
         if (GameGlobals.currGameRoundId == 0)
@@ -317,7 +396,7 @@ public class AIPlayerBalancedStrategy : AIPlayer
             }
         }
     }
-    public override int LastDecisionsActions(Album currAlbum)
+    protected override int LastDecisionsActions(Album currAlbum)
     {
         int condition = 0;
         if (currAlbum.GetMarketingState() == GameProperties.AlbumMarketingState.MEGA_HIT)

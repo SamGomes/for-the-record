@@ -564,6 +564,12 @@ public class UIPlayer : Player
         UpdateCommonUIElements();
     }
 
+
+    public override void InformRollDicesValue(Player invoker, int maxValue, int obtainedValue, int speakingRobotId){ }
+    public override void InformAlbumResult(int albumValue, int marketValue, int speakingRobotId){ }
+    public override void InformGameResult(GameProperties.GameState state, int speakingRobotId) { }
+
+
     public void ClearActionUI()
     {
         UIChooseDiceRollInstrumentScreen.SetActive(false);

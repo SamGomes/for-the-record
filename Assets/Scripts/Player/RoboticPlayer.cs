@@ -141,8 +141,7 @@ public class RoboticPlayerCoopStrategy : AIPlayerCoopStrategy
         base.ChoosePreferredInstrument(currAlbum);
         robot.decide();
     }
-
-    public override void ChoosePreferredInstrumentActions(Album currAlbum)
+    protected override void ChoosePreferredInstrumentActions(Album currAlbum)
     {
         GameProperties.Instrument preferredIntrument = GameProperties.Instrument.BASS;
 
@@ -160,7 +159,6 @@ public class RoboticPlayerCoopStrategy : AIPlayerCoopStrategy
         }
         ChangePreferredInstrument(preferredIntrument);
     }
-
     public override void LevelUpRequest(Player currentPlayer, Album currAlbum, int speakingRobotId)
     {
         if (currentPlayer == this)
@@ -183,7 +181,6 @@ public class RoboticPlayerCoopStrategy : AIPlayerCoopStrategy
             }
         }
     }
-
     public override void LevelUp(Album currAlbum)
     {
         base.LevelUp(currAlbum);
@@ -192,7 +189,6 @@ public class RoboticPlayerCoopStrategy : AIPlayerCoopStrategy
             EventHelper.PropertyChange("State(Game)", "LevelUp", name) });
         robot.decide();
     }
-
     public override void PlayForInstrument(Album currAlbum)
     {
         robot.perceive(new Name[] {
@@ -200,7 +196,6 @@ public class RoboticPlayerCoopStrategy : AIPlayerCoopStrategy
         base.PlayForInstrument(currAlbum);
         robot.decide();
     }
-
     public override void LastDecisionsPhase(Album currAlbum)
     {
         robot.perceive(new Name[] {
@@ -209,7 +204,7 @@ public class RoboticPlayerCoopStrategy : AIPlayerCoopStrategy
         robot.decide();
     }
 
-    public override void InformRollDicesValue(Player invoker, int maxValue, int obtainedValue, int speakingRobotId)
+    protected override void InformRollDicesValueActions(Player invoker, int maxValue, int obtainedValue, int speakingRobotId)
     {
         if (speakingRobotId == id)
         {
@@ -236,8 +231,7 @@ public class RoboticPlayerCoopStrategy : AIPlayerCoopStrategy
             robot.decide();
         }
     }
-
-    public override void InformAlbumResult(int albumValue, int marketValue, int speakingRobotId)
+    protected override void InformAlbumResultActions(int albumValue, int marketValue, int speakingRobotId)
     {
         if (albumValue >= marketValue)
         {
@@ -261,8 +255,7 @@ public class RoboticPlayerCoopStrategy : AIPlayerCoopStrategy
             //gaze
         }
     }
-
-    public override void InformGameResult(GameProperties.GameState state, int speakingRobotId)
+    protected override void InformGameResultActions(GameProperties.GameState state, int speakingRobotId)
     {
         if (state == GameProperties.GameState.VICTORY)
         {
@@ -309,8 +302,7 @@ public class RoboticPlayerGreedyStrategy : AIPlayerGreedyStrategy
         base.ChoosePreferredInstrument(currAlbum);
         robot.decide();
     }
-
-    public override void ChoosePreferredInstrumentActions(Album currAlbum)
+    protected override void ChoosePreferredInstrumentActions(Album currAlbum)
     {
         GameProperties.Instrument preferredIntrument = GameProperties.Instrument.VOCALS;
 
@@ -328,7 +320,6 @@ public class RoboticPlayerGreedyStrategy : AIPlayerGreedyStrategy
         }
         ChangePreferredInstrument(preferredIntrument);
     }
-
     public override void LevelUpRequest(Player currentPlayer, Album currAlbum, int speakingRobotId)
     {
         if (currentPlayer == this)
@@ -351,7 +342,6 @@ public class RoboticPlayerGreedyStrategy : AIPlayerGreedyStrategy
             }
         }
     }
-
     public override void LevelUp(Album currAlbum)
     {
         base.LevelUp(currAlbum);
@@ -360,7 +350,6 @@ public class RoboticPlayerGreedyStrategy : AIPlayerGreedyStrategy
             EventHelper.PropertyChange("State(Game)", "LevelUp", name) });
         robot.decide();
     }
-
     public override void PlayForInstrument(Album currAlbum)
     {
         robot.perceive(new Name[] {
@@ -368,7 +357,6 @@ public class RoboticPlayerGreedyStrategy : AIPlayerGreedyStrategy
         base.PlayForInstrument(currAlbum);
         robot.decide();
     }
-
     public override void LastDecisionsPhase(Album currAlbum)
     {
         robot.perceive(new Name[] {
@@ -377,7 +365,7 @@ public class RoboticPlayerGreedyStrategy : AIPlayerGreedyStrategy
         robot.decide();
     }
 
-    public override void InformRollDicesValue(Player invoker, int maxValue, int obtainedValue, int speakingRobotId)
+    protected override void InformRollDicesValueActions(Player invoker, int maxValue, int obtainedValue, int speakingRobotId)
     {
         if (speakingRobotId == id)
         {
@@ -404,8 +392,7 @@ public class RoboticPlayerGreedyStrategy : AIPlayerGreedyStrategy
             robot.decide();
         }
     }
-
-    public override void InformAlbumResult(int albumValue, int marketValue, int speakingRobotId)
+    protected override void InformAlbumResultActions(int albumValue, int marketValue, int speakingRobotId)
     {
         if (albumValue >= marketValue)
         {
@@ -429,8 +416,7 @@ public class RoboticPlayerGreedyStrategy : AIPlayerGreedyStrategy
             //gaze
         }
     }
-
-    public override void InformGameResult(GameProperties.GameState state, int speakingRobotId)
+    protected override void InformGameResultActions(GameProperties.GameState state, int speakingRobotId)
     {
         if (state == GameProperties.GameState.VICTORY)
         {

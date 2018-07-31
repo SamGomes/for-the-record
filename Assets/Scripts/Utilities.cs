@@ -75,7 +75,7 @@ public static class GameProperties
     public static int numMarketDices = 2; //config the initial number of dices to roll
 
     //------------ Simulation --------------------
-    public static bool isSimulation = false;
+    public static bool isSimulation = true;
     public static int numGamesToSimulate = 20;
 }
 

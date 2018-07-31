@@ -75,9 +75,9 @@ public abstract class Player
     public abstract void PlayForInstrument(Album currAlbum);
     public abstract void LastDecisionsPhase(Album currAlbum);
 
-    public virtual void InformRollDicesValue(Player invoker, int maxValue, int obtainedValue, int speakingRobotId) { }
-    public virtual void InformAlbumResult(int albumValue, int marketValue, int speakingRobotId) { }
-    public virtual void InformGameResult(GameProperties.GameState state, int speakingRobotId) { }
+    public abstract void InformRollDicesValue(Player invoker, int maxValue, int obtainedValue, int speakingRobotId);
+    public abstract void InformAlbumResult(int albumValue, int marketValue, int speakingRobotId);
+    public abstract void InformGameResult(GameProperties.GameState state, int speakingRobotId);
 
 
     public int GetId()

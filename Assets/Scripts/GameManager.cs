@@ -61,13 +61,13 @@ public class GameManager : MonoBehaviour {
     {
         GameGlobals.gameManager = this;
         //mock to test
-        GameGlobals.gameLogManager.InitLogs();
-        GameGlobals.gameDiceNG = new VictoryDiceNG();
-        GameGlobals.albums = new List<Album>(GameProperties.numberOfAlbumsPerGame);
-        GameGlobals.players = new List<Player>(GameProperties.numberOfPlayersPerGame);
-        GameGlobals.players.Add(new AIPlayerGreedyStrategy("Coop Jeff"));
-        GameGlobals.players.Add(new AIPlayerGreedyStrategy("Greedy Kevin"));
-        GameGlobals.players.Add(new UIPlayer("Balanced Sam"));
+        //GameGlobals.gameLogManager.InitLogs();
+        //GameGlobals.gameDiceNG = new VictoryDiceNG();
+        //GameGlobals.albums = new List<Album>(GameProperties.numberOfAlbumsPerGame);
+        //GameGlobals.players = new List<Player>(GameProperties.numberOfPlayersPerGame);
+        //GameGlobals.players.Add(new AIPlayerGreedyStrategy("Coop Jeff"));
+        //GameGlobals.players.Add(new AIPlayerGreedyStrategy("Greedy Kevin"));
+        //GameGlobals.players.Add(new UIPlayer("Balanced Sam"));
     }
 
     public void InterruptGame()
@@ -99,7 +99,7 @@ public class GameManager : MonoBehaviour {
         preferredInstrumentsChoosen = false;
 
         //diceRollDelay = UIRollDiceForInstrumentOverlay.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).length;
-        diceRollDelay = 4.5f;
+        diceRollDelay = 6.0f;
 
         canCheckAlbumResult = false;
         checkedAlbumResult = false;
@@ -228,47 +228,58 @@ public class GameManager : MonoBehaviour {
 
         //UI stuff
         UIRollDiceForInstrumentOverlay.transform.Find("title/Text").GetComponent<Text>().text = currPlayer.GetName() + " rolling "+ numTokensForInstrument + " dice(s) for " + instrument.ToString() + " ...";
-        
+
+        int[] rolledDiceNumbers = new int[numTokensForInstrument]; //save each rolled dice number to display in the UI
+
         for (int i = 0; i < numTokensForInstrument; i++)
         {
             int randomIncrease = GameGlobals.gameDiceNG.RollTheDice(6,i);
+            rolledDiceNumbers[i] = randomIncrease;
             newAlbumInstrumentValue += randomIncrease;
-
-            Sprite currDiceNumberSprite = Resources.Load<Sprite>("Animations/RollDiceForInstrumentOverlay/dice6/sprites_3/endingAlternatives/" + randomIncrease);
-            if (currDiceNumberSprite == null)
-            {
-                Debug.Log("cannot find sprite for dice number " + randomIncrease);
-            }
-            else
-            {
-                Debug.Log(randomIncrease);
-                if (instrument != GameProperties.Instrument.MARKETING)
-                {
-                    StartCoroutine(PlayDiceUI(i, 6, dice6UI, currDiceNumberSprite, "+" + randomIncrease + " Album Value", Color.yellow, diceRollDelay));
-                }
-                else
-                {
-                    StartCoroutine(PlayDiceUI(i, 6, dice6UI, currDiceNumberSprite, "+" + randomIncrease*GameProperties.marketingPointValue + " $", Color.yellow, diceRollDelay));
-                }
-            }
         }
         GameGlobals.gameLogManager.WriteEventToLog(GameGlobals.currSessionId.ToString(), GameGlobals.currGameId.ToString(), GameGlobals.currGameRoundId.ToString(), currPlayer.GetId().ToString(), currPlayer.GetName().ToString(), "ROLLED_INSTRUMENT_DICES", "-", newAlbumInstrumentValue.ToString());
-
-
-        int speakingRobotId = Random.Range(0, GameGlobals.numberOfSpeakingPlayers);
-        foreach (var player in GameGlobals.players)
-        {
-            player.InformRollDicesValue(currPlayer, numTokensForInstrument * 6, newAlbumInstrumentValue, speakingRobotId);
-        }
-
+        StartCoroutine(PlayDiceUIs(currPlayer, newAlbumInstrumentValue, rolledDiceNumbers, 6 , dice6UI, "Animations/RollDiceForInstrumentOverlay/dice6/sprites_3/endingAlternatives/", diceRollDelay));
 
         return newAlbumInstrumentValue;
     }
-    private IEnumerator PlayDiceUI(int sequenceNumber, int diceNum, GameObject diceImagePrefab, Sprite currDiceNumberSprite, string arrowTextString, Color arrowColor, float delayToClose)
+
+
+    private IEnumerator PlayDiceUIs(Player diceThrower, int totalDicesValue, int[] rolledDiceNumbers, int diceNum, GameObject diceImagePrefab, string diceNumberSpritesPath, float delayToClose)
     //the sequence number aims to void dice overlaps as it represents the order for which this dice is going to be rolled. We do not want to roll a dice two times for the same place
     {
         InterruptGame();
+        int numDiceRolls = rolledDiceNumbers.Length;
+        for (int i = 0; i < numDiceRolls; i++)
+        {
+            int currDiceNumber = rolledDiceNumbers[i];
+            Sprite currDiceNumberSprite = Resources.Load<Sprite>(diceNumberSpritesPath + currDiceNumber);
+            if (currDiceNumberSprite == null)
+            {
+                Debug.Log("cannot find sprite for dice number " + currDiceNumber);
+            }
+            else
+            {
+                Debug.Log(rolledDiceNumbers[i]);
+                StartCoroutine(PlayDiceUI(diceThrower, i, diceNum, diceImagePrefab, currDiceNumberSprite, delayToClose));
+            }
+        }
 
+        //players see the dice result
+        int speakingRobotId = Random.Range(0, GameGlobals.numberOfSpeakingPlayers);
+        foreach (var player in GameGlobals.players)
+        {
+            player.InformRollDicesValue(diceThrower, numDiceRolls * diceNum, totalDicesValue, speakingRobotId); //max value = the max dice number * number of rolls
+        }
+
+        yield return new WaitForSeconds(delayToClose);
+
+        ContinueGame();
+        UIRollDiceForInstrumentOverlay.SetActive(false);
+    }
+
+    private IEnumerator PlayDiceUI(Player diceThrower, int sequenceNumber, int diceNum, GameObject diceImagePrefab, Sprite currDiceNumberSprite, float delayToClose)
+    //the sequence number aims to void dice overlaps as it represents the order for which this dice is going to be rolled. We do not want to roll a dice two times for the same place
+    {
         UIRollDiceForInstrumentOverlay.SetActive(true);
         GameObject diceImageClone = Instantiate(diceImagePrefab, UIRollDiceForInstrumentOverlay.transform);
 
@@ -288,15 +299,15 @@ public class GameManager : MonoBehaviour {
         diceAnimator.speed = Random.Range(0.8f,1.4f);
 
         //get and disable arrow animation until end of dice animation
-        GameObject diceArrow = diceImage.transform.GetChild(0).gameObject;
-        diceArrow.GetComponentInChildren<Image>().color = arrowColor;
+        //GameObject diceArrow = diceImage.transform.GetChild(0).gameObject;
+        //diceArrow.GetComponentInChildren<Image>().color = arrowColor;
 
-        diceArrow.transform.Rotate(new Vector3(0, 0, 1), - diceRotation);
-        Animator arrowAnimator = diceArrow.GetComponentInChildren<Animator>();
-        arrowAnimator.speed = 0;
-        Text arrowText = diceArrow.GetComponentInChildren<Text>();
-        arrowText.text = arrowTextString;
-        arrowText.color = arrowColor;
+        //diceArrow.transform.Rotate(new Vector3(0, 0, 1), - diceRotation);
+        //Animator arrowAnimator = diceArrow.GetComponentInChildren<Animator>();
+        //arrowAnimator.speed = 0;
+        //Text arrowText = diceArrow.GetComponentInChildren<Text>();
+        //arrowText.text = arrowTextString;
+        //arrowText.color = arrowColor;
 
 
         while (!diceAnimator.GetCurrentAnimatorStateInfo(0).IsName("endState"))
@@ -305,12 +316,9 @@ public class GameManager : MonoBehaviour {
         }
         diceImage.overrideSprite = currDiceNumberSprite;
         
-        arrowAnimator.speed = 1;
+        //arrowAnimator.speed = 1;
 
         yield return new WaitForSeconds(delayToClose);
-
-        ContinueGame();
-        UIRollDiceForInstrumentOverlay.SetActive(false);
         Destroy(diceImageClone);
     }
 
@@ -318,15 +326,18 @@ public class GameManager : MonoBehaviour {
     {
         UIRollDiceForInstrumentOverlay.transform.Find("title/Text").GetComponent<Text>().text = "Rolling dices for market...";
 
-        int marketValue = 0; 
+        int marketValue = 0;
+        int[] rolledDiceNumbers = new int[GameProperties.numMarketDices];
         for(int i=0; i < GameProperties.numMarketDices; i++)
         {
             int randomIncrease = GameGlobals.gameDiceNG.RollTheDice(20,i);
-            Sprite currDiceNumberSprite = Resources.Load<Sprite>("Animations/RollDiceForInstrumentOverlay/dice20/sprites/endingAlternatives/" + randomIncrease);
-            StartCoroutine(PlayDiceUI(i, 20, dice20UI, currDiceNumberSprite, "+" + randomIncrease + " Market Value", Color.red, diceRollDelay));
+            rolledDiceNumbers[i] = randomIncrease;
             marketValue += randomIncrease;
         }
         GameGlobals.gameLogManager.WriteEventToLog(GameGlobals.currSessionId.ToString(), GameGlobals.currGameId.ToString(), GameGlobals.currGameRoundId.ToString(), "-", "-", "ROLLED_MARKET_DICES", "-", marketValue.ToString());
+
+        //assuming the first player rolls the market dices
+        StartCoroutine(PlayDiceUIs(GameGlobals.players[0], marketValue, rolledDiceNumbers, 20, dice20UI, "Animations/RollDiceForInstrumentOverlay/dice20/sprites/endingAlternatives/", diceRollDelay));
 
         return marketValue;
     }
@@ -361,6 +372,7 @@ public class GameManager : MonoBehaviour {
         }
 
 
+        //players see the album result
         int speakingRobotId = Random.Range(0, GameGlobals.numberOfSpeakingPlayers);
         foreach (var player in GameGlobals.players)
         {
@@ -382,6 +394,15 @@ public class GameManager : MonoBehaviour {
                 GameGlobals.currGameState = GameProperties.GameState.VICTORY;
             }
         }
+
+
+        //players see the game result
+        speakingRobotId = Random.Range(0, GameGlobals.numberOfSpeakingPlayers);
+        foreach (Player player in GameGlobals.players)
+        {
+            player.InformGameResult(GameGlobals.currGameState, speakingRobotId);
+        }
+
         this.checkedAlbumResult = true;
     }
 
@@ -574,15 +595,9 @@ public class GameManager : MonoBehaviour {
                 }
 
 
-                int speakingRobotId = Random.Range(0, GameGlobals.numberOfSpeakingPlayers);
-                foreach (Player player in GameGlobals.players)
-                {
-                    player.InformGameResult(GameGlobals.currGameState, speakingRobotId);
-                }
-
                 UIadvanceRoundButton.GetComponentInChildren<Text>().text = "Finish Game";
                 this.gameMainSceneFinished = true;
-
+                
                 if (GameProperties.isSimulation)
                 {
                     GameSceneManager.LoadEndScene();
