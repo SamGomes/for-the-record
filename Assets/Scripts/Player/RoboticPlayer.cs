@@ -72,7 +72,8 @@ public class EmotionalRoboticPlayer : MonoBehaviour
                     Name style = chosenAction.Parameters[3];
 
                     var possibleDialogs = iat.GetDialogueActions(currentState, nextState, meaning, style);
-                    var dialog = possibleDialogs[0].Utterance;
+                    int randomUttIndex = UnityEngine.Random.Range(0, possibleDialogs.Count());
+                    var dialog = possibleDialogs[randomUttIndex].Utterance;
                     if (thalamusConnector != null)
                     {
                         thalamusConnector.PerformUtterance(dialog);
@@ -123,7 +124,7 @@ public class RoboticPlayerCoopStrategy : AIPlayerCoopStrategy
 {
     private EmotionalRoboticPlayer robot;
 
-    public RoboticPlayerCoopStrategy(GameObject parentGameObject, string name) : base(name)
+    public RoboticPlayerCoopStrategy(string name) : base(name)
     {
         GameObject erp = new GameObject("EmotionalRoboticPlayer");
         robot = erp.AddComponent<EmotionalRoboticPlayer>();
@@ -137,6 +138,25 @@ public class RoboticPlayerCoopStrategy : AIPlayerCoopStrategy
             EventHelper.PropertyChange("State(Game)", "ChoosePreferredInstrument", name) });
         base.ChoosePreferredInstrument(currAlbum);
         robot.decide();
+    }
+
+    public override void ChoosePreferredInstrumentActions(Album currAlbum)
+    {
+        GameProperties.Instrument preferredIntrument = GameProperties.Instrument.BASS;
+
+        foreach (Player player in GameGlobals.players)
+        {
+            if (player == this)
+            {
+                continue;
+            }
+            if (player.GetPreferredInstrument() == preferredIntrument)
+            {
+                base.ChoosePreferredInstrumentActions(currAlbum);
+                return;
+            }
+        }
+        ChangePreferredInstrument(preferredIntrument);
     }
 
     public override void LevelUpRequest(Player currentPlayer, Album currAlbum)
@@ -261,6 +281,25 @@ public class RoboticPlayerGreedyStrategy : AIPlayerGreedyStrategy
             EventHelper.PropertyChange("State(Game)", "ChoosePreferredInstrument", name) });
         base.ChoosePreferredInstrument(currAlbum);
         robot.decide();
+    }
+
+    public override void ChoosePreferredInstrumentActions(Album currAlbum)
+    {
+        GameProperties.Instrument preferredIntrument = GameProperties.Instrument.VOCALS;
+
+        foreach (Player player in GameGlobals.players)
+        {
+            if (player == this)
+            {
+                continue;
+            }
+            if (player.GetPreferredInstrument() == preferredIntrument)
+            {
+                base.ChoosePreferredInstrumentActions(currAlbum);
+                return;
+            }
+        }
+        ChangePreferredInstrument(preferredIntrument);
     }
 
     public override void LevelUpRequest(Player currentPlayer, Album currAlbum)

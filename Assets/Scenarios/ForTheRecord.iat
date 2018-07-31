@@ -11,9 +11,9 @@
 					"CurrentState": "PlayForInstrument",
 					"NextState": "-",
 					"Meaning": "-",
-					"Style": "Emys",
-					"Utterance": "Vamos ver se tenho sorte neste lançamento.",
-					"UtteranceId": "TTS-B7735AEFF489D318ED2F14811C585C26"
+					"Style": "Glin",
+					"Utterance": "Preparem-se que o baixista vai arrasar.",
+					"UtteranceId": "TTS-5AC959FF77D9E775AADC755080531C23"
 				}, 
 				{
 					"CurrentState": "LevelUp",
@@ -36,16 +36,8 @@
 					"NextState": "-",
 					"Meaning": "-",
 					"Style": "Glin",
-					"Utterance": "Acho que vou escolher...",
-					"UtteranceId": "TTS-9B18427A21FBFC4DDE115BC12FAE1C14"
-				}, 
-				{
-					"CurrentState": "ChoosePreferredInstrument",
-					"NextState": "-",
-					"Meaning": "-",
-					"Style": "Emys",
-					"Utterance": "Qual é o meu instrumento preferido?",
-					"UtteranceId": "TTS-50E68DDE7CABD555E07A632379D60A72"
+					"Utterance": "Eu vou escolher o baixo,",
+					"UtteranceId": "TTS-3BEA6AE634F32E31C1B31516905A396C"
 				}, 
 				{
 					"CurrentState": "LastDecisionsPhase",
@@ -67,9 +59,9 @@
 					"CurrentState": "PlayForInstrument",
 					"NextState": "-",
 					"Meaning": "-",
-					"Style": "Glin",
-					"Utterance": "A rolar os dados",
-					"UtteranceId": "TTS-AA28B180B2BA504BFD48C06C6251D4C4"
+					"Style": "Emys",
+					"Utterance": "Dó ré mi fá sol lá siiii",
+					"UtteranceId": "TTS-80181F8C64B1D70A147D859DEB9FF771"
 				}, 
 				{
 					"CurrentState": "RollMarketDice",
@@ -198,6 +190,30 @@
 					"Style": "-",
 					"Utterance": "É a tua vez!",
 					"UtteranceId": "TTS-F7935E2A7FA455DB580AC13D65AC82AF"
+				}, 
+				{
+					"CurrentState": "ChoosePreferredInstrument",
+					"NextState": "-",
+					"Meaning": "-",
+					"Style": "Emys",
+					"Utterance": "Eu quero ser o vocalista.",
+					"UtteranceId": "TTS-106EA35EB7B533E6170BE2B31ADAA7E5"
+				}, 
+				{
+					"CurrentState": "PlayForInstrument",
+					"NextState": "-",
+					"Meaning": "-",
+					"Style": "Glin",
+					"Utterance": "tum tum tum tum, tum tum tum tum, tum tum tum tum, bora!",
+					"UtteranceId": "TTS-519049AE056D2B370A4C990BAFCFA4A5"
+				}, 
+				{
+					"CurrentState": "PlayForInstrument",
+					"NextState": "-",
+					"Meaning": "-",
+					"Style": "Emys",
+					"Utterance": "Oiçam esta voz de rouxinol.",
+					"UtteranceId": "TTS-5DBFF79DF44B209FE2847EC27ED0170B"
 				}]
 		},
 	"types": [

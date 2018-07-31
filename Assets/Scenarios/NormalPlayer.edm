@@ -39,7 +39,7 @@
 					"Layer": "-",
 					"Conditions":
 						{
-							"Set": ["ValidDialogue(LevelUp, [ns], Me, [s]) = True", "Character(Name) = CurrentPlayer(Name)", "State(Game) = LevelUp"]
+							"Set": ["ValidDialogue(LevelUp, [ns], Me, [s]) = True", "Character(Name) = CurrentPlayer(Name)", "State(Game) = LevelUp", "Character(Name) = [s]"]
 						},
 					"Priority": 3
 				}, 
