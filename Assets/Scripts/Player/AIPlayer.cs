@@ -256,25 +256,11 @@ public class AIPlayerGreedyStrategy : AIPlayer
 
     public override void LevelUpActions(Album currAlbum)
     {
-        if (GameGlobals.currGameRoundId == 0)
+        if (money >= 0)
         {
-            SpendToken(GameProperties.Instrument.MARKETING);
+            BuyTokens(1);
         }
-        else
-        {
-            //if there is money left spend it
-            if (money > 0 && skillSet[GameProperties.Instrument.MARKETING] < GameProperties.maximumSkillLevelPerInstrument)
-            {
-                BuyTokens(1);
-            }
-
-            //this strategy always plays for instruments, not for markting
-            for (int numTokensSpent = 0; numTokensSpent < this.numTokens; numTokensSpent++)
-            {
-                SpendToken(GameProperties.Instrument.MARKETING);
-            }
-            
-        }
+        SpendToken(GameProperties.Instrument.MARKETING);
     }
     public override int LastDecisionsActions(Album currAlbum)
     {
@@ -310,29 +296,24 @@ public class AIPlayerBalancedStrategy : AIPlayer
             Album lastAlbum = GameGlobals.albums[GameGlobals.albums.Count - 2];
             if (lastAlbum.GetMarketingState() == GameProperties.AlbumMarketingState.FAIL)
             {
-                //if there is money left spend it
-                if (money > 0)
+                //coop strategy
+                if (skillSet[preferredInstrument] < GameProperties.maximumSkillLevelPerInstrument)
                 {
-                    BuyTokens(1);
-                }
-
-                for (int numTokensSpent = 0; numTokensSpent < this.numTokens; numTokensSpent++)
-                {
+                    if (money >= 0)
+                    {
+                        BuyTokens(1);
+                    }
                     SpendToken(preferredInstrument);
                 }
             }
             else if(lastAlbum.GetMarketingState() == GameProperties.AlbumMarketingState.MEGA_HIT)
             {
-                //if there is money left spend it
-                if (money > 0 && skillSet[GameProperties.Instrument.MARKETING] < GameProperties.maximumSkillLevelPerInstrument)
+                //greedy strategy
+                if (money >= 0)
                 {
                     BuyTokens(1);
                 }
-                
-                for (int numTokensSpent = 0; numTokensSpent < this.numTokens; numTokensSpent++)
-                {
-                    SpendToken(GameProperties.Instrument.MARKETING);
-                }
+                SpendToken(GameProperties.Instrument.MARKETING);
             }
         }
     }
