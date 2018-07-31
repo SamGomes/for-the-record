@@ -12,8 +12,8 @@
 					"NextState": "-",
 					"Meaning": "-",
 					"Style": "Glin",
-					"Utterance": "Preparem-se que o baixista vai arrasar.",
-					"UtteranceId": "TTS-5AC959FF77D9E775AADC755080531C23"
+					"Utterance": "É a minha vez.",
+					"UtteranceId": "TTS-2A4CAE7FB6CCE9A94D094A9A68FF1116"
 				}, 
 				{
 					"CurrentState": "LevelUp",
@@ -24,60 +24,60 @@
 					"UtteranceId": "TTS-D21116A64C78BDC760B490230FB8180B"
 				}, 
 				{
-					"CurrentState": "RollInstrumentDice",
+					"CurrentState": "NewAlbum",
 					"NextState": "-",
-					"Meaning": "Neutral",
-					"Style": "Emys",
-					"Utterance": "Podia ter sido melhor....",
-					"UtteranceId": "TTS-DFE3D7B43DA2AB24C88944764406282C"
-				}, 
-				{
-					"CurrentState": "ChoosePreferredInstrument",
-					"NextState": "-",
-					"Meaning": "-",
-					"Style": "Glin",
-					"Utterance": "Eu vou escolher o baixo,",
-					"UtteranceId": "TTS-3BEA6AE634F32E31C1B31516905A396C"
-				}, 
-				{
-					"CurrentState": "PlayForInstrument",
-					"NextState": "-",
-					"Meaning": "-",
-					"Style": "Glin",
-					"Utterance": "tum tum tum tum, tum tum tum tum, bora!",
-					"UtteranceId": "TTS-DA08E261B37EFF64792C982506D2126E"
+					"Meaning": "Middle",
+					"Style": "-",
+					"Utterance": "Vamos lá, mais um álbum?",
+					"UtteranceId": "TTS-0E3D410EF0C59EE986923709EE600C4F"
 				}, 
 				{
 					"CurrentState": "LastDecisionsPhase",
 					"NextState": "-",
-					"Meaning": "-",
+					"Meaning": "Fail",
 					"Style": "Glin",
-					"Utterance": "Última decisão do Glin!",
-					"UtteranceId": "TTS-6CD7E828B1365683EC005B10F11D8F1B"
-				}, 
-				{
-					"CurrentState": "LastDecisionsPhase",
-					"NextState": "-",
-					"Meaning": "-",
-					"Style": "Emys",
-					"Utterance": "Última decisão do Émys!",
-					"UtteranceId": "TTS-0EC04C63F335873F7BB929048C19CE74"
+					"Utterance": "Assim, esta banda não vai longe.",
+					"UtteranceId": "TTS-89C2B0B9F79DD18BBC2B80BBEF674228"
 				}, 
 				{
 					"CurrentState": "PlayForInstrument",
 					"NextState": "-",
 					"Meaning": "-",
 					"Style": "Emys",
-					"Utterance": "Dó ré mi fá sol lá siiii",
-					"UtteranceId": "TTS-80181F8C64B1D70A147D859DEB9FF771"
+					"Utterance": "Agora sou eu.",
+					"UtteranceId": "TTS-0097D1572BE7A764C96428D3D12B54C4"
+				}, 
+				{
+					"CurrentState": "LastDecisionsPhase",
+					"NextState": "-",
+					"Meaning": "Success",
+					"Style": "Glin",
+					"Utterance": "Está na hora de fazer lucro.",
+					"UtteranceId": "TTS-61DCDCE063D8E4089080D9417E6634B2"
 				}, 
 				{
 					"CurrentState": "RollMarketDice",
 					"NextState": "-",
 					"Meaning": "Success",
 					"Style": "Emys",
-					"Utterance": "puntsce puntsce puntsce puntsce woho, mega hit!",
-					"UtteranceId": "TTS-D837C005AD8245E73BEFD04D42F3CE18"
+					"Utterance": "O nosso álbum foi um sucesso!",
+					"UtteranceId": "TTS-890D4130DCBACA684183F1F643BAAA06"
+				}, 
+				{
+					"CurrentState": "PlayForInstrument",
+					"NextState": "-",
+					"Meaning": "-",
+					"Style": "Glin",
+					"Utterance": "Deixa ver o que sai.",
+					"UtteranceId": "TTS-B817B5B3D364AD5A2E17FFF5D319C231"
+				}, 
+				{
+					"CurrentState": "GameEnd",
+					"NextState": "-",
+					"Meaning": "Loss",
+					"Style": "-",
+					"Utterance": "A nossa banda fracassou",
+					"UtteranceId": "TTS-148609DDC2CCFBF7E2642193A96BC969"
 				}, 
 				{
 					"CurrentState": "RollInstrumentDice",
@@ -112,92 +112,92 @@
 					"UtteranceId": "TTS-22FEF7F25841E0581D02158128D8E5E0"
 				}, 
 				{
-					"CurrentState": "RollInstrumentDice",
+					"CurrentState": "PlayForInstrument",
 					"NextState": "-",
-					"Meaning": "Neutral",
+					"Meaning": "-",
 					"Style": "Glin",
-					"Utterance": "Que fraco",
-					"UtteranceId": "TTS-AD0834C9B463968E3F481E6912AF14AA"
+					"Utterance": "Vou gravar o baixo",
+					"UtteranceId": "TTS-21487724EAD0163908F859BF0603BAD0"
 				}, 
 				{
 					"CurrentState": "LevelUp",
 					"NextState": "-",
 					"Meaning": "Me",
 					"Style": "Glin",
-					"Utterance": "Vou melhorar o meu instrumento.",
-					"UtteranceId": "TTS-9AB53EFDD2F83A5B3CB7A55A045FEC73"
+					"Utterance": "Prefiro melhorar o meu instrumento.",
+					"UtteranceId": "TTS-7FA0FBBBFD6185CEF0B3768C74771C94"
+				}, 
+				{
+					"CurrentState": "RollMarketDice",
+					"NextState": "-",
+					"Meaning": "Fail",
+					"Style": "Emys",
+					"Utterance": "Este álbum não correu nada bem.",
+					"UtteranceId": "TTS-EC398F7992935F6C2442726C13A41B82"
+				}, 
+				{
+					"CurrentState": "RollMarketDice",
+					"NextState": "-",
+					"Meaning": "Fail",
+					"Style": "Glin",
+					"Utterance": "O nosso álbum foi um fracasso!",
+					"UtteranceId": "TTS-3D5E8727F3049AEB48582F46CC888C9B"
 				}, 
 				{
 					"CurrentState": "RollMarketDice",
 					"NextState": "-",
 					"Meaning": "Success",
 					"Style": "Glin",
-					"Utterance": "ninguém nos pára",
-					"UtteranceId": "TTS-A1275FE91947DB47DBFCA542CB019FF3"
+					"Utterance": "Este álbum correu muito bem.",
+					"UtteranceId": "TTS-390FCD5D88C3718695849C84110FAD52"
 				}, 
 				{
-					"CurrentState": "RollMarketDice",
+					"CurrentState": "LastDecisionsPhase",
 					"NextState": "-",
-					"Meaning": "Fail",
-					"Style": "Glin",
-					"Utterance": "oh não...",
-					"UtteranceId": "TTS-568ED6A1A834C03ADE1F517217E59AEC"
-				}, 
-				{
-					"CurrentState": "RollMarketDice",
-					"NextState": "-",
-					"Meaning": "Fail",
+					"Meaning": "Success",
 					"Style": "Emys",
-					"Utterance": "fracassámos? Como assim?",
-					"UtteranceId": "TTS-126933EE1FF2C38850B8DF095949F2E9"
+					"Utterance": "Boa! Mais dinheiro em caixa.",
+					"UtteranceId": "TTS-08D45BA194DC3C92FB021A0AD30C2DFE"
+				}, 
+				{
+					"CurrentState": "ChoosePreferredInstrument",
+					"NextState": "-",
+					"Meaning": "-",
+					"Style": "Glin",
+					"Utterance": "Eu vou escolher o baixo.",
+					"UtteranceId": "TTS-4EDEF5AB8D4D255F2B87FB406400E4D7"
 				}, 
 				{
 					"CurrentState": "GameEnd",
 					"NextState": "-",
 					"Meaning": "Victory",
-					"Style": "Emys",
-					"Utterance": "Ganhámos!",
-					"UtteranceId": "TTS-CB4A9FA91DD4A3AA2C7EF6676DB66B8D"
+					"Style": "-",
+					"Utterance": "Esta banda é um sucesso",
+					"UtteranceId": "TTS-47F41F3F2513BCB47038C9EF9AB7F320"
 				}, 
 				{
-					"CurrentState": "GameEnd",
+					"CurrentState": "NewAlbum",
 					"NextState": "-",
-					"Meaning": "Victory",
-					"Style": "Glin",
-					"Utterance": "Ganhámos!",
-					"UtteranceId": "TTS-CB4A9FA91DD4A3AA2C7EF6676DB66B8D"
-				}, 
-				{
-					"CurrentState": "GameEnd",
-					"NextState": "-",
-					"Meaning": "Loss",
-					"Style": "Glin",
-					"Utterance": "Perdemos!",
-					"UtteranceId": "TTS-8C6EC8F75ADF7EB8C8727D6250673CFB"
-				}, 
-				{
-					"CurrentState": "GameEnd",
-					"NextState": "-",
-					"Meaning": "Loss",
-					"Style": "Emys",
-					"Utterance": "Perdemos!",
-					"UtteranceId": "TTS-8C6EC8F75ADF7EB8C8727D6250673CFB"
+					"Meaning": "Middle",
+					"Style": "-",
+					"Utterance": "Mais um álbum para a nossa banda...",
+					"UtteranceId": "TTS-0F380F3C7CC2E9556BA680BA3F2E2E94"
 				}, 
 				{
 					"CurrentState": "LevelUp",
 					"NextState": "-",
 					"Meaning": "Me",
 					"Style": "Emys",
-					"Utterance": "Vou melhorar o marketing",
-					"UtteranceId": "TTS-D4E323FF0F0830A8C6F338B68722EDD5"
+					"Utterance": "Vou melhorar o marqting",
+					"UtteranceId": "TTS-474CEFB3216832D4E786EAB2C89544E1"
 				}, 
 				{
-					"CurrentState": "LevelUp",
+					"CurrentState": "LastDecisionsPhase",
 					"NextState": "-",
-					"Meaning": "Other",
-					"Style": "-",
-					"Utterance": "É a tua vez!",
-					"UtteranceId": "TTS-F7935E2A7FA455DB580AC13D65AC82AF"
+					"Meaning": "Fail",
+					"Style": "Glin",
+					"Utterance": "Isto correu mal.",
+					"UtteranceId": "TTS-BA72113E039D00D96A4C2223FE642EDD"
 				}, 
 				{
 					"CurrentState": "ChoosePreferredInstrument",
@@ -208,12 +208,156 @@
 					"UtteranceId": "TTS-106EA35EB7B533E6170BE2B31ADAA7E5"
 				}, 
 				{
+					"CurrentState": "NewAlbum",
+					"NextState": "-",
+					"Meaning": "Middle",
+					"Style": "-",
+					"Utterance": "Bora gravar um álbum novo",
+					"UtteranceId": "TTS-4AEE258F8156734F0AB1BCC897D5CC88"
+				}, 
+				{
+					"CurrentState": "LastDecisionsPhase",
+					"NextState": "-",
+					"Meaning": "Fail",
+					"Style": "Emys",
+					"Utterance": "Isto não está a correr muito bem...",
+					"UtteranceId": "TTS-9E95674D9B79AA6E2C00016A38125936"
+				}, 
+				{
+					"CurrentState": "LastDecisionsPhase",
+					"NextState": "-",
+					"Meaning": "Fail",
+					"Style": "Emys",
+					"Utterance": "Assim não vamos lá.",
+					"UtteranceId": "TTS-A1CE756B7C672D9D752F09CFC4D4AA8A"
+				}, 
+				{
 					"CurrentState": "PlayForInstrument",
 					"NextState": "-",
 					"Meaning": "-",
 					"Style": "Emys",
-					"Utterance": "Oiçam esta voz de rouxinol.",
-					"UtteranceId": "TTS-5DBFF79DF44B209FE2847EC27ED0170B"
+					"Utterance": "Vou dar o meu melhor.",
+					"UtteranceId": "TTS-12D69CA54E63B36082EB34ED74857965"
+				}, 
+				{
+					"CurrentState": "NewAlbum",
+					"NextState": "-",
+					"Meaning": "Beginning",
+					"Style": "-",
+					"Utterance": "Vamos lá ver se ésta banda tem sucesso...",
+					"UtteranceId": "TTS-CD543F031214E32828506165ACA02EDE"
+				}, 
+				{
+					"CurrentState": "NewAlbum",
+					"NextState": "-",
+					"Meaning": "End",
+					"Style": "-",
+					"Utterance": "Último álbum, este vai ser decisivo...",
+					"UtteranceId": "TTS-E21CA8CBEB001CB017673ED13DA3A982"
+				}, 
+				{
+					"CurrentState": "PlayForInstrument",
+					"NextState": "-",
+					"Meaning": "-",
+					"Style": "Emys",
+					"Utterance": "O vocalista vai cantar.",
+					"UtteranceId": "TTS-3F49567E9AF0F86213FE76266ACDC594"
+				}, 
+				{
+					"CurrentState": "LevelUp",
+					"NextState": "-",
+					"Meaning": "Other",
+					"Style": "-",
+					"Utterance": "És tu!",
+					"UtteranceId": "TTS-D21116A64C78BDC760B490230FB8180B"
+				}, 
+				{
+					"CurrentState": "LevelUp",
+					"NextState": "-",
+					"Meaning": "Other",
+					"Style": "-",
+					"Utterance": "És tu a jogar",
+					"UtteranceId": "TTS-7410B2D42D75DE9AE9F4F290535944C0"
+				}, 
+				{
+					"CurrentState": "LastDecisionsPhase",
+					"NextState": "-",
+					"Meaning": "Fail",
+					"Style": "Emys",
+					"Utterance": "Tivemos azar.",
+					"UtteranceId": "TTS-B1FB9C2400FCD45E0D0E32486F04E1DC"
+				}, 
+				{
+					"CurrentState": "LastDecisionsPhase",
+					"NextState": "-",
+					"Meaning": "Fail",
+					"Style": "Glin",
+					"Utterance": "A ver se isto melhora...",
+					"UtteranceId": "TTS-371E0D7D5D775ECBB1BD5EB84775455B"
+				}, 
+				{
+					"CurrentState": "LastDecisionsPhase",
+					"NextState": "-",
+					"Meaning": "Success",
+					"Style": "Emys",
+					"Utterance": "Está na altura de ser pago.",
+					"UtteranceId": "TTS-74667AD4157D674A5FC4D6C389E33E35"
+				}, 
+				{
+					"CurrentState": "LastDecisionsPhase",
+					"NextState": "-",
+					"Meaning": "Success",
+					"Style": "Glin",
+					"Utterance": "Aqui está a recompensa.",
+					"UtteranceId": "TTS-FE0F1EDE9462C630C7F8CD88AC2CDDF1"
+				}, 
+				{
+					"CurrentState": "RollMarketDice",
+					"NextState": "-",
+					"Meaning": "Success",
+					"Style": "Emys",
+					"Utterance": "O álbum foi um êxito.",
+					"UtteranceId": "TTS-432A4F9D609374D0B7E53B33B6D1AC9C"
+				}, 
+				{
+					"CurrentState": "RollMarketDice",
+					"NextState": "-",
+					"Meaning": "Success",
+					"Style": "Emys",
+					"Utterance": "O álbum triunfou.",
+					"UtteranceId": "TTS-F8842C3E9ED9524A8D9FA0FC5FB890C1"
+				}, 
+				{
+					"CurrentState": "RollMarketDice",
+					"NextState": "-",
+					"Meaning": "Fail",
+					"Style": "Emys",
+					"Utterance": "Que desgraça de álbum",
+					"UtteranceId": "TTS-88A198E1D73AF6E331EB20D4629E0100"
+				}, 
+				{
+					"CurrentState": "RollMarketDice",
+					"NextState": "-",
+					"Meaning": "Fail",
+					"Style": "Glin",
+					"Utterance": "O nosso álbum não teve sucesso",
+					"UtteranceId": "TTS-9ACE5D40CB0613A8D1B5559C4AA91505"
+				}, 
+				{
+					"CurrentState": "LevelUp",
+					"NextState": "-",
+					"Meaning": "Me",
+					"Style": "Glin",
+					"Utterance": "Vou pôr outro ponto no instrumento.",
+					"UtteranceId": "TTS-16583705E72E9F902868C8ECFD0133D1"
+				}, 
+				{
+					"CurrentState": "LevelUp",
+					"NextState": "-",
+					"Meaning": "Me",
+					"Style": "Emys",
+					"Utterance": "Vou pôr um ponto no marqting",
+					"UtteranceId": "TTS-7C3593EAD0BC5DC9C0E76F2DD8139C6C"
 				}]
 		},
 	"types": [

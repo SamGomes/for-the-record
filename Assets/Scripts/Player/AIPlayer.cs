@@ -11,6 +11,7 @@ public abstract class AIPlayer : UIPlayer
     protected float lastDecisionThinkingDelay;
 
     //more specific ones can be used
+    protected float informNewAlbumDelay;
     protected float informDiceRollDelay;
     protected float informAlbumResultDelay;
     protected float informGameResultDelay;
@@ -24,7 +25,7 @@ public abstract class AIPlayer : UIPlayer
         playForInstrumentThinkingDelay = 0.5f;
         lastDecisionThinkingDelay = 1.0f;
 
-
+        informNewAlbumDelay = 3.0f;
         informDiceRollDelay = 3.0f;
         informAlbumResultDelay = 3.0f;
         informGameResultDelay = 3.0f;
@@ -47,71 +48,91 @@ public abstract class AIPlayer : UIPlayer
 
     //----------------------------------[INFORM METHODS]-----------------------------------
 
-    public override void InformRollDicesValue(Player invoker, int maxValue, int obtainedValue, int speakingRobotId) {
+    public override void InformRollDicesValue(Player invoker, int maxValue, int obtainedValue) {
         //base.InformRollDicesValue(invoker, maxValue, obtainedValue, speakingRobotId);
         if (!GameProperties.isSimulation)
         {
-            playerMonoBehaviourFunctionalities.StartCoroutine(DelayedInformRollDicesValueActions(invoker, maxValue, obtainedValue, speakingRobotId, informDiceRollDelay, true));
+            playerMonoBehaviourFunctionalities.StartCoroutine(DelayedInformRollDicesValueActions(invoker, maxValue, obtainedValue, informDiceRollDelay, true));
         }
         else
         {
-            InformRollDicesValueActions(invoker, maxValue, obtainedValue, speakingRobotId);
+            InformRollDicesValueActions(invoker, maxValue, obtainedValue);
         }
     }
-    public override void InformAlbumResult(int albumValue, int marketValue, int speakingRobotId) {
+    public override void InformAlbumResult(int albumValue, int marketValue) {
         //base.InformRollDicesValue(invoker, maxValue, obtainedValue, speakingRobotId);
         if (!GameProperties.isSimulation)
         {
-            playerMonoBehaviourFunctionalities.StartCoroutine(DelayedInformAlbumResultActions(albumValue, marketValue, speakingRobotId, informAlbumResultDelay, true));
+            playerMonoBehaviourFunctionalities.StartCoroutine(DelayedInformAlbumResultActions(albumValue, marketValue, informAlbumResultDelay, true));
         }
         else
         {
-            InformAlbumResultActions(albumValue, marketValue, speakingRobotId);
+            InformAlbumResultActions(albumValue, marketValue);
         }
     }
-    public override void InformGameResult(GameProperties.GameState state, int speakingRobotId) {
+    public override void InformGameResult(GameProperties.GameState state) {
         //base.InformRollDicesValue(invoker, maxValue, obtainedValue, speakingRobotId);
         if (!GameProperties.isSimulation)
         {
-            playerMonoBehaviourFunctionalities.StartCoroutine(DelayedGameResultActions(state, speakingRobotId, informGameResultDelay, true));
+            playerMonoBehaviourFunctionalities.StartCoroutine(DelayedInformGameResultActions(state, informGameResultDelay, true));
         }
         else
         {
-            InformGameResultActions(state, speakingRobotId);
+            InformGameResultActions(state);
+        }
+    }
+    public override void InformNewAlbum()
+    {
+        //base.InformRollDicesValue(invoker, maxValue, obtainedValue, speakingRobotId);
+        if (!GameProperties.isSimulation)
+        {
+            playerMonoBehaviourFunctionalities.StartCoroutine(DelayedInformNewAlbumActions(informNewAlbumDelay, true));
+        }
+        else
+        {
+            InformNewAlbum();
         }
     }
 
-    protected virtual void InformRollDicesValueActions(Player invoker, int maxValue, int obtainedValue, int speakingRobotId)
+    protected virtual void InformRollDicesValueActions(Player invoker, int maxValue, int obtainedValue)
     {
 
     }
-    protected virtual void InformAlbumResultActions(int albumValue, int marketValue, int speakingRobotId)
+    protected virtual void InformAlbumResultActions(int albumValue, int marketValue)
     {
 
     }
-    protected virtual void InformGameResultActions(GameProperties.GameState state, int speakingRobotId)
+    protected virtual void InformGameResultActions(GameProperties.GameState state)
+    {
+
+    }
+    protected virtual void InformNewAlbumActions()
     {
 
     }
 
-    private IEnumerator DelayedInformRollDicesValueActions(Player invoker, int maxValue, int obtainedValue, int speakingRobotId, float delay, bool isInformDelayed)
+    private IEnumerator DelayedInformRollDicesValueActions(Player invoker, int maxValue, int obtainedValue, float delay, bool isInformDelayed)
     {
         yield return new WaitForSeconds(delay);
-        InformRollDicesValueActions(invoker, maxValue, obtainedValue, speakingRobotId);
+        InformRollDicesValueActions(invoker, maxValue, obtainedValue);
         
     }
-    private IEnumerator DelayedInformAlbumResultActions(int albumValue, int marketValue, int speakingRobotId, float delay, bool isInformDelayed)
+    private IEnumerator DelayedInformAlbumResultActions(int albumValue, int marketValue, float delay, bool isInformDelayed)
     {
         yield return new WaitForSeconds(delay);
-        InformAlbumResultActions(albumValue,  marketValue,  speakingRobotId);
+        InformAlbumResultActions(albumValue,  marketValue);
 
     }
-    private IEnumerator DelayedGameResultActions(GameProperties.GameState state, int speakingRobotId, float delay, bool isInformDelayed)
+    private IEnumerator DelayedInformGameResultActions(GameProperties.GameState state, float delay, bool isInformDelayed)
     {
         yield return new WaitForSeconds(delay);
-        InformGameResultActions(state, speakingRobotId);
+        InformGameResultActions(state);
     }
-
+    private IEnumerator DelayedInformNewAlbumActions(float delay, bool isInformDelayed)
+    {
+        yield return new WaitForSeconds(delay);
+        InformNewAlbum();
+    }
 
     //------------------------------------[RESPONSE METHODS]---------------------------------------------------
 

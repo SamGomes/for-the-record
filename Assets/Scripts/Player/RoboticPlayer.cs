@@ -123,7 +123,6 @@ public class EmotionalRoboticPlayer : MonoBehaviour
 public class RoboticPlayerCoopStrategy : AIPlayerCoopStrategy
 {
     private EmotionalRoboticPlayer robot;
-    private int id;
 
     public RoboticPlayerCoopStrategy(int id, string name) : base(name)
     {
@@ -162,6 +161,7 @@ public class RoboticPlayerCoopStrategy : AIPlayerCoopStrategy
     public override void LevelUpRequest(Album currAlbum)
     {
         Player currentPlayer = gameManagerRef.GetCurrentPlayer();
+        int currSpeakingPlayerId = gameManagerRef.GetCurrSpeakingPlayerId();
         base.LevelUp(currAlbum);
         if (id == gameManagerRef.GetCurrSpeakingPlayerId())
         {
@@ -174,6 +174,18 @@ public class RoboticPlayerCoopStrategy : AIPlayerCoopStrategy
         else
         {
             Debug.Log(name + " gazes at " + currentPlayer.GetName());
+            if (currSpeakingPlayerId == id && currentPlayer.GetName() == "Player")
+            {
+                Debug.Log(name + ": É a vez do " + currentPlayer.GetName());
+                robot.perceive(new Name[] {
+                    EventHelper.PropertyChange("CurrentPlayer(Name)", currentPlayer.GetName(), name),
+                    EventHelper.PropertyChange("State(Game)", "LevelUp", name) });
+                robot.decide();
+            }
+            else
+            {
+                Debug.Log(name + " gazes at " + currentPlayer.GetName());
+            }
         }
         
     }
@@ -194,15 +206,27 @@ public class RoboticPlayerCoopStrategy : AIPlayerCoopStrategy
     }
     public override void LastDecisionsPhase(Album currAlbum)
     {
-        robot.perceive(new Name[] {
-            EventHelper.PropertyChange("State(Game)", "LastDecisionsPhase", name) });
         base.LastDecisionsPhase(currAlbum);
+
+        if (currAlbum.GetMarketingState() == GameProperties.AlbumMarketingState.MEGA_HIT)
+        {
+            robot.perceive(new Name[] {
+            EventHelper.PropertyChange("State(Game)", "LastDecisionsPhase", name),
+            EventHelper.PropertyChange("Album(Result)", "Success", name) });
+        }
+        else
+        {
+            robot.perceive(new Name[] {
+            EventHelper.PropertyChange("State(Game)", "LastDecisionsPhase", name),
+            EventHelper.PropertyChange("Album(Result)", "Fail", name) });
+        }
         robot.decide();
     }
 
-    protected override void InformRollDicesValueActions(Player invoker, int maxValue, int obtainedValue, int speakingRobotId)
+    protected override void InformRollDicesValueActions(Player invoker, int maxValue, int obtainedValue)
     {
-        if (speakingRobotId == id)
+        int currSpeakingPlayerId = gameManagerRef.GetCurrSpeakingPlayerId();
+        if (currSpeakingPlayerId == id)
         {
             float luckFactor = (float)obtainedValue / (float)maxValue;
 
@@ -212,23 +236,25 @@ public class RoboticPlayerCoopStrategy : AIPlayerCoopStrategy
             EventHelper.PropertyChange("State(Game)", "RollInstrumentDice", name),
             EventHelper.PropertyChange("Roll(InstrumentDice)", "Luck", invoker.GetName()) });
             }
-            else if (luckFactor > 0.35)
-            {
-                robot.perceive(new Name[] {
-            EventHelper.PropertyChange("State(Game)", "RollInstrumentDice", name),
-            EventHelper.PropertyChange("Roll(InstrumentDice)", "Neutral", invoker.GetName()) });
-            }
-            else
+            else if (luckFactor < 0.2)
             {
                 robot.perceive(new Name[] {
             EventHelper.PropertyChange("State(Game)", "RollInstrumentDice", name),
             EventHelper.PropertyChange("Roll(InstrumentDice)", "BadLuck", invoker.GetName()) });
             }
+            else
+            {
+                robot.perceive(new Name[] {
+            EventHelper.PropertyChange("State(Game)", "RollInstrumentDice", name),
+            EventHelper.PropertyChange("Roll(InstrumentDice)", "Neutral", invoker.GetName()) });
+            }
             robot.decide();
         }
     }
-    protected override void InformAlbumResultActions(int albumValue, int marketValue, int speakingRobotId)
+    protected override void InformAlbumResultActions(int albumValue, int marketValue)
     {
+        int currSpeakingPlayerId = gameManagerRef.GetCurrSpeakingPlayerId();
+
         if (albumValue >= marketValue)
         {
             robot.perceive(new Name[] {
@@ -242,7 +268,7 @@ public class RoboticPlayerCoopStrategy : AIPlayerCoopStrategy
             EventHelper.PropertyChange("Roll(MarketDice)", "Fail", name) });
         }
 
-        if (speakingRobotId == id)
+        if (currSpeakingPlayerId == id)
         {
             robot.decide();
         }
@@ -251,8 +277,9 @@ public class RoboticPlayerCoopStrategy : AIPlayerCoopStrategy
             //gaze
         }
     }
-    protected override void InformGameResultActions(GameProperties.GameState state, int speakingRobotId)
+    protected override void InformGameResultActions(GameProperties.GameState state)
     {
+        int currSpeakingPlayerId = gameManagerRef.GetCurrSpeakingPlayerId();
         if (state == GameProperties.GameState.VICTORY)
         {
             robot.perceive(new Name[] {
@@ -266,7 +293,7 @@ public class RoboticPlayerCoopStrategy : AIPlayerCoopStrategy
             EventHelper.PropertyChange("Game(Result)", "Loss", name) });
         }
 
-        if (speakingRobotId == id)
+        if (currSpeakingPlayerId == id)
         {
             robot.decide();
         }
@@ -275,12 +302,37 @@ public class RoboticPlayerCoopStrategy : AIPlayerCoopStrategy
             //gaze
         }
     }
+    protected override void InformNewAlbumActions()
+    {
+        int currSpeakingPlayerId = gameManagerRef.GetCurrSpeakingPlayerId();
+        if (currSpeakingPlayerId == id)
+        {
+            robot.perceive(new Name[] {
+            EventHelper.PropertyChange("State(Game)", "NewAlbum", name) });
+
+            if (GameGlobals.albums.Count() == 0)
+            {
+                robot.perceive(new Name[] {
+            EventHelper.PropertyChange("State(Career)", "Beginning", name) });
+            }
+            else if (GameGlobals.albums.Count() == 4)
+            {
+                robot.perceive(new Name[] {
+            EventHelper.PropertyChange("State(Career)", "End", name) });
+            }
+            else
+            {
+                robot.perceive(new Name[] {
+            EventHelper.PropertyChange("State(Career)", "Middle", name) });
+            }
+            robot.decide();
+        }
+    }
 }
 
 public class RoboticPlayerGreedyStrategy : AIPlayerGreedyStrategy
 {
     private EmotionalRoboticPlayer robot;
-    private int id;
 
     public RoboticPlayerGreedyStrategy(int id, string name) : base(name)
     {
@@ -319,6 +371,7 @@ public class RoboticPlayerGreedyStrategy : AIPlayerGreedyStrategy
     public override void LevelUpRequest(Album currAlbum)
     {
         Player currentPlayer = gameManagerRef.GetCurrentPlayer();
+        int currSpeakingPlayerId = gameManagerRef.GetCurrSpeakingPlayerId();
         base.LevelUp(currAlbum);
         if (id == gameManagerRef.GetCurrSpeakingPlayerId())
         {
@@ -331,6 +384,18 @@ public class RoboticPlayerGreedyStrategy : AIPlayerGreedyStrategy
         else
         {
             Debug.Log(name + " gazes at " + currentPlayer.GetName());
+            if (currSpeakingPlayerId == id && currentPlayer.GetName() == "Player")
+            {
+                Debug.Log(name + ": É a vez do " + currentPlayer.GetName());
+                robot.perceive(new Name[] {
+                    EventHelper.PropertyChange("CurrentPlayer(Name)", currentPlayer.GetName(), name),
+                    EventHelper.PropertyChange("State(Game)", "LevelUp", name) });
+                robot.decide();
+            }
+            else
+            {
+                Debug.Log(name + " gazes at " + currentPlayer.GetName());
+            }
         }
     }
     public override void LevelUp(Album currAlbum)
@@ -350,15 +415,28 @@ public class RoboticPlayerGreedyStrategy : AIPlayerGreedyStrategy
     }
     public override void LastDecisionsPhase(Album currAlbum)
     {
-        robot.perceive(new Name[] {
-            EventHelper.PropertyChange("State(Game)", "LastDecisionsPhase", name) });
         base.LastDecisionsPhase(currAlbum);
+
+        if (currAlbum.GetMarketingState() == GameProperties.AlbumMarketingState.MEGA_HIT)
+        {
+            robot.perceive(new Name[] {
+            EventHelper.PropertyChange("State(Game)", "LastDecisionsPhase", name),
+            EventHelper.PropertyChange("Album(Result)", "Success", name) });
+        }
+        else
+        {
+            robot.perceive(new Name[] {
+            EventHelper.PropertyChange("State(Game)", "LastDecisionsPhase", name),
+            EventHelper.PropertyChange("Album(Result)", "Fail", name) });
+        }
         robot.decide();
     }
 
-    protected override void InformRollDicesValueActions(Player invoker, int maxValue, int obtainedValue, int speakingRobotId)
+    protected override void InformRollDicesValueActions(Player invoker, int maxValue, int obtainedValue)
     {
-        if (speakingRobotId == id)
+        int currSpeakingPlayerId = gameManagerRef.GetCurrSpeakingPlayerId();
+
+        if (currSpeakingPlayerId == id)
         {
             float luckFactor = (float)obtainedValue / (float)maxValue;
 
@@ -368,23 +446,25 @@ public class RoboticPlayerGreedyStrategy : AIPlayerGreedyStrategy
             EventHelper.PropertyChange("State(Game)", "RollInstrumentDice", name),
             EventHelper.PropertyChange("Roll(InstrumentDice)", "Luck", invoker.GetName()) });
             }
-            else if (luckFactor > 0.35)
-            {
-                robot.perceive(new Name[] {
-            EventHelper.PropertyChange("State(Game)", "RollInstrumentDice", name),
-            EventHelper.PropertyChange("Roll(InstrumentDice)", "Neutral", invoker.GetName()) });
-            }
-            else
+            else if (luckFactor < 0.2)
             {
                 robot.perceive(new Name[] {
             EventHelper.PropertyChange("State(Game)", "RollInstrumentDice", name),
             EventHelper.PropertyChange("Roll(InstrumentDice)", "BadLuck", invoker.GetName()) });
             }
+            else
+            {
+                robot.perceive(new Name[] {
+            EventHelper.PropertyChange("State(Game)", "RollInstrumentDice", name),
+            EventHelper.PropertyChange("Roll(InstrumentDice)", "Neutral", invoker.GetName()) });
+            }
             robot.decide();
         }
     }
-    protected override void InformAlbumResultActions(int albumValue, int marketValue, int speakingRobotId)
+    protected override void InformAlbumResultActions(int albumValue, int marketValue)
     {
+        int currSpeakingPlayerId = gameManagerRef.GetCurrSpeakingPlayerId();
+
         if (albumValue >= marketValue)
         {
             robot.perceive(new Name[] {
@@ -398,7 +478,7 @@ public class RoboticPlayerGreedyStrategy : AIPlayerGreedyStrategy
             EventHelper.PropertyChange("Roll(MarketDice)", "Fail", name) });
         }
 
-        if (speakingRobotId == id)
+        if (currSpeakingPlayerId == id)
         {
             robot.decide();
         }
@@ -407,8 +487,10 @@ public class RoboticPlayerGreedyStrategy : AIPlayerGreedyStrategy
             //gaze
         }
     }
-    protected override void InformGameResultActions(GameProperties.GameState state, int speakingRobotId)
+    protected override void InformGameResultActions(GameProperties.GameState state)
     {
+        int currSpeakingPlayerId = gameManagerRef.GetCurrSpeakingPlayerId();
+
         if (state == GameProperties.GameState.VICTORY)
         {
             robot.perceive(new Name[] {
@@ -422,13 +504,39 @@ public class RoboticPlayerGreedyStrategy : AIPlayerGreedyStrategy
             EventHelper.PropertyChange("Game(Result)", "Loss", name) });
         }
 
-        if (speakingRobotId == id)
+        if (currSpeakingPlayerId == id)
         {
             robot.decide();
         }
         else
         {
             //gaze
+        }
+    }
+    protected override void InformNewAlbumActions()
+    {
+        int currSpeakingPlayerId = gameManagerRef.GetCurrSpeakingPlayerId();
+        if (currSpeakingPlayerId == id)
+        {
+            robot.perceive(new Name[] {
+            EventHelper.PropertyChange("State(Game)", "NewAlbum", name) });
+
+            if (GameGlobals.albums.Count() == 0)
+            {
+                robot.perceive(new Name[] {
+            EventHelper.PropertyChange("State(Career)", "Beginning", name) });
+            }
+            else if (GameGlobals.albums.Count() == 4)
+            {
+                robot.perceive(new Name[] {
+            EventHelper.PropertyChange("State(Career)", "End", name) });
+            }
+            else
+            {
+                robot.perceive(new Name[] {
+            EventHelper.PropertyChange("State(Career)", "Middle", name) });
+            }
+            robot.decide();
         }
     }
 }

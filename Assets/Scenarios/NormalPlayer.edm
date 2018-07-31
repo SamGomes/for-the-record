@@ -29,7 +29,7 @@
 					"Layer": "-",
 					"Conditions":
 						{
-							"Set": ["ValidDialogue(GameEnd, [ns], [m], [s]) = True", "State(Game) = GameEnd", "Game(Result) = [m]", "Character(Name) = [s]"]
+							"Set": ["ValidDialogue(GameEnd, [ns], [m], [s]) = True", "State(Game) = GameEnd", "Game(Result) = [m]"]
 						},
 					"Priority": 3
 				}, 
@@ -62,6 +62,26 @@
 							"Set": ["ValidDialogue([cs], [ns], [m], [s]) = True", "State(Game) = [cs]", "Character(Name) = [s]", "[cs] != RollInstrumentDice", "[cs] != RollMarketDice", "[cs] != LevelUp"]
 						},
 					"Priority": 1
+				}, 
+				{
+					"Action": "Speak(LastDecisionsPhase, [ns], [m], [s])",
+					"Target": "-",
+					"Layer": "-",
+					"Conditions":
+						{
+							"Set": ["ValidDialogue(LastDecisionsPhase, [ns], [m], [s]) = True", "State(Game) = LastDecisionsPhase", "Album(Result) = [m]", "Character(Name) = [s]"]
+						},
+					"Priority": 3
+				}, 
+				{
+					"Action": "Speak(NewAlbum, [ns], [m], [s])",
+					"Target": "-",
+					"Layer": "-",
+					"Conditions":
+						{
+							"Set": ["ValidDialogue(NewAlbum, [ns], [m], [s]) = True", "State(Game) = NewAlbum", "State(Career) = [m]"]
+						},
+					"Priority": 3
 				}]
 		},
 	"types": [

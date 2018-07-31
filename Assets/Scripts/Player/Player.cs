@@ -74,10 +74,11 @@ public abstract class Player
     public abstract void LevelUp(Album currAlbum);
     public abstract void PlayForInstrument(Album currAlbum);
     public abstract void LastDecisionsPhase(Album currAlbum);
-
-    public abstract void InformRollDicesValue(Player invoker, int maxValue, int obtainedValue, int speakingRobotId);
-    public abstract void InformAlbumResult(int albumValue, int marketValue, int speakingRobotId);
-    public abstract void InformGameResult(GameProperties.GameState state, int speakingRobotId);
+    
+    public abstract void InformRollDicesValue(Player invoker, int maxValue, int obtainedValue);
+    public abstract void InformAlbumResult(int albumValue, int marketValue);
+    public abstract void InformGameResult(GameProperties.GameState state);
+    public abstract void InformNewAlbum();
 
 
     public int GetId()

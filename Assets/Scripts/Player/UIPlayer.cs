@@ -565,9 +565,10 @@ public class UIPlayer : Player
     }
 
 
-    public override void InformRollDicesValue(Player invoker, int maxValue, int obtainedValue, int speakingRobotId){ }
-    public override void InformAlbumResult(int albumValue, int marketValue, int speakingRobotId){ }
-    public override void InformGameResult(GameProperties.GameState state, int speakingRobotId) { }
+    public override void InformRollDicesValue(Player invoker, int maxValue, int obtainedValue){ }
+    public override void InformAlbumResult(int albumValue, int marketValue){ }
+    public override void InformGameResult(GameProperties.GameState state) { }
+    public override void InformNewAlbum() { }
 
 
     public void ClearActionUI()

@@ -189,7 +189,14 @@ public class GameManager : MonoBehaviour {
             rollDiceForMarketButton.onClick.AddListener(delegate () {
                 canCheckAlbumResult = true;
             });
-            
+
+        }
+
+        //players talk about the initial album
+        currSpeakingPlayerId = Random.Range(0, GameGlobals.numberOfSpeakingPlayers);
+        foreach (var player in GameGlobals.players)
+        {
+            player.InformNewAlbum();
         }
 
 
@@ -270,10 +277,10 @@ public class GameManager : MonoBehaviour {
         }
 
         //players see the dice result
-        int speakingRobotId = Random.Range(0, GameGlobals.numberOfSpeakingPlayers);
+        currSpeakingPlayerId = Random.Range(0, GameGlobals.numberOfSpeakingPlayers);
         foreach (var player in GameGlobals.players)
         {
-            player.InformRollDicesValue(diceThrower, numDiceRolls * diceNum, totalDicesValue, speakingRobotId); //max value = the max dice number * number of rolls
+            player.InformRollDicesValue(diceThrower, numDiceRolls * diceNum, totalDicesValue); //max value = the max dice number * number of rolls
         }
 
         yield return new WaitForSeconds(delayToClose);
@@ -371,20 +378,20 @@ public class GameManager : MonoBehaviour {
         {
             if (newAlbumValue >= marketValue)
             {
-                infoScreenWinRef.DisplayPoppupWithDelay("As your album value (" + newAlbumValue + ") was EQUAL or HIGHER than the market value (" + marketValue + "), the album was successfully published! Congratulations! Everyone can choose to receive 3000 $ or to invest in their own marketing.", diceRollDelay*0.8f); //the delay is reduced to account for dices animation
+                infoScreenWinRef.DisplayPoppupWithDelay("As your album value (" + newAlbumValue + ") was EQUAL or HIGHER than the market value (" + marketValue + "), the album was successfully published! Congratulations! Everyone can choose to receive 3000 $ or to receive based on their own marketing skill.", diceRollDelay*0.8f); //the delay is reduced to account for dices animation
             }
             else
             {
-                infoScreenLossRef.DisplayPoppupWithDelay("As your album value (" + newAlbumValue + ") was LOWER than the market value (" + marketValue + "), the album could not be published. Although the band incurred in debt, everyone receives 1000 $ of the band savings.", diceRollDelay * 0.8f);
+                infoScreenLossRef.DisplayPoppupWithDelay("As your album value (" + newAlbumValue + ") was LOWER than the market value (" + marketValue + "), the album could not be published. Everyone receives 0 $.", diceRollDelay * 0.8f);
             }
         }
 
 
         //players see the album result
-        int speakingRobotId = Random.Range(0, GameGlobals.numberOfSpeakingPlayers);
+        currSpeakingPlayerId = Random.Range(0, GameGlobals.numberOfSpeakingPlayers);
         foreach (var player in GameGlobals.players)
         {
-            player.InformAlbumResult(newAlbumValue, marketValue, speakingRobotId);
+            player.InformAlbumResult(newAlbumValue, marketValue);
         }
 
 
@@ -405,10 +412,10 @@ public class GameManager : MonoBehaviour {
 
 
         //players see the game result
-        speakingRobotId = Random.Range(0, GameGlobals.numberOfSpeakingPlayers);
+        currSpeakingPlayerId = Random.Range(0, GameGlobals.numberOfSpeakingPlayers);
         foreach (Player player in GameGlobals.players)
         {
-            player.InformGameResult(GameGlobals.currGameState, speakingRobotId);
+            player.InformGameResult(GameGlobals.currGameState);
         }
 
         this.checkedAlbumResult = true;
@@ -526,8 +533,7 @@ public class GameManager : MonoBehaviour {
                 {
                     int oldNumMarketDices = GameProperties.numMarketDices;
                     GameProperties.numMarketDices++;
-                    infoScreenNeutralRef.DisplayPoppup("You gained some experience publishing " + (marketLimit -1) + " album(s) and so you will try your luck on the international market. From now on, "+ GameProperties.numMarketDices + " dices (instead of "+ oldNumMarketDices + ") are rolled for the market");
-                    
+
                 }
                 canSelectToCheckAlbumResult = false;
             }
@@ -569,6 +575,17 @@ public class GameManager : MonoBehaviour {
                 StartGameRoundForAllPlayers("SimAlbum");
             }
 
+            currSpeakingPlayerId = Random.Range(0, GameGlobals.numberOfSpeakingPlayers);
+            foreach (var player in GameGlobals.players)
+            {
+                player.InformNewAlbum();
+            }
+
+            if (GameGlobals.albums.Count == 3)
+            {
+                infoScreenNeutralRef.DisplayPoppup("You gained some experience publishing your last albums and so you will try your luck on the international market. From now on, 3 dices (instead of 2) are rolled for the market.");
+            }
+
             //reinit some things for next game if game result is known or max albums are achieved
             if (GameGlobals.currGameState != GameProperties.GameState.NOT_FINISHED)
             {
@@ -602,7 +619,6 @@ public class GameManager : MonoBehaviour {
                         infoScreenWinRef.DisplayPoppup("The band had a successful journey! Congratulations!");
                     }
                 }
-
 
                 UIadvanceRoundButton.GetComponentInChildren<Text>().text = "Finish Game";
                 this.gameMainSceneFinished = true;
