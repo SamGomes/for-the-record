@@ -358,11 +358,11 @@ public class GameManager : MonoBehaviour {
         {
             if (newAlbumValue >= marketValue)
             {
-                infoScreenWinRef.DisplayPoppupWithDelay("As your album value (" + newAlbumValue + ") was EQUAL or HIGHER than the market value (" + marketValue + "), the album was successfully published! Congratulations! Everyone can choose to receive 3000 $ or to invest in their own marketing.", diceRollDelay*0.8f); //the delay is reduced to account for dices animation
+                infoScreenWinRef.DisplayPoppupWithDelay("As your album value (" + newAlbumValue + ") was EQUAL or HIGHER than the market value (" + marketValue + "), the album was successfully published! Congratulations! Everyone can choose to receive 3000 $ or to receive based on their own marketing skill.", diceRollDelay*0.8f); //the delay is reduced to account for dices animation
             }
             else
             {
-                infoScreenLossRef.DisplayPoppupWithDelay("As your album value (" + newAlbumValue + ") was LOWER than the market value (" + marketValue + "), the album could not be published. Although the band incurred in debt, everyone receives 1000 $ of the band savings.", diceRollDelay * 0.8f);
+                infoScreenLossRef.DisplayPoppupWithDelay("As your album value (" + newAlbumValue + ") was LOWER than the market value (" + marketValue + "), the album could not be published. Everyone receives 0 $.", diceRollDelay * 0.8f);
             }
         }
 
@@ -500,7 +500,7 @@ public class GameManager : MonoBehaviour {
                 {
                     int oldNumMarketDices = GameProperties.numMarketDices;
                     GameProperties.numMarketDices++;
-                    infoScreenNeutralRef.DisplayPoppup("You gained some experience publishing " + (marketLimit -1) + " album(s) and so you will try your luck on the international market. From now on, "+ GameProperties.numMarketDices + " dices (instead of "+ oldNumMarketDices + ") are rolled for the market");
+                    infoScreenNeutralRef.DisplayPoppup("You gained some experience publishing " + (marketLimit -1) + " album(s) and so you will try your luck on the international market. From now on, "+ GameProperties.numMarketDices + " dices (instead of "+ oldNumMarketDices + ") are rolled for the market.");
                     
                 }
                 canSelectToCheckAlbumResult = false;
