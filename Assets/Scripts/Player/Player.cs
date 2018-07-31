@@ -78,6 +78,7 @@ public abstract class Player
     public virtual void InformRollDicesValue(Player invoker, int maxValue, int obtainedValue, int speakingRobotId) { }
     public virtual void InformAlbumResult(int albumValue, int marketValue, int speakingRobotId) { }
     public virtual void InformGameResult(GameProperties.GameState state, int speakingRobotId) { }
+    public virtual void InformNewAlbum(int speakingRobotId) { }
 
 
     public int GetId()

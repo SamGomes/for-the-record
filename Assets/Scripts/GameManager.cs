@@ -187,7 +187,13 @@ public class GameManager : MonoBehaviour {
             rollDiceForMarketButton.onClick.AddListener(delegate () {
                 canCheckAlbumResult = true;
             });
-            
+
+        }
+
+        int speakingRobotId = Random.Range(0, GameGlobals.numberOfSpeakingPlayers);
+        foreach (var player in GameGlobals.players)
+        {
+            player.InformNewAlbum(speakingRobotId);
         }
 
 
@@ -537,6 +543,13 @@ public class GameManager : MonoBehaviour {
                 StartGameRoundForAllPlayers("SimAlbum");
             }
 
+            int speakingRobotId = Random.Range(0, GameGlobals.numberOfSpeakingPlayers);
+            foreach (var player in GameGlobals.players)
+            {
+                player.InformNewAlbum(speakingRobotId);
+            }
+
+
 
 
             //reinit some things for next game if game result is known or max albums are achieved
@@ -574,7 +587,7 @@ public class GameManager : MonoBehaviour {
                 }
 
 
-                int speakingRobotId = Random.Range(0, GameGlobals.numberOfSpeakingPlayers);
+                speakingRobotId = Random.Range(0, GameGlobals.numberOfSpeakingPlayers);
                 foreach (Player player in GameGlobals.players)
                 {
                     player.InformGameResult(GameGlobals.currGameState, speakingRobotId);

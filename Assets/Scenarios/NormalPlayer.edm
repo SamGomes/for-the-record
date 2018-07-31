@@ -72,6 +72,16 @@
 							"Set": ["ValidDialogue(LastDecisionsPhase, [ns], [m], [s]) = True", "State(Game) = LastDecisionsPhase", "Album(Result) = [m]", "Character(Name) = [s]"]
 						},
 					"Priority": 3
+				}, 
+				{
+					"Action": "Speak(NewAlbum, [ns], [m], [s])",
+					"Target": "-",
+					"Layer": "-",
+					"Conditions":
+						{
+							"Set": ["ValidDialogue(NewAlbum, [ns], [m], [s]) = True", "State(Game) = NewAlbum", "State(Career) = [m]"]
+						},
+					"Priority": 3
 				}]
 		},
 	"types": [

@@ -208,6 +208,14 @@
 					"UtteranceId": "TTS-106EA35EB7B533E6170BE2B31ADAA7E5"
 				}, 
 				{
+					"CurrentState": "NewAlbum",
+					"NextState": "-",
+					"Meaning": "Middle",
+					"Style": "-",
+					"Utterance": "Mais um álbum",
+					"UtteranceId": "TTS-E994B0DC31E27237E516781F55802528"
+				}, 
+				{
 					"CurrentState": "PlayForInstrument",
 					"NextState": "-",
 					"Meaning": "-",
@@ -230,6 +238,22 @@
 					"Style": "Glin",
 					"Utterance": "Assim, esta banda não vai longe.",
 					"UtteranceId": "TTS-89C2B0B9F79DD18BBC2B80BBEF674228"
+				}, 
+				{
+					"CurrentState": "NewAlbum",
+					"NextState": "-",
+					"Meaning": "Beginning",
+					"Style": "-",
+					"Utterance": "Vamos lá ver se ésta banda tem sucesso...",
+					"UtteranceId": "TTS-CD543F031214E32828506165ACA02EDE"
+				}, 
+				{
+					"CurrentState": "NewAlbum",
+					"NextState": "-",
+					"Meaning": "End",
+					"Style": "-",
+					"Utterance": "Último álbum, este vai ser decisivo...",
+					"UtteranceId": "TTS-E21CA8CBEB001CB017673ED13DA3A982"
 				}]
 		},
 	"types": [

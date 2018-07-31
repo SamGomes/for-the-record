@@ -297,6 +297,32 @@ public class RoboticPlayerCoopStrategy : AIPlayerCoopStrategy
             //gaze
         }
     }
+
+    public override void InformNewAlbum(int speakingRobotId)
+    {
+        if (speakingRobotId == id)
+        {
+            robot.perceive(new Name[] {
+            EventHelper.PropertyChange("State(Game)", "NewAlbum", name) });
+
+            if (GameGlobals.albums.Count() == 0)
+            {
+                robot.perceive(new Name[] {
+            EventHelper.PropertyChange("State(Career)", "Beginning", name) });
+            }
+            else if (GameGlobals.albums.Count() == 4)
+            {
+                robot.perceive(new Name[] {
+            EventHelper.PropertyChange("State(Career)", "End", name) });
+            }
+            else
+            {
+                robot.perceive(new Name[] {
+            EventHelper.PropertyChange("State(Career)", "Middle", name) });
+            }
+            robot.decide();
+        }
+    }
 }
 
 public class RoboticPlayerGreedyStrategy : AIPlayerGreedyStrategy
@@ -474,6 +500,32 @@ public class RoboticPlayerGreedyStrategy : AIPlayerGreedyStrategy
         else
         {
             //gaze
+        }
+    }
+
+    public override void InformNewAlbum(int speakingRobotId)
+    {
+        if (speakingRobotId == id)
+        {
+            robot.perceive(new Name[] {
+            EventHelper.PropertyChange("State(Game)", "NewAlbum", name) });
+
+            if (GameGlobals.albums.Count() == 0)
+            {
+                robot.perceive(new Name[] {
+            EventHelper.PropertyChange("State(Career)", "Beginning", name) });
+            }
+            else if (GameGlobals.albums.Count() == 4)
+            {
+                robot.perceive(new Name[] {
+            EventHelper.PropertyChange("State(Career)", "End", name) });
+            }
+            else
+            {
+                robot.perceive(new Name[] {
+            EventHelper.PropertyChange("State(Career)", "Middle", name) });
+            }
+            robot.decide();
         }
     }
 }
