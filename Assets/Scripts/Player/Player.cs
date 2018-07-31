@@ -99,12 +99,9 @@ public abstract class Player
         this.preferredInstrument = GameProperties.Instrument.NONE;
         ChoosePreferredInstrument(currAlbum);
     }
-    virtual public void LevelUpRequest(Player currentPlayer, Album currAlbum, int speakingRobotId)
+    virtual public void LevelUpRequest(Album currAlbum)
     {
-        if (currentPlayer == this)
-        {
-            LevelUp(currAlbum);
-        }
+        LevelUp(currAlbum);
     }
     public void PlayForInstrumentRequest(Album currAlbum)
     {

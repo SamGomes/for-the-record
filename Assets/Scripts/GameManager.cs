@@ -50,7 +50,9 @@ public class GameManager : MonoBehaviour {
     private bool playForInstrumentResponseReceived;
     private bool levelUpResponseReceived;
     private bool lastDecisionResponseReceived;
+
     private int currPlayerIndex;
+    private int currSpeakingPlayerId;
 
     private Album currAlbum;
 
@@ -237,9 +239,12 @@ public class GameManager : MonoBehaviour {
             rolledDiceNumbers[i] = randomIncrease;
             newAlbumInstrumentValue += randomIncrease;
         }
-        GameGlobals.gameLogManager.WriteEventToLog(GameGlobals.currSessionId.ToString(), GameGlobals.currGameId.ToString(), GameGlobals.currGameRoundId.ToString(), currPlayer.GetId().ToString(), currPlayer.GetName().ToString(), "ROLLED_INSTRUMENT_DICES", "-", newAlbumInstrumentValue.ToString());
-        StartCoroutine(PlayDiceUIs(currPlayer, newAlbumInstrumentValue, rolledDiceNumbers, 6 , dice6UI, "Animations/RollDiceForInstrumentOverlay/dice6/sprites_3/endingAlternatives/", diceRollDelay));
+        if (!GameProperties.isSimulation)
+        {
+            StartCoroutine(PlayDiceUIs(currPlayer, newAlbumInstrumentValue, rolledDiceNumbers, 6, dice6UI, "Animations/RollDiceForInstrumentOverlay/dice6/sprites_3/endingAlternatives/", diceRollDelay));
+        }
 
+        GameGlobals.gameLogManager.WriteEventToLog(GameGlobals.currSessionId.ToString(), GameGlobals.currGameId.ToString(), GameGlobals.currGameRoundId.ToString(), currPlayer.GetId().ToString(), currPlayer.GetName().ToString(), "ROLLED_INSTRUMENT_DICES", "-", newAlbumInstrumentValue.ToString());
         return newAlbumInstrumentValue;
     }
 
@@ -337,7 +342,10 @@ public class GameManager : MonoBehaviour {
         GameGlobals.gameLogManager.WriteEventToLog(GameGlobals.currSessionId.ToString(), GameGlobals.currGameId.ToString(), GameGlobals.currGameRoundId.ToString(), "-", "-", "ROLLED_MARKET_DICES", "-", marketValue.ToString());
 
         //assuming the first player rolls the market dices
-        StartCoroutine(PlayDiceUIs(GameGlobals.players[0], marketValue, rolledDiceNumbers, 20, dice20UI, "Animations/RollDiceForInstrumentOverlay/dice20/sprites/endingAlternatives/", diceRollDelay));
+        if (!GameProperties.isSimulation)
+        {
+            StartCoroutine(PlayDiceUIs(GameGlobals.players[0], marketValue, rolledDiceNumbers, 20, dice20UI, "Animations/RollDiceForInstrumentOverlay/dice20/sprites/endingAlternatives/", diceRollDelay));
+        }
 
         return marketValue;
     }
@@ -428,6 +436,9 @@ public class GameManager : MonoBehaviour {
         //middle of the phases
         if (choosePreferedInstrumentResponseReceived)
         {
+            currSpeakingPlayerId = Random.Range(0, GameGlobals.numberOfSpeakingPlayers);
+
+            choosePreferedInstrumentResponseReceived = false;
             Player currPlayer = GameGlobals.players[currPlayerIndex];
             Player nextPlayer = ChangeToNextPlayer(currPlayer);
             numPlayersToChooseDiceRollInstrument--;
@@ -435,25 +446,25 @@ public class GameManager : MonoBehaviour {
             {
                 nextPlayer.ChoosePreferredInstrumentRequest(currAlbum);
             }
-            choosePreferedInstrumentResponseReceived = false;
         }
         if (levelUpResponseReceived) 
         {
+            currSpeakingPlayerId = Random.Range(0, GameGlobals.numberOfSpeakingPlayers);
+
+            levelUpResponseReceived = false;
             Player currPlayer = GameGlobals.players[currPlayerIndex];
             Player nextPlayer = ChangeToNextPlayer(currPlayer);
             numPlayersToLevelUp--;
             if (numPlayersToLevelUp > 0)
             {
-                int speakingRobotId = Random.Range(0, GameGlobals.numberOfSpeakingPlayers);
-                foreach (var player in GameGlobals.players)
-                {
-                    player.LevelUpRequest(nextPlayer, currAlbum, speakingRobotId);
-                }
+                nextPlayer.LevelUpRequest(currAlbum);
             }
-            levelUpResponseReceived = false;
         }
         if (playForInstrumentResponseReceived)
         {
+            currSpeakingPlayerId = Random.Range(0, GameGlobals.numberOfSpeakingPlayers);
+
+            playForInstrumentResponseReceived = false;
             Player currPlayer = GameGlobals.players[currPlayerIndex];
             Player nextPlayer = ChangeToNextPlayer(currPlayer);
             numPlayersToPlayForInstrument--;
@@ -461,10 +472,12 @@ public class GameManager : MonoBehaviour {
             {
                 nextPlayer.PlayForInstrumentRequest(currAlbum);
             }
-            playForInstrumentResponseReceived = false;
         }
         if (lastDecisionResponseReceived)
         {
+            currSpeakingPlayerId = Random.Range(0, GameGlobals.numberOfSpeakingPlayers);
+
+            lastDecisionResponseReceived = false;
             Player currPlayer = GameGlobals.players[currPlayerIndex];
             Player nextPlayer = ChangeToNextPlayer(currPlayer);
             numPlayersToStartLastDecisions--;
@@ -472,7 +485,6 @@ public class GameManager : MonoBehaviour {
             {
                 nextPlayer.LastDecisionsPhaseRequest(currAlbum);
             }
-            lastDecisionResponseReceived = false;
         }
 
         //end of first phase; trigger second phase
@@ -483,7 +495,6 @@ public class GameManager : MonoBehaviour {
             StartPlayForInstrumentPhase(); //choose instrument phase skips level up phase
             //numPlayersToChooseDiceRollInstrument = GameGlobals.players.Count; //is not performed to ensure this phase is only played once
             preferredInstrumentsChoosen = true;
-
         }
 
         //end of second phase; trigger third phase
@@ -558,8 +569,6 @@ public class GameManager : MonoBehaviour {
                 StartGameRoundForAllPlayers("SimAlbum");
             }
 
-
-
             //reinit some things for next game if game result is known or max albums are achieved
             if (GameGlobals.currGameState != GameProperties.GameState.NOT_FINISHED)
             {
@@ -612,44 +621,26 @@ public class GameManager : MonoBehaviour {
     {
         ResetAllPlayers();
         int numPlayers = GameGlobals.players.Count;
-        //for (int i = 0; i < numPlayers; i++)
-        //{
-        Player currPlayer = GameGlobals.players[0];
-        currPlayer.ChoosePreferredInstrumentRequest(currAlbum);
-        //}
+        GameGlobals.players[0].ChoosePreferredInstrumentRequest(currAlbum);
     }
     public void StartLevelingUpPhase()
     {
         ResetAllPlayers();
         int numPlayers = GameGlobals.players.Count;
-        Player currPlayer = GameGlobals.players[0];
-        int speakingRobotId = Random.Range(0, GameGlobals.numberOfSpeakingPlayers);
-
-        foreach (var player in GameGlobals.players)
-        {
-            player.LevelUpRequest(currPlayer, currAlbum, speakingRobotId);
-        }
+        GameGlobals.players[0].LevelUpRequest(currAlbum);
     }
     public void StartPlayForInstrumentPhase()
     {
         ResetAllPlayers();
         int numPlayers = GameGlobals.players.Count;
-        //for (int i = 0; i < numPlayers; i++)
-        //{
-            Player currPlayer = GameGlobals.players[0];
-            currPlayer.PlayForInstrumentRequest(currAlbum);
-        //}
+        GameGlobals.players[0].PlayForInstrumentRequest(currAlbum);
     }
     public void StartLastDecisionsPhase()
     {
         ResetAllPlayers();
         Album currAlbum = GameGlobals.albums[GameGlobals.albums.Count - 1];
         int numPlayers = GameGlobals.players.Count;
-        //for (int i = 0; i < numPlayers; i++)
-        //{
-            Player currPlayer = GameGlobals.players[0];
-            currPlayer.LastDecisionsPhaseRequest(currAlbum);
-        //}
+        GameGlobals.players[0].LastDecisionsPhaseRequest(currAlbum);
     }
 
 
@@ -701,9 +692,9 @@ public class GameManager : MonoBehaviour {
 
     public Player ChangeToNextPlayer(Player currPlayer)
     {
-        Player nextPlayer = GameGlobals.players[(GameGlobals.players.IndexOf(currPlayer) + 1) % GameGlobals.players.Count];
-        ChangeActivePlayerUI((UIPlayer) nextPlayer, 2.0f);
         currPlayerIndex = (currPlayerIndex + 1) % GameGlobals.players.Count;
+        Player nextPlayer = GameGlobals.players[currPlayerIndex];
+        ChangeActivePlayerUI((UIPlayer) nextPlayer, 2.0f);
         return nextPlayer;
     }
 
@@ -726,6 +717,16 @@ public class GameManager : MonoBehaviour {
     {
         GameObject currAlbumUI = albumToRemove.GetAlbumUI();
         currAlbumUI.transform.SetParent(null);
+    }
+
+
+    public Player GetCurrentPlayer()
+    {
+        return GameGlobals.players[this.currPlayerIndex];
+    }
+    public int GetCurrSpeakingPlayerId()
+    {
+        return this.currSpeakingPlayerId;
     }
 
 }

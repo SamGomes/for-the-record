@@ -21,7 +21,7 @@ public static class GameGlobals
 
     public static IDiceNG gameDiceNG;
 
-    public static ILogManager gameLogManager = new FileLogManager();
+    public static ILogManager gameLogManager = new DebugLogManager();
     public static AudioManager audioManager = new AudioManager();
     public static GameManager gameManager;
 
@@ -75,7 +75,7 @@ public static class GameProperties
     public static int numMarketDices = 2; //config the initial number of dices to roll
 
     //------------ Simulation --------------------
-    public static bool isSimulation = true;
+    public static bool isSimulation = false;
     public static int numGamesToSimulate = 20;
 }
 
