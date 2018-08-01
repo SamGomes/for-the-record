@@ -67,13 +67,13 @@ public class GameManager : MonoBehaviour {
     {
         GameGlobals.gameManager = this;
         //mock to test
-        //GameGlobals.gameLogManager.InitLogs();
-        //GameGlobals.gameDiceNG = new VictoryDiceNG();
-        //GameGlobals.albums = new List<Album>(GameProperties.numberOfAlbumsPerGame);
-        //GameGlobals.players = new List<Player>(GameProperties.numberOfPlayersPerGame);
-        //GameGlobals.players.Add(new AIPlayerGreedyStrategy("Coop Jeff"));
-        //GameGlobals.players.Add(new AIPlayerGreedyStrategy("Greedy Kevin"));
-        //GameGlobals.players.Add(new UIPlayer("Balanced Sam"));
+        GameGlobals.gameLogManager.InitLogs();
+        GameGlobals.albums = new List<Album>(GameProperties.numberOfAlbumsPerGame);
+        GameGlobals.players = new List<Player>(GameProperties.numberOfPlayersPerGame);
+        GameGlobals.players.Add(new UIPlayer("Coop Jeff"));
+        GameGlobals.players.Add(new UIPlayer("Greedy Kevin"));
+        GameGlobals.players.Add(new UIPlayer("Balanced Sam"));
+        GameGlobals.gameDiceNG = new VictoryDiceNG();
     }
 
     public void InterruptGame()
@@ -248,7 +248,7 @@ public class GameManager : MonoBehaviour {
 
         for (int i = 0; i < numTokensForInstrument; i++)
         {
-            int randomIncrease = GameGlobals.gameDiceNG.RollTheDice(6,i);
+            int randomIncrease = GameGlobals.gameDiceNG.RollTheDice(currPlayer, instrument, 6, i, numTokensForInstrument);
             rolledDiceNumbers[i] = randomIncrease;
             newAlbumInstrumentValue += randomIncrease;
         }
@@ -351,6 +351,7 @@ public class GameManager : MonoBehaviour {
         Destroy(diceImageClone);
     }
 
+    //assuming the first player rolls the market dices
     public int RollDicesForMarketValue()
     {
         UIRollDiceForInstrumentOverlay.transform.Find("title/Text").GetComponent<Text>().text = "Rolling dices for market...";
@@ -359,13 +360,12 @@ public class GameManager : MonoBehaviour {
         int[] rolledDiceNumbers = new int[GameProperties.numMarketDices];
         for(int i=0; i < GameProperties.numMarketDices; i++)
         {
-            int randomIncrease = GameGlobals.gameDiceNG.RollTheDice(20,i);
+            int randomIncrease = GameGlobals.gameDiceNG.RollTheDice(this.GetCurrentPlayer(), GameProperties.Instrument.NONE, 20, i, GameProperties.numMarketDices);
             rolledDiceNumbers[i] = randomIncrease;
             marketValue += randomIncrease;
         }
         GameGlobals.gameLogManager.WriteEventToLog(GameGlobals.currSessionId.ToString(), GameGlobals.currGameId.ToString(), GameGlobals.currGameRoundId.ToString(), "-", "-", "ROLLED_MARKET_DICES", "-", marketValue.ToString());
 
-        //assuming the first player rolls the market dices
         if (!GameProperties.isSimulation)
         {
             StartCoroutine(PlayDiceUIs(GameGlobals.players[0], marketValue, rolledDiceNumbers, 20, dice20UI, "Animations/RollDiceForInstrumentOverlay/dice20/sprites/endingAlternatives/", Color.red, "Market Value: " + marketValue, diceRollDelay));
@@ -628,7 +628,7 @@ public class GameManager : MonoBehaviour {
 
                     if (!GameProperties.isSimulation)
                     {
-                        infoScreenLossRef.DisplayPoppup("The band incurred in too much debt, therefore no more albums can be produced!");
+                        infoScreenLossRef.DisplayPoppup("The band incurred in too much debt! No more albums can be produced!");
                     }
                 }
                 else

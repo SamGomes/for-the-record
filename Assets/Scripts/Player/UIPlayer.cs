@@ -85,6 +85,7 @@ public class UIPlayer : Player
         {
             UISkillIconsButtons[(int)instrument].GetComponent<Outline>().enabled = false;
             UISkillLevelsTexts[(int)instrument].transform.gameObject.SetActive(false);
+            UISkillIconsButtons[(int)instrument].transform.gameObject.SetActive(false);
         }
         this.UIChooseDiceRollInstrumentScreen = playerUI.transform.Find("playerActionSection/chooseDiceRollInstrumentPhaseUI").gameObject;
 
@@ -271,14 +272,16 @@ public class UIPlayer : Player
             foreach (GameProperties.Instrument instrument in skillSet.Keys)
             {
                 Button currButton = UISkillIconsButtons[(int)instrument];
-                UISkillLevelsTexts[(int)instrument].transform.gameObject.SetActive(true);
                 if (instrument == preferredInstrument || instrument == GameProperties.Instrument.MARKETING)
                 {
                     currButton.GetComponent<Outline>().enabled = false;
+                    UISkillLevelsTexts[(int)instrument].transform.gameObject.SetActive(true);
+                    UISkillIconsButtons[(int)instrument].transform.gameObject.SetActive(true);
                     continue;
                 }
                 currButton.transform.gameObject.SetActive(false); //take off the other instruments
                 UISkillLevelsTexts[(int)instrument].transform.gameObject.SetActive(false);
+                UISkillIconsButtons[(int)instrument].transform.gameObject.SetActive(false);
             }
             UpdateCommonUIElements();
         }
@@ -404,9 +407,11 @@ public class UIPlayer : Player
         UIPlayForInstrumentScreen.SetActive(false);
         UILastDecisionsScreen.SetActive(false);
 
-        for (int i = 0; i < UISkillIconsButtons.Count; i++)
+        // do not consider marketing on choosing prefered instrument
+        for (int i = 0; i < UISkillIconsButtons.Count - 1; i++)
         {
             Button currButton = UISkillIconsButtons[i];
+            UISkillIconsButtons[i].gameObject.SetActive(true);
             currButton.onClick.RemoveAllListeners();
             currButton.onClick.AddListener(delegate {
                 GameGlobals.audioManager.PlayClip("Audio/snap");

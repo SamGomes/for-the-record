@@ -76,6 +76,6 @@ public static class GameProperties
 
     //------------ Simulation --------------------
     public static bool isSimulation = false;
-    public static int numGamesToSimulate = 20;
+    public static int numGamesToSimulate = 1;
 }
 
