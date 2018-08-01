@@ -33,6 +33,9 @@ public class GameManager : MonoBehaviour {
     public GameObject dice6UI;
     public GameObject dice20UI;
 
+    public GameObject diceArrowPrefab;
+
+
     public GameObject UIAlbumCollectionDisplay;
 
     public GameObject poppupPrefab;
@@ -58,18 +61,19 @@ public class GameManager : MonoBehaviour {
 
     private float diceRollDelay;
 
+    private int marketLimit;
 
     void Awake()
     {
         GameGlobals.gameManager = this;
         //mock to test
-        //GameGlobals.gameLogManager.InitLogs();
-        //GameGlobals.gameDiceNG = new VictoryDiceNG();
-        //GameGlobals.albums = new List<Album>(GameProperties.numberOfAlbumsPerGame);
-        //GameGlobals.players = new List<Player>(GameProperties.numberOfPlayersPerGame);
-        //GameGlobals.players.Add(new AIPlayerGreedyStrategy("Coop Jeff"));
-        //GameGlobals.players.Add(new AIPlayerGreedyStrategy("Greedy Kevin"));
-        //GameGlobals.players.Add(new UIPlayer("Balanced Sam"));
+        GameGlobals.gameLogManager.InitLogs();
+        GameGlobals.gameDiceNG = new VictoryDiceNG();
+        GameGlobals.albums = new List<Album>(GameProperties.numberOfAlbumsPerGame);
+        GameGlobals.players = new List<Player>(GameProperties.numberOfPlayersPerGame);
+        GameGlobals.players.Add(new UIPlayer("Coop Jeff"));
+        GameGlobals.players.Add(new UIPlayer("Greedy Kevin"));
+        GameGlobals.players.Add(new UIPlayer("Balanced Sam"));
     }
 
     public void InterruptGame()
@@ -129,6 +133,8 @@ public class GameManager : MonoBehaviour {
 
         GameGlobals.currGameRoundId = 0; //first round
         numMegaHits = 0;
+
+        marketLimit = Mathf.FloorToInt(GameProperties.numberOfAlbumsPerGame * 4.0f / 5.0f) - 1;
 
     }
 
@@ -248,7 +254,17 @@ public class GameManager : MonoBehaviour {
         }
         if (!GameProperties.isSimulation)
         {
-            StartCoroutine(PlayDiceUIs(currPlayer, newAlbumInstrumentValue, rolledDiceNumbers, 6, dice6UI, "Animations/RollDiceForInstrumentOverlay/dice6/sprites_3/endingAlternatives/", diceRollDelay));
+            string arrowText = "";
+            if(instrument == GameProperties.Instrument.MARKETING)
+            {
+                arrowText = "+" + newAlbumInstrumentValue * GameProperties.marketingPointValue + " $";
+            }
+            else
+            {
+                arrowText = "+ " + newAlbumInstrumentValue + " Album Value";
+            }
+
+            StartCoroutine(PlayDiceUIs(currPlayer, newAlbumInstrumentValue, rolledDiceNumbers, 6, dice6UI, "Animations/RollDiceForInstrumentOverlay/dice6/sprites_3/endingAlternatives/", Color.yellow, arrowText, diceRollDelay));
         }
 
         GameGlobals.gameLogManager.WriteEventToLog(GameGlobals.currSessionId.ToString(), GameGlobals.currGameId.ToString(), GameGlobals.currGameRoundId.ToString(), currPlayer.GetId().ToString(), currPlayer.GetName().ToString(), "ROLLED_INSTRUMENT_DICES", "-", newAlbumInstrumentValue.ToString());
@@ -256,7 +272,7 @@ public class GameManager : MonoBehaviour {
     }
 
 
-    private IEnumerator PlayDiceUIs(Player diceThrower, int totalDicesValue, int[] rolledDiceNumbers, int diceNum, GameObject diceImagePrefab, string diceNumberSpritesPath, float delayToClose)
+    private IEnumerator PlayDiceUIs(Player diceThrower, int totalDicesValue, int[] rolledDiceNumbers, int diceNum, GameObject diceImagePrefab, string diceNumberSpritesPath, Color diceArrowColor, string diceArrowText, float delayToClose)
     //the sequence number aims to void dice overlaps as it represents the order for which this dice is going to be rolled. We do not want to roll a dice two times for the same place
     {
         InterruptGame();
@@ -283,7 +299,20 @@ public class GameManager : MonoBehaviour {
             player.InformRollDicesValue(diceThrower, numDiceRolls * diceNum, totalDicesValue); //max value = the max dice number * number of rolls
         }
 
+        //get and disable arrow animation until end of dice animation
+        GameObject diceArrowClone = Instantiate(diceArrowPrefab, UIRollDiceForInstrumentOverlay.transform);
+        diceArrowClone.GetComponentInChildren<Image>().color = diceArrowColor;
+        
+        Animator arrowAnimator = diceArrowClone.GetComponentInChildren<Animator>();
+        //arrowAnimator.speed = 0;
+        Text arrowText = diceArrowClone.GetComponentInChildren<Text>();
+        arrowText.text = diceArrowText;
+        arrowText.color = diceArrowColor;
+
+
         yield return new WaitForSeconds(delayToClose);
+
+        Destroy(diceArrowClone);
 
         ContinueGame();
         UIRollDiceForInstrumentOverlay.SetActive(false);
@@ -309,18 +338,6 @@ public class GameManager : MonoBehaviour {
         diceAnimator.Rebind();
         diceAnimator.Play(0);
         diceAnimator.speed = Random.Range(0.8f,1.4f);
-
-        //get and disable arrow animation until end of dice animation
-        //GameObject diceArrow = diceImage.transform.GetChild(0).gameObject;
-        //diceArrow.GetComponentInChildren<Image>().color = arrowColor;
-
-        //diceArrow.transform.Rotate(new Vector3(0, 0, 1), - diceRotation);
-        //Animator arrowAnimator = diceArrow.GetComponentInChildren<Animator>();
-        //arrowAnimator.speed = 0;
-        //Text arrowText = diceArrow.GetComponentInChildren<Text>();
-        //arrowText.text = arrowTextString;
-        //arrowText.color = arrowColor;
-
 
         while (!diceAnimator.GetCurrentAnimatorStateInfo(0).IsName("endState"))
         {
@@ -351,7 +368,7 @@ public class GameManager : MonoBehaviour {
         //assuming the first player rolls the market dices
         if (!GameProperties.isSimulation)
         {
-            StartCoroutine(PlayDiceUIs(GameGlobals.players[0], marketValue, rolledDiceNumbers, 20, dice20UI, "Animations/RollDiceForInstrumentOverlay/dice20/sprites/endingAlternatives/", diceRollDelay));
+            StartCoroutine(PlayDiceUIs(GameGlobals.players[0], marketValue, rolledDiceNumbers, 20, dice20UI, "Animations/RollDiceForInstrumentOverlay/dice20/sprites/endingAlternatives/", Color.red, "Market Value: " + marketValue, diceRollDelay));
         }
 
         return marketValue;
@@ -528,15 +545,6 @@ public class GameManager : MonoBehaviour {
             {
                 //make phase UI active (this step is interim but must be done before last phase)
                 UIRollDiceForMarketValueScreen.SetActive(true);
-
-                int marketLimit = Mathf.FloorToInt(GameProperties.numberOfAlbumsPerGame * 4.0f / 5.0f);
-                //enter international market
-                if (GameGlobals.currGameRoundId == (marketLimit-1))
-                {
-                    int oldNumMarketDices = GameProperties.numMarketDices;
-                    GameProperties.numMarketDices++;
-
-                }
                 canSelectToCheckAlbumResult = false;
             }
             
@@ -577,7 +585,7 @@ public class GameManager : MonoBehaviour {
                 StartGameRoundForAllPlayers("SimAlbum");
             }
 
-            if (GameGlobals.albums.Count < 5)
+            if (GameGlobals.albums.Count < GameProperties.numberOfAlbumsPerGame)
             {
                 currSpeakingPlayerId = Random.Range(0, GameGlobals.numberOfSpeakingPlayers);
                 foreach (var player in GameGlobals.players)
@@ -586,10 +594,20 @@ public class GameManager : MonoBehaviour {
                 }
             }
 
-            if (GameGlobals.albums.Count == 3)
+
+            //enter international market on the next album
+            if (GameGlobals.currGameRoundId == marketLimit)
             {
-                infoScreenNeutralRef.DisplayPoppup("You gained some experience publishing your last albums and so you will try your luck on the international market. From now on, 3 dices (instead of 2) are rolled for the market.");
+                int oldNumMarketDices = GameProperties.numMarketDices;
+                GameProperties.numMarketDices++;
+
+                //poppups are not displayed on simulations
+                if (!GameProperties.isSimulation)
+                {
+                    infoScreenNeutralRef.DisplayPoppup("You gained some experience publishing your last albums and so you will try your luck on the international market. From now on, 3 dices (instead of 2) are rolled for the market.");
+                }
             }
+
 
             //reinit some things for next game if game result is known or max albums are achieved
             if (GameGlobals.currGameState != GameProperties.GameState.NOT_FINISHED)
