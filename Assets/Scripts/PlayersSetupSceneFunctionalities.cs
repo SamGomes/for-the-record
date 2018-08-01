@@ -88,9 +88,9 @@ public class PlayersSetupSceneFunctionalities : MonoBehaviour {
                 {
                     if (button.gameObject.name.EndsWith("1"))
                     {
-                        GameGlobals.players.Add(new UIPlayer("Human1"));
-                        GameGlobals.players.Add(new UIPlayer("Human2"));
-                        GameGlobals.players.Add(new UIPlayer("Human3"));
+                        GameGlobals.players.Add(new UIPlayer("Player1"));
+                        GameGlobals.players.Add(new UIPlayer("Player2"));
+                        GameGlobals.players.Add(new UIPlayer("Player3"));
                         GameGlobals.gameDiceNG = new RandomDiceNG();
                     }
                     else if (button.gameObject.name.EndsWith("2"))

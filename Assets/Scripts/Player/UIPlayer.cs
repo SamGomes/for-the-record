@@ -565,6 +565,7 @@ public class UIPlayer : Player
     }
 
 
+    public override void InformLevelUp() { }
     public override void InformRollDicesValue(Player invoker, int maxValue, int obtainedValue){ }
     public override void InformAlbumResult(int albumValue, int marketValue){ }
     public override void InformGameResult(GameProperties.GameState state) { }

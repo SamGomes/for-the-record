@@ -21,7 +21,7 @@ public static class GameGlobals
 
     public static IDiceNG gameDiceNG;
 
-    public static ILogManager gameLogManager = new DebugLogManager();
+    public static ILogManager gameLogManager = new FileLogManager();
     public static AudioManager audioManager = new AudioManager();
     public static GameManager gameManager;
 

@@ -168,31 +168,26 @@ public class RoboticPlayerCoopStrategy : AIPlayerCoopStrategy
         }
         ChangePreferredInstrument(preferredIntrument);
     }
-    public override void LevelUpRequest(Album currAlbum)
+
+    public override void InformLevelUp()
     {
         Player currentPlayer = gameManagerRef.GetCurrentPlayer();
         int currSpeakingPlayerId = gameManagerRef.GetCurrSpeakingPlayerId();
 
-        if (currentPlayer == this)
+        if (currSpeakingPlayerId == id && currentPlayer.GetName() == "Player")
         {
-            LevelUp(currAlbum);
+            Debug.Log(name + ": É a vez do " + currentPlayer.GetName());
+            robot.Perceive(new Name[] {
+                EventHelper.PropertyChange("CurrentPlayer(Name)", currentPlayer.GetName(), name),
+                EventHelper.PropertyChange("State(Game)", "LevelUp", name) });
+            robot.Decide();
         }
         else
         {
-            if (currSpeakingPlayerId == id && currentPlayer.GetName() == "Player")
-            {
-                Debug.Log(name + ": É a vez do " + currentPlayer.GetName());
-                robot.Perceive(new Name[] {
-                    EventHelper.PropertyChange("CurrentPlayer(Name)", currentPlayer.GetName(), name),
-                    EventHelper.PropertyChange("State(Game)", "LevelUp", name) });
-                robot.Decide();
-            }
-            else
-            {
-                Debug.Log(name + " gazes at " + currentPlayer.GetName());
-            }
+            Debug.Log(name + " gazes at " + currentPlayer.GetName());
         }
     }
+
     public override void LevelUp(Album currAlbum)
     {
         base.LevelUp(currAlbum);
@@ -386,29 +381,23 @@ public class RoboticPlayerGreedyStrategy : AIPlayerGreedyStrategy
         }
         ChangePreferredInstrument(preferredIntrument);
     }
-    public override void LevelUpRequest(Album currAlbum)
+
+    public override void InformLevelUp()
     {
         Player currentPlayer = gameManagerRef.GetCurrentPlayer();
         int currSpeakingPlayerId = gameManagerRef.GetCurrSpeakingPlayerId();
 
-        if (currentPlayer == this)
+        if (currSpeakingPlayerId == id && currentPlayer.GetName() == "Player")
         {
-            LevelUp(currAlbum);
+            Debug.Log(name + ": É a vez do " + currentPlayer.GetName());
+            robot.Perceive(new Name[] {
+                EventHelper.PropertyChange("CurrentPlayer(Name)", currentPlayer.GetName(), name),
+                EventHelper.PropertyChange("State(Game)", "LevelUp", name) });
+            robot.Decide();
         }
         else
         {
-            if (currSpeakingPlayerId == id && currentPlayer.GetName() == "Player")
-            {
-                Debug.Log(name + ": É a vez do " + currentPlayer.GetName());
-                robot.Perceive(new Name[] {
-                    EventHelper.PropertyChange("CurrentPlayer(Name)", currentPlayer.GetName(), name),
-                    EventHelper.PropertyChange("State(Game)", "LevelUp", name) });
-                robot.Decide();
-            }
-            else
-            {
-                Debug.Log(name + " gazes at " + currentPlayer.GetName());
-            }
+            Debug.Log(name + " gazes at " + currentPlayer.GetName());
         }
     }
     public override void LevelUp(Album currAlbum)
