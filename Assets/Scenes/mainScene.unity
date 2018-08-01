@@ -2343,6 +2343,8 @@ MonoBehaviour:
   UIRollDiceForMarketValueScreen: {fileID: 753118454}
   dice6UI: {fileID: 1856299955880344, guid: 284962ef9de14324d9d6ccfb66b5c6c7, type: 2}
   dice20UI: {fileID: 1343802999348054, guid: e7db9767e3fa50e4c927aac9705ae4ca, type: 2}
+  diceArrowPrefab: {fileID: 1026783219484614, guid: 72b65e2647227574f852bf72d5176831,
+    type: 2}
   UIAlbumCollectionDisplay: {fileID: 52795738}
   poppupPrefab: {fileID: 1616141079890306, guid: dd195aa31deca92418226f18b7239f07,
     type: 2}
