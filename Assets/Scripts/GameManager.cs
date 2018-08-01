@@ -473,17 +473,13 @@ public class GameManager : MonoBehaviour {
             numPlayersToLevelUp--;
             if (numPlayersToLevelUp > 0)
             {
-                if (GameProperties.isSimulation)
+                foreach (var player in GameGlobals.players)
                 {
-                    nextPlayer.LevelUpRequest(currAlbum);
+                    player.InformLevelUp();
                 }
-                else
-                {
-                    foreach (var player in GameGlobals.players)
-                    {
-                        player.LevelUpRequest(currAlbum);
-                    }
-                }
+
+                nextPlayer.LevelUpRequest(currAlbum);
+                
             }
         }
         if (playForInstrumentResponseReceived)
