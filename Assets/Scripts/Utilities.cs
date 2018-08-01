@@ -69,7 +69,7 @@ public static class GameProperties
 
     public static int maximumSkillLevelPerInstrument = 9000; //infinite
 
-    public static int numberOfAlbumsPerGame = 5;
+    public static int numberOfAlbumsPerGame = 1;
     public static int numberOfPlayersPerGame = 3;
 
     public static int numMarketDices = 2; //config the initial number of dices to roll

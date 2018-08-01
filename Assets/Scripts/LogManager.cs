@@ -64,11 +64,11 @@ public class FileLogManager : ILogManager
     
     public void InitLogs()
     {
-        albumStatsFileWritter = File.CreateText(Application.dataPath + "/Logs/albumGameStatsLog.txt");
-        playersLogFileWritter = File.CreateText(Application.dataPath + "/Logs/playerStatsLog.txt");
-        playerStatsFileWritter = File.CreateText(Application.dataPath + "/Logs/playerGameStatsLog.txt");
-        gameStatsFileWritter = File.CreateText(Application.dataPath + "/Logs/gameStatsLog.txt");
-        eventsLogFileWritter = File.CreateText(Application.dataPath + "/Logs/eventsLog.txt");
+        albumStatsFileWritter = File.CreateText(Application.dataPath + "./Logs/albumGameStatsLog.txt");
+        playersLogFileWritter = File.CreateText(Application.dataPath + "./Logs/playerStatsLog.txt");
+        playerStatsFileWritter = File.CreateText(Application.dataPath + "./Logs/playerGameStatsLog.txt");
+        gameStatsFileWritter = File.CreateText(Application.dataPath + "./Logs/gameStatsLog.txt");
+        eventsLogFileWritter = File.CreateText(Application.dataPath + "./Logs/eventsLog.txt");
 
         albumStatsFileWritter.WriteLine("\"SessionId\";\"GameId\";\"RoundId\";\"AlbumId\";\"AlbumName\";\"MState\"");
         playersLogFileWritter.WriteLine("\"SessionId\";\"GameId\";\"PlayerId\";\"PlayerName\";\"AIType\"");

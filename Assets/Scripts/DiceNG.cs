@@ -107,7 +107,7 @@ public abstract class FixedDiceNG : IDiceNG
     protected int GoodMarketRNG(int diceNumbers, int currNumberOfRolls)
     {
         Album currAlbum = GameGlobals.albums[GameGlobals.albums.Count - 1];
-        return random.Next(1, Mathf.CeilToInt(currAlbum.GetValue() / currNumberOfRolls) - 1);
+        return random.Next(1, Mathf.CeilToInt(currAlbum.GetValue() / currNumberOfRolls));
     }
 
     protected int RollDiceFor6(Player whoRollsTheDice, GameProperties.Instrument diceTarget, int diceNumbers, int rollOrderNumber, int currNumberOfRolls)

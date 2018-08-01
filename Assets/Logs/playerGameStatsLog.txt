@@ -1,0 +1,4 @@
+"SessionId";"GameId";"RoundId";"PlayerId";"PlayerName";"Money"
+43313.8191454273;0;0;0;Coop Jeff;3000
+43313.8191454273;0;0;1;Greedy Kevin;3000
+43313.8191454273;0;0;2;Balanced Sam;3000
