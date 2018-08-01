@@ -232,27 +232,36 @@ public class RoboticPlayerCoopStrategy : AIPlayerCoopStrategy
         int currSpeakingPlayerId = gameManagerRef.GetCurrSpeakingPlayerId();
         if (currSpeakingPlayerId == id)
         {
-            float luckFactor = (float)obtainedValue / (float)maxValue;
-
-            if (luckFactor > 0.7)
+            // rolling d20 dice(s)
+            if (maxValue % 20 == 0)
             {
                 robot.Perceive(new Name[] {
+            EventHelper.PropertyChange("State(Game)", "RollMarketDice", name) });
+            }
+            else // rolling d6 dice(s)
+            {
+                float luckFactor = (float)obtainedValue / (float)maxValue;
+
+                if (luckFactor > 0.7)
+                {
+                    robot.Perceive(new Name[] {
             EventHelper.PropertyChange("State(Game)", "RollInstrumentDice", name),
             EventHelper.PropertyChange("Roll(InstrumentDice)", "Luck", invoker.GetName()) });
-            }
-            else if (luckFactor < 0.2)
-            {
-                robot.Perceive(new Name[] {
+                }
+                else if (luckFactor < 0.2)
+                {
+                    robot.Perceive(new Name[] {
             EventHelper.PropertyChange("State(Game)", "RollInstrumentDice", name),
             EventHelper.PropertyChange("Roll(InstrumentDice)", "BadLuck", invoker.GetName()) });
-            }
-            else
-            {
-                robot.Perceive(new Name[] {
+                }
+                else
+                {
+                    robot.Perceive(new Name[] {
             EventHelper.PropertyChange("State(Game)", "RollInstrumentDice", name),
             EventHelper.PropertyChange("Roll(InstrumentDice)", "Neutral", invoker.GetName()) });
+                }
+                robot.Decide();
             }
-            robot.Decide();
         }
     }
     protected override void InformAlbumResultActions(int albumValue, int marketValue)
@@ -442,27 +451,36 @@ public class RoboticPlayerGreedyStrategy : AIPlayerGreedyStrategy
 
         if (currSpeakingPlayerId == id)
         {
-            float luckFactor = (float)obtainedValue / (float)maxValue;
-
-            if (luckFactor > 0.7)
+            // rolling d20 dice(s)
+            if (maxValue % 20 == 0)
             {
                 robot.Perceive(new Name[] {
+            EventHelper.PropertyChange("State(Game)", "RollMarketDice", name) });
+            }
+            else // rolling d6 dice(s)
+            {
+                float luckFactor = (float)obtainedValue / (float)maxValue;
+
+                if (luckFactor > 0.7)
+                {
+                    robot.Perceive(new Name[] {
             EventHelper.PropertyChange("State(Game)", "RollInstrumentDice", name),
             EventHelper.PropertyChange("Roll(InstrumentDice)", "Luck", invoker.GetName()) });
-            }
-            else if (luckFactor < 0.2)
-            {
-                robot.Perceive(new Name[] {
+                }
+                else if (luckFactor < 0.2)
+                {
+                    robot.Perceive(new Name[] {
             EventHelper.PropertyChange("State(Game)", "RollInstrumentDice", name),
             EventHelper.PropertyChange("Roll(InstrumentDice)", "BadLuck", invoker.GetName()) });
-            }
-            else
-            {
-                robot.Perceive(new Name[] {
+                }
+                else
+                {
+                    robot.Perceive(new Name[] {
             EventHelper.PropertyChange("State(Game)", "RollInstrumentDice", name),
             EventHelper.PropertyChange("Roll(InstrumentDice)", "Neutral", invoker.GetName()) });
+                }
+                robot.Decide();
             }
-            robot.Decide();
         }
     }
     protected override void InformAlbumResultActions(int albumValue, int marketValue)
