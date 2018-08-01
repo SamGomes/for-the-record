@@ -27,7 +27,7 @@ public class EmotionalRoboticPlayer : MonoBehaviour
     void Start()
     {
         isStopped = false;
-        iat = IntegratedAuthoringToolAsset.LoadFromFile("Assets/Scenarios/ForTheRecord.iat");
+        iat = IntegratedAuthoringToolAsset.LoadFromFile(Application.dataPath + "/.." + GameGlobals.FAtiMAScenarioPath);
         rpc = RolePlayCharacterAsset.LoadFromFile(iat.GetAllCharacterSources().FirstOrDefault().Source);
         rpc.LoadAssociatedAssets();
         iat.BindToRegistry(rpc.DynamicPropertiesRegistry);
