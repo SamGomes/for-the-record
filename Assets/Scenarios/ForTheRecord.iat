@@ -176,14 +176,6 @@
 					"UtteranceId": "TTS-47F41F3F2513BCB47038C9EF9AB7F320"
 				}, 
 				{
-					"CurrentState": "NewAlbum",
-					"NextState": "-",
-					"Meaning": "Middle",
-					"Style": "-",
-					"Utterance": "Mais um álbum para a nossa banda...",
-					"UtteranceId": "TTS-0F380F3C7CC2E9556BA680BA3F2E2E94"
-				}, 
-				{
 					"CurrentState": "LevelUp",
 					"NextState": "-",
 					"Meaning": "Me",

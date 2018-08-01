@@ -410,14 +410,6 @@ public class GameManager : MonoBehaviour {
             }
         }
 
-
-        //players see the game result
-        currSpeakingPlayerId = Random.Range(0, GameGlobals.numberOfSpeakingPlayers);
-        foreach (Player player in GameGlobals.players)
-        {
-            player.InformGameResult(GameGlobals.currGameState);
-        }
-
         this.checkedAlbumResult = true;
     }
 
@@ -464,7 +456,17 @@ public class GameManager : MonoBehaviour {
             numPlayersToLevelUp--;
             if (numPlayersToLevelUp > 0)
             {
-                nextPlayer.LevelUpRequest(currAlbum);
+                if (GameProperties.isSimulation)
+                {
+                    nextPlayer.LevelUpRequest(currAlbum);
+                }
+                else
+                {
+                    foreach (var player in GameGlobals.players)
+                    {
+                        player.LevelUpRequest(currAlbum);
+                    }
+                }
             }
         }
         if (playForInstrumentResponseReceived)
@@ -575,10 +577,13 @@ public class GameManager : MonoBehaviour {
                 StartGameRoundForAllPlayers("SimAlbum");
             }
 
-            currSpeakingPlayerId = Random.Range(0, GameGlobals.numberOfSpeakingPlayers);
-            foreach (var player in GameGlobals.players)
+            if (GameGlobals.albums.Count < 5)
             {
-                player.InformNewAlbum();
+                currSpeakingPlayerId = Random.Range(0, GameGlobals.numberOfSpeakingPlayers);
+                foreach (var player in GameGlobals.players)
+                {
+                    player.InformNewAlbum();
+                }
             }
 
             if (GameGlobals.albums.Count == 3)
@@ -619,6 +624,16 @@ public class GameManager : MonoBehaviour {
                         infoScreenWinRef.DisplayPoppup("The band had a successful journey! Congratulations!");
                     }
                 }
+
+
+                //players see the game result
+                currSpeakingPlayerId = Random.Range(0, GameGlobals.numberOfSpeakingPlayers);
+                foreach (Player player in GameGlobals.players)
+                {
+                    player.InformGameResult(GameGlobals.currGameState);
+                }
+
+
 
                 UIadvanceRoundButton.GetComponentInChildren<Text>().text = "Finish Game";
                 this.gameMainSceneFinished = true;

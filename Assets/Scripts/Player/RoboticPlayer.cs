@@ -41,12 +41,12 @@ public class EmotionalRoboticPlayer : MonoBehaviour
         this.name = name;
     }
 
-    public void perceive (Name[] events)
+    public void Perceive (Name[] events)
     {
         rpc.Perceive(events);
     }
 
-    public void decide ()
+    public void Decide ()
     {
         IEnumerable<ActionLibrary.IAction> possibleActions = rpc.Decide();
         ActionLibrary.IAction chosenAction = possibleActions.FirstOrDefault();
@@ -144,11 +144,11 @@ public class RoboticPlayerCoopStrategy : AIPlayerCoopStrategy
 
     public override void ChoosePreferredInstrument(Album currAlbum)
     {
-        robot.perceive(new Name[] {
+        robot.Perceive(new Name[] {
             EventHelper.PropertyChange("Character(Name)", name, name),
             EventHelper.PropertyChange("State(Game)", "ChoosePreferredInstrument", name) });
         base.ChoosePreferredInstrument(currAlbum);
-        robot.decide();
+        robot.Decide();
     }
     protected override void ChoosePreferredInstrumentActions(Album currAlbum)
     {
@@ -172,47 +172,41 @@ public class RoboticPlayerCoopStrategy : AIPlayerCoopStrategy
     {
         Player currentPlayer = gameManagerRef.GetCurrentPlayer();
         int currSpeakingPlayerId = gameManagerRef.GetCurrSpeakingPlayerId();
-        base.LevelUp(currAlbum);
-        if (id == gameManagerRef.GetCurrSpeakingPlayerId())
+
+        if (currentPlayer == this)
         {
-            Debug.Log(name + ": É a vez do " + currentPlayer.GetName());
-            robot.perceive(new Name[] {
-                EventHelper.PropertyChange("CurrentPlayer(Name)", currentPlayer.GetName(), name),
-                EventHelper.PropertyChange("State(Game)", "LevelUp", name) });
-            robot.decide();
+            LevelUp(currAlbum);
         }
         else
         {
-            Debug.Log(name + " gazes at " + currentPlayer.GetName());
             if (currSpeakingPlayerId == id && currentPlayer.GetName() == "Player")
             {
                 Debug.Log(name + ": É a vez do " + currentPlayer.GetName());
-                robot.perceive(new Name[] {
+                robot.Perceive(new Name[] {
                     EventHelper.PropertyChange("CurrentPlayer(Name)", currentPlayer.GetName(), name),
                     EventHelper.PropertyChange("State(Game)", "LevelUp", name) });
-                robot.decide();
+                robot.Decide();
             }
             else
             {
                 Debug.Log(name + " gazes at " + currentPlayer.GetName());
             }
         }
-        
     }
     public override void LevelUp(Album currAlbum)
     {
         base.LevelUp(currAlbum);
-        robot.perceive(new Name[] {
+        robot.Perceive(new Name[] {
             EventHelper.PropertyChange("CurrentPlayer(Name)", name, name),
             EventHelper.PropertyChange("State(Game)", "LevelUp", name) });
-        robot.decide();
+        robot.Decide();
     }
     public override void PlayForInstrument(Album currAlbum)
     {
-        robot.perceive(new Name[] {
+        robot.Perceive(new Name[] {
             EventHelper.PropertyChange("State(Game)", "PlayForInstrument", name) });
         base.PlayForInstrument(currAlbum);
-        robot.decide();
+        robot.Decide();
     }
     public override void LastDecisionsPhase(Album currAlbum)
     {
@@ -220,17 +214,17 @@ public class RoboticPlayerCoopStrategy : AIPlayerCoopStrategy
 
         if (currAlbum.GetMarketingState() == GameProperties.AlbumMarketingState.MEGA_HIT)
         {
-            robot.perceive(new Name[] {
+            robot.Perceive(new Name[] {
             EventHelper.PropertyChange("State(Game)", "LastDecisionsPhase", name),
             EventHelper.PropertyChange("Album(Result)", "Success", name) });
         }
         else
         {
-            robot.perceive(new Name[] {
+            robot.Perceive(new Name[] {
             EventHelper.PropertyChange("State(Game)", "LastDecisionsPhase", name),
             EventHelper.PropertyChange("Album(Result)", "Fail", name) });
         }
-        robot.decide();
+        robot.Decide();
     }
 
     protected override void InformRollDicesValueActions(Player invoker, int maxValue, int obtainedValue)
@@ -242,23 +236,23 @@ public class RoboticPlayerCoopStrategy : AIPlayerCoopStrategy
 
             if (luckFactor > 0.7)
             {
-                robot.perceive(new Name[] {
+                robot.Perceive(new Name[] {
             EventHelper.PropertyChange("State(Game)", "RollInstrumentDice", name),
             EventHelper.PropertyChange("Roll(InstrumentDice)", "Luck", invoker.GetName()) });
             }
             else if (luckFactor < 0.2)
             {
-                robot.perceive(new Name[] {
+                robot.Perceive(new Name[] {
             EventHelper.PropertyChange("State(Game)", "RollInstrumentDice", name),
             EventHelper.PropertyChange("Roll(InstrumentDice)", "BadLuck", invoker.GetName()) });
             }
             else
             {
-                robot.perceive(new Name[] {
+                robot.Perceive(new Name[] {
             EventHelper.PropertyChange("State(Game)", "RollInstrumentDice", name),
             EventHelper.PropertyChange("Roll(InstrumentDice)", "Neutral", invoker.GetName()) });
             }
-            robot.decide();
+            robot.Decide();
         }
     }
     protected override void InformAlbumResultActions(int albumValue, int marketValue)
@@ -267,20 +261,20 @@ public class RoboticPlayerCoopStrategy : AIPlayerCoopStrategy
 
         if (albumValue >= marketValue)
         {
-            robot.perceive(new Name[] {
+            robot.Perceive(new Name[] {
             EventHelper.PropertyChange("State(Game)", "RollMarketDice", name),
             EventHelper.PropertyChange("Roll(MarketDice)", "Success", name) });
         }
         else
         {
-            robot.perceive(new Name[] {
+            robot.Perceive(new Name[] {
             EventHelper.PropertyChange("State(Game)", "RollMarketDice", name),
             EventHelper.PropertyChange("Roll(MarketDice)", "Fail", name) });
         }
 
         if (currSpeakingPlayerId == id)
         {
-            robot.decide();
+            robot.Decide();
         }
         else
         {
@@ -292,20 +286,20 @@ public class RoboticPlayerCoopStrategy : AIPlayerCoopStrategy
         int currSpeakingPlayerId = gameManagerRef.GetCurrSpeakingPlayerId();
         if (state == GameProperties.GameState.VICTORY)
         {
-            robot.perceive(new Name[] {
+            robot.Perceive(new Name[] {
             EventHelper.PropertyChange("State(Game)", "GameEnd", name),
             EventHelper.PropertyChange("Game(Result)", "Victory", name) });
         }
         else if (state == GameProperties.GameState.LOSS)
         {
-            robot.perceive(new Name[] {
+            robot.Perceive(new Name[] {
             EventHelper.PropertyChange("State(Game)", "GameEnd", name),
             EventHelper.PropertyChange("Game(Result)", "Loss", name) });
         }
 
         if (currSpeakingPlayerId == id)
         {
-            robot.decide();
+            robot.Decide();
         }
         else
         {
@@ -317,25 +311,25 @@ public class RoboticPlayerCoopStrategy : AIPlayerCoopStrategy
         int currSpeakingPlayerId = gameManagerRef.GetCurrSpeakingPlayerId();
         if (currSpeakingPlayerId == id)
         {
-            robot.perceive(new Name[] {
+            robot.Perceive(new Name[] {
             EventHelper.PropertyChange("State(Game)", "NewAlbum", name) });
 
             if (GameGlobals.albums.Count() == 0)
             {
-                robot.perceive(new Name[] {
+                robot.Perceive(new Name[] {
             EventHelper.PropertyChange("State(Career)", "Beginning", name) });
             }
             else if (GameGlobals.albums.Count() == 4)
             {
-                robot.perceive(new Name[] {
+                robot.Perceive(new Name[] {
             EventHelper.PropertyChange("State(Career)", "End", name) });
             }
             else
             {
-                robot.perceive(new Name[] {
+                robot.Perceive(new Name[] {
             EventHelper.PropertyChange("State(Career)", "Middle", name) });
             }
-            robot.decide();
+            robot.Decide();
         }
     }
 }
@@ -359,11 +353,11 @@ public class RoboticPlayerGreedyStrategy : AIPlayerGreedyStrategy
 
     public override void ChoosePreferredInstrument(Album currAlbum)
     {
-        robot.perceive(new Name[] {
+        robot.Perceive(new Name[] {
             EventHelper.PropertyChange("Character(Name)", name, name),
             EventHelper.PropertyChange("State(Game)", "ChoosePreferredInstrument", name) });
         base.ChoosePreferredInstrument(currAlbum);
-        robot.decide();
+        robot.Decide();
     }
     protected override void ChoosePreferredInstrumentActions(Album currAlbum)
     {
@@ -387,25 +381,20 @@ public class RoboticPlayerGreedyStrategy : AIPlayerGreedyStrategy
     {
         Player currentPlayer = gameManagerRef.GetCurrentPlayer();
         int currSpeakingPlayerId = gameManagerRef.GetCurrSpeakingPlayerId();
-        base.LevelUp(currAlbum);
-        if (id == gameManagerRef.GetCurrSpeakingPlayerId())
+
+        if (currentPlayer == this)
         {
-            Debug.Log(name + ": É a vez do " + currentPlayer.GetName());
-            robot.perceive(new Name[] {
-                EventHelper.PropertyChange("CurrentPlayer(Name)", currentPlayer.GetName(), name),
-                EventHelper.PropertyChange("State(Game)", "LevelUp", name) });
-            robot.decide();
+            LevelUp(currAlbum);
         }
         else
         {
-            Debug.Log(name + " gazes at " + currentPlayer.GetName());
             if (currSpeakingPlayerId == id && currentPlayer.GetName() == "Player")
             {
                 Debug.Log(name + ": É a vez do " + currentPlayer.GetName());
-                robot.perceive(new Name[] {
+                robot.Perceive(new Name[] {
                     EventHelper.PropertyChange("CurrentPlayer(Name)", currentPlayer.GetName(), name),
                     EventHelper.PropertyChange("State(Game)", "LevelUp", name) });
-                robot.decide();
+                robot.Decide();
             }
             else
             {
@@ -416,17 +405,17 @@ public class RoboticPlayerGreedyStrategy : AIPlayerGreedyStrategy
     public override void LevelUp(Album currAlbum)
     {
         base.LevelUp(currAlbum);
-        robot.perceive(new Name[] {
+        robot.Perceive(new Name[] {
             EventHelper.PropertyChange("CurrentPlayer(Name)", name, name),
             EventHelper.PropertyChange("State(Game)", "LevelUp", name) });
-        robot.decide();
+        robot.Decide();
     }
     public override void PlayForInstrument(Album currAlbum)
     {
-        robot.perceive(new Name[] {
+        robot.Perceive(new Name[] {
             EventHelper.PropertyChange("State(Game)", "PlayForInstrument", name) });
         base.PlayForInstrument(currAlbum);
-        robot.decide();
+        robot.Decide();
     }
     public override void LastDecisionsPhase(Album currAlbum)
     {
@@ -434,17 +423,17 @@ public class RoboticPlayerGreedyStrategy : AIPlayerGreedyStrategy
 
         if (currAlbum.GetMarketingState() == GameProperties.AlbumMarketingState.MEGA_HIT)
         {
-            robot.perceive(new Name[] {
+            robot.Perceive(new Name[] {
             EventHelper.PropertyChange("State(Game)", "LastDecisionsPhase", name),
             EventHelper.PropertyChange("Album(Result)", "Success", name) });
         }
         else
         {
-            robot.perceive(new Name[] {
+            robot.Perceive(new Name[] {
             EventHelper.PropertyChange("State(Game)", "LastDecisionsPhase", name),
             EventHelper.PropertyChange("Album(Result)", "Fail", name) });
         }
-        robot.decide();
+        robot.Decide();
     }
 
     protected override void InformRollDicesValueActions(Player invoker, int maxValue, int obtainedValue)
@@ -457,23 +446,23 @@ public class RoboticPlayerGreedyStrategy : AIPlayerGreedyStrategy
 
             if (luckFactor > 0.7)
             {
-                robot.perceive(new Name[] {
+                robot.Perceive(new Name[] {
             EventHelper.PropertyChange("State(Game)", "RollInstrumentDice", name),
             EventHelper.PropertyChange("Roll(InstrumentDice)", "Luck", invoker.GetName()) });
             }
             else if (luckFactor < 0.2)
             {
-                robot.perceive(new Name[] {
+                robot.Perceive(new Name[] {
             EventHelper.PropertyChange("State(Game)", "RollInstrumentDice", name),
             EventHelper.PropertyChange("Roll(InstrumentDice)", "BadLuck", invoker.GetName()) });
             }
             else
             {
-                robot.perceive(new Name[] {
+                robot.Perceive(new Name[] {
             EventHelper.PropertyChange("State(Game)", "RollInstrumentDice", name),
             EventHelper.PropertyChange("Roll(InstrumentDice)", "Neutral", invoker.GetName()) });
             }
-            robot.decide();
+            robot.Decide();
         }
     }
     protected override void InformAlbumResultActions(int albumValue, int marketValue)
@@ -482,20 +471,20 @@ public class RoboticPlayerGreedyStrategy : AIPlayerGreedyStrategy
 
         if (albumValue >= marketValue)
         {
-            robot.perceive(new Name[] {
+            robot.Perceive(new Name[] {
             EventHelper.PropertyChange("State(Game)", "RollMarketDice", name),
             EventHelper.PropertyChange("Roll(MarketDice)", "Success", name) });
         }
         else
         {
-            robot.perceive(new Name[] {
+            robot.Perceive(new Name[] {
             EventHelper.PropertyChange("State(Game)", "RollMarketDice", name),
             EventHelper.PropertyChange("Roll(MarketDice)", "Fail", name) });
         }
 
         if (currSpeakingPlayerId == id)
         {
-            robot.decide();
+            robot.Decide();
         }
         else
         {
@@ -508,20 +497,20 @@ public class RoboticPlayerGreedyStrategy : AIPlayerGreedyStrategy
 
         if (state == GameProperties.GameState.VICTORY)
         {
-            robot.perceive(new Name[] {
+            robot.Perceive(new Name[] {
             EventHelper.PropertyChange("State(Game)", "GameEnd", name),
             EventHelper.PropertyChange("Game(Result)", "Victory", name) });
         }
         else if (state == GameProperties.GameState.LOSS)
         {
-            robot.perceive(new Name[] {
+            robot.Perceive(new Name[] {
             EventHelper.PropertyChange("State(Game)", "GameEnd", name),
             EventHelper.PropertyChange("Game(Result)", "Loss", name) });
         }
 
         if (currSpeakingPlayerId == id)
         {
-            robot.decide();
+            robot.Decide();
         }
         else
         {
@@ -533,25 +522,25 @@ public class RoboticPlayerGreedyStrategy : AIPlayerGreedyStrategy
         int currSpeakingPlayerId = gameManagerRef.GetCurrSpeakingPlayerId();
         if (currSpeakingPlayerId == id)
         {
-            robot.perceive(new Name[] {
+            robot.Perceive(new Name[] {
             EventHelper.PropertyChange("State(Game)", "NewAlbum", name) });
 
             if (GameGlobals.albums.Count() == 0)
             {
-                robot.perceive(new Name[] {
+                robot.Perceive(new Name[] {
             EventHelper.PropertyChange("State(Career)", "Beginning", name) });
             }
             else if (GameGlobals.albums.Count() == 4)
             {
-                robot.perceive(new Name[] {
+                robot.Perceive(new Name[] {
             EventHelper.PropertyChange("State(Career)", "End", name) });
             }
             else
             {
-                robot.perceive(new Name[] {
+                robot.Perceive(new Name[] {
             EventHelper.PropertyChange("State(Career)", "Middle", name) });
             }
-            robot.decide();
+            robot.Decide();
         }
     }
 }

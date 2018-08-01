@@ -25,10 +25,10 @@ public abstract class AIPlayer : UIPlayer
         playForInstrumentThinkingDelay = 0.5f;
         lastDecisionThinkingDelay = 1.0f;
 
-        informNewAlbumDelay = 3.0f;
-        informDiceRollDelay = 3.0f;
-        informAlbumResultDelay = 3.0f;
-        informGameResultDelay = 3.0f;
+        informNewAlbumDelay = 1.0f;
+        informDiceRollDelay = 2.0f;
+        informAlbumResultDelay = 1.0f;
+        informGameResultDelay = 1.0f;
 
         sendResponsesDelay = 1.0f;
     }
@@ -90,7 +90,7 @@ public abstract class AIPlayer : UIPlayer
         }
         else
         {
-            InformNewAlbum();
+            InformNewAlbumActions();
         }
     }
 
@@ -131,7 +131,7 @@ public abstract class AIPlayer : UIPlayer
     private IEnumerator DelayedInformNewAlbumActions(float delay, bool isInformDelayed)
     {
         yield return new WaitForSeconds(delay);
-        InformNewAlbum();
+        InformNewAlbumActions();
     }
 
     //------------------------------------[RESPONSE METHODS]---------------------------------------------------
