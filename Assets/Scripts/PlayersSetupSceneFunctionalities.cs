@@ -5,8 +5,7 @@ using UnityEngine.UI;
 
 public class PlayersSetupSceneFunctionalities : MonoBehaviour {
 
-    private GameObject title1;
-    private GameObject title2;
+    private GameObject customizeLabel;
 
     private InputField UINameSelectionInputBox;
     private Button UIStartGameButton;
@@ -21,9 +20,8 @@ public class PlayersSetupSceneFunctionalities : MonoBehaviour {
     {
         if (!GameProperties.isSimulation)
         {
-
-            this.title1 = GameObject.Find("Canvas/SetupScreen/title1").gameObject;
-            this.title2 = GameObject.Find("Canvas/SetupScreen/title2").gameObject;
+            
+            this.customizeLabel = GameObject.Find("Canvas/SetupScreen/customizeLabel").gameObject;
 
             this.UIResetButton = GameObject.Find("Canvas/SetupScreen/resetButton").gameObject.GetComponent<Button>();
             this.UINameSelectionInputBox = GameObject.Find("Canvas/SetupScreen/nameSelectionInputBox").gameObject.GetComponent<InputField>();
@@ -127,6 +125,32 @@ public class PlayersSetupSceneFunctionalities : MonoBehaviour {
                         Thread.Sleep(1000);
                         glin.FlushRobotUtterance("E eu sou o Glin! Vamos lá formar uma banda e ver se conseguimos triunfar!");
                     }
+                    else if (button.gameObject.name.EndsWith("5"))
+                    {
+                        GameGlobals.numberOfSpeakingPlayers = 2;
+                        RoboticPlayerCoopStrategy glin = new RoboticPlayerCoopStrategy(0, "Glin");
+                        GameGlobals.players.Add(glin);
+                        RoboticPlayerGreedyStrategy emys = new RoboticPlayerGreedyStrategy(1, "Emys");
+                        GameGlobals.players.Add(emys);
+                        GameGlobals.players.Add(new UIPlayer("Player"));
+                        GameGlobals.gameDiceNG = new VictoryDiceNG();
+                        emys.FlushRobotUtterance("Eu sou o Glin!");
+                        Thread.Sleep(1000);
+                        glin.FlushRobotUtterance("E eu sou o émys! Vamos lá formar uma banda e ver se conseguimos triunfar!");
+                    }
+                    else if (button.gameObject.name.EndsWith("6"))
+                    {
+                        GameGlobals.numberOfSpeakingPlayers = 2;
+                        RoboticPlayerCoopStrategy glin = new RoboticPlayerCoopStrategy(0, "Glin");
+                        GameGlobals.players.Add(glin);
+                        RoboticPlayerGreedyStrategy emys = new RoboticPlayerGreedyStrategy(1, "Emys");
+                        GameGlobals.players.Add(emys);
+                        GameGlobals.players.Add(new UIPlayer("Player"));
+                        GameGlobals.gameDiceNG = new LossDiceNG();
+                        emys.FlushRobotUtterance("Eu sou o Glin!");
+                        Thread.Sleep(1000);
+                        glin.FlushRobotUtterance("E eu sou o émys! Vamos lá formar uma banda e ver se conseguimos triunfar!");
+                    }
                     button.interactable = false;
                     CheckForAllPlayersRegistered();
                 });
@@ -154,8 +178,7 @@ public class PlayersSetupSceneFunctionalities : MonoBehaviour {
         if (GameGlobals.players.Count == GameProperties.numberOfPlayersPerGame)
         {
             UIStartGameButton.gameObject.SetActive(true);
-            title1.gameObject.SetActive(false);
-            title2.gameObject.SetActive(false);
+            customizeLabel.gameObject.SetActive(false);
             UIAddPlayerButton.gameObject.SetActive(false);
             UINameSelectionInputBox.gameObject.SetActive(false);
 
