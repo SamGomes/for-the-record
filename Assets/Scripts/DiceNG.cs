@@ -59,43 +59,43 @@ public abstract class FixedDiceNG : IDiceNG
                 break;
             }
 
-            seriesForDices6[player1][instrument][0] = new int[] { 1 };
-            seriesForDices6[player1][instrument][1] = new int[] { 2, 2 };
-            seriesForDices6[player1][instrument][2] = new int[] { 3, 3, 3 };
-            seriesForDices6[player1][instrument][3] = new int[] { 4, 4, 4, 4 };
-            seriesForDices6[player1][instrument][4] = new int[] { 5, 5, 5, 5, 5 };
+            seriesForDices6[player1][instrument][0] = new int[] { 4 };
+            seriesForDices6[player1][instrument][1] = new int[] { 2, 9 };
+            seriesForDices6[player1][instrument][2] = new int[] { 3, 6, 10 };
+            seriesForDices6[player1][instrument][3] = new int[] { 1, 5, 8, 23 };
+            seriesForDices6[player1][instrument][4] = new int[] { 5, 11, 13, 7, 14 };
 
-            seriesForDices6[player2][instrument][0] = new int[] { 1 };
-            seriesForDices6[player2][instrument][1] = new int[] { 2, 2 };
-            seriesForDices6[player2][instrument][2] = new int[] { 3, 3, 3 };
-            seriesForDices6[player2][instrument][3] = new int[] { 4, 4, 4, 4 };
-            seriesForDices6[player2][instrument][4] = new int[] { 5, 5, 5, 5, 5 };
+            seriesForDices6[player2][instrument][0] = new int[] { 2 };
+            seriesForDices6[player2][instrument][1] = new int[] { 5, 10 };
+            seriesForDices6[player2][instrument][2] = new int[] { 4, 5, 15 };
+            seriesForDices6[player2][instrument][3] = new int[] { 6, 2, 17, 15 };
+            seriesForDices6[player2][instrument][4] = new int[] { 3, 7, 5, 18, 18 };
 
 
-            seriesForDices6[player3][instrument][0] = new int[] { 1 };
-            seriesForDices6[player3][instrument][1] = new int[] { 2, 2 };
-            seriesForDices6[player3][instrument][2] = new int[] { 3, 3, 3 };
-            seriesForDices6[player3][instrument][3] = new int[] { 4, 4, 4, 4 };
-            seriesForDices6[player3][instrument][4] = new int[] { 5, 5, 5, 5, 5 };
+            seriesForDices6[player3][instrument][0] = new int[] { 6 };
+            seriesForDices6[player3][instrument][1] = new int[] { 4, 9 };
+            seriesForDices6[player3][instrument][2] = new int[] { 3, 6, 8 };
+            seriesForDices6[player3][instrument][3] = new int[] { 1, 11, 10, 6 };
+            seriesForDices6[player3][instrument][4] = new int[] { 5, 8, 5, 12, 27 };
         }
 
-        seriesForDices6[player1][GameProperties.Instrument.MARKETING][0] = new int[] { 1 };
-        seriesForDices6[player1][GameProperties.Instrument.MARKETING][1] = new int[] { 2, 2 };
-        seriesForDices6[player1][GameProperties.Instrument.MARKETING][2] = new int[] { 3, 3, 3 };
-        seriesForDices6[player1][GameProperties.Instrument.MARKETING][3] = new int[] { 4, 4, 4, 4 };
-        seriesForDices6[player1][GameProperties.Instrument.MARKETING][4] = new int[] { 5, 5, 5, 5, 5 };
+        seriesForDices6[player1][GameProperties.Instrument.MARKETING][0] = new int[] { 2 };
+        seriesForDices6[player1][GameProperties.Instrument.MARKETING][1] = new int[] { 1, 12 };
+        seriesForDices6[player1][GameProperties.Instrument.MARKETING][2] = new int[] { 1, 7, 15 };
+        seriesForDices6[player1][GameProperties.Instrument.MARKETING][3] = new int[] { 4, 9, 16, 8 };
+        seriesForDices6[player1][GameProperties.Instrument.MARKETING][4] = new int[] { 3, 3, 17, 16, 29 };
 
-        seriesForDices6[player2][GameProperties.Instrument.MARKETING][0] = new int[] { 1 };
-        seriesForDices6[player2][GameProperties.Instrument.MARKETING][1] = new int[] { 2, 2 };
-        seriesForDices6[player2][GameProperties.Instrument.MARKETING][2] = new int[] { 3, 3, 3 };
-        seriesForDices6[player2][GameProperties.Instrument.MARKETING][3] = new int[] { 4, 4, 4, 4 };
-        seriesForDices6[player2][GameProperties.Instrument.MARKETING][4] = new int[] { 5, 5, 5, 5, 5 };
+        seriesForDices6[player2][GameProperties.Instrument.MARKETING][0] = new int[] { 3 };
+        seriesForDices6[player2][GameProperties.Instrument.MARKETING][1] = new int[] { 4, 6 };
+        seriesForDices6[player2][GameProperties.Instrument.MARKETING][2] = new int[] { 6, 5, 13 };
+        seriesForDices6[player2][GameProperties.Instrument.MARKETING][3] = new int[] { 1, 5, 5, 14 };
+        seriesForDices6[player2][GameProperties.Instrument.MARKETING][4] = new int[] { 4, 3, 8, 22, 15 };
 
-        seriesForDices6[player3][GameProperties.Instrument.MARKETING][0] = new int[] { 1 };
-        seriesForDices6[player3][GameProperties.Instrument.MARKETING][1] = new int[] { 2, 2 };
-        seriesForDices6[player3][GameProperties.Instrument.MARKETING][2] = new int[] { 3, 3, 3 };
-        seriesForDices6[player3][GameProperties.Instrument.MARKETING][3] = new int[] { 4, 4, 4, 4 };
-        seriesForDices6[player3][GameProperties.Instrument.MARKETING][4] = new int[] { 5, 5, 5, 5, 5 };
+        seriesForDices6[player3][GameProperties.Instrument.MARKETING][0] = new int[] { 2 };
+        seriesForDices6[player3][GameProperties.Instrument.MARKETING][1] = new int[] { 4, 7 };
+        seriesForDices6[player3][GameProperties.Instrument.MARKETING][2] = new int[] { 3, 9, 7 };
+        seriesForDices6[player3][GameProperties.Instrument.MARKETING][3] = new int[] { 5, 8, 14, 5 };
+        seriesForDices6[player3][GameProperties.Instrument.MARKETING][4] = new int[] { 1, 9, 9, 19, 28 };
 
     }
 
@@ -116,7 +116,7 @@ public abstract class FixedDiceNG : IDiceNG
         {
             currTotalDiceValue = 0;
             currIndividualDiceValues.Clear();
-            int remainingPlayValue = seriesForDices6[whoRollsTheDice][diceTarget][GameGlobals.currGameRoundId][rollOrderNumber];
+            int remainingPlayValue = seriesForDices6[whoRollsTheDice][diceTarget][GameGlobals.currGameRoundId][currNumberOfRolls-1];
             for(int i=0; i < currNumberOfRolls-1; i++)
             {
                 int randomDiceRoll = (remainingPlayValue > 6)? Random.Range(1, 6) : Random.Range(1, remainingPlayValue-1);

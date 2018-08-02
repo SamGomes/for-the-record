@@ -1,0 +1,2 @@
+"SessionId";"GameId";"Result"
+43314.6142669265;0;VICTORY

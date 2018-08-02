@@ -61,9 +61,15 @@ public class FileLogManager : ILogManager
     private StreamWriter gameStatsFileWritter;
     private StreamWriter eventsLogFileWritter;
 
+    private bool isInitialized = false;
     
     public void InitLogs()
     {
+        if (isInitialized)
+        {
+            return;
+        }
+
         albumStatsFileWritter = File.CreateText(Application.dataPath + "./Logs/albumGameStatsLog.txt");
         playersLogFileWritter = File.CreateText(Application.dataPath + "./Logs/playerStatsLog.txt");
         playerStatsFileWritter = File.CreateText(Application.dataPath + "./Logs/playerGameStatsLog.txt");
@@ -75,6 +81,8 @@ public class FileLogManager : ILogManager
         playerStatsFileWritter.WriteLine("\"SessionId\";\"GameId\";\"RoundId\";\"PlayerId\";\"PlayerName\";\"Money\"");
         gameStatsFileWritter.WriteLine("\"SessionId\";\"GameId\";\"Result\"");
         eventsLogFileWritter.WriteLine("\"SessionId\";\"GameId\";\"RoundId\";\"PlayerId\";\"PlayerName\";\"Event Type\";\"Instrument\";\"Value\"");
+
+        isInitialized = true;
     }
     public void WritePlayerToLog(string sessionId, string currGameId, string playerId, string playername, string type)
     {

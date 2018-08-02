@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class PoppupScreenFunctionalities
 {
+    private Button UIcloseButton;
     private GameObject poppupInstance;
     private string audioPath;
 
@@ -18,7 +19,7 @@ public class PoppupScreenFunctionalities
         backround.color = backgroundColor;
         poppupInstance.transform.Find("icon").GetComponent<Image>().sprite = icon;
 
-        Button UIcloseButton = poppupInstance.transform.Find("closeButton").GetComponent<Button>();
+        this.UIcloseButton = poppupInstance.transform.Find("closeButton").GetComponent<Button>();
 
         this.playerMonoBehaviourFunctionalities = playerMonoBehaviourFunctionalities;
 
@@ -37,9 +38,26 @@ public class PoppupScreenFunctionalities
     {
         this.audioPath = audioPath;
     }
+    public PoppupScreenFunctionalities(GameObject poppupPrefab, GameObject canvas, PlayerMonoBehaviourFunctionalities playerMonoBehaviourFunctionalities, Sprite icon, Color backgroundColor, System.Func<int> additionalCloseButtonFunctionalities)
+        : this(poppupPrefab, canvas, playerMonoBehaviourFunctionalities, icon, backgroundColor)
+    {
+        this.UIcloseButton.onClick.AddListener(delegate () { additionalCloseButtonFunctionalities(); });
+    }
+    public PoppupScreenFunctionalities(GameObject poppupPrefab, GameObject canvas, PlayerMonoBehaviourFunctionalities playerMonoBehaviourFunctionalities, Sprite icon, Color backgroundColor, string audioPath, System.Func<int> additionalCloseButtonFunctionalities)
+        : this(poppupPrefab, canvas, playerMonoBehaviourFunctionalities, icon, backgroundColor)
+    {
+        this.audioPath = audioPath;
+        this.UIcloseButton.onClick.AddListener(delegate () { additionalCloseButtonFunctionalities(); });
+    }
+
+
+    public void DestroyPoppupPanel()
+    {
+        Object.Destroy(poppupInstance);
+    }
     public void HidePoppupPanel()
     {
-        poppupInstance.SetActive(false);
+        poppupInstance.gameObject.SetActive(false);
     }
     public void DisplayPoppup(string text)
     {
