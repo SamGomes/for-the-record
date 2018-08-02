@@ -62,18 +62,19 @@ public class GameManager : MonoBehaviour {
     private float diceRollDelay;
 
     private int marketLimit;
+    private int currNumberOfMarketDices;
 
     void Awake()
     {
         GameGlobals.gameManager = this;
         //mock to test
-        GameGlobals.gameLogManager.InitLogs();
-        GameGlobals.albums = new List<Album>(GameProperties.numberOfAlbumsPerGame);
-        GameGlobals.players = new List<Player>(GameProperties.numberOfPlayersPerGame);
-        GameGlobals.players.Add(new UIPlayer("Coop Jeff"));
-        GameGlobals.players.Add(new UIPlayer("Greedy Kevin"));
-        GameGlobals.players.Add(new UIPlayer("Balanced Sam"));
-        GameGlobals.gameDiceNG = new VictoryDiceNG();
+        //GameGlobals.gameLogManager.InitLogs();
+        //GameGlobals.albums = new List<Album>(GameProperties.numberOfAlbumsPerGame);
+        //GameGlobals.players = new List<Player>(GameProperties.numberOfPlayersPerGame);
+        //GameGlobals.players.Add(new UIPlayer("Coop Jeff"));
+        //GameGlobals.players.Add(new UIPlayer("Greedy Kevin"));
+        //GameGlobals.players.Add(new UIPlayer("Balanced Sam"));
+        //GameGlobals.gameDiceNG = new VictoryDiceNG();
     }
 
     public void InterruptGame()
@@ -135,7 +136,7 @@ public class GameManager : MonoBehaviour {
         numMegaHits = 0;
 
         marketLimit = Mathf.FloorToInt(GameProperties.numberOfAlbumsPerGame * 4.0f / 5.0f) - 1;
-
+        currNumberOfMarketDices = GameProperties.initNumberMarketDices;
     }
 
     //warning: works only when using human players!
@@ -357,10 +358,10 @@ public class GameManager : MonoBehaviour {
         UIRollDiceForInstrumentOverlay.transform.Find("title/Text").GetComponent<Text>().text = "Rolling dices for market...";
 
         int marketValue = 0;
-        int[] rolledDiceNumbers = new int[GameProperties.numMarketDices];
-        for(int i=0; i < GameProperties.numMarketDices; i++)
+        int[] rolledDiceNumbers = new int[currNumberOfMarketDices];
+        for(int i=0; i < currNumberOfMarketDices; i++)
         {
-            int randomIncrease = GameGlobals.gameDiceNG.RollTheDice(this.GetCurrentPlayer(), GameProperties.Instrument.NONE, 20, i, GameProperties.numMarketDices);
+            int randomIncrease = GameGlobals.gameDiceNG.RollTheDice(this.GetCurrentPlayer(), GameProperties.Instrument.NONE, 20, i, currNumberOfMarketDices);
             rolledDiceNumbers[i] = randomIncrease;
             marketValue += randomIncrease;
         }
@@ -594,8 +595,7 @@ public class GameManager : MonoBehaviour {
             //enter international market on the next album
             if (GameGlobals.currGameRoundId == marketLimit)
             {
-                int oldNumMarketDices = GameProperties.numMarketDices;
-                GameProperties.numMarketDices++;
+                currNumberOfMarketDices++;
 
                 //poppups are not displayed on simulations
                 if (!GameProperties.isSimulation)
