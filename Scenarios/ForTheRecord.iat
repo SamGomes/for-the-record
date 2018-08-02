@@ -209,11 +209,11 @@
 				}, 
 				{
 					"CurrentState": "LastDecisionsPhase",
-					"NextState": "-",
-					"Meaning": "Fail",
-					"Style": "Emys",
-					"Utterance": "Isto não está a correr muito bem...",
-					"UtteranceId": "TTS-9E95674D9B79AA6E2C00016A38125936"
+					"NextState": "EndGame",
+					"Meaning": "Success",
+					"Style": "Glin",
+					"Utterance": "Foi puxado mas conseguimos!",
+					"UtteranceId": "TTS-58EAB868EE887B7C51FEFB6A19F09179"
 				}, 
 				{
 					"CurrentState": "LastDecisionsPhase",
@@ -232,12 +232,12 @@
 					"UtteranceId": "TTS-12D69CA54E63B36082EB34ED74857965"
 				}, 
 				{
-					"CurrentState": "NewAlbum",
+					"CurrentState": "LastDecisionsPhase",
 					"NextState": "-",
-					"Meaning": "Beginning",
-					"Style": "-",
-					"Utterance": "Vamos lá ver se ésta banda tem sucesso...",
-					"UtteranceId": "TTS-CD543F031214E32828506165ACA02EDE"
+					"Meaning": "Fail",
+					"Style": "Emys",
+					"Utterance": "Assim não vamos lá.",
+					"UtteranceId": "TTS-A1CE756B7C672D9D752F09CFC4D4AA8A"
 				}, 
 				{
 					"CurrentState": "NewAlbum",
@@ -350,6 +350,38 @@
 					"Style": "Emys",
 					"Utterance": "Vou pôr um ponto no marqting",
 					"UtteranceId": "TTS-7C3593EAD0BC5DC9C0E76F2DD8139C6C"
+				}, 
+				{
+					"CurrentState": "NewAlbum",
+					"NextState": "-",
+					"Meaning": "Beginning",
+					"Style": "-",
+					"Utterance": "Espero que ésta banda tenha sucesso...",
+					"UtteranceId": "TTS-129551BE3B86F5CE3FFF13F0CF6E4CA5"
+				}, 
+				{
+					"CurrentState": "LastDecisionsPhase",
+					"NextState": "EndGame",
+					"Meaning": "Fail",
+					"Style": "Glin",
+					"Utterance": "Que desgraça",
+					"UtteranceId": "TTS-1FDE15C5378C59BEF9195B6E4D428239"
+				}, 
+				{
+					"CurrentState": "LastDecisionsPhase",
+					"NextState": "EndGame",
+					"Meaning": "Success",
+					"Style": "Emys",
+					"Utterance": "Ena, tanto dinheiro!",
+					"UtteranceId": "TTS-45045E5744B9FF68CF242B78D06BEB2B"
+				}, 
+				{
+					"CurrentState": "LastDecisionsPhase",
+					"NextState": "EndGame",
+					"Meaning": "Fail",
+					"Style": "Emys",
+					"Utterance": "De facto isto não correu bem",
+					"UtteranceId": "TTS-85B5AAB5DD76BD7601CD10F2A3FBAAAB"
 				}]
 		},
 	"types": [

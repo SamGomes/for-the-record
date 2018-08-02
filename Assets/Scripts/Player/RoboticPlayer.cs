@@ -146,6 +146,7 @@ public class RoboticPlayerCoopStrategy : AIPlayerCoopStrategy
     {
         robot.Perceive(new Name[] {
             EventHelper.PropertyChange("Character(Name)", name, name),
+                EventHelper.PropertyChange("Album(Last)", "False", name),
             EventHelper.PropertyChange("State(Game)", "ChoosePreferredInstrument", name) });
         base.ChoosePreferredInstrument(currAlbum);
         robot.Decide();
@@ -207,17 +208,25 @@ public class RoboticPlayerCoopStrategy : AIPlayerCoopStrategy
     {
         base.LastDecisionsPhase(currAlbum);
 
+        Debug.Log(name + " num of albums " + GameGlobals.albums.Count);
+
         if (currAlbum.GetMarketingState() == GameProperties.AlbumMarketingState.MEGA_HIT)
         {
             robot.Perceive(new Name[] {
-            EventHelper.PropertyChange("State(Game)", "LastDecisionsPhase", name),
-            EventHelper.PropertyChange("Album(Result)", "Success", name) });
+        EventHelper.PropertyChange("State(Game)", "LastDecisionsPhase", name),
+        EventHelper.PropertyChange("Album(Result)", "Success", name) });
         }
         else
         {
             robot.Perceive(new Name[] {
-            EventHelper.PropertyChange("State(Game)", "LastDecisionsPhase", name),
-            EventHelper.PropertyChange("Album(Result)", "Fail", name) });
+        EventHelper.PropertyChange("State(Game)", "LastDecisionsPhase", name),
+        EventHelper.PropertyChange("Album(Result)", "Fail", name) });
+        }
+
+        if (GameGlobals.albums.Count == GameProperties.numberOfAlbumsPerGame)
+        {
+            robot.Perceive(new Name[] {
+                EventHelper.PropertyChange("Album(Last)", "True", name) });
         }
         robot.Decide();
     }
@@ -359,6 +368,7 @@ public class RoboticPlayerGreedyStrategy : AIPlayerGreedyStrategy
     {
         robot.Perceive(new Name[] {
             EventHelper.PropertyChange("Character(Name)", name, name),
+            EventHelper.PropertyChange("Album(Last)", "False", name),
             EventHelper.PropertyChange("State(Game)", "ChoosePreferredInstrument", name) });
         base.ChoosePreferredInstrument(currAlbum);
         robot.Decide();
@@ -419,17 +429,25 @@ public class RoboticPlayerGreedyStrategy : AIPlayerGreedyStrategy
     {
         base.LastDecisionsPhase(currAlbum);
 
+        Debug.Log(name + " num of albums " + GameGlobals.albums.Count);
+        
         if (currAlbum.GetMarketingState() == GameProperties.AlbumMarketingState.MEGA_HIT)
         {
             robot.Perceive(new Name[] {
-            EventHelper.PropertyChange("State(Game)", "LastDecisionsPhase", name),
-            EventHelper.PropertyChange("Album(Result)", "Success", name) });
+        EventHelper.PropertyChange("State(Game)", "LastDecisionsPhase", name),
+        EventHelper.PropertyChange("Album(Result)", "Success", name) });
         }
         else
         {
             robot.Perceive(new Name[] {
-            EventHelper.PropertyChange("State(Game)", "LastDecisionsPhase", name),
-            EventHelper.PropertyChange("Album(Result)", "Fail", name) });
+        EventHelper.PropertyChange("State(Game)", "LastDecisionsPhase", name),
+        EventHelper.PropertyChange("Album(Result)", "Fail", name) });
+        }
+        
+        if (GameGlobals.albums.Count == GameProperties.numberOfAlbumsPerGame)
+        {
+            robot.Perceive(new Name[] {
+                EventHelper.PropertyChange("Album(Last)", "True", name) });
         }
         robot.Decide();
     }
