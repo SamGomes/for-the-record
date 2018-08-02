@@ -80,7 +80,7 @@ public abstract class FixedDiceNG : IDiceNG
         }
 
         seriesForDices6[player1][GameProperties.Instrument.MARKETING][0] = new int[] { 2 };
-        seriesForDices6[player1][GameProperties.Instrument.MARKETING][1] = new int[] { 1, 12 };
+        seriesForDices6[player1][GameProperties.Instrument.MARKETING][1] = new int[] { 3, 12 };
         seriesForDices6[player1][GameProperties.Instrument.MARKETING][2] = new int[] { 1, 7, 15 };
         seriesForDices6[player1][GameProperties.Instrument.MARKETING][3] = new int[] { 4, 9, 16, 8 };
         seriesForDices6[player1][GameProperties.Instrument.MARKETING][4] = new int[] { 3, 3, 17, 16, 29 };
@@ -116,14 +116,46 @@ public abstract class FixedDiceNG : IDiceNG
         {
             currTotalDiceValue = 0;
             currIndividualDiceValues.Clear();
+
+            //achieve the right value
             int remainingPlayValue = seriesForDices6[whoRollsTheDice][diceTarget][GameGlobals.currGameRoundId][currNumberOfRolls-1];
-            for(int i=0; i < currNumberOfRolls-1; i++)
+            float decimalValueForOneDice = (float)remainingPlayValue / (float)currNumberOfRolls;
+            int valueForOneDice = Mathf.FloorToInt(decimalValueForOneDice);
+
+            for (int i=0; i< currNumberOfRolls; i++)
             {
-                int randomDiceRoll = (remainingPlayValue > 6)? Random.Range(1, 6) : Random.Range(1, remainingPlayValue-1);
-                currIndividualDiceValues.Add(randomDiceRoll);
-                remainingPlayValue -= randomDiceRoll;
+                currIndividualDiceValues.Add(valueForOneDice);
             }
-            currIndividualDiceValues.Add(remainingPlayValue);
+
+            int remainder = remainingPlayValue - (valueForOneDice * currNumberOfRolls);
+            for (int i = 0; i < currNumberOfRolls; i++)
+            {
+                if (remainder == 0)
+                {
+                    break;
+                }
+                currIndividualDiceValues[i] += 1;
+                remainder -= 1;
+            }
+
+            //randomize dices values
+            //get increase
+            for (int i = 0; i < currNumberOfRolls; i++)
+            {
+                if (currIndividualDiceValues[i] == 1)
+                {
+                    continue;
+                }
+                int randomDice = Random.Range(0, currNumberOfRolls);
+                int remainderIncrease = 6 - currIndividualDiceValues[i];
+
+                int randomDecrease = Random.Range(0, remainderIncrease+1);
+
+                currIndividualDiceValues[randomDice] -= randomDecrease;
+                currIndividualDiceValues[i] += randomDecrease;
+            }
+
+
         }
         return currIndividualDiceValues[rollOrderNumber];
     }

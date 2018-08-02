@@ -75,8 +75,8 @@ public class GameManager : MonoBehaviour {
         GameGlobals.gameLogManager.InitLogs();
         GameGlobals.albums = new List<Album>(GameProperties.numberOfAlbumsPerGame);
         GameGlobals.players = new List<Player>(GameProperties.numberOfPlayersPerGame);
-        GameGlobals.players.Add(new UIPlayer("Coop Jeff"));
         GameGlobals.players.Add(new UIPlayer("Greedy Kevin"));
+        GameGlobals.players.Add(new UIPlayer("Coop Jeff"));
         GameGlobals.players.Add(new UIPlayer("Balanced Sam"));
         GameGlobals.gameDiceNG = new VictoryDiceNG();
     }
@@ -349,7 +349,7 @@ public class GameManager : MonoBehaviour {
         
         //arrowAnimator.speed = 1;
 
-        yield return new WaitForSeconds(delayToClose);
+        yield return new WaitForSeconds(delayToClose + (1.0f - diceAnimator.speed)*delayToClose);
         Destroy(diceImageClone);
     }
 

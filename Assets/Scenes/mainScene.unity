@@ -2346,6 +2346,7 @@ MonoBehaviour:
   diceArrowPrefab: {fileID: 1026783219484614, guid: 72b65e2647227574f852bf72d5176831,
     type: 2}
   UIAlbumCollectionDisplay: {fileID: 52795738}
+  UIPrototypeArea: {fileID: 1929120556}
   poppupPrefab: {fileID: 1616141079890306, guid: dd195aa31deca92418226f18b7239f07,
     type: 2}
 --- !u!114 &1655503345
