@@ -50,7 +50,7 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 500
+  MaxDistance: 282.02515
   Pan2D: 0
   rolloffMode: 0
   BypassEffects: 0
@@ -182,15 +182,15 @@ RectTransform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1343802999348054}
-  m_LocalRotation: {x: -0, y: -0, z: 0.26801887, w: 0.9634137}
+  m_LocalRotation: {x: -0, y: -0, z: 0.092089824, w: 0.9957507}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 5.043198, y: 5.0431976, z: 5.0431976}
+  m_LocalScale: {x: 4.8131094, y: 4.813108, z: 4.813108}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 31.093002}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 10.568001}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -328, y: 112}
-  m_SizeDelta: {x: 79.7, y: 127.4}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -33.38701, y: -67}
+  m_SizeDelta: {x: 59.7, y: 95.4}
+  m_Pivot: {x: 0.52767617, y: 0.3955561}
