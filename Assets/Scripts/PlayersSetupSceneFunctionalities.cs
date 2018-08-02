@@ -32,7 +32,7 @@ public class PlayersSetupSceneFunctionalities : MonoBehaviour {
             Button[] UIAIPlayerSelectionButtons= UIAIPlayerSelectionButtonsObject.GetComponentsInChildren<Button>();
 
             this.configSelectionButtonsObject = GameObject.Find("Canvas/SetupScreen/configButtons").gameObject;
-            Button[] configButtons = configSelectionButtonsObject.GetComponentsInChildren<Button>();
+            Button[] UIConfigButtons = configSelectionButtonsObject.GetComponentsInChildren<Button>();
 
             UIResetButton.onClick.AddListener(delegate {
                 GameGlobals.players.Clear();
@@ -79,9 +79,9 @@ public class PlayersSetupSceneFunctionalities : MonoBehaviour {
                 });
             }
 
-            for (int i = 0; i < configButtons.Length; i++)
+            for (int i = 0; i < UIConfigButtons.Length; i++)
             {
-                Button button = configButtons[i];
+                Button button = UIConfigButtons[i];
                 button.onClick.AddListener(delegate
                 {
                     if (button.gameObject.name.EndsWith("1"))
