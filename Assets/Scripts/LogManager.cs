@@ -91,6 +91,7 @@ public class FileLogManager : ILogManager
         {
             playersLogFileWritter.WriteLine(sessionId + ";" + currGameId + ";" + playerId + ";" + playername + ";" + type);
         }
+        FlushLogs();
     }
     public void WriteGameToLog(string sessionId, string currGameId, string result)
     {
@@ -99,6 +100,7 @@ public class FileLogManager : ILogManager
         {
             gameStatsFileWritter.WriteLine(sessionId + ";" + currGameId + ";" + result);
         }
+        FlushLogs();
     }
     public void WriteAlbumResultsToLog(string sessionId, string currGameId, string currGameRoundId, string currAlbumId, string currAlbumName, string marktingState)
     {
@@ -107,6 +109,7 @@ public class FileLogManager : ILogManager
         {
             albumStatsFileWritter.WriteLine(sessionId + ";" + currGameId + ";" + currGameRoundId + ";" + currAlbumId + ";" + currAlbumName + ";" + marktingState);
         }
+        FlushLogs();
     }
     public void WritePlayerResultsToLog(string sessionId, string currGameId, string currGameRoundId, string playerId, string playerName, string money)
     {
@@ -115,6 +118,7 @@ public class FileLogManager : ILogManager
         {
             playerStatsFileWritter.WriteLine(sessionId + ";" + currGameId + ";" + currGameRoundId + ";" + playerId + ";" + playerName + ";" + money);
         }
+        FlushLogs();
     }
     public void WriteEventToLog(string sessionId, string currGameId, string currGameRoundId, string playerId, string playerName, string eventType, string skill, string coins)
     {
@@ -123,15 +127,20 @@ public class FileLogManager : ILogManager
         {
             eventsLogFileWritter.WriteLine(sessionId + ";" + currGameId + ";" + currGameRoundId + ";" + playerId + ";" + playerName + ";" + eventType + ";" + skill + ";" + coins);
         }
+        FlushLogs();
     }
 
-    public void EndLogs()
+    private void FlushLogs()
     {
         gameStatsFileWritter.Flush();
         albumStatsFileWritter.Flush();
         playersLogFileWritter.Flush();
         playerStatsFileWritter.Flush();
         eventsLogFileWritter.Flush();
+    }
+    public void EndLogs()
+    {
+        FlushLogs();
     }
 
 }

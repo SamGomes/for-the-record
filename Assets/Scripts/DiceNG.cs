@@ -74,28 +74,28 @@ public abstract class FixedDiceNG : IDiceNG
 
             seriesForDices6[player3][instrument][0] = new int[] { 6 };
             seriesForDices6[player3][instrument][1] = new int[] { 4, 9 };
-            seriesForDices6[player3][instrument][2] = new int[] { 3, 6, 8 };
+            seriesForDices6[player3][instrument][2] = new int[] { 3, 6, 5 };
             seriesForDices6[player3][instrument][3] = new int[] { 1, 11, 10, 6 };
-            seriesForDices6[player3][instrument][4] = new int[] { 5, 8, 5, 12, 27 };
+            seriesForDices6[player3][instrument][4] = new int[] { 5, 9, 8, 12, 27 };
         }
 
         seriesForDices6[player1][GameProperties.Instrument.MARKETING][0] = new int[] { 2 };
         seriesForDices6[player1][GameProperties.Instrument.MARKETING][1] = new int[] { 3, 12 };
-        seriesForDices6[player1][GameProperties.Instrument.MARKETING][2] = new int[] { 1, 7, 15 };
-        seriesForDices6[player1][GameProperties.Instrument.MARKETING][3] = new int[] { 4, 9, 16, 8 };
-        seriesForDices6[player1][GameProperties.Instrument.MARKETING][4] = new int[] { 3, 3, 17, 16, 29 };
+        seriesForDices6[player1][GameProperties.Instrument.MARKETING][2] = new int[] { 1, 7, 5 };
+        seriesForDices6[player1][GameProperties.Instrument.MARKETING][3] = new int[] { 4, 9, 5, 8 };
+        seriesForDices6[player1][GameProperties.Instrument.MARKETING][4] = new int[] { 3, 3, 5, 16, 29 };
 
         seriesForDices6[player2][GameProperties.Instrument.MARKETING][0] = new int[] { 3 };
         seriesForDices6[player2][GameProperties.Instrument.MARKETING][1] = new int[] { 4, 6 };
-        seriesForDices6[player2][GameProperties.Instrument.MARKETING][2] = new int[] { 6, 5, 13 };
+        seriesForDices6[player2][GameProperties.Instrument.MARKETING][2] = new int[] { 6, 5, 5 };
         seriesForDices6[player2][GameProperties.Instrument.MARKETING][3] = new int[] { 1, 5, 5, 14 };
-        seriesForDices6[player2][GameProperties.Instrument.MARKETING][4] = new int[] { 4, 3, 8, 22, 15 };
+        seriesForDices6[player2][GameProperties.Instrument.MARKETING][4] = new int[] { 4, 3, 5, 22, 15 };
 
         seriesForDices6[player3][GameProperties.Instrument.MARKETING][0] = new int[] { 2 };
         seriesForDices6[player3][GameProperties.Instrument.MARKETING][1] = new int[] { 4, 7 };
-        seriesForDices6[player3][GameProperties.Instrument.MARKETING][2] = new int[] { 3, 9, 7 };
-        seriesForDices6[player3][GameProperties.Instrument.MARKETING][3] = new int[] { 5, 8, 14, 5 };
-        seriesForDices6[player3][GameProperties.Instrument.MARKETING][4] = new int[] { 1, 9, 9, 19, 28 };
+        seriesForDices6[player3][GameProperties.Instrument.MARKETING][2] = new int[] { 3, 9, 5 };
+        seriesForDices6[player3][GameProperties.Instrument.MARKETING][3] = new int[] { 5, 8, 5, 5 };
+        seriesForDices6[player3][GameProperties.Instrument.MARKETING][4] = new int[] { 1, 9, 5, 19, 28 };
 
     }
 
@@ -147,7 +147,8 @@ public abstract class FixedDiceNG : IDiceNG
                     continue;
                 }
                 int randomDice = Random.Range(0, currNumberOfRolls);
-                int remainderIncrease = 6 - currIndividualDiceValues[i];
+                int remainderIncrease = (6 - currIndividualDiceValues[i]);
+                remainderIncrease = (remainderIncrease < currIndividualDiceValues[randomDice]) ? remainderIncrease : currIndividualDiceValues[randomDice]-1;
 
                 int randomDecrease = Random.Range(0, remainderIncrease+1);
 
