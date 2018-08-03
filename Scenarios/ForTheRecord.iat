@@ -12,8 +12,8 @@
 					"NextState": "-",
 					"Meaning": "-",
 					"Style": "Glin",
-					"Utterance": "É a minha vez.",
-					"UtteranceId": "TTS-2A4CAE7FB6CCE9A94D094A9A68FF1116"
+					"Utterance": "Deixa ver o que me sai com estes |numDices| dados.",
+					"UtteranceId": "TTS-62569ED0510A07F76FC50EEAEB47D5F7"
 				}, 
 				{
 					"CurrentState": "LevelUp",
@@ -40,12 +40,12 @@
 					"UtteranceId": "TTS-89C2B0B9F79DD18BBC2B80BBEF674228"
 				}, 
 				{
-					"CurrentState": "PlayForInstrument",
+					"CurrentState": "LastDecisionsPhase",
 					"NextState": "-",
-					"Meaning": "-",
+					"Meaning": "Success",
 					"Style": "Emys",
-					"Utterance": "Agora sou eu.",
-					"UtteranceId": "TTS-0097D1572BE7A764C96428D3D12B54C4"
+					"Utterance": "Está na altura de ser pago, aqui vou eu com os meus |numDices| dados.",
+					"UtteranceId": "TTS-4E5CEB7877E715B11E64829B43E28370"
 				}, 
 				{
 					"CurrentState": "LastDecisionsPhase",
@@ -68,8 +68,8 @@
 					"NextState": "-",
 					"Meaning": "-",
 					"Style": "Glin",
-					"Utterance": "Deixa ver o que sai.",
-					"UtteranceId": "TTS-B817B5B3D364AD5A2E17FFF5D319C231"
+					"Utterance": "Aqui vou eu gravar o baixo",
+					"UtteranceId": "TTS-AC7109F5F346CAE9D0DA59ABB9C80FF7"
 				}, 
 				{
 					"CurrentState": "GameEnd",
@@ -80,44 +80,36 @@
 					"UtteranceId": "TTS-148609DDC2CCFBF7E2642193A96BC969"
 				}, 
 				{
-					"CurrentState": "RollInstrumentDice",
-					"NextState": "-",
-					"Meaning": "Luck",
-					"Style": "Emys",
-					"Utterance": "Que sorte!",
-					"UtteranceId": "TTS-42BC3C097C016744EB6BE2645B2330F9"
-				}, 
-				{
-					"CurrentState": "RollInstrumentDice",
+					"CurrentState": "OtherRollInstrumentDice",
 					"NextState": "-",
 					"Meaning": "BadLuck",
-					"Style": "Emys",
+					"Style": "-",
 					"Utterance": "Credo!",
 					"UtteranceId": "TTS-F96795AB4545163D408348877FAC3073"
 				}, 
 				{
-					"CurrentState": "RollInstrumentDice",
+					"CurrentState": "OtherRollInstrumentDice",
 					"NextState": "-",
 					"Meaning": "Luck",
-					"Style": "Glin",
+					"Style": "-",
 					"Utterance": "Nada mau...",
 					"UtteranceId": "TTS-B5B0821D104A41568D185281B81C194A"
 				}, 
 				{
-					"CurrentState": "RollInstrumentDice",
+					"CurrentState": "SelfRollInstrumentDice",
 					"NextState": "-",
-					"Meaning": "BadLuck",
+					"Meaning": "Luck",
 					"Style": "Glin",
-					"Utterance": "Eish",
-					"UtteranceId": "TTS-22FEF7F25841E0581D02158128D8E5E0"
+					"Utterance": "Ena, somei |dicesValue| pontos!",
+					"UtteranceId": "TTS-BE464A9C1FE275BD1B0056F161BE6B82"
 				}, 
 				{
-					"CurrentState": "PlayForInstrument",
+					"CurrentState": "OtherRollInstrumentDice",
 					"NextState": "-",
-					"Meaning": "-",
-					"Style": "Glin",
-					"Utterance": "Vou gravar o baixo",
-					"UtteranceId": "TTS-21487724EAD0163908F859BF0603BAD0"
+					"Meaning": "BadLuck",
+					"Style": "-",
+					"Utterance": "Eish",
+					"UtteranceId": "TTS-22FEF7F25841E0581D02158128D8E5E0"
 				}, 
 				{
 					"CurrentState": "LevelUp",
@@ -156,8 +148,8 @@
 					"NextState": "-",
 					"Meaning": "Success",
 					"Style": "Emys",
-					"Utterance": "Boa! Mais dinheiro em caixa.",
-					"UtteranceId": "TTS-08D45BA194DC3C92FB021A0AD30C2DFE"
+					"Utterance": "Vou usar os meus |numDices| pontos de márqting para ver o que consigo",
+					"UtteranceId": "TTS-8DC0207E9C3A94C72F6F48B0CFC0CF75"
 				}, 
 				{
 					"CurrentState": "ChoosePreferredInstrument",
@@ -224,12 +216,12 @@
 					"UtteranceId": "TTS-A1CE756B7C672D9D752F09CFC4D4AA8A"
 				}, 
 				{
-					"CurrentState": "PlayForInstrument",
+					"CurrentState": "LastDecisionsPhase",
 					"NextState": "-",
-					"Meaning": "-",
+					"Meaning": "Success",
 					"Style": "Emys",
-					"Utterance": "Vou dar o meu melhor.",
-					"UtteranceId": "TTS-12D69CA54E63B36082EB34ED74857965"
+					"Utterance": "Deixa lá ver o que consigo com os meus |numDices| pontos de márqting",
+					"UtteranceId": "TTS-9C50743E54D0E6E1A9CF2E3AE4062251"
 				}, 
 				{
 					"CurrentState": "LastDecisionsPhase",
@@ -288,12 +280,12 @@
 					"UtteranceId": "TTS-371E0D7D5D775ECBB1BD5EB84775455B"
 				}, 
 				{
-					"CurrentState": "LastDecisionsPhase",
+					"CurrentState": "PlayForInstrument",
 					"NextState": "-",
-					"Meaning": "Success",
-					"Style": "Emys",
-					"Utterance": "Está na altura de ser pago.",
-					"UtteranceId": "TTS-74667AD4157D674A5FC4D6C389E33E35"
+					"Meaning": "-",
+					"Style": "Glin",
+					"Utterance": "Sou eu. Vou lançar os meus |numDices| dados.",
+					"UtteranceId": "TTS-05866E962598619CC1A3CDD1251F7DBB"
 				}, 
 				{
 					"CurrentState": "LastDecisionsPhase",
@@ -308,16 +300,8 @@
 					"NextState": "-",
 					"Meaning": "Success",
 					"Style": "Emys",
-					"Utterance": "O álbum foi um êxito.",
-					"UtteranceId": "TTS-432A4F9D609374D0B7E53B33B6D1AC9C"
-				}, 
-				{
-					"CurrentState": "RollMarketDice",
-					"NextState": "-",
-					"Meaning": "Success",
-					"Style": "Emys",
-					"Utterance": "O álbum triunfou.",
-					"UtteranceId": "TTS-F8842C3E9ED9524A8D9FA0FC5FB890C1"
+					"Utterance": "O nosso álbum foi um êxito.",
+					"UtteranceId": "TTS-151DF799EC1C8C928E67C8A8BE11ED66"
 				}, 
 				{
 					"CurrentState": "RollMarketDice",
@@ -372,8 +356,8 @@
 					"NextState": "EndGame",
 					"Meaning": "Success",
 					"Style": "Emys",
-					"Utterance": "Ena, tanto dinheiro!",
-					"UtteranceId": "TTS-45045E5744B9FF68CF242B78D06BEB2B"
+					"Utterance": "Aqui vou eu com |numDices| dados. <break/> Ena, tanto dinheiro!",
+					"UtteranceId": "TTS-5F7298B7F08C3724997B13FEB1819E98"
 				}, 
 				{
 					"CurrentState": "LastDecisionsPhase",
@@ -382,6 +366,62 @@
 					"Style": "Emys",
 					"Utterance": "De facto isto não correu bem",
 					"UtteranceId": "TTS-85B5AAB5DD76BD7601CD10F2A3FBAAAB"
+				}, 
+				{
+					"CurrentState": "OtherRollInstrumentDice",
+					"NextState": "-",
+					"Meaning": "Luck",
+					"Style": "-",
+					"Utterance": "Que sorte!",
+					"UtteranceId": "TTS-42BC3C097C016744EB6BE2645B2330F9"
+				}, 
+				{
+					"CurrentState": "SelfRollInstrumentDice",
+					"NextState": "-",
+					"Meaning": "Luck",
+					"Style": "Emys",
+					"Utterance": "Mais |dicesValue| pontos do vocalista",
+					"UtteranceId": "TTS-6132EA351AD7D5D6C8BC460A14618DC8"
+				}, 
+				{
+					"CurrentState": "SelfRollInstrumentDice",
+					"NextState": "-",
+					"Meaning": "BadLuck",
+					"Style": "Emys",
+					"Utterance": "Mais |dicesValue| pontos para o nosso álbum!",
+					"UtteranceId": "TTS-5DEA510B92BE8B01AAADCC339A524F20"
+				}, 
+				{
+					"CurrentState": "RollMarketDice",
+					"NextState": "-",
+					"Meaning": "Success",
+					"Style": "Emys",
+					"Utterance": "O nosso álbum triunfou.",
+					"UtteranceId": "TTS-09272E8E43862F88484E854B56F84F5E"
+				}, 
+				{
+					"CurrentState": "SelfRollInstrumentDice",
+					"NextState": "-",
+					"Meaning": "BadLuck",
+					"Style": "Glin",
+					"Utterance": "Eish, só consegui |dicesValue| pontos!",
+					"UtteranceId": "TTS-ECF15138F96264C3D5884E86C523937B"
+				}, 
+				{
+					"CurrentState": "PlayForInstrument",
+					"NextState": "-",
+					"Meaning": "-",
+					"Style": "Emys",
+					"Utterance": "Agora sou eu a lançar o meu dado do instrumento.",
+					"UtteranceId": "TTS-07C5DC7F9DA868DA1831FCB4B06B5B59"
+				}, 
+				{
+					"CurrentState": "PlayForInstrument",
+					"NextState": "-",
+					"Meaning": "-",
+					"Style": "Emys",
+					"Utterance": "Deixa ver quanto me calha com o meu dado.",
+					"UtteranceId": "TTS-EDA353DE2BBD594AFCBA0A153447FE59"
 				}]
 		},
 	"types": [

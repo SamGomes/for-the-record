@@ -197,11 +197,11 @@ public class ThalamusConnector : IFTRMessages
     #endregion
 
 
-    public void PerformUtterance(string utterance)
+    public void PerformUtterance(string utterance, string[] tags, string[] tagsValues)
     {
         try
         {
-            _rpcProxy.PerformUtterance(utterance);
+            _rpcProxy.PerformUtterance(utterance, tags, tagsValues);
         }
         catch (Exception e)
         {

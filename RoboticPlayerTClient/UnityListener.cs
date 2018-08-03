@@ -9,9 +9,9 @@ public class UnityListener : XmlRpcListenerService, IFRTMessages
         _thalamusCS = thalamusCS;
     }
 
-    public void PerformUtterance(string utterance)
+    public void PerformUtterance(string utterance, string[] tags, string[] tagsValues)
     {
-        _thalamusCS.TypifiedPublisher.PerformUtteranceWithTags("", utterance, new string[]{ }, new string[] { });
+        _thalamusCS.TypifiedPublisher.PerformUtteranceWithTags("", utterance, tags, tagsValues);
     }
 
     public void PlayAnimation(string animation)

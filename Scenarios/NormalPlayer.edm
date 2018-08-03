@@ -4,12 +4,12 @@
 			"classId": 0,
 			"ActionTendencies": [
 				{
-					"Action": "Speak(RollInstrumentDice, [ns], [m], [s])",
+					"Action": "Speak(OtherRollInstrumentDice, [ns], [m], [s])",
 					"Target": "-",
 					"Layer": "-",
 					"Conditions":
 						{
-							"Set": ["ValidDialogue(RollInstrumentDice, [ns], [m], [s]) = True", "State(Game) = RollInstrumentDice", "Roll(InstrumentDice) = [m]", "Character(Name) = [s]"]
+							"Set": ["ValidDialogue(OtherRollInstrumentDice, [ns], [m], [s]) = True", "State(Game) = OtherRollInstrumentDice", "Roll(InstrumentDice) = [m]"]
 						},
 					"Priority": 3
 				}, 
@@ -59,7 +59,7 @@
 					"Layer": "-",
 					"Conditions":
 						{
-							"Set": ["ValidDialogue([cs], [ns], [m], [s]) = True", "State(Game) = [cs]", "Character(Name) = [s]", "[cs] != RollInstrumentDice", "[cs] != RollMarketDice", "[cs] != LevelUp", "[cs] != LastDecisionsPhase"]
+							"Set": ["ValidDialogue([cs], [ns], [m], [s]) = True", "State(Game) = [cs]", "Character(Name) = [s]", "[cs] != OtherRollInstrumentDice", "[cs] != RollMarketDice", "[cs] != LevelUp", "[cs] != LastDecisionsPhase", "[cs] != SelfRollInstrumentDice"]
 						},
 					"Priority": 1
 				}, 
@@ -90,6 +90,16 @@
 					"Conditions":
 						{
 							"Set": ["ValidDialogue(LastDecisionsPhase, EndGame, [m], [s]) = True", "State(Game) = LastDecisionsPhase", "Album(Result) = [m]", "Character(Name) = [s]", "Album(Last) = True"]
+						},
+					"Priority": 3
+				}, 
+				{
+					"Action": "Speak(SelfRollInstrumentDice, [ns], [m], [s])",
+					"Target": "-",
+					"Layer": "-",
+					"Conditions":
+						{
+							"Set": ["ValidDialogue(SelfRollInstrumentDice, [ns], [m], [s]) = True", "State(Game) = SelfRollInstrumentDice", "Roll(InstrumentDice) = [m]", "Character(Name) = [s]"]
 						},
 					"Priority": 3
 				}]

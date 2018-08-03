@@ -7,7 +7,7 @@ public interface IFTRMessages
     void Dispose();
 
     [XmlRpcMethod]
-    void PerformUtterance(string utterance);
+    void PerformUtterance(string utterance, string[] tags, string[] tagsValues);
 
     [XmlRpcMethod]
     void PlayAnimation(string animation);

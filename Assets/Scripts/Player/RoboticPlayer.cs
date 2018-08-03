@@ -19,6 +19,9 @@ public class EmotionalRoboticPlayer : MonoBehaviour
     private Thread rpcThread;
     private bool isStopped;
 
+    public int DicesValue { get; internal set; }
+    public int NumDices { get; internal set; }
+
     private void Awake()
     {
         DontDestroyOnLoad(gameObject);
@@ -76,7 +79,30 @@ public class EmotionalRoboticPlayer : MonoBehaviour
                     var dialog = possibleDialogs[randomUttIndex].Utterance;
                     if (thalamusConnector != null)
                     {
-                        thalamusConnector.PerformUtterance(dialog);
+                        if (currentState.ToString() == "SelfRollInstrumentDice")
+                        {
+                            string[] tags = new string[] { "|dicesValue|" };
+                            string[] values = new string[] { DicesValue.ToString() };
+                            if (DicesValue == 1)
+                            {
+                                values = new string[] { "" };
+                            }
+                            thalamusConnector.PerformUtterance(dialog, tags, values);
+                        }
+                        else if (currentState.ToString() == "PlayForInstrument" || currentState.ToString() == "LastDecisionsPhase")
+                        {
+                            string[] tags = new string[] { "|numDices|" };
+                            string[] values = new string[] { NumDices.ToString() };
+                            if (NumDices == 1)
+                            {
+                                values = new string[] { "" };
+                            }
+                            thalamusConnector.PerformUtterance(dialog, tags, values);
+                        }
+                        else
+                        {
+                            thalamusConnector.PerformUtterance(dialog, new string[] { }, new string[] { });
+                        }
                         Debug.Log(name + " is saying " + dialog);
                     }
                     else
@@ -121,17 +147,19 @@ public class EmotionalRoboticPlayer : MonoBehaviour
 
     public void FlushRobotUtterance(string text)
     {
-        thalamusConnector.PerformUtterance(text);
+        thalamusConnector.PerformUtterance(text, new string[] { }, new string[] { });
     }
 }
 
 public class RoboticPlayerCoopStrategy : AIPlayerCoopStrategy
 {
     private EmotionalRoboticPlayer robot;
+    private bool playedForInstrument;
 
     public RoboticPlayerCoopStrategy(int id, string name) : base(name)
     {
         this.id = id;
+        playedForInstrument = false;
         GameObject erp = new GameObject("EmotionalRoboticPlayer");
         robot = erp.AddComponent<EmotionalRoboticPlayer>();
         robot.InitThalamusConnectorOnPort(7000, name);
@@ -199,6 +227,8 @@ public class RoboticPlayerCoopStrategy : AIPlayerCoopStrategy
     }
     public override void PlayForInstrument(Album currAlbum)
     {
+        robot.NumDices = skillSet[preferredInstrument];
+        Debug.Log(name + " numDices is  " + skillSet[preferredInstrument]);
         robot.Perceive(new Name[] {
             EventHelper.PropertyChange("State(Game)", "PlayForInstrument", name) });
         base.PlayForInstrument(currAlbum);
@@ -213,14 +243,14 @@ public class RoboticPlayerCoopStrategy : AIPlayerCoopStrategy
         if (currAlbum.GetMarketingState() == GameProperties.AlbumMarketingState.MEGA_HIT)
         {
             robot.Perceive(new Name[] {
-        EventHelper.PropertyChange("State(Game)", "LastDecisionsPhase", name),
-        EventHelper.PropertyChange("Album(Result)", "Success", name) });
+                EventHelper.PropertyChange("State(Game)", "LastDecisionsPhase", name),
+                EventHelper.PropertyChange("Album(Result)", "Success", name) });
         }
         else
         {
             robot.Perceive(new Name[] {
-        EventHelper.PropertyChange("State(Game)", "LastDecisionsPhase", name),
-        EventHelper.PropertyChange("Album(Result)", "Fail", name) });
+                EventHelper.PropertyChange("State(Game)", "LastDecisionsPhase", name),
+                EventHelper.PropertyChange("Album(Result)", "Fail", name) });
         }
 
         if (GameGlobals.albums.Count == GameProperties.numberOfAlbumsPerGame)
@@ -233,35 +263,51 @@ public class RoboticPlayerCoopStrategy : AIPlayerCoopStrategy
 
     protected override void InformRollDicesValueActions(Player invoker, int maxValue, int obtainedValue)
     {
-        int currSpeakingPlayerId = gameManagerRef.GetCurrSpeakingPlayerId();
-        if (currSpeakingPlayerId == id)
+        // rolling d6 dice(s)
+        if (maxValue % 20 != 0)
         {
-            // rolling d20 dice(s)
-            if (maxValue % 20 == 0)
+            int currSpeakingPlayerId = gameManagerRef.GetCurrSpeakingPlayerId();
+            if (invoker == this && !playedForInstrument)
             {
-                robot.Perceive(new Name[] {
-            EventHelper.PropertyChange("State(Game)", "RollMarketDice", name) });
+                playedForInstrument = true;
+                robot.DicesValue = obtainedValue;
+                float luckFactor = (float)obtainedValue / (float)maxValue;
+
+                if (luckFactor >= 0.5)
+                {
+                    robot.Perceive(new Name[] {
+                        EventHelper.PropertyChange("State(Game)", "SelfRollInstrumentDice", name),
+                        EventHelper.PropertyChange("Roll(InstrumentDice)", "Luck", invoker.GetName()) });
+                }
+                else
+                {
+                    robot.Perceive(new Name[] {
+                        EventHelper.PropertyChange("State(Game)", "SelfRollInstrumentDice", name),
+                        EventHelper.PropertyChange("Roll(InstrumentDice)", "BadLuck", invoker.GetName()) });
+                }
+                robot.Decide();
             }
-            else // rolling d6 dice(s)
+            else if (currSpeakingPlayerId == id && invoker.GetName() == "Player")
             {
+            
                 float luckFactor = (float)obtainedValue / (float)maxValue;
 
                 if (luckFactor > 0.7)
                 {
                     robot.Perceive(new Name[] {
-            EventHelper.PropertyChange("State(Game)", "RollInstrumentDice", name),
+            EventHelper.PropertyChange("State(Game)", "OtherRollInstrumentDice", name),
             EventHelper.PropertyChange("Roll(InstrumentDice)", "Luck", invoker.GetName()) });
                 }
                 else if (luckFactor < 0.2)
                 {
                     robot.Perceive(new Name[] {
-            EventHelper.PropertyChange("State(Game)", "RollInstrumentDice", name),
+            EventHelper.PropertyChange("State(Game)", "OtherRollInstrumentDice", name),
             EventHelper.PropertyChange("Roll(InstrumentDice)", "BadLuck", invoker.GetName()) });
                 }
                 else
                 {
                     robot.Perceive(new Name[] {
-            EventHelper.PropertyChange("State(Game)", "RollInstrumentDice", name),
+            EventHelper.PropertyChange("State(Game)", "OtherRollInstrumentDice", name),
             EventHelper.PropertyChange("Roll(InstrumentDice)", "Neutral", invoker.GetName()) });
                 }
                 robot.Decide();
@@ -321,6 +367,7 @@ public class RoboticPlayerCoopStrategy : AIPlayerCoopStrategy
     }
     protected override void InformNewAlbumActions()
     {
+        playedForInstrument = false;
         int currSpeakingPlayerId = gameManagerRef.GetCurrSpeakingPlayerId();
         if (currSpeakingPlayerId == id)
         {
@@ -350,10 +397,12 @@ public class RoboticPlayerCoopStrategy : AIPlayerCoopStrategy
 public class RoboticPlayerGreedyStrategy : AIPlayerGreedyStrategy
 {
     private EmotionalRoboticPlayer robot;
+    private bool playedForInstrument;
 
     public RoboticPlayerGreedyStrategy(int id, string name) : base(name)
     {
         this.id = id;
+        playedForInstrument = false;
         GameObject erp = new GameObject("EmotionalRoboticPlayer");
         robot = erp.AddComponent<EmotionalRoboticPlayer>();
         robot.InitThalamusConnectorOnPort(7002, name);
@@ -420,6 +469,8 @@ public class RoboticPlayerGreedyStrategy : AIPlayerGreedyStrategy
     }
     public override void PlayForInstrument(Album currAlbum)
     {
+        robot.NumDices = skillSet[preferredInstrument];
+        Debug.Log(name + " numDices is  " + skillSet[preferredInstrument]);
         robot.Perceive(new Name[] {
             EventHelper.PropertyChange("State(Game)", "PlayForInstrument", name) });
         base.PlayForInstrument(currAlbum);
@@ -427,9 +478,10 @@ public class RoboticPlayerGreedyStrategy : AIPlayerGreedyStrategy
     }
     public override void LastDecisionsPhase(Album currAlbum)
     {
+        robot.NumDices = skillSet[GameProperties.Instrument.MARKETING];
         base.LastDecisionsPhase(currAlbum);
 
-        Debug.Log(name + " num of albums " + GameGlobals.albums.Count);
+        Debug.Log(name + " numDices is  " + skillSet[GameProperties.Instrument.MARKETING]);
         
         if (currAlbum.GetMarketingState() == GameProperties.AlbumMarketingState.MEGA_HIT)
         {
@@ -454,36 +506,51 @@ public class RoboticPlayerGreedyStrategy : AIPlayerGreedyStrategy
 
     protected override void InformRollDicesValueActions(Player invoker, int maxValue, int obtainedValue)
     {
-        int currSpeakingPlayerId = gameManagerRef.GetCurrSpeakingPlayerId();
-
-        if (currSpeakingPlayerId == id)
+        // rolling d6 dice(s)
+        if (maxValue % 20 != 0)
         {
-            // rolling d20 dice(s)
-            if (maxValue % 20 == 0)
+            int currSpeakingPlayerId = gameManagerRef.GetCurrSpeakingPlayerId();
+            if (invoker == this && !playedForInstrument)
             {
-                robot.Perceive(new Name[] {
-            EventHelper.PropertyChange("State(Game)", "RollMarketDice", name) });
+                playedForInstrument = true;
+                robot.DicesValue = obtainedValue;
+                float luckFactor = (float)obtainedValue / (float)maxValue;
+
+                if (luckFactor >= 0.5)
+                {
+                    robot.Perceive(new Name[] {
+                        EventHelper.PropertyChange("State(Game)", "SelfRollInstrumentDice", name),
+                        EventHelper.PropertyChange("Roll(InstrumentDice)", "Luck", invoker.GetName()) });
+                }
+                else
+                {
+                    robot.Perceive(new Name[] {
+                        EventHelper.PropertyChange("State(Game)", "SelfRollInstrumentDice", name),
+                        EventHelper.PropertyChange("Roll(InstrumentDice)", "BadLuck", invoker.GetName()) });
+                }
+                robot.Decide();
             }
-            else // rolling d6 dice(s)
+            else if (currSpeakingPlayerId == id && invoker.GetName() == "Player")
             {
+
                 float luckFactor = (float)obtainedValue / (float)maxValue;
 
                 if (luckFactor > 0.7)
                 {
                     robot.Perceive(new Name[] {
-            EventHelper.PropertyChange("State(Game)", "RollInstrumentDice", name),
+            EventHelper.PropertyChange("State(Game)", "OtherRollInstrumentDice", name),
             EventHelper.PropertyChange("Roll(InstrumentDice)", "Luck", invoker.GetName()) });
                 }
                 else if (luckFactor < 0.2)
                 {
                     robot.Perceive(new Name[] {
-            EventHelper.PropertyChange("State(Game)", "RollInstrumentDice", name),
+            EventHelper.PropertyChange("State(Game)", "OtherRollInstrumentDice", name),
             EventHelper.PropertyChange("Roll(InstrumentDice)", "BadLuck", invoker.GetName()) });
                 }
                 else
                 {
                     robot.Perceive(new Name[] {
-            EventHelper.PropertyChange("State(Game)", "RollInstrumentDice", name),
+            EventHelper.PropertyChange("State(Game)", "OtherRollInstrumentDice", name),
             EventHelper.PropertyChange("Roll(InstrumentDice)", "Neutral", invoker.GetName()) });
                 }
                 robot.Decide();
@@ -544,6 +611,7 @@ public class RoboticPlayerGreedyStrategy : AIPlayerGreedyStrategy
     }
     protected override void InformNewAlbumActions()
     {
+        playedForInstrument = false;
         int currSpeakingPlayerId = gameManagerRef.GetCurrSpeakingPlayerId();
         if (currSpeakingPlayerId == id)
         {
