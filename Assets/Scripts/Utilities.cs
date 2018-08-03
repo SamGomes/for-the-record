@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,7 +8,7 @@ public static class GameGlobals
     public static List<Album> albums;
     public static List<Player> players;
 
-    public static double currSessionId = System.DateTime.Now.ToOADate();
+	public static string currSessionId = DateTime.Now.ToString("yyyy/MM/dd/HH-mm-ss");
     public static int currGameId = 0;
     public static int currGameRoundId = 0;
 

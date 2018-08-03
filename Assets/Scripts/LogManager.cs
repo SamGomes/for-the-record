@@ -5,6 +5,9 @@ using UnityEngine;
 
 
 //file log manager
+using System;
+
+
 public interface ILogManager
 {
     void InitLogs();
@@ -70,11 +73,16 @@ public class FileLogManager : ILogManager
             return;
         }
 
-        albumStatsFileWritter = File.CreateText(Application.dataPath + "./Logs/albumGameStatsLog.txt");
-        playersLogFileWritter = File.CreateText(Application.dataPath + "./Logs/playerStatsLog.txt");
-        playerStatsFileWritter = File.CreateText(Application.dataPath + "./Logs/playerGameStatsLog.txt");
-        gameStatsFileWritter = File.CreateText(Application.dataPath + "./Logs/gameStatsLog.txt");
-        eventsLogFileWritter = File.CreateText(Application.dataPath + "./Logs/eventsLog.txt");
+        string dateTime = DateTime.Now.ToString("yyyy/MM/dd/HH-mm-ss");
+
+        string directoryPath = Application.dataPath + "./Logs/" + dateTime;
+		Directory.CreateDirectory (directoryPath);
+
+		albumStatsFileWritter = File.CreateText(directoryPath + "/albumGameStatsLog.txt");
+		playersLogFileWritter = File.CreateText(directoryPath + "/playerStatsLog.txt");
+		playerStatsFileWritter = File.CreateText(directoryPath + "/playerGameStatsLog.txt");
+		gameStatsFileWritter = File.CreateText(directoryPath + "/gameStatsLog.txt");
+		eventsLogFileWritter = File.CreateText(directoryPath + "/eventsLog.txt");
 
         albumStatsFileWritter.WriteLine("\"SessionId\";\"GameId\";\"RoundId\";\"AlbumId\";\"AlbumName\";\"MState\"");
         playersLogFileWritter.WriteLine("\"SessionId\";\"GameId\";\"PlayerId\";\"PlayerName\";\"AIType\"");

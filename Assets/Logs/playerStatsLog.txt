@@ -1,4 +1,4 @@
 "SessionId";"GameId";"PlayerId";"PlayerName";"AIType"
-43314.9902745093;1;0;Player1;-
-43314.9902745093;1;1;Player2;-
-43314.9902745093;1;2;Player3;-
+43315.5236225472;0;0;Coop Jeff;-
+43315.5236225472;0;1;Greedy Kevin;-
+43315.5236225472;0;2;Balanced Sam;-
