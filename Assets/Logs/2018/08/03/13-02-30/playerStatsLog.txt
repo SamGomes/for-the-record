@@ -1,0 +1,4 @@
+"SessionId";"GameId";"PlayerId";"PlayerName";"AIType"
+2018/08/03/13-02-30;1;3;Coop Jeff;-
+2018/08/03/13-02-30;1;4;Greedy Kevin;-
+2018/08/03/13-02-30;1;5;Balanced Sam;-
