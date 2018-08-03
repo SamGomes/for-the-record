@@ -62,19 +62,19 @@ public abstract class FixedDiceNG : IDiceNG
             seriesForDices6[player1][instrument][0] = new int[] { 4 };
             seriesForDices6[player1][instrument][1] = new int[] { 2, 9 };
             seriesForDices6[player1][instrument][2] = new int[] { 3, 6, 10 };
-            seriesForDices6[player1][instrument][3] = new int[] { 1, 5, 8, 23 };
-            seriesForDices6[player1][instrument][4] = new int[] { 5, 11, 13, 7, 14 };
+            seriesForDices6[player1][instrument][3] = new int[] { 5, 5, 8, 23 };
+            seriesForDices6[player1][instrument][4] = new int[] { 2, 11, 13, 7, 14 };
 
             seriesForDices6[player2][instrument][0] = new int[] { 2 };
             seriesForDices6[player2][instrument][1] = new int[] { 5, 10 };
-            seriesForDices6[player2][instrument][2] = new int[] { 4, 5, 15 };
+            seriesForDices6[player2][instrument][2] = new int[] { 4, 5, 9 };
             seriesForDices6[player2][instrument][3] = new int[] { 6, 2, 17, 15 };
             seriesForDices6[player2][instrument][4] = new int[] { 3, 7, 5, 18, 18 };
 
 
             seriesForDices6[player3][instrument][0] = new int[] { 6 };
             seriesForDices6[player3][instrument][1] = new int[] { 4, 9 };
-            seriesForDices6[player3][instrument][2] = new int[] { 3, 6, 5 };
+            seriesForDices6[player3][instrument][2] = new int[] { 3, 6, 9 };
             seriesForDices6[player3][instrument][3] = new int[] { 1, 11, 10, 6 };
             seriesForDices6[player3][instrument][4] = new int[] { 5, 9, 8, 12, 27 };
         }
