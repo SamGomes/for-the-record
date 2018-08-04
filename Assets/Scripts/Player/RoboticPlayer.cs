@@ -103,7 +103,7 @@ public class EmotionalRoboticPlayer : MonoBehaviour
                         {
                             thalamusConnector.PerformUtterance(dialog, new string[] { }, new string[] { });
                         }
-                        Debug.Log(name + " is saying " + dialog);
+                        Debug.Log(name + " is performing " + dialog);
                     }
                     else
                     {
@@ -148,6 +148,11 @@ public class EmotionalRoboticPlayer : MonoBehaviour
     public void FlushRobotUtterance(string text)
     {
         thalamusConnector.PerformUtterance(text, new string[] { }, new string[] { });
+    }
+
+    public void GazeAt(string target)
+    {
+        thalamusConnector.GazeAt(target);
     }
 }
 
@@ -198,6 +203,30 @@ public class RoboticPlayerCoopStrategy : AIPlayerCoopStrategy
         ChangePreferredInstrument(preferredIntrument);
     }
 
+    public override void InformChoosePreferredInstrument(Player nextPlayer)
+    {
+        if (nextPlayer.GetName() != name)
+        {
+            robot.GazeAt(nextPlayer.GetName());
+        }
+    }
+
+    public override void InformPlayForInstrument (Player nextPlayer)
+    {
+        if (nextPlayer.GetName() != name)
+        {
+            robot.GazeAt(nextPlayer.GetName());
+        }
+    }
+
+    public override void InformLastDecision(Player nextPlayer)
+    {
+        if (nextPlayer.GetName() != name)
+        {
+            robot.GazeAt(nextPlayer.GetName());
+        }
+    }
+
     public override void InformLevelUp()
     {
         Player currentPlayer = gameManagerRef.GetCurrentPlayer();
@@ -211,9 +240,9 @@ public class RoboticPlayerCoopStrategy : AIPlayerCoopStrategy
                 EventHelper.PropertyChange("State(Game)", "LevelUp", name) });
             robot.Decide();
         }
-        else
+        else if (currentPlayer != this)
         {
-            Debug.Log(name + " gazes at " + currentPlayer.GetName());
+            robot.GazeAt(currentPlayer.GetName());
         }
     }
 
@@ -225,6 +254,7 @@ public class RoboticPlayerCoopStrategy : AIPlayerCoopStrategy
             EventHelper.PropertyChange("State(Game)", "LevelUp", name) });
         robot.Decide();
     }
+
     public override void PlayForInstrument(Album currAlbum)
     {
         robot.NumDices = skillSet[preferredInstrument];
@@ -234,6 +264,7 @@ public class RoboticPlayerCoopStrategy : AIPlayerCoopStrategy
         base.PlayForInstrument(currAlbum);
         robot.Decide();
     }
+
     public override void LastDecisionsPhase(Album currAlbum)
     {
         base.LastDecisionsPhase(currAlbum);
@@ -263,6 +294,8 @@ public class RoboticPlayerCoopStrategy : AIPlayerCoopStrategy
 
     protected override void InformRollDicesValueActions(Player invoker, int maxValue, int obtainedValue)
     {
+        robot.GazeAt("screen");
+
         // rolling d6 dice(s)
         if (maxValue % 20 != 0)
         {
@@ -312,8 +345,13 @@ public class RoboticPlayerCoopStrategy : AIPlayerCoopStrategy
                 }
                 robot.Decide();
             }
+            else if (invoker != this)
+            {
+                robot.GazeAt(invoker.GetName());
+            }
         }
     }
+
     protected override void InformAlbumResultActions(int albumValue, int marketValue)
     {
         int currSpeakingPlayerId = gameManagerRef.GetCurrSpeakingPlayerId();
@@ -337,9 +375,10 @@ public class RoboticPlayerCoopStrategy : AIPlayerCoopStrategy
         }
         else
         {
-            //gaze
+            robot.GazeAt("Player");
         }
     }
+
     protected override void InformGameResultActions(GameProperties.GameState state)
     {
         int currSpeakingPlayerId = gameManagerRef.GetCurrSpeakingPlayerId();
@@ -362,9 +401,10 @@ public class RoboticPlayerCoopStrategy : AIPlayerCoopStrategy
         }
         else
         {
-            //gaze
+            robot.GazeAt("Player");
         }
     }
+
     protected override void InformNewAlbumActions()
     {
         playedForInstrument = false;
@@ -441,6 +481,30 @@ public class RoboticPlayerGreedyStrategy : AIPlayerGreedyStrategy
         ChangePreferredInstrument(preferredIntrument);
     }
 
+    public override void InformChoosePreferredInstrument(Player nextPlayer)
+    {
+        if (nextPlayer.GetName() != name)
+        {
+            robot.GazeAt(nextPlayer.GetName());
+        }
+    }
+
+    public override void InformPlayForInstrument(Player nextPlayer)
+    {
+        if (nextPlayer.GetName() != name)
+        {
+            robot.GazeAt(nextPlayer.GetName());
+        }
+    }
+
+    public override void InformLastDecision(Player nextPlayer)
+    {
+        if (nextPlayer.GetName() != name)
+        {
+            robot.GazeAt(nextPlayer.GetName());
+        }
+    }
+
     public override void InformLevelUp()
     {
         Player currentPlayer = gameManagerRef.GetCurrentPlayer();
@@ -454,11 +518,12 @@ public class RoboticPlayerGreedyStrategy : AIPlayerGreedyStrategy
                 EventHelper.PropertyChange("State(Game)", "LevelUp", name) });
             robot.Decide();
         }
-        else
+        else if (currentPlayer != this)
         {
-            Debug.Log(name + " gazes at " + currentPlayer.GetName());
+            robot.GazeAt(currentPlayer.GetName());
         }
     }
+
     public override void LevelUp(Album currAlbum)
     {
         base.LevelUp(currAlbum);
@@ -467,6 +532,7 @@ public class RoboticPlayerGreedyStrategy : AIPlayerGreedyStrategy
             EventHelper.PropertyChange("State(Game)", "LevelUp", name) });
         robot.Decide();
     }
+
     public override void PlayForInstrument(Album currAlbum)
     {
         robot.NumDices = skillSet[preferredInstrument];
@@ -476,26 +542,26 @@ public class RoboticPlayerGreedyStrategy : AIPlayerGreedyStrategy
         base.PlayForInstrument(currAlbum);
         robot.Decide();
     }
+
     public override void LastDecisionsPhase(Album currAlbum)
     {
-        robot.NumDices = skillSet[GameProperties.Instrument.MARKETING];
         base.LastDecisionsPhase(currAlbum);
 
-        Debug.Log(name + " numDices is  " + skillSet[GameProperties.Instrument.MARKETING]);
-        
+        Debug.Log(name + " num of albums " + GameGlobals.albums.Count);
+
         if (currAlbum.GetMarketingState() == GameProperties.AlbumMarketingState.MEGA_HIT)
         {
             robot.Perceive(new Name[] {
-        EventHelper.PropertyChange("State(Game)", "LastDecisionsPhase", name),
-        EventHelper.PropertyChange("Album(Result)", "Success", name) });
+                EventHelper.PropertyChange("State(Game)", "LastDecisionsPhase", name),
+                EventHelper.PropertyChange("Album(Result)", "Success", name) });
         }
         else
         {
             robot.Perceive(new Name[] {
-        EventHelper.PropertyChange("State(Game)", "LastDecisionsPhase", name),
-        EventHelper.PropertyChange("Album(Result)", "Fail", name) });
+                EventHelper.PropertyChange("State(Game)", "LastDecisionsPhase", name),
+                EventHelper.PropertyChange("Album(Result)", "Fail", name) });
         }
-        
+
         if (GameGlobals.albums.Count == GameProperties.numberOfAlbumsPerGame)
         {
             robot.Perceive(new Name[] {
@@ -506,6 +572,8 @@ public class RoboticPlayerGreedyStrategy : AIPlayerGreedyStrategy
 
     protected override void InformRollDicesValueActions(Player invoker, int maxValue, int obtainedValue)
     {
+        robot.GazeAt("screen");
+
         // rolling d6 dice(s)
         if (maxValue % 20 != 0)
         {
@@ -555,8 +623,13 @@ public class RoboticPlayerGreedyStrategy : AIPlayerGreedyStrategy
                 }
                 robot.Decide();
             }
+            else if (invoker != this)
+            {
+                robot.GazeAt(invoker.GetName());
+            }
         }
     }
+
     protected override void InformAlbumResultActions(int albumValue, int marketValue)
     {
         int currSpeakingPlayerId = gameManagerRef.GetCurrSpeakingPlayerId();
@@ -580,13 +653,13 @@ public class RoboticPlayerGreedyStrategy : AIPlayerGreedyStrategy
         }
         else
         {
-            //gaze
+            robot.GazeAt("Player");
         }
     }
+
     protected override void InformGameResultActions(GameProperties.GameState state)
     {
         int currSpeakingPlayerId = gameManagerRef.GetCurrSpeakingPlayerId();
-
         if (state == GameProperties.GameState.VICTORY)
         {
             robot.Perceive(new Name[] {
@@ -606,9 +679,10 @@ public class RoboticPlayerGreedyStrategy : AIPlayerGreedyStrategy
         }
         else
         {
-            //gaze
+            robot.GazeAt("Player");
         }
     }
+
     protected override void InformNewAlbumActions()
     {
         playedForInstrument = false;

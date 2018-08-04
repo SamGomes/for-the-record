@@ -462,6 +462,12 @@ public class GameManager : MonoBehaviour {
             numPlayersToChooseDiceRollInstrument--;
             if (numPlayersToChooseDiceRollInstrument > 0)
             {
+                foreach (var player in GameGlobals.players)
+                {
+                    player.InformChoosePreferredInstrument(nextPlayer);
+                }
+                
+
                 nextPlayer.ChoosePreferredInstrumentRequest(currAlbum);
             }
         }
@@ -494,6 +500,11 @@ public class GameManager : MonoBehaviour {
             numPlayersToPlayForInstrument--;
             if (numPlayersToPlayForInstrument > 0)
             {
+                foreach (var player in GameGlobals.players)
+                {
+                    player.InformPlayForInstrument(nextPlayer);
+                }
+
                 nextPlayer.PlayForInstrumentRequest(currAlbum);
             }
         }
@@ -507,6 +518,11 @@ public class GameManager : MonoBehaviour {
             numPlayersToStartLastDecisions--;
             if (numPlayersToStartLastDecisions > 0)
             {
+                foreach (var player in GameGlobals.players)
+                {
+                    player.InformLastDecision(nextPlayer);
+                }
+
                 nextPlayer.LastDecisionsPhaseRequest(currAlbum);
             }
         }

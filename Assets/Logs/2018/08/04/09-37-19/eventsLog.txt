@@ -1,0 +1,3 @@
+"SessionId";"GameId";"RoundId";"PlayerId";"PlayerName";"Event Type";"Instrument";"Value"
+2018/08/04/09-37-19;1;0;0;Emys;SPENT_TOKEN;VOCALS;-
+2018/08/04/09-37-19;1;0;1;Glin;SPENT_TOKEN;BASS;-

@@ -1,0 +1,4 @@
+"SessionId";"GameId";"PlayerId";"PlayerName";"AIType"
+2018/08/04/09-46-38;1;0;Emys;GREEDY
+2018/08/04/09-46-38;1;1;Glin;COOPERATIVE
+2018/08/04/09-46-38;1;2;Player;-

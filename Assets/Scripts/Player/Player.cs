@@ -75,7 +75,10 @@ public abstract class Player
     public abstract void PlayForInstrument(Album currAlbum);
     public abstract void LastDecisionsPhase(Album currAlbum);
 
+    public abstract void InformChoosePreferredInstrument(Player nextPlayer);
     public abstract void InformLevelUp();
+    public abstract void InformPlayForInstrument(Player nextPlayer);
+    public abstract void InformLastDecision(Player nextPlayer);
     public abstract void InformRollDicesValue(Player invoker, int maxValue, int obtainedValue);
     public abstract void InformAlbumResult(int albumValue, int marketValue);
     public abstract void InformGameResult(GameProperties.GameState state);

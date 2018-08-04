@@ -209,11 +209,11 @@ public class ThalamusConnector : IFTRMessages
         }
     }
 
-    public void PlayAnimation(string animation)
+    public void GazeAt(string target)
     {
         try
         {
-            _rpcProxy.PlayAnimation(animation);
+            _rpcProxy.GazeAt(target);
         }
         catch (Exception e)
         {

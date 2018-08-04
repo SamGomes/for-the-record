@@ -570,7 +570,10 @@ public class UIPlayer : Player
     }
 
 
+    public override void InformChoosePreferredInstrument(Player nextPlayer) { }
     public override void InformLevelUp() { }
+    public override void InformPlayForInstrument(Player nextPlayer) { }
+    public override void InformLastDecision(Player nextPlayer) { }
     public override void InformRollDicesValue(Player invoker, int maxValue, int obtainedValue){ }
     public override void InformAlbumResult(int albumValue, int marketValue){ }
     public override void InformGameResult(GameProperties.GameState state) { }

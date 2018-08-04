@@ -108,9 +108,9 @@ public class PlayersSetupSceneFunctionalities : MonoBehaviour {
                         GameGlobals.players.Add(glin);
                         GameGlobals.players.Add(new UIPlayer("Player"));
                         GameGlobals.gameDiceNG = new VictoryDiceNG();
-                        emys.FlushRobotUtterance("Eu sou o émys!");
+                        emys.FlushRobotUtterance("<gaze(Player)> Eu sou o émys!");
                         Thread.Sleep(1000);
-                        glin.FlushRobotUtterance("E eu sou o Glin! Vamos lá formar uma banda e ver se conseguimos triunfar!");
+                        glin.FlushRobotUtterance("<gaze(Player)> E eu sou o Glin! Vamos lá formar uma banda e ver se conseguimos triunfar!");
                     }
                     else if (button.gameObject.name.EndsWith("4"))
                     {
@@ -121,35 +121,9 @@ public class PlayersSetupSceneFunctionalities : MonoBehaviour {
                         GameGlobals.players.Add(glin);
                         GameGlobals.players.Add(new UIPlayer("Player"));
                         GameGlobals.gameDiceNG = new LossDiceNG();
-                        emys.FlushRobotUtterance("Eu sou o émys!");
+                        emys.FlushRobotUtterance("<gaze(Player)> Eu sou o émys!");
                         Thread.Sleep(1000);
-                        glin.FlushRobotUtterance("E eu sou o Glin! Vamos lá formar uma banda e ver se conseguimos triunfar!");
-                    }
-                    else if (button.gameObject.name.EndsWith("5"))
-                    {
-                        GameGlobals.numberOfSpeakingPlayers = 2;
-                        RoboticPlayerCoopStrategy glin = new RoboticPlayerCoopStrategy(0, "Glin");
-                        GameGlobals.players.Add(glin);
-                        RoboticPlayerGreedyStrategy emys = new RoboticPlayerGreedyStrategy(1, "Emys");
-                        GameGlobals.players.Add(emys);
-                        GameGlobals.players.Add(new UIPlayer("Player"));
-                        GameGlobals.gameDiceNG = new VictoryDiceNG();
-                        emys.FlushRobotUtterance("Eu sou o Glin!");
-                        Thread.Sleep(1000);
-                        glin.FlushRobotUtterance("E eu sou o émys! Vamos lá formar uma banda e ver se conseguimos triunfar!");
-                    }
-                    else if (button.gameObject.name.EndsWith("6"))
-                    {
-                        GameGlobals.numberOfSpeakingPlayers = 2;
-                        RoboticPlayerCoopStrategy glin = new RoboticPlayerCoopStrategy(0, "Glin");
-                        GameGlobals.players.Add(glin);
-                        RoboticPlayerGreedyStrategy emys = new RoboticPlayerGreedyStrategy(1, "Emys");
-                        GameGlobals.players.Add(emys);
-                        GameGlobals.players.Add(new UIPlayer("Player"));
-                        GameGlobals.gameDiceNG = new LossDiceNG();
-                        emys.FlushRobotUtterance("Eu sou o Glin!");
-                        Thread.Sleep(1000);
-                        glin.FlushRobotUtterance("E eu sou o émys! Vamos lá formar uma banda e ver se conseguimos triunfar!");
+                        glin.FlushRobotUtterance("<gaze(Player)> E eu sou o Glin! Vamos lá formar uma banda e ver se conseguimos triunfar!");
                     }
                     button.interactable = false;
                     CheckForAllPlayersRegistered();

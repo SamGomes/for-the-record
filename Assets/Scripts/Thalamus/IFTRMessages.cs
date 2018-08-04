@@ -10,6 +10,6 @@ public interface IFTRMessages
     void PerformUtterance(string utterance, string[] tags, string[] tagsValues);
 
     [XmlRpcMethod]
-    void PlayAnimation(string animation);
+    void GazeAt(string target);
 
 }
