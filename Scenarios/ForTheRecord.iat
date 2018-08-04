@@ -16,14 +16,6 @@
 					"UtteranceId": "TTS-5A6DCEC64EE02C84F35CBEF98CC89C9E"
 				}, 
 				{
-					"CurrentState": "NewAlbum",
-					"NextState": "-",
-					"Meaning": "Beginning",
-					"Style": "-",
-					"Utterance": "<gaze(Player)> Espero que ésta banda <animate(joy3)> tenha sucesso...",
-					"UtteranceId": "TTS-D41BE4EAC70F64B2C70DFCB75DDBFFCF"
-				}, 
-				{
 					"CurrentState": "LevelUp",
 					"NextState": "-",
 					"Meaning": "Me",
@@ -422,6 +414,14 @@
 					"Style": "Glin",
 					"Utterance": "<gaze(screen)> Deixa ver o que me sai com estes |numDices| dados.",
 					"UtteranceId": "TTS-20B5F9CC029DF6118258120E13345B38"
+				}, 
+				{
+					"CurrentState": "NewAlbum",
+					"NextState": "-",
+					"Meaning": "Beginning",
+					"Style": "-",
+					"Utterance": "<gaze(Player)> Espero que ésta banda <animate(joy3)> tenha sucesso... não se esqueçam que com 3 álbuns falhados perdemos tudo",
+					"UtteranceId": "TTS-32C15069AA4F2073DEB37B637B9B77A4"
 				}]
 		},
 	"types": [
