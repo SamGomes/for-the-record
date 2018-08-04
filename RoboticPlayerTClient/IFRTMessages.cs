@@ -11,6 +11,9 @@ public interface IFRTMessages
     void PerformUtterance(string utterance, string[] tags, string[] tagsValues);
 
     [XmlRpcMethod]
-    void PlayAnimation(string animation);
-        
+    void GazeAt(string target);
+
+    [XmlRpcMethod]
+    void GlanceAt(string target);
+
 }

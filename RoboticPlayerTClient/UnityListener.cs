@@ -14,11 +14,16 @@ public class UnityListener : XmlRpcListenerService, IFRTMessages
         _thalamusCS.TypifiedPublisher.PerformUtteranceWithTags("", utterance, tags, tagsValues);
     }
 
-    public void PlayAnimation(string animation)
+    public void GazeAt(string target)
     {
-        //_thalamusCS.TypifiedPublisher.PlayAnimation(animation);
+        _thalamusCS.TypifiedPublisher.GazeAtTarget(target);
     }
-        
+
+    public void GlanceAt(string target)
+    {
+        _thalamusCS.TypifiedPublisher.GlanceAtTarget(target);
+    }
+
     public void Dispose()
     {
     }

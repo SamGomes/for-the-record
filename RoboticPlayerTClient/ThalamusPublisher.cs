@@ -1,7 +1,7 @@
 ﻿using EmoteCommonMessages;
 using Thalamus;
 
-public interface IFTRThalamusPublisher : IThalamusPublisher, IFMLSpeech
+public interface IFTRThalamusPublisher : IThalamusPublisher, IFMLSpeech, IGazeStateActions
 {  
 }
 
@@ -31,5 +31,25 @@ public class ThalamusPublisher : IFTRThalamusPublisher
     public void CancelUtterance(string id)
     {
         _publisher.CancelUtterance(id);
+    }
+
+    public void GazeAtScreen(double x, double y)
+    {
+        _publisher.GazeAtScreen(x, y);
+    }
+
+    public void GlanceAtScreen(double x, double y)
+    {
+        _publisher.GlanceAtScreen(x, y);
+    }
+
+    public void GazeAtTarget(string targetName)
+    {
+        _publisher.GazeAtTarget(targetName);
+    }
+
+    public void GlanceAtTarget(string targetName)
+    {
+        _publisher.GlanceAtTarget(targetName);
     }
 }
