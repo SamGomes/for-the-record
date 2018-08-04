@@ -68,8 +68,8 @@
 					"NextState": "-",
 					"Meaning": "Luck",
 					"Style": "-",
-					"Utterance": "<gaze(Player)> Nada mau...",
-					"UtteranceId": "TTS-8E29DC6FE875F5A20823B18D110A7A0D"
+					"Utterance": "Que sorte! <glance(Player)> ",
+					"UtteranceId": "TTS-3539E78514FB4B498C246F4F1766E404"
 				}, 
 				{
 					"CurrentState": "NewAlbum",
@@ -86,6 +86,14 @@
 					"Style": "Glin",
 					"Utterance": "<gaze(screen)> Eu vou escolher o baixo. ",
 					"UtteranceId": "TTS-6308E51CFF361BDD1A80F98A6F992F07"
+				}, 
+				{
+					"CurrentState": "OtherRollInstrumentDice",
+					"NextState": "-",
+					"Meaning": "BadLuck",
+					"Style": "-",
+					"Utterance": "Credo!  <glance(Player)> ",
+					"UtteranceId": "TTS-D74F00D2EDBCB5220E8D3625CC22260A"
 				}, 
 				{
 					"CurrentState": "SelfRollInstrumentDice",
@@ -304,14 +312,6 @@
 					"UtteranceId": "TTS-789D0E7E4C2E0A5E269E369E24720484"
 				}, 
 				{
-					"CurrentState": "OtherRollInstrumentDice",
-					"NextState": "-",
-					"Meaning": "BadLuck",
-					"Style": "-",
-					"Utterance": "<gaze(screen)> Eish ",
-					"UtteranceId": "TTS-D11246E8D36D5B54AAB9BC1CD19A5346"
-				}, 
-				{
 					"CurrentState": "PlayForInstrument",
 					"NextState": "-",
 					"Meaning": "-",
@@ -372,8 +372,8 @@
 					"NextState": "-",
 					"Meaning": "Luck",
 					"Style": "-",
-					"Utterance": "<gaze(Player)> Que sorte!",
-					"UtteranceId": "TTS-30287B91AF361BD08E903FA27020D240"
+					"Utterance": "Nada mau... <glance(Player)> ",
+					"UtteranceId": "TTS-CDCA0BAC648DDE34E29BCAF264D4B33D"
 				}, 
 				{
 					"CurrentState": "LastDecisionsPhase",
@@ -404,8 +404,8 @@
 					"NextState": "-",
 					"Meaning": "BadLuck",
 					"Style": "-",
-					"Utterance": "<gaze(screen)> Credo! ",
-					"UtteranceId": "TTS-07AA550B6A41A35248FC4A2B723964CD"
+					"Utterance": "Eish  <glance(Player)> ",
+					"UtteranceId": "TTS-C9D09E069BCDCF23A773C71629FBFF6A"
 				}, 
 				{
 					"CurrentState": "LastDecisionsPhase",

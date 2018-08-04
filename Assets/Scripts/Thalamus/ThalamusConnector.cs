@@ -221,6 +221,18 @@ public class ThalamusConnector : IFTRMessages
         }
     }
 
+    public void GlanceAt(string target)
+    {
+        try
+        {
+            _rpcProxy.GlanceAt(target);
+        }
+        catch (Exception e)
+        {
+            if (_printExceptions) Debug.Log("Exception: " + e.Message + (e.InnerException != null ? ": " + e.InnerException : ""));
+        }
+    }
+
 
 
 }

@@ -12,4 +12,7 @@ public interface IFTRMessages
     [XmlRpcMethod]
     void GazeAt(string target);
 
+    [XmlRpcMethod]
+    void GlanceAt(string target);
+
 }
