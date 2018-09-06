@@ -365,7 +365,7 @@ public class AIPlayerGreedyStrategy : AIPlayer
     protected override int LastDecisionsActions(Album currAlbum)
     {
         int condition = 0;
-        if (currAlbum.GetMarketingState() == GameProperties.AlbumMarketingState.MEGA_HIT)
+        if (currAlbum.GetMarketingState() == GameProperties.AlbumMarketingState.MEGA_HIT && skillSet[GameProperties.Instrument.MARKETING] > 0)
         {
             condition = 1;
         }
