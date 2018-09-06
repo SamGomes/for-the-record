@@ -72,13 +72,13 @@ public class GameManager : MonoBehaviour {
     {
         GameGlobals.gameManager = this;
         //mock to test
-        GameGlobals.gameLogManager.InitLogs();
-        GameGlobals.albums = new List<Album>(GameProperties.numberOfAlbumsPerGame);
-        GameGlobals.players = new List<Player>(GameProperties.numberOfPlayersPerGame);
-        GameGlobals.players.Add(new UIPlayer("PL1"));
-        GameGlobals.players.Add(new AIPlayerGreedyStrategy("PL2"));
-        GameGlobals.players.Add(new AIPlayerBalancedStrategy("PL3"));
-        GameGlobals.gameDiceNG = new RandomDiceNG();
+        //GameGlobals.gameLogManager.InitLogs();
+        //GameGlobals.albums = new List<Album>(GameProperties.numberOfAlbumsPerGame);
+        //GameGlobals.players = new List<Player>(GameProperties.numberOfPlayersPerGame);
+        //GameGlobals.players.Add(new UIPlayer("PL1"));
+        //GameGlobals.players.Add(new AIPlayerGreedyStrategy("PL2"));
+        //GameGlobals.players.Add(new AIPlayerBalancedStrategy("PL3"));
+        //GameGlobals.gameDiceNG = new RandomDiceNG();
     }
 
     public void InterruptGame()
@@ -290,7 +290,7 @@ public class GameManager : MonoBehaviour {
             }
             else
             {
-                Debug.Log(rolledDiceNumbers[i]);
+                //Debug.Log(rolledDiceNumbers[i]);
                 StartCoroutine(PlayDiceUI(diceThrower, i, diceNum, diceImagePrefab, currDiceNumberSprite, delayToClose));
             }
         }
@@ -532,7 +532,7 @@ public class GameManager : MonoBehaviour {
         if (!preferredInstrumentsChoosen && numPlayersToChooseDiceRollInstrument == 0)
         {
 
-            Debug.Log("running1...");
+            //Debug.Log("running1...");
             StartPlayForInstrumentPhase(); //choose instrument phase skips level up phase
             //numPlayersToChooseDiceRollInstrument = GameGlobals.players.Count; //is not performed to ensure this phase is only played once
             preferredInstrumentsChoosen = true;
@@ -541,7 +541,7 @@ public class GameManager : MonoBehaviour {
         //end of second phase; trigger third phase
         if (numPlayersToLevelUp == 0)
         {
-            Debug.Log("running2...");
+            //Debug.Log("running2...");
             StartPlayForInstrumentPhase();
             numPlayersToLevelUp = GameGlobals.players.Count;
         }
@@ -551,7 +551,7 @@ public class GameManager : MonoBehaviour {
         {
             if (checkedAlbumResult)
             {
-                Debug.Log("running3...");
+                //Debug.Log("running3...");
                 checkedAlbumResult = false;
                 StartLastDecisionsPhase();
                 numPlayersToPlayForInstrument = GameGlobals.players.Count;
@@ -587,7 +587,7 @@ public class GameManager : MonoBehaviour {
         //end of forth phase; trigger and log album result
         if (numPlayersToStartLastDecisions == 0)
         {
-            Debug.Log("running4...");
+            //Debug.Log("running4...");
             int numPlayedAlbums = GameGlobals.albums.Count;
 
             //write curr game logs
