@@ -133,10 +133,10 @@ public class PlayersSetupSceneFunctionalities : MonoBehaviour {
         }
         else
         {
-            GameGlobals.players.Add(new AIPlayerCoopStrategy("PL1"));
-            GameGlobals.players.Add(new AIPlayerCoopStrategy("PL2"));
+            GameGlobals.players.Add(new AIPlayerGreedyStrategy("PL1"));
+            GameGlobals.players.Add(new AIPlayerGreedyStrategy("PL2"));
             GameGlobals.players.Add(new AIPlayerCoopStrategy("PL3"));
-            GameGlobals.gameDiceNG = new VictoryDiceNG();
+            GameGlobals.gameDiceNG = new RandomDiceNG();
             StartGame();
         }
     }

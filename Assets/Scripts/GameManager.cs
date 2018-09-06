@@ -72,13 +72,13 @@ public class GameManager : MonoBehaviour {
     {
         GameGlobals.gameManager = this;
         //mock to test
-        //GameGlobals.gameLogManager.InitLogs();
-        //GameGlobals.albums = new List<Album>(GameProperties.numberOfAlbumsPerGame);
-        //GameGlobals.players = new List<Player>(GameProperties.numberOfPlayersPerGame);
-        //GameGlobals.players.Add(new UIPlayer("Coop Jeff"));
-        //GameGlobals.players.Add(new UIPlayer("Greedy Kevin"));
-        //GameGlobals.players.Add(new UIPlayer("Balanced Sam"));
-        //GameGlobals.gameDiceNG = new VictoryDiceNG();
+        GameGlobals.gameLogManager.InitLogs();
+        GameGlobals.albums = new List<Album>(GameProperties.numberOfAlbumsPerGame);
+        GameGlobals.players = new List<Player>(GameProperties.numberOfPlayersPerGame);
+        GameGlobals.players.Add(new AIPlayerGreedyStrategy("PL1"));
+        GameGlobals.players.Add(new AIPlayerGreedyStrategy("PL2"));
+        GameGlobals.players.Add(new AIPlayerCoopStrategy("PL3"));
+        GameGlobals.gameDiceNG = new RandomDiceNG();
     }
 
     public void InterruptGame()
@@ -172,11 +172,6 @@ public class GameManager : MonoBehaviour {
     {
         InitGame();
 
-        UIadvanceRoundButton.onClick.AddListener(delegate () {
-                UInewRoundScreen.SetActive(false);
-                StartGameRoundForAllPlayers(UIalbumNameText.text);
-        });
-
         numPlayersToChooseDiceRollInstrument = GameGlobals.players.Count;
         numPlayersToLevelUp = GameGlobals.players.Count;
         numPlayersToPlayForInstrument = GameGlobals.players.Count;
@@ -184,12 +179,25 @@ public class GameManager : MonoBehaviour {
 
         GameGlobals.currGameState = GameProperties.GameState.NOT_FINISHED;
 
+        //players talk about the initial album
+        currSpeakingPlayerId = Random.Range(0, GameGlobals.numberOfSpeakingPlayers);
+        foreach (var player in GameGlobals.players)
+        {
+            player.InformNewAlbum();
+        }
+
+
         if (GameProperties.isSimulation) //start imidiately in simulation
         {
             StartGameRoundForAllPlayers("SimAlbum");
         }
         else
         {
+            UIadvanceRoundButton.onClick.AddListener(delegate () {
+                UInewRoundScreen.SetActive(false);
+                StartGameRoundForAllPlayers(UIalbumNameText.text);
+            });
+
             UIRollDiceForInstrumentOverlay.SetActive(false);
             UIRollDiceForMarketValueScreen.SetActive(false);
 
@@ -198,13 +206,6 @@ public class GameManager : MonoBehaviour {
                 canCheckAlbumResult = true;
             });
 
-        }
-
-        //players talk about the initial album
-        currSpeakingPlayerId = Random.Range(0, GameGlobals.numberOfSpeakingPlayers);
-        foreach (var player in GameGlobals.players)
-        {
-            player.InformNewAlbum();
         }
 
 
@@ -557,17 +558,28 @@ public class GameManager : MonoBehaviour {
             }
             else if(canSelectToCheckAlbumResult)
             {
-                //make phase UI active (this step is interim but must be done before last phase)
-                UIRollDiceForMarketValueScreen.SetActive(true);
                 canSelectToCheckAlbumResult = false;
+                if (GameProperties.isSimulation) //if simulation just do it, with no loads!
+                {
+                    canCheckAlbumResult = true;
+                }
+                else
+                {
+                    //make phase UI active (this step is interim but must be done before last phase)
+                    UIRollDiceForMarketValueScreen.SetActive(true);
+                }
             }
             
-            if (canCheckAlbumResult || GameProperties.isSimulation)
+            if (canCheckAlbumResult)
             {
                 CheckAlbumResult();
                 canCheckAlbumResult = false;
                 canSelectToCheckAlbumResult = true;
-                UIRollDiceForMarketValueScreen.SetActive(false);
+
+                if (!GameProperties.isSimulation)
+                {
+                    UIRollDiceForMarketValueScreen.SetActive(false);
+                }
             }
             
         }
@@ -733,8 +745,8 @@ public class GameManager : MonoBehaviour {
     }
     public void LastDecisionsPhaseGet0Response(Player invoker)
     {
-    //    //receive 1000
-    //    invoker.ReceiveMoney(GameProperties.tokenValue);
+        //receive 0
+        invoker.ReceiveMoney(0);
         lastDecisionResponseReceived = true;
     }
     public void LastDecisionsPhaseGet3000Response(Player invoker)
