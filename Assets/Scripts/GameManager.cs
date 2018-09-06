@@ -75,9 +75,9 @@ public class GameManager : MonoBehaviour {
         GameGlobals.gameLogManager.InitLogs();
         GameGlobals.albums = new List<Album>(GameProperties.numberOfAlbumsPerGame);
         GameGlobals.players = new List<Player>(GameProperties.numberOfPlayersPerGame);
-        GameGlobals.players.Add(new AIPlayerGreedyStrategy("PL1"));
+        GameGlobals.players.Add(new UIPlayer("PL1"));
         GameGlobals.players.Add(new AIPlayerGreedyStrategy("PL2"));
-        GameGlobals.players.Add(new AIPlayerCoopStrategy("PL3"));
+        GameGlobals.players.Add(new AIPlayerBalancedStrategy("PL3"));
         GameGlobals.gameDiceNG = new RandomDiceNG();
     }
 
@@ -600,23 +600,26 @@ public class GameManager : MonoBehaviour {
             numPlayersToStartLastDecisions = GameGlobals.players.Count;
             GameGlobals.currGameRoundId++;
 
-            //start next game round whenever ready
-            if (!GameProperties.isSimulation)
+            //start next game round whenever ready, but only if game hasn't finished
+            if(GameGlobals.currGameState == GameProperties.GameState.NOT_FINISHED)
             {
-                UIAddAlbumToCollection(currAlbum);
-                UInewRoundScreen.SetActive(true);
-            }
-            else
-            {
-                StartGameRoundForAllPlayers("SimAlbum");
-            }
-
-            if (GameGlobals.albums.Count < GameProperties.numberOfAlbumsPerGame)
-            {
-                currSpeakingPlayerId = Random.Range(0, GameGlobals.numberOfSpeakingPlayers);
-                foreach (var player in GameGlobals.players)
+                if (!GameProperties.isSimulation)
                 {
-                    player.InformNewAlbum();
+                    UIAddAlbumToCollection(currAlbum);
+                    UInewRoundScreen.SetActive(true);
+                }
+                else
+                {
+                    StartGameRoundForAllPlayers("SimAlbum");
+                }
+            
+                if (GameGlobals.albums.Count < GameProperties.numberOfAlbumsPerGame)
+                {
+                    currSpeakingPlayerId = Random.Range(0, GameGlobals.numberOfSpeakingPlayers);
+                    foreach (var player in GameGlobals.players)
+                    {
+                        player.InformNewAlbum();
+                    }
                 }
             }
 
@@ -632,6 +635,7 @@ public class GameManager : MonoBehaviour {
                     infoPoppupNeutralRef.DisplayPoppup("You gained some experience publishing your last albums and so you will try your luck on the international market. From now on, 3 dices (instead of 2) are rolled for the market.");
                 }
             }
+
 
 
             //reinit some things for next game if game result is known or max albums are achieved
@@ -678,16 +682,18 @@ public class GameManager : MonoBehaviour {
                 }
 
 
-
-                UIadvanceRoundButton.gameObject.SetActive(false);
-                UIPrototypeArea.gameObject.SetActive(false);
                 this.gameMainSceneFinished = true;
-                
-                if (GameProperties.isSimulation)
+                if (!GameProperties.isSimulation)
+                {
+                    UIadvanceRoundButton.gameObject.SetActive(false);
+                    UIPrototypeArea.gameObject.SetActive(false);
+                }
+                else
                 {
                     GameSceneManager.LoadEndScene();
                 }
             }
+
         }
 
     }

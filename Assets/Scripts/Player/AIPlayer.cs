@@ -420,7 +420,8 @@ public class AIPlayerBalancedStrategy : AIPlayer
     protected override int LastDecisionsActions(Album currAlbum)
     {
         int condition = 0;
-        if (currAlbum.GetMarketingState() == GameProperties.AlbumMarketingState.MEGA_HIT)
+        //if I have marketing skill, I use it always
+        if (currAlbum.GetMarketingState() == GameProperties.AlbumMarketingState.MEGA_HIT && skillSet[GameProperties.Instrument.MARKETING]>0) 
         {
             condition = 1;
         }
