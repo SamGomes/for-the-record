@@ -8,7 +8,7 @@ public static class GameGlobals
     public static List<Album> albums;
     public static List<Player> players;
 
-	public static string currSessionId = DateTime.Now.ToString("yyyy/MM/dd/HH-mm-ss");
+    public static string currSessionId;
     public static int currGameId = 0;
     public static int currGameRoundId = 0;
 
@@ -76,7 +76,7 @@ public static class GameProperties
     public static int initNumberMarketDices = 2; //config the initial number of dices to roll
 
     //------------ Simulation --------------------
-    public static bool isSimulation = true;
-    public static int numGamesToSimulate = 1000;
+    public static bool isSimulation = false;
+    public static int numGamesToSimulate = 10000;
 }
 

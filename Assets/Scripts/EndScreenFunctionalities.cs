@@ -90,7 +90,9 @@ public class EndScreenFunctionalities : MonoBehaviour
     void Start()
     {
         ////mock
-        //GameGlobals.albums = new List<Album>(GameProperties.numberOfAlbumsPerGame);
+        //GameGlobals.currSessionId = System.DateTime.Now.ToString("yyyy/MM/dd/HH-mm-ss");
+        //GameGlobals.gameLogManager.InitLogs();
+        //GameGlobals.albums = new System.Collections.Generic.List<Album>(GameProperties.numberOfAlbumsPerGame);
         //Album newAlbum = new Album("1", albumUIPrefab);
         //GameGlobals.albums.Add(newAlbum);
         //newAlbum = new Album("2", albumUIPrefab);
@@ -105,7 +107,7 @@ public class EndScreenFunctionalities : MonoBehaviour
         //GameGlobals.albums.Add(newAlbum);
         //newAlbum = new Album("7", albumUIPrefab);
         //GameGlobals.albums.Add(newAlbum);
-        //GameGlobals.players = new List<Player>(GameProperties.numberOfPlayersPerGame);
+        //GameGlobals.players = new System.Collections.Generic.List<Player>(GameProperties.numberOfPlayersPerGame);
         //GameGlobals.players.Add(new UIPlayer("PL1"));
         //GameGlobals.players.Add(new UIPlayer("PL2"));
         //GameGlobals.players.Add(new UIPlayer("PL3"));
