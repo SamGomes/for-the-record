@@ -9,6 +9,8 @@ using WellFormedNames;
 using System.Threading;
 using System.Collections;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+using System.Text.RegularExpressions;
 
 public class EmotionalRoboticPlayer : MonoBehaviour
 {
@@ -21,6 +23,11 @@ public class EmotionalRoboticPlayer : MonoBehaviour
 
     public int DicesValue { get; internal set; }
     public int NumDices { get; internal set; }
+
+
+    public bool Speaks { get; internal set; }
+    private AIPlayer invoker; //when no speech the object is passed so that text is displayed
+    private GameObject speechBalloon;
 
     private void Awake()
     {
@@ -36,20 +43,48 @@ public class EmotionalRoboticPlayer : MonoBehaviour
         iat.BindToRegistry(rpc.DynamicPropertiesRegistry);
         rpcThread = new Thread(UpdateCoroutine);
         rpcThread.Start();
+
+    }
+
+    public void ReceiveInvoker(AIPlayer invoker)
+    {
+        this.invoker = invoker;
+        speechBalloon = invoker.GetSpeechBaloonUI();
     }
 
     public void InitThalamusConnectorOnPort(int port, string name)
     {
-        thalamusConnector = new ThalamusConnector(port);
-        this.name = name;
+        if (Speaks)
+        {
+            thalamusConnector = new ThalamusConnector(port);
+            this.name = name;
+        }
     }
 
-    public void Perceive (Name[] events)
+    public void Perceive(Name[] events)
     {
         rpc.Perceive(events);
     }
 
-    public void Decide ()
+    public IEnumerator DisplaySpeechBalloonForAWhile(string message, float delay)
+    {
+        //speechBalloon.GetComponentInChildren<Text>().text = message;
+        //speechBalloon.SetActive(true);
+        yield return new WaitForSeconds(delay);
+        //speechBalloon.SetActive(false);
+    }
+
+    public string StripThalumsSentence(string rawMessage)
+    {
+        var strippedDialog = rawMessage;
+        strippedDialog = this.name + strippedDialog;
+        strippedDialog = strippedDialog.Replace("|dicesValue|", DicesValue.ToString());
+        strippedDialog = strippedDialog.Replace("|numDices|", NumDices.ToString());
+        strippedDialog = Regex.Replace(strippedDialog, "<.>", "");
+        return strippedDialog;
+    }
+
+    public void Decide()
     {
         IEnumerable<ActionLibrary.IAction> possibleActions = rpc.Decide();
         ActionLibrary.IAction chosenAction = possibleActions.FirstOrDefault();
@@ -69,6 +104,7 @@ public class EmotionalRoboticPlayer : MonoBehaviour
             switch (chosenAction.Key.ToString())
             {
                 case "Speak":
+
                     Name currentState = chosenAction.Parameters[0];
                     Name nextState = chosenAction.Parameters[1];
                     Name meaning = chosenAction.Parameters[2];
@@ -77,7 +113,11 @@ public class EmotionalRoboticPlayer : MonoBehaviour
                     var possibleDialogs = iat.GetDialogueActions(currentState, nextState, meaning, style);
                     int randomUttIndex = UnityEngine.Random.Range(0, possibleDialogs.Count());
                     var dialog = possibleDialogs[randomUttIndex].Utterance;
-                    if (thalamusConnector != null)
+
+                    StartCoroutine(DisplaySpeechBalloonForAWhile(StripThalumsSentence(dialog), 2.0f));
+
+
+                    if (Speaks && thalamusConnector != null)
                     {
                         if (currentState.ToString() == "SelfRollInstrumentDice")
                         {
@@ -119,7 +159,7 @@ public class EmotionalRoboticPlayer : MonoBehaviour
     private void UpdateCoroutine()
     {
         string currentBelief = rpc.GetBeliefValue("State(Game)");
-        
+
         while (currentBelief != "Game(End)" && !isStopped)
         {
             rpc.Update();
@@ -147,32 +187,57 @@ public class EmotionalRoboticPlayer : MonoBehaviour
 
     public void FlushRobotUtterance(string text)
     {
-        thalamusConnector.PerformUtterance(text, new string[] { }, new string[] { });
+        if (thalamusConnector != null)
+        {
+            thalamusConnector.PerformUtterance(text, new string[] { }, new string[] { });
+        }
+        else
+        {
+            Debug.Log("thalumns message not flushed.");
+        }
+
+        StartCoroutine(DisplaySpeechBalloonForAWhile(StripThalumsSentence(text), 2.0f));
     }
 
     public void GazeAt(string target)
     {
-        thalamusConnector.GazeAt(target);
+        if (thalamusConnector != null)
+        {
+            thalamusConnector.GazeAt(target);
+        }
+        else
+        {
+            Debug.Log("thalumns did not gaze.");
+        }
     }
 }
+
+
 
 public class RoboticPlayerCoopStrategy : AIPlayerCoopStrategy
 {
     private EmotionalRoboticPlayer robot;
     private bool playedForInstrument;
 
-    public RoboticPlayerCoopStrategy(int id, string name) : base(name)
+    public RoboticPlayerCoopStrategy(int id, string name, bool speaks) : base(name)
     {
         this.id = id;
         playedForInstrument = false;
         GameObject erp = new GameObject("EmotionalRoboticPlayer");
         robot = erp.AddComponent<EmotionalRoboticPlayer>();
         robot.InitThalamusConnectorOnPort(7000, name);
+        robot.Speaks = speaks;
     }
 
     public void FlushRobotUtterance(string text)
     {
         robot.FlushRobotUtterance(text);
+    }
+
+    public override void InitUI(GameObject playerUIPrefab, GameObject canvas, PoppupScreenFunctionalities warningScreenRef)
+    {
+        base.InitUI(playerUIPrefab, canvas, warningScreenRef);
+        robot.ReceiveInvoker(this); //only pass the invoker after it is initialized
     }
 
     public override void ChoosePreferredInstrument(Album currAlbum)
@@ -211,7 +276,7 @@ public class RoboticPlayerCoopStrategy : AIPlayerCoopStrategy
         }
     }
 
-    public override void InformPlayForInstrument (Player nextPlayer)
+    public override void InformPlayForInstrument(Player nextPlayer)
     {
         if (nextPlayer.GetName() != name)
         {
@@ -322,7 +387,7 @@ public class RoboticPlayerCoopStrategy : AIPlayerCoopStrategy
             }
             else if (currSpeakingPlayerId == id && invoker.GetName() == "Player")
             {
-            
+
                 float luckFactor = (float)obtainedValue / (float)maxValue;
 
                 if (luckFactor > 0.7)
@@ -439,18 +504,27 @@ public class RoboticPlayerGreedyStrategy : AIPlayerGreedyStrategy
     private EmotionalRoboticPlayer robot;
     private bool playedForInstrument;
 
-    public RoboticPlayerGreedyStrategy(int id, string name) : base(name)
+    public RoboticPlayerGreedyStrategy(int id, string name, bool speaks) : base(name)
     {
         this.id = id;
         playedForInstrument = false;
         GameObject erp = new GameObject("EmotionalRoboticPlayer");
         robot = erp.AddComponent<EmotionalRoboticPlayer>();
         robot.InitThalamusConnectorOnPort(7002, name);
+        robot.Speaks = speaks;
+        robot.ReceiveInvoker(this);
     }
 
     public void FlushRobotUtterance(string text)
     {
         robot.FlushRobotUtterance(text);
+    }
+
+    public override void InitUI(GameObject playerUIPrefab, GameObject canvas, PoppupScreenFunctionalities warningScreenRef)
+    {
+        base.InitUI(playerUIPrefab, canvas, warningScreenRef);
+        robot.ReceiveInvoker(this); //only pass the invoker after it is initialized
+
     }
 
     public override void ChoosePreferredInstrument(Album currAlbum)

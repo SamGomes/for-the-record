@@ -5,6 +5,7 @@ using UnityEngine;
 
 public static class GameGlobals
 {
+
     public static List<Album> albums;
     public static List<Player> players;
 
@@ -22,9 +23,10 @@ public static class GameGlobals
 
     public static IDiceNG gameDiceNG;
 
-    public static ILogManager gameLogManager = new FileLogManager();
+    public static ILogManager gameLogManager = new DebugLogManager();
     public static AudioManager audioManager = new AudioManager();
     public static GameManager gameManager;
+
 
 }
 
@@ -75,8 +77,18 @@ public static class GameProperties
 
     public static int initNumberMarketDices = 2; //config the initial number of dices to roll
 
+
+    public static bool isSpeechAllowed = false;
+
+    //----------- AutomaticBriefing -------------------
+    public static bool isAutomaticalBriefing = true;
+    public static int numGamesToPlay = 2;
+
+
+
     //------------ Simulation --------------------
     public static bool isSimulation = false;
     public static int numGamesToSimulate = 10000;
+
 }
 

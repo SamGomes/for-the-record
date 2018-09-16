@@ -44,6 +44,7 @@ public class UIPlayer : Player
 
     private PoppupScreenFunctionalities warningScreenRef;
 
+    protected GameObject UISpeechBalloon;
 
     public UIPlayer(string name) : base(name)
     {
@@ -62,7 +63,10 @@ public class UIPlayer : Player
     {
         return this.playerDisablerUI;
     }
-
+    public GameObject GetSpeechBaloonUI()
+    {
+        return this.UISpeechBalloon;
+    }
 
     public virtual void InitUI(GameObject playerUIPrefab, GameObject canvas, PoppupScreenFunctionalities warningScreenRef)
     {
@@ -73,6 +77,10 @@ public class UIPlayer : Player
         this.playerDisablerUI = playerUI.transform.Find("disabler").gameObject;
         this.playerSelfDisablerUI = playerUI.transform.Find("selfDisabler").gameObject;
         playerSelfDisablerUI.SetActive(false); //provide interaction by default
+
+
+        this.UISpeechBalloon = playerUI.transform.Find("speechBalloon").gameObject;
+        UISpeechBalloon.SetActive(false);
 
         this.UIplayerActionButton = playerUI.transform.Find("playerActionSection/playerActionButton").gameObject.GetComponent<Button>();
 
@@ -88,8 +96,6 @@ public class UIPlayer : Player
             UISkillIconsButtons[(int)instrument].transform.gameObject.SetActive(false);
         }
         this.UIChooseDiceRollInstrumentScreen = playerUI.transform.Find("playerActionSection/chooseDiceRollInstrumentPhaseUI").gameObject;
-
-
 
 
         this.UILevelUpScreen = playerUI.transform.Find("playerActionSection/levelUpPhaseUI").gameObject;

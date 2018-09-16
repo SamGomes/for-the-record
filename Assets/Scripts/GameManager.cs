@@ -75,40 +75,47 @@ public class GameManager : MonoBehaviour {
         //GameGlobals.gameLogManager.InitLogs();
         //GameGlobals.albums = new List<Album>(GameProperties.numberOfAlbumsPerGame);
         //GameGlobals.players = new List<Player>(GameProperties.numberOfPlayersPerGame);
+        //GameGlobals.players.Add(new RoboticPlayerCoopStrategy(0,"PL2",false));
+        //GameGlobals.players.Add(new RoboticPlayerGreedyStrategy(1,"PL3",false));
         //GameGlobals.players.Add(new UIPlayer("PL1"));
-        //GameGlobals.players.Add(new AIPlayerGreedyStrategy("PL2"));
-        //GameGlobals.players.Add(new AIPlayerBalancedStrategy("PL3"));
         //GameGlobals.gameDiceNG = new RandomDiceNG();
+        //GameGlobals.currSessionId = "0";
+        //GameGlobals.currGameId = 0;
+        //GameGlobals.currGameRoundId = 0;
     }
 
-    public void InterruptGame()
+    public int InterruptGame()
     {
         interruptionRequests++;
+        return 0;
     }
-    public void ContinueGame()
+    public int ContinueGame()
     {
         interruptionRequests--;
+        return 0;
     }
 
     public void InitGame()
     {
+        interruptionRequests = 0;
+        InterruptGame(); //interrupt game update while loading...
+
         choosePreferedInstrumentResponseReceived = false;
         playForInstrumentResponseReceived = false;
         levelUpResponseReceived = false;
         lastDecisionResponseReceived = false;
         currPlayerIndex = 0;
 
-        interruptionRequests = 0;
 
-        warningPoppupRef = new PoppupScreenFunctionalities(poppupPrefab,canvas, this.GetComponent<PlayerMonoBehaviourFunctionalities>(),Resources.Load<Sprite>("Textures/UI/Icons/Warning"), new Color(0.9f, 0.8f, 0.8f), "Audio/snap");
+        warningPoppupRef = new PoppupScreenFunctionalities(InterruptGame,ContinueGame,poppupPrefab,canvas, this.GetComponent<PlayerMonoBehaviourFunctionalities>(),Resources.Load<Sprite>("Textures/UI/Icons/Warning"), new Color(0.9f, 0.8f, 0.8f), "Audio/snap");
 
-        infoPoppupLossRef = new PoppupScreenFunctionalities(poppupPrefab,canvas, this.GetComponent<PlayerMonoBehaviourFunctionalities>(),Resources.Load<Sprite>("Textures/UI/Icons/InfoLoss"), new Color(0.9f, 0.8f, 0.8f), "Audio/albumLoss");
-        infoPoppupWinRef = new PoppupScreenFunctionalities(poppupPrefab,canvas, this.GetComponent<PlayerMonoBehaviourFunctionalities>(),Resources.Load<Sprite>("Textures/UI/Icons/InfoWin"), new Color(0.9f, 0.9f, 0.8f), "Audio/albumVictory");
-        infoPoppupNeutralRef = new PoppupScreenFunctionalities(poppupPrefab,canvas, this.GetComponent<PlayerMonoBehaviourFunctionalities>(),Resources.Load<Sprite>("Textures/UI/Icons/Info"), new Color(0.9f, 0.9f, 0.9f), "Audio/snap");
+        infoPoppupLossRef = new PoppupScreenFunctionalities(InterruptGame, ContinueGame, poppupPrefab,canvas, this.GetComponent<PlayerMonoBehaviourFunctionalities>(),Resources.Load<Sprite>("Textures/UI/Icons/InfoLoss"), new Color(0.9f, 0.8f, 0.8f), "Audio/albumLoss");
+        infoPoppupWinRef = new PoppupScreenFunctionalities(InterruptGame, ContinueGame, poppupPrefab,canvas, this.GetComponent<PlayerMonoBehaviourFunctionalities>(),Resources.Load<Sprite>("Textures/UI/Icons/InfoWin"), new Color(0.9f, 0.9f, 0.8f), "Audio/albumVictory");
+        infoPoppupNeutralRef = new PoppupScreenFunctionalities(InterruptGame, ContinueGame, poppupPrefab,canvas, this.GetComponent<PlayerMonoBehaviourFunctionalities>(),Resources.Load<Sprite>("Textures/UI/Icons/Info"), new Color(0.9f, 0.9f, 0.9f), "Audio/snap");
 
         //these poppups load the end scene
-        endPoppupLossRef = new PoppupScreenFunctionalities(poppupPrefab, canvas, this.GetComponent<PlayerMonoBehaviourFunctionalities>(), Resources.Load<Sprite>("Textures/UI/Icons/InfoLoss"), new Color(0.9f, 0.8f, 0.8f), delegate() { /*end game*/ if (this.gameMainSceneFinished) GameSceneManager.LoadEndScene(); return 0; });
-        endPoppupWinRef = new PoppupScreenFunctionalities(poppupPrefab, canvas, this.GetComponent<PlayerMonoBehaviourFunctionalities>(), Resources.Load<Sprite>("Textures/UI/Icons/InfoWin"), new Color(0.9f, 0.9f, 0.8f), delegate () { /*end game*/ if (this.gameMainSceneFinished) GameSceneManager.LoadEndScene(); return 0; });
+        endPoppupLossRef = new PoppupScreenFunctionalities(InterruptGame, ContinueGame, poppupPrefab, canvas, this.GetComponent<PlayerMonoBehaviourFunctionalities>(), Resources.Load<Sprite>("Textures/UI/Icons/InfoLoss"), new Color(0.9f, 0.8f, 0.8f), delegate() { /*end game*/ if (this.gameMainSceneFinished) GameSceneManager.LoadEndScene(); return 0; });
+        endPoppupWinRef = new PoppupScreenFunctionalities(InterruptGame, ContinueGame, poppupPrefab, canvas, this.GetComponent<PlayerMonoBehaviourFunctionalities>(), Resources.Load<Sprite>("Textures/UI/Icons/InfoWin"), new Color(0.9f, 0.9f, 0.8f), delegate () { /*end game*/ if (this.gameMainSceneFinished) GameSceneManager.LoadEndScene(); return 0; });
 
         gameMainSceneFinished = false;
         preferredInstrumentsChoosen = false;
@@ -145,6 +152,8 @@ public class GameManager : MonoBehaviour {
 
         marketLimit = Mathf.FloorToInt(GameProperties.numberOfAlbumsPerGame * 4.0f / 5.0f) - 1;
         currNumberOfMarketDices = GameProperties.initNumberMarketDices;
+
+        ContinueGame();
     }
 
     //warning: works only when using human players!
@@ -170,6 +179,7 @@ public class GameManager : MonoBehaviour {
 
     void Start()
     {
+
         InitGame();
 
         numPlayersToChooseDiceRollInstrument = GameGlobals.players.Count;
@@ -207,8 +217,7 @@ public class GameManager : MonoBehaviour {
             });
 
         }
-
-
+        
     }
 
     public void StartGameRoundForAllPlayers(string albumName)

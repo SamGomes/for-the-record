@@ -1,11 +1,16 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class EndScreenFunctionalities : MonoBehaviour
 {
 
+    public GameObject poppupPrefab;
+
+
     public Button UIRestartGameButton;
+    public Button UIEndGameButton;
 
     public GameObject UIAlbumCollectionDisplay;
     public GameObject UIIndividualTable;
@@ -13,11 +18,31 @@ public class EndScreenFunctionalities : MonoBehaviour
 
     public GameObject UIVictoryOverlay;
     public GameObject UILossOverlay;
+    public GameObject UIFinishedGameOverlay;
 
-    public GameObject mainScreen;
+    public GameObject mainScene;
 
 
     public GameObject albumUIPrefab;
+
+    private int StopAllAnimations()
+    {
+        Animator[] mainSceneAnimators = mainScene.GetComponentsInChildren<Animator>();
+        for (int i = 0; i < mainSceneAnimators.Length; i++)
+        {
+            mainSceneAnimators[i].speed = 0;
+        }
+        return 0;
+    }
+    private int PlayAllAnimations()
+    {
+        Animator[] mainSceneAnimators = mainScene.GetComponentsInChildren<Animator>();
+        for (int i = 0; i < mainSceneAnimators.Length; i++)
+        {
+            mainSceneAnimators[i].speed = 1;
+        }
+        return 0;
+    }
 
     private void RestartGame()
     {
@@ -27,8 +52,6 @@ public class EndScreenFunctionalities : MonoBehaviour
         }
         GameSceneManager.LoadStartScene();
         Debug.Log("numGamesToSimulate: " + GameProperties.numGamesToSimulate);
-
-        GameProperties.numGamesToSimulate--;
     }
 
     private IEnumerator LoadMainScreenAfterDelay(float delay)
@@ -37,7 +60,7 @@ public class EndScreenFunctionalities : MonoBehaviour
 
         if (!GameProperties.isSimulation)
         {
-            mainScreen.SetActive(true);
+            mainScene.SetActive(true);
             LoadEndScreenUIElements();
         }
     }
@@ -76,6 +99,11 @@ public class EndScreenFunctionalities : MonoBehaviour
             RestartGame();
         });
 
+        UIEndGameButton.onClick.AddListener(delegate () {
+            //mainScene.SetActive(false);
+            UIFinishedGameOverlay.SetActive(true);
+            StopAllAnimations();
+        });
     }
 
     //in order to sort the players list by money earned
@@ -89,6 +117,10 @@ public class EndScreenFunctionalities : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+
+        PoppupScreenFunctionalities infoPoppupNeutralRef = new PoppupScreenFunctionalities(StopAllAnimations,PlayAllAnimations,poppupPrefab, mainScene, this.GetComponent<PlayerMonoBehaviourFunctionalities>(), Resources.Load<Sprite>("Textures/UI/Icons/Info"), new Color(0.9f, 0.9f, 0.9f));
+
+
         ////mock
         //GameGlobals.currSessionId = System.DateTime.Now.ToString("yyyy/MM/dd/HH-mm-ss");
         //GameGlobals.gameLogManager.InitLogs();
@@ -112,11 +144,12 @@ public class EndScreenFunctionalities : MonoBehaviour
         //GameGlobals.players.Add(new UIPlayer("PL2"));
         //GameGlobals.players.Add(new UIPlayer("PL3"));
         //GameGlobals.currGameState = GameProperties.GameState.VICTORY;
-
+        //GameGlobals.currGameId = 1;
 
         UIVictoryOverlay.SetActive(false);
         UILossOverlay.SetActive(false);
-        mainScreen.SetActive(false);
+        UIFinishedGameOverlay.SetActive(false);
+        mainScene.SetActive(false);
 
         int numAlbumsPlayed = GameGlobals.albums.Count;
         for (int i = 0; i < numAlbumsPlayed; i++)
@@ -158,9 +191,32 @@ public class EndScreenFunctionalities : MonoBehaviour
 
         if (GameProperties.isSimulation)
         {
-            if (GameProperties.numGamesToSimulate > 1)
+            if (GameGlobals.currGameId == GameProperties.numGamesToSimulate)
             {
                 RestartGame();
+            }
+        }
+        else
+        {
+            if (GameProperties.isAutomaticalBriefing)
+            {
+                if (GameGlobals.currGameId == GameProperties.numGamesToPlay)
+                {
+                    infoPoppupNeutralRef.DisplayPoppup("You reached the end of the test game. You can choose to close the application or watch the credits. Thank you for your time!");
+                    UIEndGameButton.interactable = true;
+                    UIRestartGameButton.interactable = false;
+                    //UIEndGameButton.GetComponent<Animator>().speed = 1;
+                    //UIRestartGameButton.GetComponent<Animator>().speed = 0;
+                }
+                else
+                {
+                    infoPoppupNeutralRef.DisplayPoppup("You reached the end of the tutorial game. We assume that you are prepared for the test game. Good luck!");
+                    UIRestartGameButton.interactable = true;
+                    UIEndGameButton.interactable = false;
+                    //UIRestartGameButton.GetComponent<Animator>().speed = 1;
+                    //UIEndGameButton.GetComponent<Animator>().speed = 0;
+                }
+            
             }
         }
 

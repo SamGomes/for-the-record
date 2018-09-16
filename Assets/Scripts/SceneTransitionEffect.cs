@@ -23,6 +23,7 @@ public class Fade: SceneTransitionEffect{
     private Color currFadeColor;
 
     private Image transitionImage;
+    private bool isFading;
 
     public Fade(Color transitionColor) : base()
     {
@@ -31,14 +32,19 @@ public class Fade: SceneTransitionEffect{
         fadeRate = 0.05f;
 
         transitionImage = transitionScreen.GetComponentInChildren<Image>();
-
-        //this.gameObject.SetActive(false);
     }
 
     public override void LoadSceneWithEffect(string sceneName, LoadSceneMode mode)
     {
         transitionScreen.gameObject.SetActive(true);
-        transitionImage.StartCoroutine(ApplyFade(sceneName, mode));
+        if (!isFading)
+        {
+            transitionImage.StartCoroutine(ApplyFade(sceneName, mode));
+        }
+        else //do not fade again just load scene
+        {
+            SceneManager.LoadScene(sceneName, mode);
+        }
     }
    
     public void DisableFade()
@@ -49,9 +55,12 @@ public class Fade: SceneTransitionEffect{
     //animation fixed update time of 24 fps
     IEnumerator ApplyFade(string sceneName, LoadSceneMode mode)
     {
+       
+        isFading = true;
         yield return ApplyFadeIn();
         SceneManager.LoadScene(sceneName, mode);
         yield return ApplyFadeOut();
+        isFading = false;
     }
     IEnumerator ApplyFadeIn() {
         while (currFadeColor.a <= 1.0f)
