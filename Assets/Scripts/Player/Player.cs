@@ -32,6 +32,8 @@ public abstract class Player
    
     public Player(int id, string name)
     {
+        this.gameManagerRef = GameGlobals.gameManager;
+
         this.id = id;
         this.name = name;
 
@@ -60,6 +62,11 @@ public abstract class Player
         //main gameplay stuff
         RegisterMeOnPlayersLog();
     }
+
+    public void ReceiveGameManager(GameManager gameManagerRef) {
+        this.gameManagerRef = gameManagerRef;
+    }
+
 
     public virtual void RegisterMeOnPlayersLog()
     {

@@ -31,11 +31,23 @@ public abstract class AIPlayer : UIPlayer
 
     protected EmotionalModule emotionalModule;
 
-    public AIPlayer(GameObject playerUIPrefab, GameObject canvas, PoppupScreenFunctionalities warningScreenref, int id, string name, bool isSpeechAlloweed) : this(id, name){
+    public AIPlayer(GameObject playerUIPrefab, GameObject canvas, PoppupScreenFunctionalities warningScreenref, int id, string name, bool isSpeechAlloweed) : base(playerUIPrefab, canvas, warningScreenref,id, name){
         this.isSpeechAllowed = isSpeechAllowed;
+
+        InitDelays();
+
+        GameObject erp = new GameObject("EmotionalRoboticPlayer");
+        emotionalModule = erp.AddComponent<EmotionalModule>();
+        emotionalModule.Speaks = false;
+        emotionalModule.ReceiveInvoker(this); //only pass the invoker after it is initialized
     }
 
     public AIPlayer(int id, string name) : base(id, name)
+    {
+        InitDelays();
+    }
+
+    public void InitDelays()
     {
         choosePreferredInstrumentDelay = 2.0f;
         levelUpThinkingDelay = 2.0f;
@@ -53,13 +65,6 @@ public abstract class AIPlayer : UIPlayer
         informGameResultDelay = 1.0f;
 
         sendResponsesDelay = 1.0f;
-
-
-
-        GameObject erp = new GameObject("EmotionalRoboticPlayer");
-        emotionalModule = erp.AddComponent<EmotionalModule>();
-        emotionalModule.Speaks = false;
-        emotionalModule.ReceiveInvoker(this); //only pass the invoker after it is initialized
     }
 
     public override void RegisterMeOnPlayersLog()

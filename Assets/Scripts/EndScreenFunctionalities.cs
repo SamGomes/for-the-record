@@ -118,7 +118,7 @@ public class EndScreenFunctionalities : MonoBehaviour
     void Start()
     {
 
-        PoppupScreenFunctionalities infoPoppupNeutralRef = new PoppupScreenFunctionalities(StopAllAnimations,PlayAllAnimations,poppupPrefab, mainScene, this.GetComponent<PlayerMonoBehaviourFunctionalities>(), Resources.Load<Sprite>("Textures/UI/Icons/Info"), new Color(0.9f, 0.9f, 0.9f));
+        PoppupScreenFunctionalities infoPoppupNeutralRef = new PoppupScreenFunctionalities(false,StopAllAnimations,PlayAllAnimations,poppupPrefab, mainScene, this.GetComponent<PlayerMonoBehaviourFunctionalities>(), Resources.Load<Sprite>("Textures/UI/Icons/Info"), new Color(0.9f, 0.9f, 0.9f));
 
 
         ////mock

@@ -69,8 +69,8 @@ public class PlayersSetupSceneFunctionalities : MonoBehaviour {
     {
         if (!GameProperties.isSimulation)
         {
+            playerWarningPoppupRef = new PoppupScreenFunctionalities(true, null, null, poppupPrefab, playerCanvas, this.GetComponent<PlayerMonoBehaviourFunctionalities>(), Resources.Load<Sprite>("Textures/UI/Icons/Info"), new Color(0.9f, 0.9f, 0.9f), "Audio/snap");
             Object.DontDestroyOnLoad(playerCanvas);
-            this.playerWarningPoppupRef = new PoppupScreenFunctionalities(null,null, poppupPrefab, playerCanvas, this.GetComponent<PlayerMonoBehaviourFunctionalities>(), Resources.Load<Sprite>("Textures/UI/Icons/Warning"), new Color(0.9f, 0.8f, 0.8f), "Audio/snap");
 
             if (GameProperties.isAutomaticalBriefing)
             {

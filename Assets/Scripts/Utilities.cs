@@ -8,7 +8,6 @@ public static class GameGlobals
 
     public static List<Album> albums;
     public static List<Player> players;
-    public static PoppupScreenFunctionalities playerWarningPoppupRef;
 
     public static string currSessionId;
     public static int currGameId;

@@ -6,6 +6,7 @@ public class UIPlayer : Player
 {
     protected PlayerMonoBehaviourFunctionalities playerMonoBehaviourFunctionalities;
 
+    private GameObject canvas;
     private GameObject playerUI;
     private GameObject playerMarkerUI;
     private GameObject playerDisablerUI;
@@ -48,12 +49,12 @@ public class UIPlayer : Player
     protected GameObject UISpeechBalloon;
 
 
-    public UIPlayer(GameObject playerUIPrefab, GameObject playerCanvas, PoppupScreenFunctionalities warningScreenref, int id, string name) : base(id, name)
+    public UIPlayer(GameObject playerUIPrefab, GameObject playerCanvas, PoppupScreenFunctionalities warningScreenRef, int id, string name) : base(id, name)
     {
         InitUI(playerUIPrefab, playerCanvas, warningScreenRef);
         
         //position UI on canvas
-        this.GetPlayerUI().transform.Translate(new Vector3(0, -GameGlobals.players.IndexOf(this) * 170.0f, 0));
+        this.GetPlayerUI().transform.Translate(new Vector3(0, -GameGlobals.players.Count * 170.0f, 0));
 
         //position UI correctly depending on players number (table layout)
         //float refAngle = (180.0f / (numPlayers - 1));
@@ -69,6 +70,14 @@ public class UIPlayer : Player
     {
     }
 
+    public PoppupScreenFunctionalities GetWarningScreenRef()
+    {
+        return this.warningScreenRef;
+    }
+    public GameObject GetPlayerCanvas()
+    {
+        return this.canvas;
+    }
     public GameObject GetPlayerUI()
     {
         return this.playerUI;
@@ -88,6 +97,7 @@ public class UIPlayer : Player
 
     public virtual void InitUI(GameObject playerUIPrefab, GameObject canvas, PoppupScreenFunctionalities warningScreenRef)
     {
+        this.canvas = canvas;
         this.warningScreenRef = warningScreenRef;
 
         this.playerUI = Object.Instantiate(playerUIPrefab, canvas.transform);
