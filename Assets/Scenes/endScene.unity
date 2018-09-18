@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657868, g: 0.4964127, b: 0.57481724, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657844, g: 0.49641222, b: 0.57481694, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -398,8 +398,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -6, y: 0}
-  m_SizeDelta: {x: -196.6, y: -28}
+  m_AnchoredPosition: {x: -4.5, y: -0.099998474}
+  m_SizeDelta: {x: -116.8, y: -28}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &172480410
 MonoBehaviour:
@@ -433,7 +433,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Credits
+  m_Text: Finish experiment
 --- !u!222 &172480411
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1156,7 +1156,7 @@ Canvas:
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 3
   m_TargetDisplay: 0
 --- !u!224 &748826611
 RectTransform:
@@ -2735,11 +2735,23 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "Thank you for playing For the Record!\n\nBy playing our game you are helping
-    our research/ development team at Instituto Superior T\xE9cnico to study some
-    behavioural aspects that are present in the world around us.\n\nSincerily,\n\nSam
-    M. - theoric foundations and game engineering\nSam G. - researcher and lead developer/designer\nF.
-    Correia - researcher and affective computing developer\n"
+  m_Text: 'Thank you for playing For the Record!
+
+
+    To finish the experment, you can now copy your game code and respond to our questionnaires.
+    Your game code is:
+
+
+    Have a great day,
+
+
+    Sam M. - theoric foundations and game engineering
+
+    Sam G. - researcher and lead developer/designer
+
+    F. Correia - researcher and affective computing developer
+
+'
 --- !u!222 &2029170657
 CanvasRenderer:
   m_ObjectHideFlags: 0

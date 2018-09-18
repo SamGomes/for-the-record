@@ -115,9 +115,9 @@ public class GameManager : MonoBehaviour {
                 firstUIPlayer = (UIPlayer)GameGlobals.players[pIndex++];
                 if (firstUIPlayer != null)
                 {
-                    firstUIPlayer.GetWarningScreenRef().SetOnShow(InterruptGame);
+                    firstUIPlayer.GetWarningScreenRef().AddOnShow(InterruptGame);
 
-                    firstUIPlayer.GetWarningScreenRef().SetOnHide(ContinueGame);
+                    firstUIPlayer.GetWarningScreenRef().AddOnHide(ContinueGame);
                 }
             }
         }
@@ -694,23 +694,6 @@ public class GameManager : MonoBehaviour {
                 foreach (Player player in GameGlobals.players)
                 {
                     player.InformGameResult(GameGlobals.currGameState);
-                }
-
-                //destroy player UIs
-                if (GameGlobals.players.Count > 0)
-                {
-                    UIPlayer firstUIPlayer = null;
-                    int pIndex = 0;
-                    while (firstUIPlayer == null && pIndex < GameGlobals.players.Count)
-                    {
-                        firstUIPlayer = (UIPlayer)GameGlobals.players[pIndex++];
-                        if (firstUIPlayer != null)
-                        {
-                            firstUIPlayer.GetWarningScreenRef().DestroyPoppupPanel();
-
-                            Destroy(firstUIPlayer.GetPlayerCanvas());
-                        }
-                    }
                 }
 
 

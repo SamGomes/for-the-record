@@ -14,7 +14,7 @@ public class StartScreenFunctionalities : MonoBehaviour {
 
         GameGlobals.FAtiMAScenarioPath = "/Scenarios/ForTheRecord.iat";
         GameGlobals.numberOfSpeakingPlayers = 0;
-        GameGlobals.currGameId = 0;
+        GameGlobals.currGameId++;
         GameGlobals.currGameRoundId = 0;
         GameGlobals.albumIdCount = 0;
 
@@ -25,10 +25,25 @@ public class StartScreenFunctionalities : MonoBehaviour {
         GameGlobals.gameLogManager.InitLogs();
         //GameGlobals.playerIdCount = 0;
         //GameGlobals.albumIdCount = 0;
-        GameGlobals.currGameId++;
 
         GameGlobals.albums = new List<Album>(GameProperties.numberOfAlbumsPerGame);
+        //destroy UIs if any
+        if (GameGlobals.players!=null && GameGlobals.players.Count > 0)
+        {
+            UIPlayer firstUIPlayer = null;
+            int pIndex = 0;
+            while (firstUIPlayer == null && pIndex < GameGlobals.players.Count)
+            {
+                firstUIPlayer = (UIPlayer)GameGlobals.players[pIndex++];
+                if (firstUIPlayer != null)
+                {
+                    firstUIPlayer.GetWarningScreenRef().DestroyPoppupPanel();
+
+                }
+            }
+        }
         GameGlobals.players = new List<Player>(GameProperties.numberOfPlayersPerGame);
+
 
         //only generate session data in the first game
         if (GameGlobals.currGameId == 1)
@@ -80,6 +95,20 @@ public class StartScreenFunctionalities : MonoBehaviour {
         this.UIStartGameButton = GameObject.Find("Canvas/StartScreen/startGameButton").gameObject.GetComponent<Button>();
         if (!GameProperties.isSimulation)
         {
+            if (GameProperties.isAutomaticalBriefing)
+            {
+                Text startButtonText = UIStartGameButton.GetComponentInChildren<Text>();
+                if (GameGlobals.currGameId == 1)
+                {
+                    startButtonText.text = "Start Tutorial Game";
+                }
+                else
+                {
+                    startButtonText.text = "Start Experiment Game";
+                }
+            }
+
+
             //play theme song
             //GameGlobals.audioManager.PlayInfinitClip("Audio/theme/themeIntro", "Audio/theme/themeLoop");
             UIStartGameButton.onClick.AddListener(delegate () { StartGame(); });

@@ -64,7 +64,7 @@ public abstract class AIPlayer : UIPlayer
         informAlbumResultDelay = 1.0f;
         informGameResultDelay = 1.0f;
 
-        sendResponsesDelay = 1.0f;
+        sendResponsesDelay = 2.0f;
     }
 
     public override void RegisterMeOnPlayersLog()

@@ -1174,7 +1174,7 @@ Animator:
   m_GameObject: {fileID: 1403552159786642}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 938b6fdc52aef2f4e9dab09b9d927351, type: 2}
+  m_Controller: {fileID: 9100000, guid: 1124c2463583ba647b884d455744086d, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -2164,9 +2164,9 @@ MonoBehaviour:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
     m_FontSize: 24
     m_FontStyle: 0
-    m_BestFit: 0
+    m_BestFit: 1
     m_MinSize: 2
-    m_MaxSize: 40
+    m_MaxSize: 24
     m_Alignment: 0
     m_AlignByGeometry: 0
     m_RichText: 1
@@ -3465,7 +3465,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: 6c3cffb13bdf6c14c80bbb4865da7d36, type: 3}
+  m_Sprite: {fileID: 21300000, guid: d6d73c20a99dc57489338f3a457e5848, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -3920,7 +3920,7 @@ Canvas:
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 6
+  m_SortingOrder: 20
   m_TargetDisplay: 0
 --- !u!224 &224006261733962800
 RectTransform:
@@ -4087,7 +4087,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 362, y: 471.8}
+  m_AnchoredPosition: {x: -148, y: 443}
   m_SizeDelta: {x: 357, y: 252.8}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224149215501017152
@@ -4830,8 +4830,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -34.8, y: -12.2}
-  m_SizeDelta: {x: 252.8, y: 124.3}
+  m_AnchoredPosition: {x: -37.5, y: 0.2}
+  m_SizeDelta: {x: 258.3, y: 110.6}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224676326343656066
 RectTransform:
@@ -5140,7 +5140,7 @@ RectTransform:
   m_GameObject: {fileID: 1352494018374352}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.35719594, y: 0.35719576, z: 0.35719576}
+  m_LocalScale: {x: 0.36247703, y: 0.36247677, z: 0.36247677}
   m_Children:
   - {fileID: 224680090374705332}
   - {fileID: 224202848138584316}

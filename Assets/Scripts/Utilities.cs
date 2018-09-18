@@ -78,7 +78,7 @@ public static class GameProperties
     public static bool isSpeechAllowed = false;
 
     //----------- AutomaticBriefing -------------------
-    public static bool isAutomaticalBriefing = false;
+    public static bool isAutomaticalBriefing = true;
     public static int numGamesToPlay = 2;
 
 
