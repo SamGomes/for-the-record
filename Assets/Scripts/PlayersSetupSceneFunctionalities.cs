@@ -15,30 +15,37 @@ public class PlayersSetupSceneFunctionalities : MonoBehaviour {
     private GameObject UIAIPlayerSelectionButtonsObject;
     private GameObject configSelectionButtonsObject;
 
+    
+    public GameObject poppupPrefab;
+    public GameObject playerUIPrefab;
+    public GameObject playerCanvas;
+    private PoppupScreenFunctionalities playerWarningPoppupRef;
+
+
 
     void ConfigureAllHumanPlayers()
     {
-        GameGlobals.players.Add(new UIPlayer("Player1"));
-        GameGlobals.players.Add(new UIPlayer("Player2"));
-        GameGlobals.players.Add(new UIPlayer("Player3"));
+        GameGlobals.players.Add(new UIPlayer(playerUIPrefab,playerCanvas, playerWarningPoppupRef, 0,"Player1"));
+        GameGlobals.players.Add(new UIPlayer(playerUIPrefab, playerCanvas, playerWarningPoppupRef, 1, "Player2"));
+        GameGlobals.players.Add(new UIPlayer(playerUIPrefab, playerCanvas, playerWarningPoppupRef, 2,"Player3"));
         GameGlobals.gameDiceNG = new RandomDiceNG();
     }
     void ConfigureRandomTestWithRobots()
     {
         GameGlobals.numberOfSpeakingPlayers = 2;
-        GameGlobals.players.Add(new RoboticPlayerGreedyStrategy(0, "Emys", GameProperties.isSpeechAllowed));
-        GameGlobals.players.Add(new RoboticPlayerCoopStrategy(1, "Glin", GameProperties.isSpeechAllowed));
-        GameGlobals.players.Add(new UIPlayer("Player"));
+        GameGlobals.players.Add(new AIPlayerBalancedStrategy(playerUIPrefab, playerCanvas, playerWarningPoppupRef, 0, "Emys", GameProperties.isSpeechAllowed));
+        GameGlobals.players.Add(new AIPlayerBalancedStrategy(playerUIPrefab, playerCanvas, playerWarningPoppupRef, 1, "Glin", GameProperties.isSpeechAllowed));
+        GameGlobals.players.Add(new UIPlayer(playerUIPrefab, playerCanvas, playerWarningPoppupRef, 2, "Player"));
         GameGlobals.gameDiceNG = new RandomDiceNG();
     }
     void ConfigureConditionA()
     {
         GameGlobals.numberOfSpeakingPlayers = 2;
-        RoboticPlayerGreedyStrategy emys = new RoboticPlayerGreedyStrategy(0, "Emys", GameProperties.isSpeechAllowed);
+        AIPlayerGreedyStrategy emys = new AIPlayerGreedyStrategy(playerUIPrefab, playerCanvas, playerWarningPoppupRef, 0, "Emys", GameProperties.isSpeechAllowed);
         GameGlobals.players.Add(emys);
-        RoboticPlayerCoopStrategy glin = new RoboticPlayerCoopStrategy(1, "Glin", GameProperties.isSpeechAllowed);
+        AIPlayerCoopStrategy glin = new AIPlayerCoopStrategy(playerUIPrefab, playerCanvas, playerWarningPoppupRef, 1, "Glin", GameProperties.isSpeechAllowed);
         GameGlobals.players.Add(glin);
-        GameGlobals.players.Add(new UIPlayer("Player"));
+        GameGlobals.players.Add(new UIPlayer(playerUIPrefab, playerCanvas, playerWarningPoppupRef, 2,"Player"));
         GameGlobals.gameDiceNG = new VictoryDiceNG();
         emys.FlushRobotUtterance("<gaze(Player)> Eu sou o émys!");
         Thread.Sleep(1000);
@@ -47,11 +54,11 @@ public class PlayersSetupSceneFunctionalities : MonoBehaviour {
     void ConfigureConditionB()
     {
         GameGlobals.numberOfSpeakingPlayers = 2;
-        RoboticPlayerGreedyStrategy emys = new RoboticPlayerGreedyStrategy(0, "Emys", GameProperties.isSpeechAllowed);
+        AIPlayerGreedyStrategy emys = new AIPlayerGreedyStrategy(playerUIPrefab, playerCanvas, playerWarningPoppupRef, 0, "Emys", GameProperties.isSpeechAllowed);
         GameGlobals.players.Add(emys);
-        RoboticPlayerCoopStrategy glin = new RoboticPlayerCoopStrategy(1, "Glin", GameProperties.isSpeechAllowed);
+        AIPlayerCoopStrategy glin = new AIPlayerCoopStrategy(playerUIPrefab, playerCanvas, playerWarningPoppupRef, 1, "Glin", GameProperties.isSpeechAllowed);
         GameGlobals.players.Add(glin);
-        GameGlobals.players.Add(new UIPlayer("Player"));
+        GameGlobals.players.Add(new UIPlayer(2,"Player"));
         GameGlobals.gameDiceNG = new LossDiceNG();
         emys.FlushRobotUtterance("<gaze(Player)> Eu sou o émys!");
         Thread.Sleep(1000);
@@ -62,6 +69,9 @@ public class PlayersSetupSceneFunctionalities : MonoBehaviour {
     {
         if (!GameProperties.isSimulation)
         {
+            Object.DontDestroyOnLoad(playerCanvas);
+            this.playerWarningPoppupRef = new PoppupScreenFunctionalities(null,null, poppupPrefab, playerCanvas, this.GetComponent<PlayerMonoBehaviourFunctionalities>(), Resources.Load<Sprite>("Textures/UI/Icons/Warning"), new Color(0.9f, 0.8f, 0.8f), "Audio/snap");
+
             if (GameProperties.isAutomaticalBriefing)
             {
                 if (GameGlobals.currGameId == 1) //gameId starts in 1, 1 is the first game (tutorial)
@@ -85,7 +95,6 @@ public class PlayersSetupSceneFunctionalities : MonoBehaviour {
                 StartGame();
                 return;
             }
-
 
             this.customizeLabel = GameObject.Find("Canvas/SetupScreen/customizeLabel").gameObject;
 
@@ -113,7 +122,7 @@ public class PlayersSetupSceneFunctionalities : MonoBehaviour {
 
             UIStartGameButton.onClick.AddListener(delegate { StartGame(); });
             UIAddPlayerButton.onClick.AddListener(delegate {
-                GameGlobals.players.Add(new UIPlayer(UINameSelectionInputBox.text));
+                GameGlobals.players.Add(new UIPlayer(playerUIPrefab, playerCanvas, playerWarningPoppupRef, GameGlobals.players.Count,UINameSelectionInputBox.text));
                 CheckForAllPlayersRegistered();
             });
 
@@ -123,20 +132,20 @@ public class PlayersSetupSceneFunctionalities : MonoBehaviour {
                 button.onClick.AddListener(delegate
                 {
                     int index = new List<Button>(UIAIPlayerSelectionButtons).IndexOf(button);
-                    UIPlayer newPlayer = new UIPlayer("");
+                    UIPlayer newPlayer = new UIPlayer(0,"");
                     switch ((GameProperties.AIPlayerType) (index+1))
                     {
                         case GameProperties.AIPlayerType.SIMPLE:
-                            newPlayer = new AIPlayerSimple("John0");
+                            newPlayer = new AIPlayerSimple(playerUIPrefab, playerCanvas, playerWarningPoppupRef, GameGlobals.players.Count,"John0", GameProperties.isSpeechAllowed);
                             break;
                         case GameProperties.AIPlayerType.COOPERATIVE:
-                            newPlayer = new AIPlayerCoopStrategy("John1");
+                            newPlayer = new AIPlayerCoopStrategy(playerUIPrefab, playerCanvas, playerWarningPoppupRef, GameGlobals.players.Count,"John1", GameProperties.isSpeechAllowed);
                             break;
                         case GameProperties.AIPlayerType.GREEDY:
-                            newPlayer = new AIPlayerGreedyStrategy("John2");
+                            newPlayer = new AIPlayerGreedyStrategy(playerUIPrefab, playerCanvas, playerWarningPoppupRef, GameGlobals.players.Count,"John2", GameProperties.isSpeechAllowed);
                             break;
                         case GameProperties.AIPlayerType.BALANCED:
-                            newPlayer = new AIPlayerBalancedStrategy("John3");
+                            newPlayer = new AIPlayerBalancedStrategy(playerUIPrefab, playerCanvas, playerWarningPoppupRef, GameGlobals.players.Count,"John3", GameProperties.isSpeechAllowed);
                             break;
                     }
                     GameGlobals.players.Add(newPlayer);
@@ -174,9 +183,9 @@ public class PlayersSetupSceneFunctionalities : MonoBehaviour {
         }
         else
         {
-            GameGlobals.players.Add(new AIPlayerGreedyStrategy("PL1"));
-            GameGlobals.players.Add(new AIPlayerBalancedStrategy("PL2"));
-            GameGlobals.players.Add(new AIPlayerCoopStrategy("PL3"));
+            GameGlobals.players.Add(new AIPlayerGreedyStrategy(GameGlobals.players.Count,"PL1"));
+            GameGlobals.players.Add(new AIPlayerBalancedStrategy(GameGlobals.players.Count,"PL2"));
+            GameGlobals.players.Add(new AIPlayerCoopStrategy(GameGlobals.players.Count,"PL3"));
             GameGlobals.gameDiceNG = new RandomDiceNG();
             StartGame();
         }

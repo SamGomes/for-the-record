@@ -7,7 +7,6 @@ using UnityEngine.UI;
 
 public abstract class Player
 {
-    protected PlayerMonoBehaviourFunctionalities playerMonoBehaviourFunctionalities;
 
     protected int id;
     private string actionLog;
@@ -31,9 +30,9 @@ public abstract class Player
 
     public int tokensBoughtOnCurrRound;
    
-    public Player(string name)
+    public Player(int id, string name)
     {
-        this.id = GameGlobals.playerIdCount++;
+        this.id = id;
         this.name = name;
 
         this.tokensBoughtOnCurrRound = 0;
@@ -57,17 +56,16 @@ public abstract class Player
             skillSet[instrument] = 0;
             albumContributions[instrument] = 0;
         }
-    }
 
-    public abstract void RegisterMeOnPlayersLog();
-
-    public virtual void InitPlayer(params object[] args)
-    {
-        this.gameManagerRef = GameGlobals.gameManager;
-        this.playerMonoBehaviourFunctionalities = gameManagerRef.GetComponent<PlayerMonoBehaviourFunctionalities>();
+        //main gameplay stuff
         RegisterMeOnPlayersLog();
     }
-    
+
+    public virtual void RegisterMeOnPlayersLog()
+    {
+        GameGlobals.gameLogManager.WritePlayerToLog(GameGlobals.currSessionId.ToString(), GameGlobals.currGameId.ToString(), this.id.ToString(), this.name, "-");
+    }
+
     public abstract void ResetPlayer(params object[] args);
 
     public abstract void ChoosePreferredInstrument(Album currAlbum);
@@ -191,12 +189,10 @@ public abstract class Player
     {
         if (instrument == GameProperties.Instrument.MARKETING)
         {
-            Debug.Log("The dices for marketing are rolled only after knowing the album result.");
             return 1;
         }
         else if (instrument != GameProperties.Instrument.NONE && skillSet[instrument] == 0)
         {
-            Debug.Log("You cannot roll dices for an unevolved skill!");
             return 2;
         }
         this.diceRollInstrument = instrument;
@@ -225,11 +221,9 @@ public abstract class Player
         //cannot spend token on last increased instruments
         if (numTokens == 0) 
         {
-            Debug.Log("You have no more tokens to level up your skills!");
             return 1;
         }else if (skillSet[instrument] == GameProperties.maximumSkillLevelPerInstrument)
         {
-            Debug.Log("You cannot develop the same skill more than "+ GameProperties.maximumSkillLevelPerInstrument  + " times!");
             return 2;
         }
 
@@ -263,13 +257,11 @@ public abstract class Player
 
         if (tokensBoughtOnCurrRound >= GameProperties.allowedPlayerTokenBuysPerRound)
         {
-            Debug.Log("You can only convert money to one token per round!");
             return 1;
         }
 
         if (money < moneyToSpend)
         {
-            Debug.Log("You have no money to convert!");
             return 2;
         }
 

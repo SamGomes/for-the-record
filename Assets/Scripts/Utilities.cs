@@ -8,26 +8,24 @@ public static class GameGlobals
 
     public static List<Album> albums;
     public static List<Player> players;
+    public static PoppupScreenFunctionalities playerWarningPoppupRef;
 
     public static string currSessionId;
-    public static int currGameId = 0;
-    public static int currGameRoundId = 0;
+    public static int currGameId;
+    public static int currGameRoundId;
 
-    public static int albumIdCount = 0;
-    public static int playerIdCount = 0;
+    public static int albumIdCount;
 
     public static GameProperties.GameState currGameState;
 
-    public static string FAtiMAScenarioPath = "/Scenarios/ForTheRecord.iat";
-    public static int numberOfSpeakingPlayers = 0;
+    public static string FAtiMAScenarioPath;
+    public static int numberOfSpeakingPlayers;
 
     public static IDiceNG gameDiceNG;
 
-    public static ILogManager gameLogManager = new DebugLogManager();
-    public static AudioManager audioManager = new AudioManager();
+    public static ILogManager gameLogManager;
+    public static AudioManager audioManager;
     public static GameManager gameManager;
-
-
 }
 
 public static class GameProperties
@@ -81,7 +79,7 @@ public static class GameProperties
     public static bool isSpeechAllowed = false;
 
     //----------- AutomaticBriefing -------------------
-    public static bool isAutomaticalBriefing = true;
+    public static bool isAutomaticalBriefing = false;
     public static int numGamesToPlay = 2;
 
 

@@ -4,6 +4,7 @@ using UnityEngine.UI;
 
 public class UIPlayer : Player
 {
+    protected PlayerMonoBehaviourFunctionalities playerMonoBehaviourFunctionalities;
 
     private GameObject playerUI;
     private GameObject playerMarkerUI;
@@ -46,10 +47,27 @@ public class UIPlayer : Player
 
     protected GameObject UISpeechBalloon;
 
-    public UIPlayer(string name) : base(name)
+
+    public UIPlayer(GameObject playerUIPrefab, GameObject playerCanvas, PoppupScreenFunctionalities warningScreenref, int id, string name) : base(id, name)
     {
+        InitUI(playerUIPrefab, playerCanvas, warningScreenRef);
+        
+        //position UI on canvas
+        this.GetPlayerUI().transform.Translate(new Vector3(0, -GameGlobals.players.IndexOf(this) * 170.0f, 0));
+
+        //position UI correctly depending on players number (table layout)
+        //float refAngle = (180.0f / (numPlayers - 1));
+        //((UIPlayer)currPlayer).GetPlayerUI().transform.RotateAround(new Vector3(510, 490, 0), new Vector3(0, 0, 1), (i * refAngle));
+        //((UIPlayer)currPlayer).GetPlayerUI().transform.Rotate(new Vector3(0, 0, 1), -(i*refAngle) + 90.0f);
+        
+        //temporarily on canvas...
+        this.playerMonoBehaviourFunctionalities = playerCanvas.GetComponent<PlayerMonoBehaviourFunctionalities>();
     }
 
+    //simulation constructor makes UIPlayer init like Player
+    public UIPlayer(int id, string name) : base(id, name)
+    {
+    }
 
     public GameObject GetPlayerUI()
     {
@@ -189,11 +207,6 @@ public class UIPlayer : Player
 
         UInameText.text = this.name;
         UpdateCommonUIElements();
-    }
-
-    public override void RegisterMeOnPlayersLog()
-    {
-        GameGlobals.gameLogManager.WritePlayerToLog(GameGlobals.currSessionId.ToString(), GameGlobals.currGameId.ToString(), this.id.ToString(), this.name, "-");
     }
 
     public void UpdateCommonUIElements()
@@ -604,11 +617,6 @@ public class UIPlayer : Player
         playerSelfDisablerUI.SetActive(false);
     }
 
-    public override void InitPlayer(params object[] args)
-    {
-        base.InitPlayer(args);
-        InitUI((GameObject)args[0], (GameObject)args[1], (PoppupScreenFunctionalities)args[2]);
-    }
     public override void ResetPlayer(params object[] args)
     {
         ClearActionUI();

@@ -33,7 +33,10 @@ public class PoppupScreenFunctionalities
         HidePoppupPanel();
         UIcloseButton.onClick.AddListener(delegate ()
         {
-            OnHide();
+            if (OnHide != null)
+            {
+                OnHide();
+            }
             //GameGlobals.gameManager.ContinueGame();
             HidePoppupPanel();
         });
@@ -58,6 +61,15 @@ public class PoppupScreenFunctionalities
         this.UIcloseButton.onClick.AddListener(delegate () { additionalCloseButtonFunctionalities(); });
     }
 
+    public void SetOnShow(Func<int> OnShow)
+    {
+        this.OnShow = OnShow;
+    }
+    public void SetOnHide(Func<int> OnHide)
+    {
+        this.OnHide = OnHide;
+    }
+
 
     public void DestroyPoppupPanel()
     {
@@ -69,7 +81,10 @@ public class PoppupScreenFunctionalities
     }
     public void DisplayPoppup(string text)
     {
-        OnShow();
+        if (OnShow!=null)
+        {
+            OnShow();
+        }
         poppupInstance.transform.Find("text").GetComponent<Text>().text = text;
         poppupInstance.SetActive(true);
         if (audioPath != null)

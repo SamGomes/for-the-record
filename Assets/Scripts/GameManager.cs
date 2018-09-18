@@ -40,7 +40,6 @@ public class GameManager : MonoBehaviour {
     public GameObject UIPrototypeArea;
 
     public GameObject poppupPrefab;
-    public PoppupScreenFunctionalities warningPoppupRef;
     public PoppupScreenFunctionalities infoPoppupNeutralRef;
     public PoppupScreenFunctionalities infoPoppupLossRef;
     public PoppupScreenFunctionalities infoPoppupWinRef;
@@ -106,9 +105,8 @@ public class GameManager : MonoBehaviour {
         lastDecisionResponseReceived = false;
         currPlayerIndex = 0;
 
-
-        warningPoppupRef = new PoppupScreenFunctionalities(InterruptGame,ContinueGame,poppupPrefab,canvas, this.GetComponent<PlayerMonoBehaviourFunctionalities>(),Resources.Load<Sprite>("Textures/UI/Icons/Warning"), new Color(0.9f, 0.8f, 0.8f), "Audio/snap");
-
+        GameGlobals.playerWarningPoppupRef.SetOnShow(InterruptGame);
+        GameGlobals.playerWarningPoppupRef.SetOnHide(ContinueGame);
         infoPoppupLossRef = new PoppupScreenFunctionalities(InterruptGame, ContinueGame, poppupPrefab,canvas, this.GetComponent<PlayerMonoBehaviourFunctionalities>(),Resources.Load<Sprite>("Textures/UI/Icons/InfoLoss"), new Color(0.9f, 0.8f, 0.8f), "Audio/albumLoss");
         infoPoppupWinRef = new PoppupScreenFunctionalities(InterruptGame, ContinueGame, poppupPrefab,canvas, this.GetComponent<PlayerMonoBehaviourFunctionalities>(),Resources.Load<Sprite>("Textures/UI/Icons/InfoWin"), new Color(0.9f, 0.9f, 0.8f), "Audio/albumVictory");
         infoPoppupNeutralRef = new PoppupScreenFunctionalities(InterruptGame, ContinueGame, poppupPrefab,canvas, this.GetComponent<PlayerMonoBehaviourFunctionalities>(),Resources.Load<Sprite>("Textures/UI/Icons/Info"), new Color(0.9f, 0.9f, 0.9f), "Audio/snap");
@@ -131,22 +129,14 @@ public class GameManager : MonoBehaviour {
         Player currPlayer = null;
         for (int i = 0; i < numPlayers; i++)
         {
-            currPlayer = GameGlobals.players[i];
-            currPlayer.InitPlayer(playerUIPrefab, canvas, warningPoppupRef);
-            if ((currPlayer as UIPlayer) != null) //check if player has UI
-            {
-
-                ((UIPlayer)currPlayer).GetPlayerUI().transform.Translate(new Vector3(0, -i*170.0f, 0));
-                //position UI correctly depending on players number (table layout)
-                //float refAngle = (180.0f / (numPlayers - 1));
-                //((UIPlayer)currPlayer).GetPlayerUI().transform.RotateAround(new Vector3(510, 490, 0), new Vector3(0, 0, 1), (i * refAngle));
-                //((UIPlayer)currPlayer).GetPlayerUI().transform.Rotate(new Vector3(0, 0, 1), -(i*refAngle) + 90.0f);
-            }
             currPlayer.ReceiveTokens(1);
         }
 
-        ChangeActivePlayerUI(((UIPlayer)(GameGlobals.players[0])), 2.0f);
-
+        if ((UIPlayer)(GameGlobals.players[0]) != null)
+        {
+            ChangeActivePlayerUI(((UIPlayer)(GameGlobals.players[0])), 2.0f);
+        }
+       
         GameGlobals.currGameRoundId = 0; //first round
         numMegaHits = 0;
 

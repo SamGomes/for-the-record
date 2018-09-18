@@ -11,6 +11,17 @@ public class StartScreenFunctionalities : MonoBehaviour {
 
     private void InitGameGlobals()
     {
+
+        GameGlobals.FAtiMAScenarioPath = "/Scenarios/ForTheRecord.iat";
+        GameGlobals.numberOfSpeakingPlayers = 0;
+        GameGlobals.currGameId = 0;
+        GameGlobals.currGameRoundId = 0;
+        GameGlobals.albumIdCount = 0;
+
+        GameGlobals.gameLogManager = new DebugLogManager();
+        GameGlobals.audioManager = new AudioManager();
+
+
         GameGlobals.gameLogManager.InitLogs();
         //GameGlobals.playerIdCount = 0;
         //GameGlobals.albumIdCount = 0;
@@ -46,7 +57,11 @@ public class StartScreenFunctionalities : MonoBehaviour {
             }
             GameGlobals.currSessionId = generatedCode;
         }
+
     }
+
+
+
 
     private void StartGame()
     {
