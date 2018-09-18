@@ -93,6 +93,17 @@ public class EndScreenFunctionalities : MonoBehaviour
 
                 currAlbumUI.transform.Translate(new Vector3(i * 50.0f, 0, 0));
             }
+            //write gameId in finish experiment text
+            UIFinishedGameOverlay.transform.Find("text/gameId").GetComponent<Text>().text = GameGlobals.currSessionId;
+            Button UICopyGameIdButton = UIFinishedGameOverlay.transform.Find("text/copyGameIdButton").GetComponent<Button>();
+            UICopyGameIdButton.onClick.AddListener(delegate ()
+            {
+                //copy Id to clipboard
+                TextEditor te = new TextEditor();
+                te.text = GameGlobals.currSessionId;
+                te.SelectAll();
+                te.Copy();
+            });
         }
 
         UIRestartGameButton.onClick.AddListener(delegate () {
@@ -120,31 +131,31 @@ public class EndScreenFunctionalities : MonoBehaviour
 
         PoppupScreenFunctionalities infoPoppupNeutralRef = new PoppupScreenFunctionalities(false,StopAllAnimations,PlayAllAnimations,poppupPrefab, mainScene, this.GetComponent<PlayerMonoBehaviourFunctionalities>(), Resources.Load<Sprite>("Textures/UI/Icons/Info"), new Color(0.9f, 0.9f, 0.9f));
 
-
         ////mock
-        //GameGlobals.currSessionId = System.DateTime.Now.ToString("yyyy/MM/dd/HH-mm-ss");
-        //GameGlobals.gameLogManager.InitLogs();
-        //GameGlobals.albums = new System.Collections.Generic.List<Album>(GameProperties.numberOfAlbumsPerGame);
-        //Album newAlbum = new Album("1", albumUIPrefab);
-        //GameGlobals.albums.Add(newAlbum);
-        //newAlbum = new Album("2", albumUIPrefab);
-        //GameGlobals.albums.Add(newAlbum);
-        //newAlbum = new Album("3", albumUIPrefab);
-        //GameGlobals.albums.Add(newAlbum);
-        //newAlbum = new Album("4", albumUIPrefab);
-        //GameGlobals.albums.Add(newAlbum);
-        //newAlbum = new Album("5", albumUIPrefab);
-        //GameGlobals.albums.Add(newAlbum);
-        //newAlbum = new Album("6", albumUIPrefab);
-        //GameGlobals.albums.Add(newAlbum);
-        //newAlbum = new Album("7", albumUIPrefab);
-        //GameGlobals.albums.Add(newAlbum);
-        //GameGlobals.players = new System.Collections.Generic.List<Player>(GameProperties.numberOfPlayersPerGame);
-        //GameGlobals.players.Add(new UIPlayer("PL1"));
-        //GameGlobals.players.Add(new UIPlayer("PL2"));
-        //GameGlobals.players.Add(new UIPlayer("PL3"));
-        //GameGlobals.currGameState = GameProperties.GameState.VICTORY;
-        //GameGlobals.currGameId = 1;
+        GameGlobals.currSessionId = System.DateTime.Now.ToString("yyyy/MM/dd/HH-mm-ss");
+        GameGlobals.gameLogManager = new DebugLogManager();
+        GameGlobals.gameLogManager.InitLogs();
+        GameGlobals.albums = new System.Collections.Generic.List<Album>(GameProperties.numberOfAlbumsPerGame);
+        Album newAlbum = new Album("1", albumUIPrefab);
+        GameGlobals.albums.Add(newAlbum);
+        newAlbum = new Album("2", albumUIPrefab);
+        GameGlobals.albums.Add(newAlbum);
+        newAlbum = new Album("3", albumUIPrefab);
+        GameGlobals.albums.Add(newAlbum);
+        newAlbum = new Album("4", albumUIPrefab);
+        GameGlobals.albums.Add(newAlbum);
+        newAlbum = new Album("5", albumUIPrefab);
+        GameGlobals.albums.Add(newAlbum);
+        newAlbum = new Album("6", albumUIPrefab);
+        GameGlobals.albums.Add(newAlbum);
+        newAlbum = new Album("7", albumUIPrefab);
+        GameGlobals.albums.Add(newAlbum);
+        GameGlobals.players = new System.Collections.Generic.List<Player>(GameProperties.numberOfPlayersPerGame);
+        GameGlobals.players.Add(new UIPlayer(0,"PL1"));
+        GameGlobals.players.Add(new UIPlayer(1,"PL2"));
+        GameGlobals.players.Add(new UIPlayer(2,"PL3"));
+        GameGlobals.currGameState = GameProperties.GameState.VICTORY;
+        GameGlobals.currGameId = 1;
 
         UIVictoryOverlay.SetActive(false);
         UILossOverlay.SetActive(false);
@@ -200,10 +211,12 @@ public class EndScreenFunctionalities : MonoBehaviour
         {
             if (GameProperties.isAutomaticalBriefing)
             {
-                if (GameGlobals.currGameId == GameProperties.numGamesToPlay)
+                if (GameGlobals.currGameId != GameProperties.numGamesToPlay)
                 {
                     infoPoppupNeutralRef.DisplayPoppup("You reached the end of the test game. You can choose to close the application or watch the credits. Thank you for your time!");
+                    UIEndGameButton.gameObject.SetActive(true);
                     UIEndGameButton.interactable = true;
+                    UIRestartGameButton.gameObject.SetActive(false);
                     UIRestartGameButton.interactable = false;
                     //UIEndGameButton.GetComponent<Animator>().speed = 1;
                     //UIRestartGameButton.GetComponent<Animator>().speed = 0;
@@ -211,7 +224,9 @@ public class EndScreenFunctionalities : MonoBehaviour
                 else
                 {
                     infoPoppupNeutralRef.DisplayPoppup("You reached the end of the tutorial game. We assume that you are prepared for the test game. Good luck!");
+                    UIRestartGameButton.gameObject.SetActive(true);
                     UIRestartGameButton.interactable = true;
+                    UIEndGameButton.gameObject.SetActive(false);
                     UIEndGameButton.interactable = false;
                     //UIRestartGameButton.GetComponent<Animator>().speed = 1;
                     //UIEndGameButton.GetComponent<Animator>().speed = 0;

@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class StartScreenFunctionalities : MonoBehaviour {
 
     private Button UIStartGameButton;
-
+    public GameObject UIGameCodeDisplayPrefab;
 
     private void InitGameGlobals()
     {
@@ -27,6 +27,7 @@ public class StartScreenFunctionalities : MonoBehaviour {
         //GameGlobals.albumIdCount = 0;
 
         GameGlobals.albums = new List<Album>(GameProperties.numberOfAlbumsPerGame);
+        
         //destroy UIs if any
         if (GameGlobals.players!=null && GameGlobals.players.Count > 0)
         {
@@ -38,9 +39,10 @@ public class StartScreenFunctionalities : MonoBehaviour {
                 if (firstUIPlayer != null)
                 {
                     firstUIPlayer.GetWarningScreenRef().DestroyPoppupPanel();
-
+                    Destroy(firstUIPlayer.GetPlayerCanvas());
                 }
             }
+
         }
         GameGlobals.players = new List<Player>(GameProperties.numberOfPlayersPerGame);
 
@@ -71,6 +73,11 @@ public class StartScreenFunctionalities : MonoBehaviour {
                 generatedCode += (char)('A' + Random.Range(0, 26));
             }
             GameGlobals.currSessionId = generatedCode;
+
+            //update the gamecode UI
+            GameObject UIGameCodeDisplay = Object.Instantiate(UIGameCodeDisplayPrefab);
+            UIGameCodeDisplay.GetComponentInChildren<Text>().text = "Game Code: " + GameGlobals.currSessionId;
+            Object.DontDestroyOnLoad(UIGameCodeDisplay);
         }
 
     }
@@ -87,11 +94,7 @@ public class StartScreenFunctionalities : MonoBehaviour {
     {
         InitGameGlobals();
 
-        GameObject UIGameCodeDisplay = GameObject.Find("gameCodeDisplay").gameObject;
-        UIGameCodeDisplay.GetComponentInChildren<Text>().text = "Game Code: " + GameGlobals.currSessionId;
-        Object.DontDestroyOnLoad(UIGameCodeDisplay);
-
-
+        
         this.UIStartGameButton = GameObject.Find("Canvas/StartScreen/startGameButton").gameObject.GetComponent<Button>();
         if (!GameProperties.isSimulation)
         {
