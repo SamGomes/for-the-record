@@ -14,7 +14,7 @@ using System.Text.RegularExpressions;
 
 public class EmotionalModule : MonoBehaviour
 {
-    private ThalamusConnector thalamusConnector = null;
+    private float speechBalloonDelayInSeconds;
 
     private IntegratedAuthoringToolAsset iat;
     private RolePlayCharacterAsset rpc;
@@ -44,6 +44,7 @@ public class EmotionalModule : MonoBehaviour
         rpcThread = new Thread(UpdateCoroutine);
         rpcThread.Start();
 
+        speechBalloonDelayInSeconds = 3.0f;
     }
 
     public void ReceiveInvoker(UIPlayer invoker)
@@ -62,7 +63,10 @@ public class EmotionalModule : MonoBehaviour
         speechBalloon.GetComponentInChildren<Text>().text = message;
         speechBalloon.SetActive(true);
         yield return new WaitForSeconds(delay);
-        speechBalloon.SetActive(false);
+        if(speechBalloon.GetComponentInChildren<Text>().text == message) //to compensate if the balloon is already spawned
+        {
+            speechBalloon.SetActive(false);
+        }
     }
 
     public string StripSpeechSentence(string rawMessage)
@@ -105,7 +109,7 @@ public class EmotionalModule : MonoBehaviour
                     int randomUttIndex = UnityEngine.Random.Range(0, possibleDialogs.Count());
                     var dialog = possibleDialogs[randomUttIndex].Utterance;
 
-                    StartCoroutine(DisplaySpeechBalloonForAWhile(invoker.GetName()+": \""+StripSpeechSentence(dialog)+"\"", 5.0f));
+                    StartCoroutine(DisplaySpeechBalloonForAWhile(invoker.GetName()+": \""+StripSpeechSentence(dialog)+"\"", speechBalloonDelayInSeconds));
 
                     break;
                 default:
@@ -150,14 +154,7 @@ public class EmotionalModule : MonoBehaviour
 
     public void GazeAt(string target)
     {
-        if (thalamusConnector != null)
-        {
-            thalamusConnector.GazeAt(target);
-        }
-        else
-        {
-            Debug.Log("agent did not gaze.");
-        }
+        Debug.Log("agent did not gaze.");
     }
 }
 

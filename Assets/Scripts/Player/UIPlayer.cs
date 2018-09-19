@@ -54,7 +54,7 @@ public class UIPlayer : Player
         InitUI(playerUIPrefab, playerCanvas, warningScreenRef);
         
         //position UI on canvas
-        this.GetPlayerUI().transform.Translate(new Vector3(0, -GameGlobals.players.Count * 170.0f, 0));
+        this.GetPlayerUI().transform.Translate(new Vector3(0, -GameGlobals.players.Count * (0.2f*Screen.height), 0));
 
         //position UI correctly depending on players number (table layout)
         //float refAngle = (180.0f / (numPlayers - 1));
