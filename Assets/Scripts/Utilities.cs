@@ -1,4 +1,5 @@
-﻿using System;
+﻿using IntegratedAuthoringTool;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -17,7 +18,6 @@ public static class GameGlobals
 
     public static GameProperties.GameState currGameState;
 
-    public static string FAtiMAScenarioPath;
     public static int numberOfSpeakingPlayers;
 
     public static IDiceNG gameDiceNG;
@@ -25,6 +25,11 @@ public static class GameGlobals
     public static ILogManager gameLogManager;
     public static AudioManager audioManager;
     public static GameManager gameManager;
+
+    //fatima stuff
+    public static string FAtiMAScenarioPath;
+    public static IntegratedAuthoringToolAsset FAtiMAIat;
+
 }
 
 public static class GameProperties

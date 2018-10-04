@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
+using AssetManagerPackage;
 using IntegratedAuthoringTool;
 using RolePlayCharacter;
 using WellFormedNames;
@@ -12,11 +13,11 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using System.Text.RegularExpressions;
 
+
 public class EmotionalModule : MonoBehaviour
 {
     private float speechBalloonDelayInSeconds;
 
-    private IntegratedAuthoringToolAsset iat;
     private RolePlayCharacterAsset rpc;
     private Thread rpcThread;
     private bool isStopped;
@@ -35,12 +36,16 @@ public class EmotionalModule : MonoBehaviour
     }
 
     void Start()
-    {
+    { 
         isStopped = false;
-        iat = IntegratedAuthoringToolAsset.LoadFromFile(Application.dataPath + "/.." + GameGlobals.FAtiMAScenarioPath);
-        rpc = RolePlayCharacterAsset.LoadFromFile(iat.GetAllCharacterSources().FirstOrDefault().Source);
+
+        string rpcPath = GameGlobals.FAtiMAIat.GetAllCharacterSources().FirstOrDefault().Source;
+        Application.ExternalEval("console.log(\"rpcPath: " + rpcPath + "\")");
+        rpc = RolePlayCharacterAsset.LoadFromFile(rpcPath);
+
+
         rpc.LoadAssociatedAssets();
-        iat.BindToRegistry(rpc.DynamicPropertiesRegistry);
+        GameGlobals.FAtiMAIat.BindToRegistry(rpc.DynamicPropertiesRegistry);
         rpcThread = new Thread(UpdateCoroutine);
         rpcThread.Start();
 
@@ -105,11 +110,11 @@ public class EmotionalModule : MonoBehaviour
                     Name meaning = chosenAction.Parameters[2];
                     Name style = chosenAction.Parameters[3];
 
-                    var possibleDialogs = iat.GetDialogueActions(currentState, nextState, meaning, style);
+                    var possibleDialogs = GameGlobals.FAtiMAIat.GetDialogueActions(currentState, nextState, meaning, style);
                     int randomUttIndex = UnityEngine.Random.Range(0, possibleDialogs.Count());
                     var dialog = possibleDialogs[randomUttIndex].Utterance;
 
-                    StartCoroutine(DisplaySpeechBalloonForAWhile(invoker.GetName()+": \""+StripSpeechSentence(dialog)+"\"", speechBalloonDelayInSeconds));
+                    StartCoroutine(DisplaySpeechBalloonForAWhile(invoker.GetName() + ": \"" + StripSpeechSentence(dialog) + "\"", speechBalloonDelayInSeconds));
 
                     break;
                 default:

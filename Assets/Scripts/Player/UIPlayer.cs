@@ -63,6 +63,8 @@ public class UIPlayer : Player
         
         //temporarily on canvas...
         this.playerMonoBehaviourFunctionalities = playerCanvas.GetComponent<PlayerMonoBehaviourFunctionalities>();
+        //this.GetSpeechBaloonUI().GetComponentInChildren<Text>().text = Application.streamingAssetsPath +" "+ GameGlobals.FAtiMAScenarioPath;
+        //this.GetSpeechBaloonUI().SetActive(true);
     }
 
     //simulation constructor makes UIPlayer init like Player

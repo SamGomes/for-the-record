@@ -1,4 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using AssetManagerPackage;
+using FAtiMAScripts;
+
+using IntegratedAuthoringTool;
+using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
 using UnityEngine;
@@ -11,8 +15,6 @@ public class StartScreenFunctionalities : MonoBehaviour {
 
     private void InitGameGlobals()
     {
-
-        GameGlobals.FAtiMAScenarioPath = "/Scenarios/ForTheRecord.iat";
         GameGlobals.numberOfSpeakingPlayers = 0;
         GameGlobals.currGameId++;
         GameGlobals.currGameRoundId = 0;
@@ -80,6 +82,13 @@ public class StartScreenFunctionalities : MonoBehaviour {
             Object.DontDestroyOnLoad(UIGameCodeDisplay);
         }
 
+        //init fatima strings
+        GameGlobals.FAtiMAScenarioPath = "/Scenarios/ForTheRecord.iat";
+
+        Application.ExternalEval("console.log(\"GameGlobals.FAtiMAScenarioPath: " + GameGlobals.FAtiMAScenarioPath + "\")");
+
+        AssetManager.Instance.Bridge = new AssetManagerBridge();
+        GameGlobals.FAtiMAIat = IntegratedAuthoringToolAsset.LoadFromFile(GameGlobals.FAtiMAScenarioPath);
     }
 
 

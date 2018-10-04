@@ -37,7 +37,9 @@ public class GameManager : MonoBehaviour {
 
 
     public GameObject UIAlbumCollectionDisplay;
+    public GameObject UIAlbumDisplay;
     public GameObject UIPrototypeArea;
+
 
     public GameObject poppupPrefab;
     public PoppupScreenFunctionalities infoPoppupNeutralRef;
@@ -231,6 +233,8 @@ public class GameManager : MonoBehaviour {
         Album newAlbum = new Album(albumName, albumUIPrefab);
         newAlbum.GetAlbumUI().SetActive(true);
         GameGlobals.albums.Add(newAlbum);
+        UIDisplayAlbum(newAlbum);
+        //UIAddAlbumToCollection(newAlbum);
         this.currAlbum = newAlbum;
 
         int numPlayers = GameGlobals.players.Count;
@@ -295,7 +299,7 @@ public class GameManager : MonoBehaviour {
     {
         InterruptGame();
         int numDiceRolls = rolledDiceNumbers.Length;
-        for (int i = 0; i < numDiceRolls; i++)
+        for (int i = 0; i < rolledDiceNumbers.Length; i++)
         {
             int currDiceNumber = rolledDiceNumbers[i];
             Sprite currDiceNumberSprite = Resources.Load<Sprite>(diceNumberSpritesPath + currDiceNumber);
@@ -347,7 +351,9 @@ public class GameManager : MonoBehaviour {
 
         sequenceNumber = (sequenceNumber % 2==0)? sequenceNumber : -sequenceNumber;
 
-        diceImage.transform.Translate(new Vector3(Random.Range(-80.0f, 80.0f), Random.Range(-80.0f, 80.0f), 0));
+        float translationFactorX = Screen.width * 0.06f;
+        float translationFactorY = Screen.width * 0.04f;
+        diceImage.transform.Translate(new Vector3(Random.Range(-translationFactorX, translationFactorY), Random.Range(-translationFactorX, translationFactorY), 0));
 
         float diceRotation = sequenceNumber * (360.0f / diceNum);
 
@@ -795,6 +801,13 @@ public class GameManager : MonoBehaviour {
         return nextPlayer;
     }
 
+    public void UIDisplayAlbum(Album albumToDisplay)
+    {
+        GameObject currAlbumUI = albumToDisplay.GetAlbumUI();
+        currAlbumUI.transform.SetParent(UIAlbumDisplay.transform);
+        currAlbumUI.transform.localPosition = new Vector3(0, 0, 0);
+        currAlbumUI.transform.localScale = new Vector3(1, 1, 1);
+    }
     public void UIAddAlbumToCollection(Album albumToAdd)
     {
         int albumsSize = GameGlobals.albums.Count;
@@ -808,7 +821,7 @@ public class GameManager : MonoBehaviour {
         currAlbumUI.transform.localPosition = new Vector3(0, 0, 0);
         currAlbumUI.transform.localScale = new Vector3(1, 1, 1);
 
-        currAlbumUI.transform.Translate(new Vector3(albumsSize * 50.0f, 0, 0));
+        currAlbumUI.transform.Translate(new Vector3(albumsSize * Screen.width * 0.03f, 0, 0));
     }
     public void UIRemoveAlbumFromCollection(Album albumToRemove)
     {
