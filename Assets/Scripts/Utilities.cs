@@ -84,7 +84,7 @@ public static class GameProperties
 
     //----------- AutomaticBriefing -------------------
     public static bool isAutomaticalBriefing = true;
-    public static int numGamesToPlay = 2;
+    public static int numTutorialGamesToPlay = 1;
 
 
 

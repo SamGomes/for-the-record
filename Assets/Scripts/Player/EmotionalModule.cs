@@ -40,7 +40,7 @@ public class EmotionalModule : MonoBehaviour
         isStopped = false;
 
         string rpcPath = GameGlobals.FAtiMAIat.GetAllCharacterSources().FirstOrDefault().Source;
-        Application.ExternalEval("console.log(\"rpcPath: " + rpcPath + "\")");
+        //Application.ExternalEval("console.log(\"rpcPath: " + rpcPath + "\")");
         rpc = RolePlayCharacterAsset.LoadFromFile(rpcPath);
 
 
@@ -80,7 +80,7 @@ public class EmotionalModule : MonoBehaviour
         strippedDialog = strippedDialog.Replace("|dicesValue|", DicesValue.ToString());
         strippedDialog = strippedDialog.Replace("|numDices|", NumDices.ToString());
         strippedDialog = strippedDialog.Replace("|instrument|", invoker.GetPreferredInstrument().ToString().ToLower());
-        strippedDialog = Regex.Replace(strippedDialog, "<.*?> | <.*?>", "");
+        strippedDialog = Regex.Replace(strippedDialog, @"<.*?>\s+|\s+<.*?>", "");
         return strippedDialog;
     }
 

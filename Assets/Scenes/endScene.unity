@@ -2083,7 +2083,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1140918703
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3019,7 +3019,7 @@ MonoBehaviour:
 
     Sam M. - theoric foundations and game engineering
 
-    Sam G. - researcher and lead developer/designer
+    Sam G. - researcher and developer/designer
 
     F. Correia - researcher and affective computing developer
 
