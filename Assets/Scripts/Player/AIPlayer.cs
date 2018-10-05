@@ -617,6 +617,48 @@ public class AIPlayerSimple : AIPlayer
     }
 }
 
+public class AIPlayerRandomStrategy : AIPlayer
+{
+    public AIPlayerRandomStrategy(GameObject playerUIPrefab, GameObject canvas, PoppupScreenFunctionalities warningScreenref, int id, string name, bool isSpeechAllowed) : base(playerUIPrefab, canvas, warningScreenref, id, name, isSpeechAllowed)
+    {
+        this.type = GameProperties.AIPlayerType.RANDOM;
+    }
+    //for simulations
+    public AIPlayerRandomStrategy(int id, string name) : base(id, name)
+    {
+        this.type = GameProperties.AIPlayerType.RANDOM;
+    }
+
+    protected override void LevelUpActions(Album currAlbum)
+    {
+        GameProperties.Instrument instrumentToLevelUp = GameProperties.Instrument.NONE;
+        if (skillSet[preferredInstrument] < GameProperties.maximumSkillLevelPerInstrument)
+        {
+            if (money >= 0)
+            {
+                BuyTokens(1);
+            }
+            instrumentToLevelUp = (Random.Range(0, 2) > 0) ? preferredInstrument : GameProperties.Instrument.MARKETING;
+        }
+        SpendToken(instrumentToLevelUp);
+
+    }
+    protected override int LastDecisionsActions(Album currAlbum)
+    {
+        int condition = 0;
+        if (currAlbum.GetMarketingState() == GameProperties.AlbumMarketingState.MEGA_HIT)
+        {
+            condition = 0;
+        }
+        if (currAlbum.GetMarketingState() == GameProperties.AlbumMarketingState.FAIL)
+        {
+            condition = 2;
+        }
+        return condition;
+    }
+}
+
+
 public class AIPlayerCoopStrategy : AIPlayer
 {
     public AIPlayerCoopStrategy(GameObject playerUIPrefab, GameObject canvas, PoppupScreenFunctionalities warningScreenref, int id, string name, bool isSpeechAllowed) : base(playerUIPrefab, canvas, warningScreenref, id, name, isSpeechAllowed)

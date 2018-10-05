@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Threading;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -33,8 +32,8 @@ public class PlayersSetupSceneFunctionalities : MonoBehaviour {
     void ConfigureRandomTestWithRobots()
     {
         GameGlobals.numberOfSpeakingPlayers = 2;
-        GameGlobals.players.Add(new AIPlayerBalancedStrategy(playerUIPrefab, playerCanvas, playerWarningPoppupRef, 0, "Emys", GameProperties.isSpeechAllowed));
-        GameGlobals.players.Add(new AIPlayerBalancedStrategy(playerUIPrefab, playerCanvas, playerWarningPoppupRef, 1, "Glin", GameProperties.isSpeechAllowed));
+        GameGlobals.players.Add(new AIPlayerRandomStrategy(playerUIPrefab, playerCanvas, playerWarningPoppupRef, 0, "Emys", GameProperties.isSpeechAllowed));
+        GameGlobals.players.Add(new AIPlayerRandomStrategy(playerUIPrefab, playerCanvas, playerWarningPoppupRef, 1, "Glin", GameProperties.isSpeechAllowed));
         GameGlobals.players.Add(new UIPlayer(playerUIPrefab, playerCanvas, playerWarningPoppupRef, 2, "Player"));
         GameGlobals.gameDiceNG = new RandomDiceNG();
     }
@@ -48,7 +47,6 @@ public class PlayersSetupSceneFunctionalities : MonoBehaviour {
         GameGlobals.players.Add(new UIPlayer(playerUIPrefab, playerCanvas, playerWarningPoppupRef, 2,"Player"));
         GameGlobals.gameDiceNG = new VictoryDiceNG();
         emys.FlushRobotUtterance("<gaze(Player)> Eu sou o émys!");
-        Thread.Sleep(1000);
         glin.FlushRobotUtterance("<gaze(Player)> E eu sou o Glin! Vamos lá formar uma banda e ver se conseguimos triunfar!");
     }
     void ConfigureConditionB()
@@ -61,7 +59,6 @@ public class PlayersSetupSceneFunctionalities : MonoBehaviour {
         GameGlobals.players.Add(new UIPlayer(2,"Player"));
         GameGlobals.gameDiceNG = new LossDiceNG();
         emys.FlushRobotUtterance("<gaze(Player)> Eu sou o émys!");
-        Thread.Sleep(1000);
         glin.FlushRobotUtterance("<gaze(Player)> E eu sou o Glin! Vamos lá formar uma banda e ver se conseguimos triunfar!");
     }
 

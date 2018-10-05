@@ -101,6 +101,10 @@ public class StartScreenFunctionalities : MonoBehaviour {
 
 	void Start()
     {
+
+        // Make the game perform as good as possible
+        Application.targetFrameRate = 25;
+
         InitGameGlobals();
 
         

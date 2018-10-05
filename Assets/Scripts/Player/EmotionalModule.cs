@@ -7,7 +7,6 @@ using AssetManagerPackage;
 using IntegratedAuthoringTool;
 using RolePlayCharacter;
 using WellFormedNames;
-using System.Threading;
 using System.Collections;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -19,7 +18,6 @@ public class EmotionalModule : MonoBehaviour
     private float speechBalloonDelayInSeconds;
 
     private RolePlayCharacterAsset rpc;
-    private Thread rpcThread;
     private bool isStopped;
 
     public int DicesValue { get; internal set; }
@@ -46,8 +44,9 @@ public class EmotionalModule : MonoBehaviour
 
         rpc.LoadAssociatedAssets();
         GameGlobals.FAtiMAIat.BindToRegistry(rpc.DynamicPropertiesRegistry);
-        rpcThread = new Thread(UpdateCoroutine);
-        rpcThread.Start();
+
+        //start update thread
+        StartCoroutine(UpdateCoroutine());
 
         speechBalloonDelayInSeconds = 3.0f;
     }
@@ -67,8 +66,9 @@ public class EmotionalModule : MonoBehaviour
     {
         speechBalloon.GetComponentInChildren<Text>().text = message;
         speechBalloon.SetActive(true);
+        //yield return null;
         yield return new WaitForSeconds(delay);
-        if(speechBalloon.GetComponentInChildren<Text>().text == message) //to compensate if the balloon is already spawned
+        if (speechBalloon.GetComponentInChildren<Text>().text == message) //to compensate if the balloon is already spawned
         {
             speechBalloon.SetActive(false);
         }
@@ -80,7 +80,7 @@ public class EmotionalModule : MonoBehaviour
         strippedDialog = strippedDialog.Replace("|dicesValue|", DicesValue.ToString());
         strippedDialog = strippedDialog.Replace("|numDices|", NumDices.ToString());
         strippedDialog = strippedDialog.Replace("|instrument|", invoker.GetPreferredInstrument().ToString().ToLower());
-        strippedDialog = Regex.Replace(strippedDialog, @"<.*?>\s+|\s+<.*?>", "");
+        strippedDialog = Regex.Replace(strippedDialog, @"<.*?>\s+|\s+<.*?>|\s+<.*?>\s+", "");
         return strippedDialog;
     }
 
@@ -88,7 +88,6 @@ public class EmotionalModule : MonoBehaviour
     {
         IEnumerable<ActionLibrary.IAction> possibleActions = rpc.Decide();
         ActionLibrary.IAction chosenAction = possibleActions.FirstOrDefault();
-
 
         if (chosenAction == null)
         {
@@ -123,22 +122,23 @@ public class EmotionalModule : MonoBehaviour
         }
     }
 
-    private void UpdateCoroutine()
+    private IEnumerator UpdateCoroutine()
     {
         string currentBelief = rpc.GetBeliefValue("State(Game)");
 
         while (currentBelief != "Game(End)" && !isStopped)
         {
             rpc.Update();
-            Thread.Sleep(100);
+            yield return new WaitForSeconds(0.1f);
         }
+        yield return null;
     }
 
     void OnDestroy()
     {
         if (!isStopped)
         {
-            rpcThread.Abort();
+            StopCoroutine(UpdateCoroutine());
             isStopped = true;
         }
     }
@@ -147,7 +147,7 @@ public class EmotionalModule : MonoBehaviour
     {
         if (!isStopped)
         {
-            rpcThread.Abort();
+            StopCoroutine(UpdateCoroutine());
             isStopped = true;
         }
     }

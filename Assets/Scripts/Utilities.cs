@@ -61,6 +61,7 @@ public static class GameProperties
     public enum AIPlayerType
     {
         SIMPLE,
+        RANDOM,
         COOPERATIVE,
         GREEDY,
         BALANCED
