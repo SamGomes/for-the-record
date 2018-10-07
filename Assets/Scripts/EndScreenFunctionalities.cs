@@ -25,25 +25,7 @@ public class EndScreenFunctionalities : MonoBehaviour
 
     public GameObject albumUIPrefab;
 
-    private int StopAllAnimations()
-    {
-        Animator[] mainSceneAnimators = mainScene.GetComponentsInChildren<Animator>();
-        for (int i = 0; i < mainSceneAnimators.Length; i++)
-        {
-            mainSceneAnimators[i].speed = 0;
-        }
-        return 0;
-    }
-    private int PlayAllAnimations()
-    {
-        Animator[] mainSceneAnimators = mainScene.GetComponentsInChildren<Animator>();
-        for (int i = 0; i < mainSceneAnimators.Length; i++)
-        {
-            mainSceneAnimators[i].speed = 1;
-        }
-        return 0;
-    }
-
+    
     private void RestartGame()
     {
         foreach(Album album in GameGlobals.albums)
@@ -67,6 +49,77 @@ public class EndScreenFunctionalities : MonoBehaviour
 
     private void LoadEndScreenUIElements()
     {
+        PoppupScreenFunctionalities infoPoppupNeutralRef = new PoppupScreenFunctionalities(false, null, null, poppupPrefab, mainScene, this.GetComponent<PlayerMonoBehaviourFunctionalities>(), Resources.Load<Sprite>("Textures/UI/Icons/Info"), new Color(0.9f, 0.9f, 0.9f));
+
+        GameGlobals.players.Sort(SortPlayersByMoney);
+        int numPlayers = GameGlobals.players.Count;
+        for (int i = 0; i < numPlayers; i++)
+        {
+            Player currPlayer = GameGlobals.players[i];
+            GameObject newTableEntry = Object.Instantiate(UIIndividualTableEntryPrefab, UIIndividualTable.transform);
+            newTableEntry.GetComponentsInChildren<Text>()[0].text = currPlayer.GetName();
+            newTableEntry.GetComponentsInChildren<Text>()[1].text = currPlayer.GetMoney().ToString();
+        }
+
+        GameGlobals.gameLogManager.WriteGameToLog(GameGlobals.currSessionId.ToString(), GameGlobals.currGameId.ToString(), GameGlobals.currGameState.ToString());
+
+        GameGlobals.gameLogManager.EndLogs();
+
+        if (GameProperties.isSimulation)
+        {
+            if (GameGlobals.currGameId == GameProperties.numGamesToSimulate)
+            {
+                RestartGame();
+            }
+        }
+        else
+        {
+            Text UIEndGameButtonText = UIEndGameButton.GetComponentInChildren<Text>();
+            Text UIRestartGameButtonText = UIRestartGameButton.GetComponentInChildren<Text>();
+            if (GameProperties.isAutomaticalBriefing)
+            {
+                if (GameGlobals.currGameId > GameProperties.numTutorialGamesToPlay)
+                {
+                    infoPoppupNeutralRef.DisplayPoppup("You reached the end of the experiment game. Your final task is to fill our questionnaires. In order to do so just click on the \"Final notes\" button. Thank you for your time!");
+                    UIEndGameButton.gameObject.SetActive(true);
+                    UIEndGameButton.interactable = true;
+                    UIEndGameButtonText.text = "End Experiment";
+                    UIRestartGameButton.gameObject.SetActive(false);
+                    UIRestartGameButton.interactable = false;
+                    //UIEndGameButton.GetComponent<Animator>().speed = 1;
+                    //UIRestartGameButton.GetComponent<Animator>().speed = 0;
+                }
+                else
+                {
+                    infoPoppupNeutralRef.DisplayPoppup("You reached the end of the tutorial game. We assume that you are prepared for the experiment game. Good luck!");
+                    UIRestartGameButton.gameObject.SetActive(true);
+                    UIRestartGameButton.interactable = true;
+                    if (GameGlobals.currGameId == GameProperties.numTutorialGamesToPlay)
+                    {
+                        UIRestartGameButtonText.text = "Ready for experiment game";
+                    }
+                    else
+                    {
+                        UIRestartGameButtonText.text = "Ready for another tutorial game";
+                    }
+                    UIEndGameButton.gameObject.SetActive(false);
+                    UIEndGameButton.interactable = false;
+                    //UIRestartGameButton.GetComponent<Animator>().speed = 1;
+                    //UIEndGameButton.GetComponent<Animator>().speed = 0;
+                }
+
+            }
+            else
+            {
+                UIRestartGameButton.gameObject.SetActive(true);
+                UIRestartGameButton.interactable = true;
+                UIRestartGameButtonText.text = "Restart Game";
+                UIEndGameButton.gameObject.SetActive(false);
+                UIEndGameButton.interactable = false;
+            }
+        }
+
+
         if (GameGlobals.albums != null)
         {
             //disable rendering of some albums and selecting others
@@ -113,7 +166,6 @@ public class EndScreenFunctionalities : MonoBehaviour
         UIEndGameButton.onClick.AddListener(delegate () {
             //mainScene.SetActive(false);
             UIFinishedGameOverlay.SetActive(true);
-            StopAllAnimations();
         });
     }
 
@@ -128,34 +180,31 @@ public class EndScreenFunctionalities : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-
-        PoppupScreenFunctionalities infoPoppupNeutralRef = new PoppupScreenFunctionalities(false,StopAllAnimations,PlayAllAnimations,poppupPrefab, mainScene, this.GetComponent<PlayerMonoBehaviourFunctionalities>(), Resources.Load<Sprite>("Textures/UI/Icons/Info"), new Color(0.9f, 0.9f, 0.9f));
-
         ////mock
-        GameGlobals.currSessionId = System.DateTime.Now.ToString("yyyy/MM/dd/HH-mm-ss");
-        GameGlobals.gameLogManager = new DebugLogManager();
-        GameGlobals.gameLogManager.InitLogs();
-        GameGlobals.albums = new System.Collections.Generic.List<Album>(GameProperties.numberOfAlbumsPerGame);
-        Album newAlbum = new Album("1", albumUIPrefab);
-        GameGlobals.albums.Add(newAlbum);
-        newAlbum = new Album("2", albumUIPrefab);
-        GameGlobals.albums.Add(newAlbum);
-        newAlbum = new Album("3", albumUIPrefab);
-        GameGlobals.albums.Add(newAlbum);
-        newAlbum = new Album("4", albumUIPrefab);
-        GameGlobals.albums.Add(newAlbum);
-        newAlbum = new Album("5", albumUIPrefab);
-        GameGlobals.albums.Add(newAlbum);
-        newAlbum = new Album("6", albumUIPrefab);
-        GameGlobals.albums.Add(newAlbum);
-        newAlbum = new Album("7", albumUIPrefab);
-        GameGlobals.albums.Add(newAlbum);
-        GameGlobals.players = new System.Collections.Generic.List<Player>(GameProperties.numberOfPlayersPerGame);
-        GameGlobals.players.Add(new UIPlayer(0, "PL1"));
-        GameGlobals.players.Add(new UIPlayer(1, "PL2"));
-        GameGlobals.players.Add(new UIPlayer(2, "PL3"));
-        GameGlobals.currGameState = GameProperties.GameState.VICTORY;
-        GameGlobals.currGameId = 2;
+        //GameGlobals.currSessionId = System.DateTime.Now.ToString("yyyy/MM/dd/HH-mm-ss");
+        //GameGlobals.gameLogManager = new DebugLogManager();
+        //GameGlobals.gameLogManager.InitLogs();
+        //GameGlobals.albums = new System.Collections.Generic.List<Album>(GameProperties.numberOfAlbumsPerGame);
+        //Album newAlbum = new Album("1", albumUIPrefab);
+        //GameGlobals.albums.Add(newAlbum);
+        //newAlbum = new Album("2", albumUIPrefab);
+        //GameGlobals.albums.Add(newAlbum);
+        //newAlbum = new Album("3", albumUIPrefab);
+        //GameGlobals.albums.Add(newAlbum);
+        //newAlbum = new Album("4", albumUIPrefab);
+        //GameGlobals.albums.Add(newAlbum);
+        //newAlbum = new Album("5", albumUIPrefab);
+        //GameGlobals.albums.Add(newAlbum);
+        //newAlbum = new Album("6", albumUIPrefab);
+        //GameGlobals.albums.Add(newAlbum);
+        //newAlbum = new Album("7", albumUIPrefab);
+        //GameGlobals.albums.Add(newAlbum);
+        //GameGlobals.players = new System.Collections.Generic.List<Player>(GameProperties.numberOfPlayersPerGame);
+        //GameGlobals.players.Add(new UIPlayer(0, "PL1"));
+        //GameGlobals.players.Add(new UIPlayer(1, "PL2"));
+        //GameGlobals.players.Add(new UIPlayer(2, "PL3"));
+        //GameGlobals.currGameState = GameProperties.GameState.VICTORY;
+        //GameGlobals.currGameId = 2;
 
         UIVictoryOverlay.SetActive(false);
         UILossOverlay.SetActive(false);
@@ -173,7 +222,7 @@ public class EndScreenFunctionalities : MonoBehaviour
         {
             UIVictoryOverlay.SetActive(true);
         }
-        else if(GameGlobals.currGameState == GameProperties.GameState.LOSS)
+        else if (GameGlobals.currGameState == GameProperties.GameState.LOSS)
         {
             UILossOverlay.SetActive(true);
 
@@ -184,58 +233,10 @@ public class EndScreenFunctionalities : MonoBehaviour
             return;
         }
         StartCoroutine(LoadMainScreenAfterDelay(5.0f));
-
-
-        GameGlobals.players.Sort(SortPlayersByMoney);
-        int numPlayers = GameGlobals.players.Count;
-        for (int i=0; i<numPlayers; i++)
-        {
-            Player currPlayer = GameGlobals.players[i];
-            GameObject newTableEntry = Object.Instantiate(UIIndividualTableEntryPrefab, UIIndividualTable.transform);
-            newTableEntry.GetComponentsInChildren<Text>()[0].text = currPlayer.GetName();
-            newTableEntry.GetComponentsInChildren<Text>()[1].text = currPlayer.GetMoney().ToString();
-        }
-
-        GameGlobals.gameLogManager.WriteGameToLog(GameGlobals.currSessionId.ToString(),GameGlobals.currGameId.ToString(), GameGlobals.currGameState.ToString());
-
-        GameGlobals.gameLogManager.EndLogs();
-
-        if (GameProperties.isSimulation)
-        {
-            if (GameGlobals.currGameId == GameProperties.numGamesToSimulate)
-            {
-                RestartGame();
-            }
-        }
-        else
-        {
-            if (GameProperties.isAutomaticalBriefing)
-            {
-                if (GameGlobals.currGameId > GameProperties.numTutorialGamesToPlay)
-                {
-                    infoPoppupNeutralRef.DisplayPoppup("You reached the end of the experiment game. Your final task is to fill our questionnaires. In order to do so just click on the \"Final notes\" button. Thank you for your time!");
-                    UIEndGameButton.gameObject.SetActive(true);
-                    UIEndGameButton.interactable = true;
-                    UIRestartGameButton.gameObject.SetActive(false);
-                    UIRestartGameButton.interactable = false;
-                    //UIEndGameButton.GetComponent<Animator>().speed = 1;
-                    //UIRestartGameButton.GetComponent<Animator>().speed = 0;
-                }
-                else
-                {
-                    infoPoppupNeutralRef.DisplayPoppup("You reached the end of the tutorial game. We assume that you are prepared for the experiment game. Good luck!");
-                    UIRestartGameButton.gameObject.SetActive(true);
-                    UIRestartGameButton.interactable = true;
-                    UIEndGameButton.gameObject.SetActive(false);
-                    UIEndGameButton.interactable = false;
-                    //UIRestartGameButton.GetComponent<Animator>().speed = 1;
-                    //UIEndGameButton.GetComponent<Animator>().speed = 0;
-                }
-            
-            }
-        }
-
     }
+
+
+    
 }
     
 

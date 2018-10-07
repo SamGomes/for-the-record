@@ -60,7 +60,7 @@ public abstract class AIPlayer : UIPlayer
         informLastDecisionDelay = 1.0f;
 
         informNewAlbumDelay = 1.0f;
-        informDiceRollDelay = 2.0f;
+        informDiceRollDelay = 0.1f;
         informAlbumResultDelay = 1.0f;
         informGameResultDelay = 1.0f;
 

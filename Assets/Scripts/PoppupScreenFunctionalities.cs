@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class PoppupScreenFunctionalities
 {
@@ -14,6 +15,41 @@ public class PoppupScreenFunctionalities
     private Func<int> OnHide;
 
     private PlayerMonoBehaviourFunctionalities playerMonoBehaviourFunctionalities;
+
+    private int StopAllAnimations()
+    {
+        GameObject[] rootGameObjects = SceneManager.GetActiveScene().GetRootGameObjects();
+        List<Animator> mainSceneAnimators = new List<Animator>();
+        for (int i=0; i< rootGameObjects.Length; i++)
+        {
+            GameObject root = rootGameObjects[i];
+            mainSceneAnimators.AddRange(root.GetComponents<Animator>());
+            mainSceneAnimators.AddRange(root.GetComponentsInChildren<Animator>());
+        }
+
+        for (int i = 0; i < mainSceneAnimators.Count; i++)
+        {
+            mainSceneAnimators[i].speed = 0;
+        }
+        return 0;
+    }
+    private int PlayAllAnimations()
+    {
+        GameObject[] rootGameObjects = SceneManager.GetActiveScene().GetRootGameObjects();
+        List<Animator> mainSceneAnimators = new List<Animator>();
+        for (int i = 0; i < rootGameObjects.Length; i++)
+        {
+            GameObject root = rootGameObjects[i];
+            mainSceneAnimators.AddRange(root.GetComponents<Animator>());
+            mainSceneAnimators.AddRange(root.GetComponentsInChildren<Animator>());
+        }
+
+        for (int i = 0; i < mainSceneAnimators.Count; i++)
+        {
+            mainSceneAnimators[i].speed = 1;
+        }
+        return 0;
+    }
 
     // Use this for initialization
     public PoppupScreenFunctionalities(bool isGlobal, Func<int> OnShow, Func<int> OnHide, GameObject poppupPrefab, GameObject canvas, PlayerMonoBehaviourFunctionalities playerMonoBehaviourFunctionalities, Sprite icon, Color backgroundColor)
@@ -86,6 +122,7 @@ public class PoppupScreenFunctionalities
     public void HidePoppupPanel()
     {
         poppupInstance.gameObject.SetActive(false);
+        PlayAllAnimations();
     }
     public void DisplayPoppup(string text)
     {
@@ -99,6 +136,7 @@ public class PoppupScreenFunctionalities
         {
             GameGlobals.audioManager.PlayClip(audioPath);
         }
+        StopAllAnimations();
     }
 
     private IEnumerator DisplayPoppupWithDelayCoroutine(string text, float delay)

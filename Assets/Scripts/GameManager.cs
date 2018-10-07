@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-
+using UnityEditor.Animations;
 
 public class GameManager : MonoBehaviour {
 
@@ -28,6 +28,7 @@ public class GameManager : MonoBehaviour {
     public Text UIalbumNameText;
     
     public GameObject UIRollDiceForInstrumentOverlay;
+    public Animator rollDiceForInstrumentOverlayAnimator;
     public GameObject UIRollDiceForMarketValueScreen;
 
     public GameObject dice6UI;
@@ -135,7 +136,7 @@ public class GameManager : MonoBehaviour {
         preferredInstrumentsChoosen = false;
 
         //diceRollDelay = UIRollDiceForInstrumentOverlay.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).length;
-        diceRollDelay = 6.0f;
+        diceRollDelay = 4.0f;
 
         canCheckAlbumResult = false;
         checkedAlbumResult = false;
@@ -160,6 +161,8 @@ public class GameManager : MonoBehaviour {
 
         marketLimit = Mathf.FloorToInt(GameProperties.numberOfAlbumsPerGame * 4.0f / 5.0f) - 1;
         currNumberOfMarketDices = GameProperties.initNumberMarketDices;
+
+        rollDiceForInstrumentOverlayAnimator = UIRollDiceForInstrumentOverlay.GetComponent<Animator>();
 
         ContinueGame();
     }
@@ -298,8 +301,11 @@ public class GameManager : MonoBehaviour {
     //the sequence number aims to void dice overlaps as it represents the order for which this dice is going to be rolled. We do not want to roll a dice two times for the same place
     {
         InterruptGame();
+        UIRollDiceForInstrumentOverlay.SetActive(true);
+        List<GameObject> diceUIs = new List<GameObject>();
+
         int numDiceRolls = rolledDiceNumbers.Length;
-        for (int i = 0; i < rolledDiceNumbers.Length; i++)
+        for (int i = 0; i < numDiceRolls; i++)
         {
             int currDiceNumber = rolledDiceNumbers[i];
             Sprite currDiceNumberSprite = Resources.Load<Sprite>(diceNumberSpritesPath + currDiceNumber);
@@ -309,10 +315,32 @@ public class GameManager : MonoBehaviour {
             }
             else
             {
-                //Debug.Log(rolledDiceNumbers[i]);
-                StartCoroutine(PlayDiceUI(diceThrower, i, diceNum, diceImagePrefab, currDiceNumberSprite, delayToClose));
+                GameObject diceUIClone = Instantiate(diceImagePrefab, UIRollDiceForInstrumentOverlay.transform);
+                diceUIs.Add(diceUIClone);
+                StartCoroutine(PlayDiceUI(diceUIClone, diceThrower, numDiceRolls, i, diceNum, currDiceNumberSprite, delayToClose));
             }
         }
+
+
+        while (!rollDiceForInstrumentOverlayAnimator.GetCurrentAnimatorStateInfo(0).IsName("Idle"))
+        {
+            yield return null;
+        }
+        
+
+        rollDiceForInstrumentOverlayAnimator.speed = 0;
+        
+        //get and disable arrow animation until end of dice animation
+        GameObject diceArrowClone = Instantiate(diceArrowPrefab, UIRollDiceForInstrumentOverlay.transform);
+        diceArrowClone.GetComponentInChildren<Image>().color = diceArrowColor;
+        
+        Animator arrowAnimator = diceArrowClone.GetComponentInChildren<Animator>();
+        Text arrowText = diceArrowClone.GetComponentInChildren<Text>();
+        arrowText.text = diceArrowText;
+        arrowText.color = diceArrowColor;
+
+
+        yield return new WaitForSeconds(delayToClose);
 
         //players see the dice result
         currSpeakingPlayerId = Random.Range(0, GameGlobals.numberOfSpeakingPlayers);
@@ -321,47 +349,45 @@ public class GameManager : MonoBehaviour {
             player.InformRollDicesValue(diceThrower, numDiceRolls * diceNum, totalDicesValue); //max value = the max dice number * number of rolls
         }
 
-        //get and disable arrow animation until end of dice animation
-        GameObject diceArrowClone = Instantiate(diceArrowPrefab, UIRollDiceForInstrumentOverlay.transform);
-        diceArrowClone.GetComponentInChildren<Image>().color = diceArrowColor;
-        
-        Animator arrowAnimator = diceArrowClone.GetComponentInChildren<Animator>();
-        //arrowAnimator.speed = 0;
-        Text arrowText = diceArrowClone.GetComponentInChildren<Text>();
-        arrowText.text = diceArrowText;
-        arrowText.color = diceArrowColor;
+        rollDiceForInstrumentOverlayAnimator.speed = 1;
+        while (!rollDiceForInstrumentOverlayAnimator.GetCurrentAnimatorStateInfo(0).IsName("Idle2"))
+        {
+            yield return null;
+        }
 
-
-        yield return new WaitForSeconds(delayToClose);
-
+        //destroy arrows, dice images and finally set screen active to false
         Destroy(diceArrowClone);
+        for(int i=0; i<diceUIs.Count; i++)
+        {
+            GameObject currDice = diceUIs[i];
+            Destroy(currDice);
+        }
 
         ContinueGame();
         UIRollDiceForInstrumentOverlay.SetActive(false);
     }
 
-    private IEnumerator PlayDiceUI(Player diceThrower, int sequenceNumber, int diceNum, GameObject diceImagePrefab, Sprite currDiceNumberSprite, float delayToClose)
+    private IEnumerator PlayDiceUI(GameObject diceUIClone, Player diceThrower, int numDicesInThrow, int sequenceNumber, int diceNum, Sprite currDiceNumberSprite, float delayToClose)
     //the sequence number aims to void dice overlaps as it represents the order for which this dice is going to be rolled. We do not want to roll a dice two times for the same place
     {
-        UIRollDiceForInstrumentOverlay.SetActive(true);
-        GameObject diceImageClone = Instantiate(diceImagePrefab, UIRollDiceForInstrumentOverlay.transform);
 
-        Image diceImage = diceImageClone.GetComponent<Image>();
-        Animator diceAnimator = diceImage.GetComponent<Animator>();
+        Image diceImage = diceUIClone.GetComponentInChildren<Image>();
+        Animator diceAnimator = diceImage.GetComponentInChildren<Animator>();
 
         sequenceNumber = (sequenceNumber % 2==0)? sequenceNumber : -sequenceNumber;
 
-        float translationFactorX = Screen.width * 0.06f;
-        float translationFactorY = Screen.width * 0.04f;
+        float translationFactorX = Screen.width * 0.03f;
+        float translationFactorY = Screen.width * 0.01f;
         diceImage.transform.Translate(new Vector3(Random.Range(-translationFactorX, translationFactorY), Random.Range(-translationFactorX, translationFactorY), 0));
 
-        float diceRotation = sequenceNumber * (360.0f / diceNum);
+        
+        float diceRotation = sequenceNumber * (360.0f / numDicesInThrow);
 
         diceImage.transform.Rotate(new Vector3(0, 0, 1), diceRotation);
         diceImage.overrideSprite = null;
         diceAnimator.Rebind();
         diceAnimator.Play(0);
-        diceAnimator.speed = Random.Range(0.8f,1.4f);
+        diceAnimator.speed = Random.Range(0.8f,1.0f);
 
         while (!diceAnimator.GetCurrentAnimatorStateInfo(0).IsName("endState"))
         {
@@ -369,10 +395,6 @@ public class GameManager : MonoBehaviour {
         }
         diceImage.overrideSprite = currDiceNumberSprite;
         
-        //arrowAnimator.speed = 1;
-
-        yield return new WaitForSeconds(delayToClose + (1.0f - diceAnimator.speed)*delayToClose);
-        Destroy(diceImageClone);
     }
 
     //assuming the first player rolls the market dices

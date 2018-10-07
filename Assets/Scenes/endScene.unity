@@ -1986,6 +1986,7 @@ GameObject:
   - component: {fileID: 1012693706}
   - component: {fileID: 1012693705}
   - component: {fileID: 1012693707}
+  - component: {fileID: 1012693708}
   m_Layer: 5
   m_Name: TitleBackGround
   m_TagString: Untagged
@@ -2005,7 +2006,7 @@ RectTransform:
   m_Children:
   - {fileID: 673561551}
   m_Father: {fileID: 2113520797}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -0.65800005}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -2063,6 +2064,26 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!223 &1012693708
+Canvas:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1012693703}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 1
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 9
+  m_TargetDisplay: 0
 --- !u!1 &1140918702
 GameObject:
   m_ObjectHideFlags: 0
@@ -2356,6 +2377,7 @@ GameObject:
   - component: {fileID: 1243252343}
   - component: {fileID: 1243252345}
   - component: {fileID: 1243252344}
+  - component: {fileID: 1243252346}
   m_Layer: 5
   m_Name: ContributionsBox
   m_TagString: Untagged
@@ -2376,7 +2398,7 @@ RectTransform:
   - {fileID: 494755528}
   - {fileID: 106402202}
   m_Father: {fileID: 1482099983}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -2416,6 +2438,26 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1243252342}
+--- !u!223 &1243252346
+Canvas:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1243252342}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 1
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 9
+  m_TargetDisplay: 0
 --- !u!224 &1356757908 stripped
 RectTransform:
   m_PrefabParentObject: {fileID: 224797756711166306, guid: fd81239246e80354596e7acc16a44759,
@@ -2535,8 +2577,8 @@ RectTransform:
   m_LocalScale: {x: 1.2272407, y: 1.2272406, z: 1.2272406}
   m_Children:
   - {fileID: 1157729550}
-  - {fileID: 2113520797}
   - {fileID: 1243252343}
+  - {fileID: 2113520797}
   - {fileID: 1876273208}
   - {fileID: 902754774}
   m_Father: {fileID: 622632826}
@@ -2933,11 +2975,11 @@ RectTransform:
   m_LocalScale: {x: 1.2355881, y: 0.51568604, z: 0.10937513}
   m_Children: []
   m_Father: {fileID: 2113520797}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -518, y: -159}
+  m_AnchoredPosition: {x: -120, y: -1}
   m_SizeDelta: {x: 110.6, y: 113.91}
   m_Pivot: {x: 0.5000001, y: 0.5}
 --- !u!1 &2029170654
@@ -3199,10 +3241,10 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.71991324, y: 1.6455514, z: 0.57481605}
   m_Children:
-  - {fileID: 1898175264}
   - {fileID: 1012693704}
+  - {fileID: 1898175264}
   m_Father: {fileID: 1482099983}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
