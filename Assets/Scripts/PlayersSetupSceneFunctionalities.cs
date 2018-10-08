@@ -19,8 +19,7 @@ public class PlayersSetupSceneFunctionalities : MonoBehaviour {
     public GameObject playerUIPrefab;
     public GameObject playerCanvas;
     private PoppupScreenFunctionalities playerWarningPoppupRef;
-
-
+    
 
     void ConfigureAllHumanPlayers()
     {
@@ -32,10 +31,14 @@ public class PlayersSetupSceneFunctionalities : MonoBehaviour {
     void ConfigureRandomTestWithRobots()
     {
         GameGlobals.numberOfSpeakingPlayers = 2;
-        GameGlobals.players.Add(new AIPlayerRandomStrategy(playerUIPrefab, playerCanvas, playerWarningPoppupRef, 0, "Emys", GameProperties.isSpeechAllowed));
-        GameGlobals.players.Add(new AIPlayerRandomStrategy(playerUIPrefab, playerCanvas, playerWarningPoppupRef, 1, "Glin", GameProperties.isSpeechAllowed));
+        AIPlayerGreedyStrategy emys = new AIPlayerGreedyStrategy(playerUIPrefab, playerCanvas, playerWarningPoppupRef, 0, "Emys", GameProperties.isSpeechAllowed);
+        GameGlobals.players.Add(emys);
+        AIPlayerCoopStrategy glin = new AIPlayerCoopStrategy(playerUIPrefab, playerCanvas, playerWarningPoppupRef, 1, "Glin", GameProperties.isSpeechAllowed);
+        GameGlobals.players.Add(glin);
         GameGlobals.players.Add(new UIPlayer(playerUIPrefab, playerCanvas, playerWarningPoppupRef, 2, "Player"));
         GameGlobals.gameDiceNG = new RandomDiceNG();
+        emys.FlushRobotUtterance("<gaze(Player)> Eu sou o émys!");
+        glin.FlushRobotUtterance("<gaze(Player)> E eu sou o Glin! Vamos lá formar uma banda e ver se conseguimos triunfar!");
     }
     void ConfigureConditionA()
     {
@@ -125,18 +128,19 @@ public class PlayersSetupSceneFunctionalities : MonoBehaviour {
 
             for(int i=0; i < UIAIPlayerSelectionButtons.Length; i++)
             {
+                GameGlobals.numberOfSpeakingPlayers++;
                 Button button = UIAIPlayerSelectionButtons[i];
                 button.onClick.AddListener(delegate
                 {
                     int index = new List<Button>(UIAIPlayerSelectionButtons).IndexOf(button);
                     UIPlayer newPlayer = new UIPlayer(0,"");
-                    switch ((GameProperties.AIPlayerType) (index+1))
+                    switch ((GameProperties.AIPlayerType) (index+2))
                     {
                         case GameProperties.AIPlayerType.SIMPLE:
-                            newPlayer = new AIPlayerSimple(playerUIPrefab, playerCanvas, playerWarningPoppupRef, GameGlobals.players.Count,"John0", GameProperties.isSpeechAllowed);
+                            newPlayer = new AIPlayerSimple(playerUIPrefab, playerCanvas, playerWarningPoppupRef, GameGlobals.players.Count, "John0", GameProperties.isSpeechAllowed);
                             break;
                         case GameProperties.AIPlayerType.COOPERATIVE:
-                            newPlayer = new AIPlayerCoopStrategy(playerUIPrefab, playerCanvas, playerWarningPoppupRef, GameGlobals.players.Count,"John1", GameProperties.isSpeechAllowed);
+                            newPlayer = new AIPlayerCoopStrategy(playerUIPrefab, playerCanvas, playerWarningPoppupRef, GameGlobals.players.Count, "John1", GameProperties.isSpeechAllowed);
                             break;
                         case GameProperties.AIPlayerType.GREEDY:
                             newPlayer = new AIPlayerGreedyStrategy(playerUIPrefab, playerCanvas, playerWarningPoppupRef, GameGlobals.players.Count,"John2", GameProperties.isSpeechAllowed);
@@ -146,7 +150,7 @@ public class PlayersSetupSceneFunctionalities : MonoBehaviour {
                             break;
                     }
                     GameGlobals.players.Add(newPlayer);
-                    button.interactable = false;
+                    GameGlobals.gameDiceNG = new RandomDiceNG();
                     CheckForAllPlayersRegistered();
                 });
             }

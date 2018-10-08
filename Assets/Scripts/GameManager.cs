@@ -307,7 +307,7 @@ public class GameManager : MonoBehaviour {
         int numDiceRolls = rolledDiceNumbers.Length;
         for (int i = 0; i < numDiceRolls; i++)
         {
-            int currDiceNumber = rolledDiceNumbers[i];
+            int currDiceNumber = 5; // rolledDiceNumbers[i];
             Sprite currDiceNumberSprite = Resources.Load<Sprite>(diceNumberSpritesPath + currDiceNumber);
             if (currDiceNumberSprite == null)
             {
@@ -374,10 +374,8 @@ public class GameManager : MonoBehaviour {
         Image diceImage = diceUIClone.GetComponentInChildren<Image>();
         Animator diceAnimator = diceImage.GetComponentInChildren<Animator>();
 
-        sequenceNumber = (sequenceNumber % 2==0)? sequenceNumber : -sequenceNumber;
-
-        float translationFactorX = Screen.width * 0.03f;
-        float translationFactorY = Screen.width * 0.01f;
+        float translationFactorX = Screen.width * 0.04f;
+        float translationFactorY = Screen.width * 0.02f;
         diceImage.transform.Translate(new Vector3(Random.Range(-translationFactorX, translationFactorY), Random.Range(-translationFactorX, translationFactorY), 0));
 
         
@@ -441,11 +439,11 @@ public class GameManager : MonoBehaviour {
         {
             if (newAlbumValue >= marketValue)
             {
-                infoPoppupWinRef.DisplayPoppupWithDelay("As your album value (" + newAlbumValue + ") was EQUAL or HIGHER than the market value (" + marketValue + "), the album was successfully published! Congratulations! Everyone can choose to receive 3000 $ or to receive based on their own marketing skill.", diceRollDelay*0.8f); //the delay is reduced to account for dices animation
+                infoPoppupWinRef.DisplayPoppupWithDelay("As your album value (" + newAlbumValue + ") was EQUAL or HIGHER than the market value (" + marketValue + "), the album was successfully published! Congratulations! Everyone can choose to receive 3000 $ or to receive based on their own marketing skill.", diceRollDelay);
             }
             else
             {
-                infoPoppupLossRef.DisplayPoppupWithDelay("As your album value (" + newAlbumValue + ") was LOWER than the market value (" + marketValue + "), the album could not be published. Everyone receives 0 $.", diceRollDelay * 0.8f);
+                infoPoppupLossRef.DisplayPoppupWithDelay("As your album value (" + newAlbumValue + ") was LOWER than the market value (" + marketValue + "), the album could not be published. Everyone receives 0 $.", diceRollDelay);
             }
         }
 
