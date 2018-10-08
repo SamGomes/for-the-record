@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEditor.Animations;
 
 public class GameManager : MonoBehaviour {
 
@@ -307,7 +306,7 @@ public class GameManager : MonoBehaviour {
         int numDiceRolls = rolledDiceNumbers.Length;
         for (int i = 0; i < numDiceRolls; i++)
         {
-            int currDiceNumber = 5; // rolledDiceNumbers[i];
+            int currDiceNumber = rolledDiceNumbers[i];
             Sprite currDiceNumberSprite = Resources.Load<Sprite>(diceNumberSpritesPath + currDiceNumber);
             if (currDiceNumberSprite == null)
             {
@@ -376,12 +375,12 @@ public class GameManager : MonoBehaviour {
 
         float translationFactorX = Screen.width * 0.04f;
         float translationFactorY = Screen.width * 0.02f;
-        diceImage.transform.Translate(new Vector3(Random.Range(-translationFactorX, translationFactorY), Random.Range(-translationFactorX, translationFactorY), 0));
+        diceUIClone.transform.Translate(new Vector3(Random.Range(-translationFactorX, translationFactorY), Random.Range(-translationFactorX, translationFactorY), 0));
 
         
         float diceRotation = sequenceNumber * (360.0f / numDicesInThrow);
 
-        diceImage.transform.Rotate(new Vector3(0, 0, 1), diceRotation);
+        diceUIClone.transform.Rotate(new Vector3(0, 0, 1), diceRotation);
         diceImage.overrideSprite = null;
         diceAnimator.Rebind();
         diceAnimator.Play(0);

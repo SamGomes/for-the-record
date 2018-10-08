@@ -29,7 +29,7 @@ public class PoppupScreenFunctionalities
 
         for (int i = 0; i < mainSceneAnimators.Count; i++)
         {
-            mainSceneAnimators[i].speed = 0;
+            mainSceneAnimators[i].enabled = false;
         }
         return 0;
     }
@@ -46,7 +46,7 @@ public class PoppupScreenFunctionalities
 
         for (int i = 0; i < mainSceneAnimators.Count; i++)
         {
-            mainSceneAnimators[i].speed = 1;
+            mainSceneAnimators[i].enabled = true;
         }
         return 0;
     }

@@ -52,28 +52,27 @@ public class StartScreenFunctionalities : MonoBehaviour {
         //only generate session data in the first game
         if (GameGlobals.currGameId == 1)
         {
-
-            string date = System.DateTime.Now.ToString("yyyy/MM/dd/HH-mm-ss");
-
+            string date = System.DateTime.Now.ToString("ddHHmm");
 
             //generate external game code from currsessionid and lock it in place
-            //gamecode is in the format ddmmyyhhmmssAAA
+            //gamecode is in the format ddmmhhmmss<3RandomLetters>[TestGameCondition]
 
-            // Match only digits 
-            string pattern = @"\d";
-            StringBuilder sb = new StringBuilder();
+            string generatedCode = date; //sb.ToString();
 
-            foreach (Match m in Regex.Matches(date, pattern))
-            {
-                sb.Append(m);
-            }
-
-            string generatedCode = sb.ToString();
-            //generate 3 random letters in the end
-            for (int i = 0; i < 3; i++)
+            int numLettersToGenerate = (GameProperties.isAutomaticalBriefing || GameProperties.isSimulation) ? 3 : 4;
+            //generate 3 (or 4 depending on the game properties) random letters
+            for (int i = 0; i < numLettersToGenerate; i++)
             {
                 generatedCode += (char)('A' + Random.Range(0, 26));
             }
+
+            if (GameProperties.isAutomaticalBriefing) //generate condition automatically
+            {
+                int possibleConditions = 2;
+                GameProperties.testGameParameterization = (char)('A' + (Random.Range(0, possibleConditions)));
+                generatedCode += GameProperties.testGameParameterization;
+            }
+
             GameGlobals.currSessionId = generatedCode;
 
             //update the gamecode UI

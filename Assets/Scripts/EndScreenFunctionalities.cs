@@ -86,8 +86,6 @@ public class EndScreenFunctionalities : MonoBehaviour
                     UIEndGameButtonText.text = "End Experiment";
                     UIRestartGameButton.gameObject.SetActive(false);
                     UIRestartGameButton.interactable = false;
-                    //UIEndGameButton.GetComponent<Animator>().speed = 1;
-                    //UIRestartGameButton.GetComponent<Animator>().speed = 0;
                 }
                 else
                 {
@@ -104,8 +102,6 @@ public class EndScreenFunctionalities : MonoBehaviour
                     }
                     UIEndGameButton.gameObject.SetActive(false);
                     UIEndGameButton.interactable = false;
-                    //UIRestartGameButton.GetComponent<Animator>().speed = 1;
-                    //UIEndGameButton.GetComponent<Animator>().speed = 0;
                 }
 
             }
@@ -152,10 +148,24 @@ public class EndScreenFunctionalities : MonoBehaviour
             UICopyGameIdButton.onClick.AddListener(delegate ()
             {
                 //copy Id to clipboard
-                TextEditor te = new TextEditor();
-                te.text = GameGlobals.currSessionId;
-                te.SelectAll();
-                te.Copy();
+                Application.ExternalEval("function(){"+
+                "var btn = document.createElement(\"BUTTON\");" +
+                "var text = document.createElement(\"INPUT\");" +
+                "text.value = \"succit\";" +
+                "text.value = \"succitboiii\";" +
+                "text.id = \"textID\";" +
+                "document.body.appendChild(btn);" +
+                "document.body.appendChild(text);" +
+                "function myFunction() {" +
+                "  var copyText = document.getElementById(\"textID\");" +
+                "  copyText.select();" +
+                "  document.execCommand(\"copy\");" +
+                "}" +
+                "btn.setAttribute(\"onclick\", \"myFunction()\");" +
+                "btn.click();" +
+                "text.remove();" +
+                "btn.remove();}()"
+                );
             });
         }
 

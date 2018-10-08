@@ -26,21 +26,19 @@ public class PlayersSetupSceneFunctionalities : MonoBehaviour {
         GameGlobals.players.Add(new UIPlayer(playerUIPrefab,playerCanvas, playerWarningPoppupRef, 0,"Player1"));
         GameGlobals.players.Add(new UIPlayer(playerUIPrefab, playerCanvas, playerWarningPoppupRef, 1, "Player2"));
         GameGlobals.players.Add(new UIPlayer(playerUIPrefab, playerCanvas, playerWarningPoppupRef, 2,"Player3"));
-        GameGlobals.gameDiceNG = new RandomDiceNG();
     }
-    void ConfigureRandomTestWithRobots()
+    void ConfigureAITestRRH()
     {
         GameGlobals.numberOfSpeakingPlayers = 2;
-        AIPlayerGreedyStrategy emys = new AIPlayerGreedyStrategy(playerUIPrefab, playerCanvas, playerWarningPoppupRef, 0, "Emys", GameProperties.isSpeechAllowed);
+        AIPlayerRandomStrategy emys = new AIPlayerRandomStrategy(playerUIPrefab, playerCanvas, playerWarningPoppupRef, 0, "Emys", GameProperties.isSpeechAllowed);
         GameGlobals.players.Add(emys);
-        AIPlayerCoopStrategy glin = new AIPlayerCoopStrategy(playerUIPrefab, playerCanvas, playerWarningPoppupRef, 1, "Glin", GameProperties.isSpeechAllowed);
+        AIPlayerRandomStrategy glin = new AIPlayerRandomStrategy(playerUIPrefab, playerCanvas, playerWarningPoppupRef, 1, "Glin", GameProperties.isSpeechAllowed);
         GameGlobals.players.Add(glin);
         GameGlobals.players.Add(new UIPlayer(playerUIPrefab, playerCanvas, playerWarningPoppupRef, 2, "Player"));
-        GameGlobals.gameDiceNG = new RandomDiceNG();
         emys.FlushRobotUtterance("<gaze(Player)> Eu sou o émys!");
         glin.FlushRobotUtterance("<gaze(Player)> E eu sou o Glin! Vamos lá formar uma banda e ver se conseguimos triunfar!");
     }
-    void ConfigureConditionA()
+    void ConfigureAITestGCH()
     {
         GameGlobals.numberOfSpeakingPlayers = 2;
         AIPlayerGreedyStrategy emys = new AIPlayerGreedyStrategy(playerUIPrefab, playerCanvas, playerWarningPoppupRef, 0, "Emys", GameProperties.isSpeechAllowed);
@@ -48,22 +46,23 @@ public class PlayersSetupSceneFunctionalities : MonoBehaviour {
         AIPlayerCoopStrategy glin = new AIPlayerCoopStrategy(playerUIPrefab, playerCanvas, playerWarningPoppupRef, 1, "Glin", GameProperties.isSpeechAllowed);
         GameGlobals.players.Add(glin);
         GameGlobals.players.Add(new UIPlayer(playerUIPrefab, playerCanvas, playerWarningPoppupRef, 2,"Player"));
-        GameGlobals.gameDiceNG = new VictoryDiceNG();
         emys.FlushRobotUtterance("<gaze(Player)> Eu sou o émys!");
         glin.FlushRobotUtterance("<gaze(Player)> E eu sou o Glin! Vamos lá formar uma banda e ver se conseguimos triunfar!");
+    }
+
+
+
+    void ConfigureConditionA()
+    {
+        ConfigureAITestGCH();
+        GameGlobals.gameDiceNG = new LossDiceNG();
     }
     void ConfigureConditionB()
     {
-        GameGlobals.numberOfSpeakingPlayers = 2;
-        AIPlayerGreedyStrategy emys = new AIPlayerGreedyStrategy(playerUIPrefab, playerCanvas, playerWarningPoppupRef, 0, "Emys", GameProperties.isSpeechAllowed);
-        GameGlobals.players.Add(emys);
-        AIPlayerCoopStrategy glin = new AIPlayerCoopStrategy(playerUIPrefab, playerCanvas, playerWarningPoppupRef, 1, "Glin", GameProperties.isSpeechAllowed);
-        GameGlobals.players.Add(glin);
-        GameGlobals.players.Add(new UIPlayer(2,"Player"));
-        GameGlobals.gameDiceNG = new LossDiceNG();
-        emys.FlushRobotUtterance("<gaze(Player)> Eu sou o émys!");
-        glin.FlushRobotUtterance("<gaze(Player)> E eu sou o Glin! Vamos lá formar uma banda e ver se conseguimos triunfar!");
+        ConfigureAITestGCH();
+        GameGlobals.gameDiceNG = new VictoryDiceNG();
     }
+
 
     void Start ()
     {
@@ -76,20 +75,21 @@ public class PlayersSetupSceneFunctionalities : MonoBehaviour {
             {
                 if (GameGlobals.currGameId == 1) //gameId starts in 1, 1 is the first game (tutorial)
                 {
-                    ConfigureRandomTestWithRobots();
+                    ConfigureAITestRRH();
+                    GameGlobals.gameDiceNG = new RandomDiceNG();
                 }
                 else if (GameGlobals.currGameId == 2)
                 {
                     string gameCode = GameGlobals.currSessionId;
-                    int lastGameCodeLetterASCII = gameCode[gameCode.Length - 1];
-                    int middleOfletters = 'A' + 13;
-                    if (lastGameCodeLetterASCII > middleOfletters)
+                    //choose right parameterization for test game
+                    switch (GameProperties.testGameParameterization)
                     {
-                        ConfigureConditionA();
-                    }
-                    else
-                    {
-                        ConfigureConditionB();
+                        case 'A':
+                            ConfigureConditionA();
+                            break;
+                        case 'B':
+                            ConfigureConditionB();
+                            break;
                     }
                 }
                 StartGame();
@@ -163,10 +163,12 @@ public class PlayersSetupSceneFunctionalities : MonoBehaviour {
                     if (button.gameObject.name.EndsWith("1"))
                     {
                         ConfigureAllHumanPlayers();
+                        GameGlobals.gameDiceNG = new RandomDiceNG();
                     }
                     else if (button.gameObject.name.EndsWith("2"))
                     {
-                        ConfigureRandomTestWithRobots();
+                        ConfigureAITestRRH();
+                        GameGlobals.gameDiceNG = new RandomDiceNG();
                     }
                     else if (button.gameObject.name.EndsWith("3"))
                     {
