@@ -81,8 +81,6 @@ public static class GameProperties
     public static int initNumberMarketDices = 2; //config the initial number of dices to roll
 
 
-    public static bool isSpeechAllowed = false;
-
     //----------- AutomaticBriefing -------------------
     public static bool isAutomaticalBriefing = true;
     public static int numTutorialGamesToPlay = 1;

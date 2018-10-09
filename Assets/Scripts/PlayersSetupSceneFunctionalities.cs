@@ -29,10 +29,10 @@ public class PlayersSetupSceneFunctionalities : MonoBehaviour {
     }
     void ConfigureAITestRRH()
     {
-        GameGlobals.numberOfSpeakingPlayers = 2;
-        AIPlayerRandomStrategy emys = new AIPlayerRandomStrategy(playerUIPrefab, playerCanvas, playerWarningPoppupRef, 0, "Emys", GameProperties.isSpeechAllowed);
+        GameGlobals.numberOfSpeakingPlayers = 0;
+        AIPlayerRandomStrategy emys = new AIPlayerRandomStrategy(playerUIPrefab, playerCanvas, playerWarningPoppupRef, 0, "Emys", false);
         GameGlobals.players.Add(emys);
-        AIPlayerRandomStrategy glin = new AIPlayerRandomStrategy(playerUIPrefab, playerCanvas, playerWarningPoppupRef, 1, "Glin", GameProperties.isSpeechAllowed);
+        AIPlayerRandomStrategy glin = new AIPlayerRandomStrategy(playerUIPrefab, playerCanvas, playerWarningPoppupRef, 1, "Glin", false);
         GameGlobals.players.Add(glin);
         GameGlobals.players.Add(new UIPlayer(playerUIPrefab, playerCanvas, playerWarningPoppupRef, 2, "Player"));
         emys.FlushRobotUtterance("<gaze(Player)> Eu sou o émys!");
@@ -41,9 +41,9 @@ public class PlayersSetupSceneFunctionalities : MonoBehaviour {
     void ConfigureAITestGCH()
     {
         GameGlobals.numberOfSpeakingPlayers = 2;
-        AIPlayerGreedyStrategy emys = new AIPlayerGreedyStrategy(playerUIPrefab, playerCanvas, playerWarningPoppupRef, 0, "Emys", GameProperties.isSpeechAllowed);
+        AIPlayerGreedyStrategy emys = new AIPlayerGreedyStrategy(playerUIPrefab, playerCanvas, playerWarningPoppupRef, 0, "Emys", true);
         GameGlobals.players.Add(emys);
-        AIPlayerCoopStrategy glin = new AIPlayerCoopStrategy(playerUIPrefab, playerCanvas, playerWarningPoppupRef, 1, "Glin", GameProperties.isSpeechAllowed);
+        AIPlayerCoopStrategy glin = new AIPlayerCoopStrategy(playerUIPrefab, playerCanvas, playerWarningPoppupRef, 1, "Glin", true);
         GameGlobals.players.Add(glin);
         GameGlobals.players.Add(new UIPlayer(playerUIPrefab, playerCanvas, playerWarningPoppupRef, 2,"Player"));
         emys.FlushRobotUtterance("<gaze(Player)> Eu sou o émys!");
@@ -137,16 +137,16 @@ public class PlayersSetupSceneFunctionalities : MonoBehaviour {
                     switch ((GameProperties.AIPlayerType) (index+2))
                     {
                         case GameProperties.AIPlayerType.SIMPLE:
-                            newPlayer = new AIPlayerSimple(playerUIPrefab, playerCanvas, playerWarningPoppupRef, GameGlobals.players.Count, "John0", GameProperties.isSpeechAllowed);
+                            newPlayer = new AIPlayerSimple(playerUIPrefab, playerCanvas, playerWarningPoppupRef, GameGlobals.players.Count, "John0", true);
                             break;
                         case GameProperties.AIPlayerType.COOPERATIVE:
-                            newPlayer = new AIPlayerCoopStrategy(playerUIPrefab, playerCanvas, playerWarningPoppupRef, GameGlobals.players.Count, "John1", GameProperties.isSpeechAllowed);
+                            newPlayer = new AIPlayerCoopStrategy(playerUIPrefab, playerCanvas, playerWarningPoppupRef, GameGlobals.players.Count, "John1", true);
                             break;
                         case GameProperties.AIPlayerType.GREEDY:
-                            newPlayer = new AIPlayerGreedyStrategy(playerUIPrefab, playerCanvas, playerWarningPoppupRef, GameGlobals.players.Count,"John2", GameProperties.isSpeechAllowed);
+                            newPlayer = new AIPlayerGreedyStrategy(playerUIPrefab, playerCanvas, playerWarningPoppupRef, GameGlobals.players.Count,"John2", true);
                             break;
                         case GameProperties.AIPlayerType.BALANCED:
-                            newPlayer = new AIPlayerBalancedStrategy(playerUIPrefab, playerCanvas, playerWarningPoppupRef, GameGlobals.players.Count,"John3", GameProperties.isSpeechAllowed);
+                            newPlayer = new AIPlayerBalancedStrategy(playerUIPrefab, playerCanvas, playerWarningPoppupRef, GameGlobals.players.Count,"John3", true);
                             break;
                     }
                     GameGlobals.players.Add(newPlayer);

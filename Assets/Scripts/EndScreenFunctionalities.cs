@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+using System.Runtime.InteropServices;
+
 public class EndScreenFunctionalities : MonoBehaviour
 {
 
@@ -22,10 +24,12 @@ public class EndScreenFunctionalities : MonoBehaviour
 
     public GameObject mainScene;
 
-
     public GameObject albumUIPrefab;
 
-    
+
+    [DllImport("__Internal")]
+    private static extern void EnableCopyToClipboard(string text);
+
     private void RestartGame()
     {
         foreach(Album album in GameGlobals.albums)
@@ -147,25 +151,7 @@ public class EndScreenFunctionalities : MonoBehaviour
             Button UICopyGameIdButton = UIFinishedGameOverlay.transform.Find("text/copyGameIdButton").GetComponent<Button>();
             UICopyGameIdButton.onClick.AddListener(delegate ()
             {
-                //copy Id to clipboard
-                Application.ExternalEval("function(){"+
-                "var btn = document.createElement(\"BUTTON\");" +
-                "var text = document.createElement(\"INPUT\");" +
-                "text.value = \"succit\";" +
-                "text.value = \"succitboiii\";" +
-                "text.id = \"textID\";" +
-                "document.body.appendChild(btn);" +
-                "document.body.appendChild(text);" +
-                "function myFunction() {" +
-                "  var copyText = document.getElementById(\"textID\");" +
-                "  copyText.select();" +
-                "  document.execCommand(\"copy\");" +
-                "}" +
-                "btn.setAttribute(\"onclick\", \"myFunction()\");" +
-                "btn.click();" +
-                "text.remove();" +
-                "btn.remove();}()"
-                );
+                
             });
         }
 
@@ -175,6 +161,9 @@ public class EndScreenFunctionalities : MonoBehaviour
 
         UIEndGameButton.onClick.AddListener(delegate () {
             //mainScene.SetActive(false);
+
+            //enable click on button for clipboard copying
+            EnableCopyToClipboard(GameGlobals.currSessionId);
             UIFinishedGameOverlay.SetActive(true);
         });
     }
@@ -182,7 +171,6 @@ public class EndScreenFunctionalities : MonoBehaviour
     //in order to sort the players list by money earned
     public int SortPlayersByMoney(Player p1, Player p2)
     {
-
         return -1*(p1.GetMoney()).CompareTo(p2.GetMoney());
     }
 

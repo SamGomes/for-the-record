@@ -5,8 +5,6 @@ using WellFormedNames;
 
 public abstract class AIPlayer : UIPlayer
 {
-    protected bool isSpeechAllowed;
-
     protected GameProperties.AIPlayerType type;
 
     protected float choosePreferredInstrumentDelay;
@@ -31,14 +29,14 @@ public abstract class AIPlayer : UIPlayer
 
     protected EmotionalModule emotionalModule;
 
-    public AIPlayer(GameObject playerUIPrefab, GameObject canvas, PoppupScreenFunctionalities warningScreenref, int id, string name, bool isSpeechAlloweed) : base(playerUIPrefab, canvas, warningScreenref,id, name){
-        this.isSpeechAllowed = isSpeechAllowed;
+    public AIPlayer(GameObject playerUIPrefab, GameObject canvas, PoppupScreenFunctionalities warningScreenref, int id, string name, bool isSpeechAllowed) : base(playerUIPrefab, canvas, warningScreenref,id, name){
 
         InitDelays();
 
+
         GameObject erp = new GameObject("EmotionalRoboticPlayer");
         emotionalModule = erp.AddComponent<EmotionalModule>();
-        emotionalModule.Speaks = false;
+        emotionalModule.Speaks = isSpeechAllowed;
         emotionalModule.ReceiveInvoker(this); //only pass the invoker after it is initialized
     }
 

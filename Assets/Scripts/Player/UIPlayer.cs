@@ -108,9 +108,11 @@ public class UIPlayer : Player
         this.playerSelfDisablerUI = playerUI.transform.Find("selfDisabler").gameObject;
         playerSelfDisablerUI.SetActive(false); //provide interaction by default
 
-
-        this.UISpeechBalloon = playerUI.transform.Find("speechBalloon").gameObject;
-        UISpeechBalloon.SetActive(false);
+        GameObject UISpeechBalloonLeft = playerUI.transform.Find("speechBalloonLeft").gameObject;
+        GameObject UISpeechBalloonRight = playerUI.transform.Find("speechBalloonRight").gameObject;
+        this.UISpeechBalloon = (this.id%2==0)? UISpeechBalloonLeft : UISpeechBalloonRight;
+        UISpeechBalloonLeft.SetActive(false);
+        UISpeechBalloonRight.SetActive(false);
 
         this.UIplayerActionButton = playerUI.transform.Find("playerActionSection/playerActionButton").gameObject.GetComponent<Button>();
 

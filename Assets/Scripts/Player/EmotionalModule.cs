@@ -113,7 +113,7 @@ public class EmotionalModule : MonoBehaviour
                     int randomUttIndex = UnityEngine.Random.Range(0, possibleDialogs.Count());
                     var dialog = possibleDialogs[randomUttIndex].Utterance;
 
-                    StartCoroutine(DisplaySpeechBalloonForAWhile(invoker.GetName() + ": \"" + StripSpeechSentence(dialog) + "\"", speechBalloonDelayInSeconds));
+                    speak(invoker.GetName() + ": \"" + StripSpeechSentence(dialog) + "\"");
 
                     break;
                 default:
@@ -154,7 +154,16 @@ public class EmotionalModule : MonoBehaviour
 
     public void FlushUtterance(string text)
     {
-        StartCoroutine(DisplaySpeechBalloonForAWhile(StripSpeechSentence(text), 2.0f));
+        speak(StripSpeechSentence(text));
+    }
+
+    public void speak(string text)
+    {
+        if (!Speaks)
+        {
+            return;
+        }
+        StartCoroutine(DisplaySpeechBalloonForAWhile(text, 2.0f));
     }
 
     public void GazeAt(string target)
