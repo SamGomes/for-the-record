@@ -76,9 +76,9 @@ public class StartScreenFunctionalities : MonoBehaviour {
             GameGlobals.currSessionId = generatedCode;
 
             //update the gamecode UI
-            GameObject UIGameCodeDisplay = Object.Instantiate(UIGameCodeDisplayPrefab);
-            UIGameCodeDisplay.GetComponentInChildren<Text>().text = "Game Code: " + GameGlobals.currSessionId;
-            Object.DontDestroyOnLoad(UIGameCodeDisplay);
+            //GameObject UIGameCodeDisplay = Object.Instantiate(UIGameCodeDisplayPrefab);
+            //UIGameCodeDisplay.GetComponentInChildren<Text>().text = "Game Code: " + GameGlobals.currSessionId;
+            //Object.DontDestroyOnLoad(UIGameCodeDisplay);
         }
 
         //init fatima strings

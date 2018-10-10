@@ -1,6 +1,8 @@
 ﻿using RolePlayCharacter;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 using WellFormedNames;
 
 public abstract class AIPlayer : UIPlayer
@@ -420,7 +422,7 @@ public abstract class AIPlayer : UIPlayer
         }
 
     }
-    protected virtual void LevelUpActions(Album currAlbum) { }
+    protected virtual GameProperties.Instrument LevelUpActions(Album currAlbum) { return GameProperties.Instrument.NONE; }
     protected virtual void PlayforInstrumentActions(Album currAlbum) {
         if (skillSet[preferredInstrument] > 0)
         {
@@ -451,7 +453,7 @@ public abstract class AIPlayer : UIPlayer
         base.LevelUp(currAlbum);
         if (!GameProperties.isSimulation)
         {
-            playerMonoBehaviourFunctionalities.StartCoroutine(ThinkBeforeLevelingUp(currAlbum, levelUpThinkingDelay, false));
+            playerMonoBehaviourFunctionalities.StartCoroutine(ThinkBeforeLevelingUp(currAlbum, levelUpThinkingDelay, GameProperties.Instrument.NONE, false));
         }
         else
         {
@@ -486,7 +488,29 @@ public abstract class AIPlayer : UIPlayer
         }
     }
 
-    //predicting hri-s
+    //predicting hri-s? calculated Xb
+
+    //simulate button clicks
+    private void SimulateMouseDown(Button button)
+    {
+        var pointer = new PointerEventData(EventSystem.current);
+        ExecuteEvents.Execute(button.gameObject, pointer, ExecuteEvents.pointerEnterHandler);
+        ExecuteEvents.Execute(button.gameObject, pointer, ExecuteEvents.pointerDownHandler);
+    }
+    private void SimulateMouseUp(Button button)
+    {
+        var pointer = new PointerEventData(EventSystem.current);
+        ExecuteEvents.Execute(button.gameObject, pointer, ExecuteEvents.pointerClickHandler);
+    }
+    private IEnumerator SimulateMouseClick(Button button, float pressingTime)
+    {
+
+        SimulateMouseDown(button);
+        yield return new WaitForSeconds(pressingTime);
+        SimulateMouseUp(button);
+        
+    }
+
     private IEnumerator ThinkBeforeChoosingPreferredInstrument(Album currAlbum, float delay, bool isSendingResponse)
     {
         yield return new WaitForSeconds(delay);
@@ -504,10 +528,10 @@ public abstract class AIPlayer : UIPlayer
         }
         else
         {
-            SendChoosePreferredInstrumentResponse();
+            playerMonoBehaviourFunctionalities.StartCoroutine(SimulateMouseClick(UIplayerActionButton, 0.3f));
         }
     }
-    private IEnumerator ThinkBeforeLevelingUp(Album currAlbum, float delay, bool isSendingResponse)
+    private IEnumerator ThinkBeforeLevelingUp(Album currAlbum, float delay, GameProperties.Instrument chosenLevelUpInstrument, bool isSendingResponse)
     {
         yield return new WaitForSeconds(delay);
         if (!isSendingResponse)
@@ -518,12 +542,19 @@ public abstract class AIPlayer : UIPlayer
             EventHelper.PropertyChange("State(Game)", "LevelUp", name) });
             emotionalModule.Decide();
 
-            LevelUpActions(currAlbum);
-            playerMonoBehaviourFunctionalities.StartCoroutine(ThinkBeforeLevelingUp(currAlbum, sendResponsesDelay, true));
+            chosenLevelUpInstrument = LevelUpActions(currAlbum);
+            playerMonoBehaviourFunctionalities.StartCoroutine(ThinkBeforeLevelingUp(currAlbum, sendResponsesDelay, chosenLevelUpInstrument, true));
         }
         else
         {
-            SendLevelUpResponse();
+            if (chosenLevelUpInstrument == GameProperties.Instrument.MARKETING)
+            {
+                playerMonoBehaviourFunctionalities.StartCoroutine(SimulateMouseClick(UIspendTokenInMarketingButton, 0.3f));
+            }
+            else
+            {
+                playerMonoBehaviourFunctionalities.StartCoroutine(SimulateMouseClick(UIspendTokenInInstrumentButton, 0.3f));
+            }
         }
     }
     private IEnumerator ThinkBeforePlayForInstrument(Album currAlbum, float delay, bool isSendingResponse)
@@ -542,7 +573,7 @@ public abstract class AIPlayer : UIPlayer
         }
         else
         {
-            SendPlayForInstrumentResponse();
+            playerMonoBehaviourFunctionalities.StartCoroutine(SimulateMouseClick(UIrollForPreferredInstrumentButton,0.3f));
         }
     }
     private IEnumerator ThinkBeforeLastDecisionPhase(Album currAlbum, float delay, bool isSendingResponse, int receivedCondition)
@@ -578,7 +609,19 @@ public abstract class AIPlayer : UIPlayer
         }
         else
         {
-            SendLastDecisionsPhaseResponse(receivedCondition);
+            switch (receivedCondition)
+            {
+                case 0:
+                    playerMonoBehaviourFunctionalities.StartCoroutine(SimulateMouseClick(UIReceiveMegaHitButton, 0.3f));
+                    break;
+                case 1:
+                    playerMonoBehaviourFunctionalities.StartCoroutine(SimulateMouseClick(UIStickWithMarketingMegaHitButton, 0.3f));
+                    break;
+                case 2:
+                    playerMonoBehaviourFunctionalities.StartCoroutine(SimulateMouseClick(UIReceiveFailButton, 0.3f));
+                    break;
+
+            }
         }
     }
 }
@@ -595,9 +638,9 @@ public class AIPlayerSimple : AIPlayer
         this.type = GameProperties.AIPlayerType.SIMPLE;
     }
 
-    protected override void LevelUpActions(Album currAlbum)
+    protected override GameProperties.Instrument LevelUpActions(Album currAlbum)
     {
-        SpendToken(GameProperties.Instrument.GUITAR);
+        return GameProperties.Instrument.GUITAR;
 
     }
     protected override int LastDecisionsActions(Album currAlbum)
@@ -627,19 +670,11 @@ public class AIPlayerRandomStrategy : AIPlayer
         this.type = GameProperties.AIPlayerType.RANDOM;
     }
 
-    protected override void LevelUpActions(Album currAlbum)
+    protected override GameProperties.Instrument LevelUpActions(Album currAlbum)
     {
         GameProperties.Instrument instrumentToLevelUp = GameProperties.Instrument.NONE;
-        if (skillSet[preferredInstrument] < GameProperties.maximumSkillLevelPerInstrument)
-        {
-            if (money >= 0)
-            {
-                BuyTokens(1);
-            }
-            instrumentToLevelUp = (Random.Range(0, 2) > 0) ? preferredInstrument : GameProperties.Instrument.MARKETING;
-        }
-        SpendToken(instrumentToLevelUp);
-
+        instrumentToLevelUp = (Random.Range(0, 2) > 0) ? preferredInstrument : GameProperties.Instrument.MARKETING;
+        return instrumentToLevelUp;
     }
     protected override int LastDecisionsActions(Album currAlbum)
     {
@@ -669,17 +704,13 @@ public class AIPlayerCoopStrategy : AIPlayer
         this.type = GameProperties.AIPlayerType.COOPERATIVE;
     }
 
-    protected override void LevelUpActions(Album currAlbum)
+    protected override GameProperties.Instrument LevelUpActions(Album currAlbum)
     {
         //if there is money left spend it
-        if (skillSet[preferredInstrument] < GameProperties.maximumSkillLevelPerInstrument)
-        {
-            if (money >= 0)
-            {
-                BuyTokens(1);
-            }
-            SpendToken(preferredInstrument);
-        }
+        //if (skillSet[preferredInstrument] < GameProperties.maximumSkillLevelPerInstrument)
+        //{
+            return preferredInstrument;
+        //}
     }
     protected override int LastDecisionsActions(Album currAlbum)
     {
@@ -709,13 +740,9 @@ public class AIPlayerGreedyStrategy : AIPlayer
         this.type = GameProperties.AIPlayerType.GREEDY;
     }
 
-    protected override void LevelUpActions(Album currAlbum)
+    protected override GameProperties.Instrument LevelUpActions(Album currAlbum)
     {
-        if (money >= 0)
-        {
-            BuyTokens(1);
-        }
-        SpendToken(GameProperties.Instrument.MARKETING);
+        return GameProperties.Instrument.MARKETING;
     }
     protected override int LastDecisionsActions(Album currAlbum)
     {
@@ -744,12 +771,12 @@ public class AIPlayerBalancedStrategy : AIPlayer
         this.type = GameProperties.AIPlayerType.BALANCED;
     }
 
-    protected override void LevelUpActions(Album currAlbum)
+    protected override GameProperties.Instrument LevelUpActions(Album currAlbum)
     {
-        //on first round put one token on instrument and one token on marketing
+        //on first round put one token on instrument
         if (GameGlobals.currGameRoundId == 0)
         {
-            SpendToken(preferredInstrument);
+            return preferredInstrument;
         }
         else //on the other rounds see if album was a fail and play cooperatively, otherwise play for marketing
         {
@@ -757,24 +784,15 @@ public class AIPlayerBalancedStrategy : AIPlayer
             if (lastAlbum.GetMarketingState() == GameProperties.AlbumMarketingState.FAIL)
             {
                 //coop strategy
-                if (skillSet[preferredInstrument] < GameProperties.maximumSkillLevelPerInstrument)
-                {
-                    if (money >= 0)
-                    {
-                        BuyTokens(1);
-                    }
-                    SpendToken(preferredInstrument);
-                }
+                return preferredInstrument;
             }
             else if(lastAlbum.GetMarketingState() == GameProperties.AlbumMarketingState.MEGA_HIT)
             {
                 //greedy strategy
-                if (money >= 0)
-                {
-                    BuyTokens(1);
-                }
-                SpendToken(GameProperties.Instrument.MARKETING);
+                return GameProperties.Instrument.MARKETING;
             }
+
+            return GameProperties.Instrument.NONE; //hey code, try reaching this if u can :)
         }
     }
     protected override int LastDecisionsActions(Album currAlbum)

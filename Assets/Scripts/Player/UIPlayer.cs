@@ -12,7 +12,7 @@ public class UIPlayer : Player
     private GameObject playerDisablerUI;
     private GameObject playerSelfDisablerUI;
 
-    private Button UIplayerActionButton;
+    protected Button UIplayerActionButton;
 
     private Text UInameText;
     private Text UImoneyValue;

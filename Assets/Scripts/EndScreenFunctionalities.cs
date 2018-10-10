@@ -193,30 +193,30 @@ public class EndScreenFunctionalities : MonoBehaviour
     void Start()
     {
         ////mock
-        GameGlobals.currSessionId = System.DateTime.Now.ToString("yyyy/MM/dd/HH-mm-ss");
-        GameGlobals.gameLogManager = new DebugLogManager();
-        GameGlobals.gameLogManager.InitLogs();
-        GameGlobals.albums = new System.Collections.Generic.List<Album>(GameProperties.numberOfAlbumsPerGame);
-        Album newAlbum = new Album("1", albumUIPrefab);
-        GameGlobals.albums.Add(newAlbum);
-        newAlbum = new Album("2", albumUIPrefab);
-        GameGlobals.albums.Add(newAlbum);
-        newAlbum = new Album("3", albumUIPrefab);
-        GameGlobals.albums.Add(newAlbum);
-        newAlbum = new Album("4", albumUIPrefab);
-        GameGlobals.albums.Add(newAlbum);
-        newAlbum = new Album("5", albumUIPrefab);
-        GameGlobals.albums.Add(newAlbum);
-        newAlbum = new Album("6", albumUIPrefab);
-        GameGlobals.albums.Add(newAlbum);
-        newAlbum = new Album("7", albumUIPrefab);
-        GameGlobals.albums.Add(newAlbum);
-        GameGlobals.players = new System.Collections.Generic.List<Player>(GameProperties.numberOfPlayersPerGame);
-        GameGlobals.players.Add(new UIPlayer(0, "PL1"));
-        GameGlobals.players.Add(new UIPlayer(1, "PL2"));
-        GameGlobals.players.Add(new UIPlayer(2, "PL3"));
-        GameGlobals.currGameState = GameProperties.GameState.VICTORY;
-        GameGlobals.currGameId = 2;
+        //GameGlobals.currSessionId = System.DateTime.Now.ToString("yyyy/MM/dd/HH-mm-ss");
+        //GameGlobals.gameLogManager = new DebugLogManager();
+        //GameGlobals.gameLogManager.InitLogs();
+        //GameGlobals.albums = new System.Collections.Generic.List<Album>(GameProperties.numberOfAlbumsPerGame);
+        //Album newAlbum = new Album("1", albumUIPrefab);
+        //GameGlobals.albums.Add(newAlbum);
+        //newAlbum = new Album("2", albumUIPrefab);
+        //GameGlobals.albums.Add(newAlbum);
+        //newAlbum = new Album("3", albumUIPrefab);
+        //GameGlobals.albums.Add(newAlbum);
+        //newAlbum = new Album("4", albumUIPrefab);
+        //GameGlobals.albums.Add(newAlbum);
+        //newAlbum = new Album("5", albumUIPrefab);
+        //GameGlobals.albums.Add(newAlbum);
+        //newAlbum = new Album("6", albumUIPrefab);
+        //GameGlobals.albums.Add(newAlbum);
+        //newAlbum = new Album("7", albumUIPrefab);
+        //GameGlobals.albums.Add(newAlbum);
+        //GameGlobals.players = new System.Collections.Generic.List<Player>(GameProperties.numberOfPlayersPerGame);
+        //GameGlobals.players.Add(new UIPlayer(0, "PL1"));
+        //GameGlobals.players.Add(new UIPlayer(1, "PL2"));
+        //GameGlobals.players.Add(new UIPlayer(2, "PL3"));
+        //GameGlobals.currGameState = GameProperties.GameState.VICTORY;
+        //GameGlobals.currGameId = 2;
 
         UIVictoryOverlay.SetActive(false);
         UILossOverlay.SetActive(false);
