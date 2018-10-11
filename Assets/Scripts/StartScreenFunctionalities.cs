@@ -113,7 +113,7 @@ public class StartScreenFunctionalities : MonoBehaviour {
             if (GameProperties.isAutomaticalBriefing)
             {
                 Text startButtonText = UIStartGameButton.GetComponentInChildren<Text>();
-                if (GameGlobals.currGameId == 1)
+                if (GameGlobals.currGameId < (GameProperties.numTutorialGamesToPlay+1))
                 {
                     startButtonText.text = "Start Tutorial Game";
                 }

@@ -19,6 +19,7 @@ public abstract class Player
 
     protected GameProperties.Instrument preferredInstrument;
     protected GameProperties.Instrument diceRollInstrument;
+    protected GameProperties.Instrument leveledUpInstrument;
     protected List<GameProperties.Instrument> toBeTokenedInstruments;
 
     protected Dictionary<GameProperties.Instrument, int> skillSet;
@@ -44,6 +45,7 @@ public abstract class Player
 
         this.diceRollInstrument = GameProperties.Instrument.NONE;
         this.preferredInstrument = GameProperties.Instrument.NONE;
+        this.leveledUpInstrument = GameProperties.Instrument.NONE;
         this.toBeTokenedInstruments = new List<GameProperties.Instrument>();
         this.skillSet = new Dictionary<GameProperties.Instrument, int>();
         this.albumContributions = new Dictionary<GameProperties.Instrument, int>();
@@ -81,7 +83,7 @@ public abstract class Player
     public abstract void LastDecisionsPhase(Album currAlbum);
 
     public abstract void InformChoosePreferredInstrument(Player nextPlayer);
-    public abstract void InformLevelUp();
+    public abstract void InformLevelUp(GameProperties.Instrument leveledUpInstrument);
     public abstract void InformPlayForInstrument(Player nextPlayer);
     public abstract void InformLastDecision(Player nextPlayer);
     public abstract void InformRollDicesValue(Player invoker, int maxValue, int obtainedValue);
@@ -214,6 +216,11 @@ public abstract class Player
     {
         return this.preferredInstrument;
     }
+    public GameProperties.Instrument GetLeveledUpInstrument()
+    {
+        return this.leveledUpInstrument;
+    }
+    
     public void AddToBeTokenedInstrument(GameProperties.Instrument instrument)
     {
         this.toBeTokenedInstruments.Add(instrument);
@@ -238,6 +245,7 @@ public abstract class Player
         if (!unchangedSkillSetInstruments.ContainsKey(instrument))
         {
             unchangedSkillSetInstruments[instrument] = skillSet[instrument];
+            leveledUpInstrument = instrument;
         }
         skillSet[instrument]++;
 

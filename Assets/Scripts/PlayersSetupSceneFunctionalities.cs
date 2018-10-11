@@ -30,13 +30,13 @@ public class PlayersSetupSceneFunctionalities : MonoBehaviour {
     void ConfigureAITestRRH()
     {
         GameGlobals.numberOfSpeakingPlayers = 0;
-        AIPlayerRandomStrategy emys = new AIPlayerRandomStrategy(playerUIPrefab, playerCanvas, playerWarningPoppupRef, 0, "Emys", false);
-        GameGlobals.players.Add(emys);
-        AIPlayerRandomStrategy glin = new AIPlayerRandomStrategy(playerUIPrefab, playerCanvas, playerWarningPoppupRef, 1, "Glin", false);
-        GameGlobals.players.Add(glin);
-        GameGlobals.players.Add(new UIPlayer(playerUIPrefab, playerCanvas, playerWarningPoppupRef, 2, "Player"));
-        emys.FlushAIUtterance("<gaze(Player)> Eu sou o émys!");
-        glin.FlushAIUtterance("<gaze(Player)> E eu sou o Glin! Vamos lá formar uma banda e ver se conseguimos triunfar!");
+        AIPlayerRandomStrategy p1 = new AIPlayerRandomStrategy(playerUIPrefab, playerCanvas, playerWarningPoppupRef, 0, "Player1", false);
+        GameGlobals.players.Add(p1);
+        AIPlayerRandomStrategy p2 = new AIPlayerRandomStrategy(playerUIPrefab, playerCanvas, playerWarningPoppupRef, 1, "Player2", false);
+        GameGlobals.players.Add(p2);
+        GameGlobals.players.Add(new UIPlayer(playerUIPrefab, playerCanvas, playerWarningPoppupRef, 2, "Player3"));
+        p1.FlushAIUtterance("<gaze(Player)> Eu sou o émys!");
+        p2.FlushAIUtterance("<gaze(Player)> E eu sou o Glin! Vamos lá formar uma banda e ver se conseguimos triunfar!");
     }
     void ConfigureAITestGCH()
     {
@@ -49,7 +49,17 @@ public class PlayersSetupSceneFunctionalities : MonoBehaviour {
         emys.FlushAIUtterance("<gaze(Player)> Eu sou o émys!");
         glin.FlushAIUtterance("<gaze(Player)> E eu sou o Glin! Vamos lá formar uma banda e ver se conseguimos triunfar!");
     }
-
+    void ConfigureAITestCTH()
+    {
+        GameGlobals.numberOfSpeakingPlayers = 2;
+        AIPlayerCoopStrategy emys = new AIPlayerCoopStrategy(playerUIPrefab, playerCanvas, playerWarningPoppupRef, 0, "Emys", true);
+        GameGlobals.players.Add(emys);
+        AIPlayerTitForTat glin = new AIPlayerTitForTat(playerUIPrefab, playerCanvas, playerWarningPoppupRef, 1, "Tits for that", true);
+        GameGlobals.players.Add(glin);
+        GameGlobals.players.Add(new UIPlayer(playerUIPrefab, playerCanvas, playerWarningPoppupRef, 2, "Player"));
+        emys.FlushAIUtterance("<gaze(Player)> Eu sou o émys!");
+        glin.FlushAIUtterance("<gaze(Player)> E eu sou o Glin! Vamos lá formar uma banda e ver se conseguimos triunfar!");
+    }
 
 
     void ConfigureConditionA()
@@ -73,12 +83,12 @@ public class PlayersSetupSceneFunctionalities : MonoBehaviour {
 
             if (GameProperties.isAutomaticalBriefing)
             {
-                if (GameGlobals.currGameId == 1) //gameId starts in 1, 1 is the first game (tutorial)
+                if (GameGlobals.currGameId < (GameProperties.numTutorialGamesToPlay + 1)) //gameId starts in 1, 1 is the first game (tutorial)
                 {
                     ConfigureAITestRRH();
                     GameGlobals.gameDiceNG = new RandomDiceNG();
                 }
-                else if (GameGlobals.currGameId == 2)
+                else
                 {
                     string gameCode = GameGlobals.currSessionId;
                     //choose right parameterization for test game
@@ -147,6 +157,12 @@ public class PlayersSetupSceneFunctionalities : MonoBehaviour {
                             break;
                         case GameProperties.AIPlayerType.BALANCED:
                             newPlayer = new AIPlayerBalancedStrategy(playerUIPrefab, playerCanvas, playerWarningPoppupRef, GameGlobals.players.Count,"John3", true);
+                            break;
+                        case GameProperties.AIPlayerType.UNBALANCED:
+                            newPlayer = new AIPlayerUnbalancedStrategy(playerUIPrefab, playerCanvas, playerWarningPoppupRef, GameGlobals.players.Count, "John4", true);
+                            break;
+                        case GameProperties.AIPlayerType.TITFORTAT:
+                            newPlayer = new AIPlayerTitForTat(playerUIPrefab, playerCanvas, playerWarningPoppupRef, GameGlobals.players.Count, "John5", true);
                             break;
                     }
                     GameGlobals.players.Add(newPlayer);

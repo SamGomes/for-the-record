@@ -500,15 +500,17 @@ public class GameManager : MonoBehaviour {
             choosePreferedInstrumentResponseReceived = false;
             Player currPlayer = GameGlobals.players[currPlayerIndex];
             Player nextPlayer = ChangeToNextPlayer(currPlayer);
-            numPlayersToChooseDiceRollInstrument--;
             if (numPlayersToChooseDiceRollInstrument > 0)
             {
                 foreach (var player in GameGlobals.players)
                 {
+                    if (player == currPlayer) continue;
                     player.InformChoosePreferredInstrument(nextPlayer);
                 }
-                
-
+            }    
+            numPlayersToChooseDiceRollInstrument--;
+            if (numPlayersToChooseDiceRollInstrument > 0)
+            {
                 nextPlayer.ChoosePreferredInstrumentRequest(currAlbum);
             }
         }
@@ -519,17 +521,19 @@ public class GameManager : MonoBehaviour {
             levelUpResponseReceived = false;
             Player currPlayer = GameGlobals.players[currPlayerIndex];
             Player nextPlayer = ChangeToNextPlayer(currPlayer);
-            numPlayersToLevelUp--;
             if (numPlayersToLevelUp > 0)
             {
                 foreach (var player in GameGlobals.players)
                 {
-                    player.InformLevelUp();
+                    if (player == currPlayer) continue;
+                    player.InformLevelUp(currPlayer.GetLeveledUpInstrument());
                 }
-
-                nextPlayer.LevelUpRequest(currAlbum);
-                
             }
+            numPlayersToLevelUp--;
+            if (numPlayersToLevelUp > 0)
+            {
+                nextPlayer.LevelUpRequest(currAlbum);
+            }   
         }
         if (playForInstrumentResponseReceived)
         {
@@ -538,14 +542,18 @@ public class GameManager : MonoBehaviour {
             playForInstrumentResponseReceived = false;
             Player currPlayer = GameGlobals.players[currPlayerIndex];
             Player nextPlayer = ChangeToNextPlayer(currPlayer);
-            numPlayersToPlayForInstrument--;
             if (numPlayersToPlayForInstrument > 0)
             {
                 foreach (var player in GameGlobals.players)
                 {
+                    if (player == currPlayer) continue;
                     player.InformPlayForInstrument(nextPlayer);
                 }
 
+            }
+            numPlayersToPlayForInstrument--;
+            if (numPlayersToPlayForInstrument > 0)
+            {
                 nextPlayer.PlayForInstrumentRequest(currAlbum);
             }
         }
@@ -556,14 +564,17 @@ public class GameManager : MonoBehaviour {
             lastDecisionResponseReceived = false;
             Player currPlayer = GameGlobals.players[currPlayerIndex];
             Player nextPlayer = ChangeToNextPlayer(currPlayer);
-            numPlayersToStartLastDecisions--;
             if (numPlayersToStartLastDecisions > 0)
             {
                 foreach (var player in GameGlobals.players)
                 {
+                    if (player == currPlayer) continue;
                     player.InformLastDecision(nextPlayer);
                 }
-
+            }
+            numPlayersToStartLastDecisions--;
+            if (numPlayersToStartLastDecisions > 0)
+            {
                 nextPlayer.LastDecisionsPhaseRequest(currAlbum);
             }
         }

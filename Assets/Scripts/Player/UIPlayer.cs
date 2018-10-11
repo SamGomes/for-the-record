@@ -604,7 +604,7 @@ public class UIPlayer : Player
 
 
     public override void InformChoosePreferredInstrument(Player nextPlayer) { }
-    public override void InformLevelUp() { }
+    public override void InformLevelUp(GameProperties.Instrument leveledUpInstrument) { }
     public override void InformPlayForInstrument(Player nextPlayer) { }
     public override void InformLastDecision(Player nextPlayer) { }
     public override void InformRollDicesValue(Player invoker, int maxValue, int obtainedValue){ }

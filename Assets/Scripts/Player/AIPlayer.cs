@@ -90,14 +90,14 @@ public abstract class AIPlayer : UIPlayer
             InformChoosePreferredInstrumentActions(nextPlayer);
         }
     }
-    public override void InformLevelUp() {
+    public override void InformLevelUp(GameProperties.Instrument leveledUpInstrument) {
         if (!GameProperties.isSimulation)
         {
-            playerMonoBehaviourFunctionalities.StartCoroutine(DelayedInformLevelUpActions(informLevelUpDelay,true));
+            playerMonoBehaviourFunctionalities.StartCoroutine(DelayedInformLevelUpActions(leveledUpInstrument,informLevelUpDelay,true));
         }
         else
         {
-            InformLevelUpActions();
+            InformLevelUpActions(leveledUpInstrument);
         }
     }
     public override void InformPlayForInstrument(Player nextPlayer) {
@@ -168,12 +168,10 @@ public abstract class AIPlayer : UIPlayer
     }
 
     protected virtual void InformChoosePreferredInstrumentActions(Player nextPlayer){
-        if (nextPlayer.GetName() != name)
-        {
-            emotionalModule.GazeAt(nextPlayer.GetName());
-        }
+         emotionalModule.GazeAt(nextPlayer.GetName());
     }
-    protected virtual void InformLevelUpActions(){
+    protected virtual void InformLevelUpActions(GameProperties.Instrument leveledUpInstrument)
+    {
         Player currentPlayer = gameManagerRef.GetCurrentPlayer();
         int currSpeakingPlayerId = gameManagerRef.GetCurrSpeakingPlayerId();
 
@@ -192,17 +190,11 @@ public abstract class AIPlayer : UIPlayer
     }
     protected virtual void InformPlayForInstrumentActions(Player nextPlayer)
     {
-        if (nextPlayer.GetName() != name)
-        {
-            emotionalModule.GazeAt(nextPlayer.GetName());
-        }
+        emotionalModule.GazeAt(nextPlayer.GetName());
     }
     protected virtual void InformLastDecisionActions(Player nextPlayer)
     {
-        if (nextPlayer.GetName() != name)
-        {
-            emotionalModule.GazeAt(nextPlayer.GetName());
-        }
+        emotionalModule.GazeAt(nextPlayer.GetName());
     }
 
     protected virtual void InformRollDicesValueActions(Player invoker, int maxValue, int obtainedValue)
@@ -342,10 +334,10 @@ public abstract class AIPlayer : UIPlayer
         yield return new WaitForSeconds(delay);
         InformChoosePreferredInstrumentActions(nextPlayer);
     }
-    private IEnumerator DelayedInformLevelUpActions(float delay, bool isInformDelayed)
+    private IEnumerator DelayedInformLevelUpActions(GameProperties.Instrument leveledUpInstrument, float delay, bool isInformDelayed)
     {
         yield return new WaitForSeconds(delay);
-        InformLevelUpActions();
+        InformLevelUpActions(leveledUpInstrument);
     }
     private IEnumerator DelayedInformPlayForInstrumentActions(Player nextPlayer, float delay, bool isInformDelayed)
     {
@@ -758,6 +750,7 @@ public class AIPlayerGreedyStrategy : AIPlayer
     }
 }
 
+
 public class AIPlayerBalancedStrategy : AIPlayer
 {
     public AIPlayerBalancedStrategy(GameObject playerUIPrefab, GameObject canvas, PoppupScreenFunctionalities warningScreenref, int id, string name, bool isSpeechAllowed) : base(playerUIPrefab, canvas, warningScreenref, id, name, isSpeechAllowed)
@@ -799,6 +792,123 @@ public class AIPlayerBalancedStrategy : AIPlayer
         int condition = 0;
         //if I have marketing skill, I use it always
         if (currAlbum.GetMarketingState() == GameProperties.AlbumMarketingState.MEGA_HIT && skillSet[GameProperties.Instrument.MARKETING]>0) 
+        {
+            condition = 1;
+        }
+        if (currAlbum.GetMarketingState() == GameProperties.AlbumMarketingState.FAIL)
+        {
+            condition = 2;
+        }
+        return condition;
+    }
+}
+
+public class AIPlayerUnbalancedStrategy : AIPlayer
+{
+    public AIPlayerUnbalancedStrategy(GameObject playerUIPrefab, GameObject canvas, PoppupScreenFunctionalities warningScreenref, int id, string name, bool isSpeechAllowed) : base(playerUIPrefab, canvas, warningScreenref, id, name, isSpeechAllowed)
+    {
+        this.type = GameProperties.AIPlayerType.UNBALANCED;
+    }
+    //for simulations
+    public AIPlayerUnbalancedStrategy(int id, string name) : base(id, name)
+    {
+        this.type = GameProperties.AIPlayerType.UNBALANCED;
+    }
+
+    protected override GameProperties.Instrument LevelUpActions(Album currAlbum)
+    {
+        //on first round put one token on instrument
+        if (GameGlobals.currGameRoundId == 0)
+        {
+            return preferredInstrument;
+        }
+        else //on the other rounds see if album was a fail and play cooperatively, otherwise play for marketing
+        {
+            Album lastAlbum = GameGlobals.albums[GameGlobals.albums.Count - 2];
+            if (lastAlbum.GetMarketingState() == GameProperties.AlbumMarketingState.FAIL)
+            {
+                //greedy strategy
+                return GameProperties.Instrument.MARKETING;
+            }
+            else if (lastAlbum.GetMarketingState() == GameProperties.AlbumMarketingState.MEGA_HIT)
+            {
+                //coop strategy
+                return preferredInstrument;
+            }
+
+            return GameProperties.Instrument.NONE; //hey code, try reaching this if u can :)
+        }
+    }
+    protected override int LastDecisionsActions(Album currAlbum)
+    {
+        int condition = 0;
+        //if I have marketing skill, I use it always
+        if (currAlbum.GetMarketingState() == GameProperties.AlbumMarketingState.MEGA_HIT && skillSet[GameProperties.Instrument.MARKETING] > 0)
+        {
+            condition = 1;
+        }
+        if (currAlbum.GetMarketingState() == GameProperties.AlbumMarketingState.FAIL)
+        {
+            condition = 2;
+        }
+        return condition;
+    }
+}
+
+
+public class AIPlayerTitForTat : AIPlayer
+{
+    private bool didSomeoneDefectedLastRound;
+    private bool didSomeoneDefectedThisRound;
+
+    public AIPlayerTitForTat(GameObject playerUIPrefab, GameObject canvas, PoppupScreenFunctionalities warningScreenref, int id, string name, bool isSpeechAllowed) : base(playerUIPrefab, canvas, warningScreenref, id, name, isSpeechAllowed)
+    {
+        this.type = GameProperties.AIPlayerType.TITFORTAT;
+        didSomeoneDefectedThisRound = false;
+        didSomeoneDefectedLastRound = false;
+    }
+    //for simulations
+    public AIPlayerTitForTat(int id, string name) : base(id, name)
+    {
+        this.type = GameProperties.AIPlayerType.TITFORTAT;
+        didSomeoneDefectedThisRound = false;
+        didSomeoneDefectedLastRound = false;
+    }
+
+    protected override void InformLevelUpActions(GameProperties.Instrument leveledUpInstrument)
+    {
+        if (didSomeoneDefectedThisRound == false)
+        {
+            didSomeoneDefectedThisRound = (leveledUpInstrument == GameProperties.Instrument.MARKETING);
+        }
+    }
+
+
+    protected override GameProperties.Instrument LevelUpActions(Album currAlbum)
+    {
+        GameProperties.Instrument levelUpInstrument = GameProperties.Instrument.NONE;
+        //if someone defected than defect
+        if (didSomeoneDefectedLastRound)
+        {
+            levelUpInstrument = GameProperties.Instrument.MARKETING;
+        }
+        else //on the other rounds see if album was a fail and play cooperatively, otherwise play for marketing
+        {
+
+            levelUpInstrument = preferredInstrument;
+        }
+        return levelUpInstrument;
+    }
+    protected override int LastDecisionsActions(Album currAlbum)
+    {
+        //abused this method to update the perception of the AI sry :(
+        didSomeoneDefectedLastRound = didSomeoneDefectedThisRound;
+        didSomeoneDefectedThisRound = false;
+        Debug.Log("aaaaaaaaaaaaaaaaaaaaaaaaaa: " + didSomeoneDefectedLastRound);
+
+        int condition = 0;
+        //if I have marketing skill, I use it always
+        if (currAlbum.GetMarketingState() == GameProperties.AlbumMarketingState.MEGA_HIT && skillSet[GameProperties.Instrument.MARKETING] > 0)
         {
             condition = 1;
         }

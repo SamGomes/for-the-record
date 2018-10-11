@@ -64,7 +64,9 @@ public static class GameProperties
         RANDOM,
         COOPERATIVE,
         GREEDY,
-        BALANCED
+        BALANCED,
+        UNBALANCED,
+        TITFORTAT
     }
 
     public static int tokenValue = 0; //1000;
@@ -83,7 +85,7 @@ public static class GameProperties
 
     //----------- AutomaticBriefing -------------------
     public static bool isAutomaticalBriefing = true;
-    public static int numTutorialGamesToPlay = 1;
+    public static int numTutorialGamesToPlay = 0; //no tutorials
 
     //------------ Simulation --------------------
     public static bool isSimulation = false;
