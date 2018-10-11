@@ -18,7 +18,7 @@ public class UIPlayer : Player
     private Text UImoneyValue;
     
     private Text[] UISkillLevelsTexts;
-    private List<Button> UISkillIconsButtons;
+    protected List<Button> UISkillIconsButtons;
     
 
     private GameObject UIChooseDiceRollInstrumentScreen;

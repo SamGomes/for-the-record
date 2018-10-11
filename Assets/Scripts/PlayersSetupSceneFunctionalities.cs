@@ -35,8 +35,8 @@ public class PlayersSetupSceneFunctionalities : MonoBehaviour {
         AIPlayerRandomStrategy glin = new AIPlayerRandomStrategy(playerUIPrefab, playerCanvas, playerWarningPoppupRef, 1, "Glin", false);
         GameGlobals.players.Add(glin);
         GameGlobals.players.Add(new UIPlayer(playerUIPrefab, playerCanvas, playerWarningPoppupRef, 2, "Player"));
-        emys.FlushRobotUtterance("<gaze(Player)> Eu sou o émys!");
-        glin.FlushRobotUtterance("<gaze(Player)> E eu sou o Glin! Vamos lá formar uma banda e ver se conseguimos triunfar!");
+        emys.FlushAIUtterance("<gaze(Player)> Eu sou o émys!");
+        glin.FlushAIUtterance("<gaze(Player)> E eu sou o Glin! Vamos lá formar uma banda e ver se conseguimos triunfar!");
     }
     void ConfigureAITestGCH()
     {
@@ -46,8 +46,8 @@ public class PlayersSetupSceneFunctionalities : MonoBehaviour {
         AIPlayerCoopStrategy glin = new AIPlayerCoopStrategy(playerUIPrefab, playerCanvas, playerWarningPoppupRef, 1, "Glin", true);
         GameGlobals.players.Add(glin);
         GameGlobals.players.Add(new UIPlayer(playerUIPrefab, playerCanvas, playerWarningPoppupRef, 2,"Player"));
-        emys.FlushRobotUtterance("<gaze(Player)> Eu sou o émys!");
-        glin.FlushRobotUtterance("<gaze(Player)> E eu sou o Glin! Vamos lá formar uma banda e ver se conseguimos triunfar!");
+        emys.FlushAIUtterance("<gaze(Player)> Eu sou o émys!");
+        glin.FlushAIUtterance("<gaze(Player)> E eu sou o Glin! Vamos lá formar uma banda e ver se conseguimos triunfar!");
     }
 
 

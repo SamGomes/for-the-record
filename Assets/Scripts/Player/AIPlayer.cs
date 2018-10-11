@@ -35,7 +35,6 @@ public abstract class AIPlayer : UIPlayer
 
         InitDelays();
 
-
         GameObject erp = new GameObject("EmotionalRoboticPlayer");
         emotionalModule = erp.AddComponent<EmotionalModule>();
         emotionalModule.Speaks = isSpeechAllowed;
@@ -79,9 +78,8 @@ public abstract class AIPlayer : UIPlayer
     }
 
 
-
-    //----------------------------------[INFORM METHODS]-----------------------------------
-
+    
+    #region Inform methods
     public override void InformChoosePreferredInstrument(Player nextPlayer) {
         if (!GameProperties.isSimulation)
         {
@@ -169,7 +167,6 @@ public abstract class AIPlayer : UIPlayer
         }
     }
 
-
     protected virtual void InformChoosePreferredInstrumentActions(Player nextPlayer){
         if (nextPlayer.GetName() != name)
         {
@@ -207,7 +204,6 @@ public abstract class AIPlayer : UIPlayer
             emotionalModule.GazeAt(nextPlayer.GetName());
         }
     }
-
 
     protected virtual void InformRollDicesValueActions(Player invoker, int maxValue, int obtainedValue)
     {
@@ -338,10 +334,9 @@ public abstract class AIPlayer : UIPlayer
             emotionalModule.Decide();
         }
     }
+    #endregion
 
-
-
-
+    #region Delayed methods
     private IEnumerator DelayedInformChoosePreferredInstrumentActions(Player nextPlayer, float delay, bool isInformDelayed)
     {
         yield return new WaitForSeconds(delay);
@@ -385,18 +380,12 @@ public abstract class AIPlayer : UIPlayer
         yield return new WaitForSeconds(delay);
         InformNewAlbumActions();
     }
+    #endregion
 
-
-    public void FlushRobotUtterance(string text)
-    {
-        emotionalModule.FlushUtterance(text);
-    }
-
-    //------------------------------------[RESPONSE METHODS]---------------------------------------------------
-
+    #region Response methods
     //All AI players pick one of the available instruments similarly
     //All AI players play for the available instruments similarly
-    protected virtual void ChoosePreferredInstrumentActions(Album currAlbum) {
+    protected virtual GameProperties.Instrument ChoosePreferredInstrumentActions(Album currAlbum) {
 
         foreach (GameProperties.Instrument instrument in skillSet.Keys)
         {
@@ -416,21 +405,21 @@ public abstract class AIPlayer : UIPlayer
             }
             if (instrumentIsAvailable)
             {
-                ChangePreferredInstrument(instrument);
-                break;
+                return instrument;
             }
         }
+        return GameProperties.Instrument.NONE;
 
     }
     protected virtual GameProperties.Instrument LevelUpActions(Album currAlbum) { return GameProperties.Instrument.NONE; }
-    protected virtual void PlayforInstrumentActions(Album currAlbum) {
+    protected virtual GameProperties.Instrument PlayforInstrumentActions(Album currAlbum) {
         if (skillSet[preferredInstrument] > 0)
         {
-            ChangeDiceRollInstrument(preferredInstrument);
+            return preferredInstrument;
         }
         else
         {
-            ChangeDiceRollInstrument(GameProperties.Instrument.NONE);
+            return GameProperties.Instrument.NONE;
         }
     }
     protected virtual int LastDecisionsActions(Album currAlbum) { return 0; }
@@ -440,11 +429,11 @@ public abstract class AIPlayer : UIPlayer
         base.ChoosePreferredInstrument(currAlbum);
         if (!GameProperties.isSimulation)
         {
-            playerMonoBehaviourFunctionalities.StartCoroutine(ThinkBeforeChoosingPreferredInstrument(currAlbum,choosePreferredInstrumentDelay, false));
+            playerMonoBehaviourFunctionalities.StartCoroutine(ThinkBeforeChoosingPreferredInstrument(currAlbum,choosePreferredInstrumentDelay, GameProperties.Instrument.NONE, false));
         }
         else
         {
-            ChoosePreferredInstrumentActions(currAlbum);
+            ChangePreferredInstrument(ChoosePreferredInstrumentActions(currAlbum));
             SendChoosePreferredInstrumentResponse();
         }
     }
@@ -466,11 +455,11 @@ public abstract class AIPlayer : UIPlayer
         base.PlayForInstrument(currAlbum);
         if (!GameProperties.isSimulation)
         {
-            playerMonoBehaviourFunctionalities.StartCoroutine(ThinkBeforePlayForInstrument(currAlbum, playForInstrumentThinkingDelay, false));
+            playerMonoBehaviourFunctionalities.StartCoroutine(ThinkBeforePlayForInstrument(currAlbum, playForInstrumentThinkingDelay, GameProperties.Instrument.NONE, false));
         }
         else
         {
-            PlayforInstrumentActions(currAlbum);
+            ChangeDiceRollInstrument(PlayforInstrumentActions(currAlbum));
             SendPlayForInstrumentResponse();
         }
     }
@@ -501,17 +490,17 @@ public abstract class AIPlayer : UIPlayer
     {
         var pointer = new PointerEventData(EventSystem.current);
         ExecuteEvents.Execute(button.gameObject, pointer, ExecuteEvents.pointerClickHandler);
+        ExecuteEvents.Execute(button.gameObject, pointer, ExecuteEvents.pointerUpHandler);
+        ExecuteEvents.Execute(button.gameObject, pointer, ExecuteEvents.pointerExitHandler);
     }
     private IEnumerator SimulateMouseClick(Button button, float pressingTime)
     {
-
         SimulateMouseDown(button);
         yield return new WaitForSeconds(pressingTime);
         SimulateMouseUp(button);
-        
     }
 
-    private IEnumerator ThinkBeforeChoosingPreferredInstrument(Album currAlbum, float delay, bool isSendingResponse)
+    private IEnumerator ThinkBeforeChoosingPreferredInstrument(Album currAlbum, float delay, GameProperties.Instrument preferredInstrument, bool isSendingResponse)
     {
         yield return new WaitForSeconds(delay);
         if (!isSendingResponse)
@@ -523,12 +512,14 @@ public abstract class AIPlayer : UIPlayer
             EventHelper.PropertyChange("State(Game)", "ChoosePreferredInstrument", name) });
             emotionalModule.Decide();
 
-            ChoosePreferredInstrumentActions(currAlbum);
-            playerMonoBehaviourFunctionalities.StartCoroutine(ThinkBeforeChoosingPreferredInstrument(currAlbum, sendResponsesDelay, true));
+            preferredInstrument = ChoosePreferredInstrumentActions(currAlbum);
+            playerMonoBehaviourFunctionalities.StartCoroutine(ThinkBeforeChoosingPreferredInstrument(currAlbum, sendResponsesDelay, preferredInstrument, true));
         }
         else
         {
-            playerMonoBehaviourFunctionalities.StartCoroutine(SimulateMouseClick(UIplayerActionButton, 0.3f));
+            playerMonoBehaviourFunctionalities.StartCoroutine(SimulateMouseClick(UISkillIconsButtons[(int)preferredInstrument],0.3f));
+            yield return new WaitForSeconds(1.0f); //wait before pushing the other button
+            playerMonoBehaviourFunctionalities.StartCoroutine(SimulateMouseClick(UIplayerActionButton,0.3f));
         }
     }
     private IEnumerator ThinkBeforeLevelingUp(Album currAlbum, float delay, GameProperties.Instrument chosenLevelUpInstrument, bool isSendingResponse)
@@ -557,7 +548,8 @@ public abstract class AIPlayer : UIPlayer
             }
         }
     }
-    private IEnumerator ThinkBeforePlayForInstrument(Album currAlbum, float delay, bool isSendingResponse)
+    private IEnumerator ThinkBeforePlayForInstrument(Album currAlbum, float delay, GameProperties.Instrument diceRollInstrument, bool isSendingResponse) 
+    //diceRollInstrument not used in current version, maintained to improve flexibility
     {
         yield return new WaitForSeconds(delay);
         if (!isSendingResponse)
@@ -568,8 +560,8 @@ public abstract class AIPlayer : UIPlayer
             EventHelper.PropertyChange("State(Game)", "PlayForInstrument", name) });
             emotionalModule.Decide();
 
-            PlayforInstrumentActions(currAlbum);
-            playerMonoBehaviourFunctionalities.StartCoroutine(ThinkBeforePlayForInstrument(currAlbum, sendResponsesDelay, true));
+            diceRollInstrument = PlayforInstrumentActions(currAlbum);
+            playerMonoBehaviourFunctionalities.StartCoroutine(ThinkBeforePlayForInstrument(currAlbum, sendResponsesDelay, diceRollInstrument, true));
         }
         else
         {
@@ -624,6 +616,13 @@ public abstract class AIPlayer : UIPlayer
             }
         }
     }
+    #endregion
+
+    public void FlushAIUtterance(string text)
+    {
+        emotionalModule.FlushUtterance(text);
+    }
+
 }
 
 public class AIPlayerSimple : AIPlayer
