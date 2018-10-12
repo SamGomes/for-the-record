@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 using System.Runtime.InteropServices;
+using UnityEngine.EventSystems;
 
 public class EndScreenFunctionalities : MonoBehaviour
 {
@@ -84,12 +85,16 @@ public class EndScreenFunctionalities : MonoBehaviour
             {
                 if (GameGlobals.currGameId > GameProperties.numTutorialGamesToPlay)
                 {
-                    infoPoppupNeutralRef.DisplayPoppup("You reached the end of the experiment game. Your final task is to fill our questionnaires. In order to do so just click on the \"Final notes\" button. Thank you for your time!");
-                    UIEndGameButton.gameObject.SetActive(true);
-                    UIEndGameButton.interactable = true;
-                    UIEndGameButtonText.text = "Final Notes";
+                    infoPoppupNeutralRef.DisplayPoppup("You reached the end of the experiment game. Your final task is to fill our questionnaires. To be able to do so, just copy your game code (included below). Thank you for your time!");
+                    //UIEndGameButton.gameObject.SetActive(true);
+                    //UIEndGameButton.interactable = true;
+                    //UIEndGameButtonText.text = "Final Notes";
+                    UIEndGameButton.gameObject.SetActive(false);
+                    UIEndGameButton.interactable = false;
                     UIRestartGameButton.gameObject.SetActive(false);
                     UIRestartGameButton.interactable = false;
+
+                    UIFinishedGameOverlay.SetActive(true);
                 }
                 else
                 {
@@ -149,37 +154,39 @@ public class EndScreenFunctionalities : MonoBehaviour
             //write gameId in finish experiment text
             UIFinishedGameOverlay.transform.Find("text/gameId").GetComponent<Text>().text = GameGlobals.currSessionId;
             Button UICopyGameIdButton = UIFinishedGameOverlay.transform.Find("text/copyGameIdButton").GetComponent<Button>();
+
+#if UNITY_EDITOR
             UICopyGameIdButton.onClick.AddListener(delegate ()
             {
-                
+                //copy Id to clipboard
+                TextEditor te = new TextEditor();
+                te.text = GameGlobals.currSessionId;
+                te.SelectAll();
+                te.Copy();
             });
+#elif UNITY_WEBGL
+            var pointer = new PointerEventData(EventSystem.current);
+            ExecuteEvents.Execute(UICopyGameIdButton.gameObject, pointer, ExecuteEvents.pointerClickHandler);
+            UICopyGameIdButton.onClick.AddListener(delegate ()
+            {
+                //enable click on button for clipboard copying
+                EnableCopyToClipboard(GameGlobals.currSessionId);
+                UICopyGameIdButton
+            });
+#endif
+
         }
 
         UIRestartGameButton.onClick.AddListener(delegate () {
             RestartGame();
         });
 
-        UIEndGameButton.onClick.AddListener(delegate () {
+       // UIEndGameButton.onClick.AddListener(delegate () {
             //mainScene.SetActive(false);
 
-            #if UNITY_EDITOR
-                //write gameId in finish experiment text
-                UIFinishedGameOverlay.transform.Find("text/gameId").GetComponent<Text>().text = GameGlobals.currSessionId;
-                Button UICopyGameIdButton = UIFinishedGameOverlay.transform.Find("text/copyGameIdButton").GetComponent<Button>();
-                UICopyGameIdButton.onClick.AddListener(delegate ()
-                {
-                    //copy Id to clipboard
-                    TextEditor te = new TextEditor();
-                    te.text = GameGlobals.currSessionId;
-                    te.SelectAll();
-                    te.Copy();
-                });
-            #elif UNITY_WEBGL
-                            //enable click on button for clipboard copying
-                            EnableCopyToClipboard(GameGlobals.currSessionId);
-            #endif
+           
             UIFinishedGameOverlay.SetActive(true);
-        });
+        //});
     }
 
     //in order to sort the players list by money earned

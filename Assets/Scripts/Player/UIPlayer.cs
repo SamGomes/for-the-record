@@ -473,11 +473,11 @@ public class UIPlayer : Player
         {
             Button currButton = UISkillIconsButtons[i];
             currButton.onClick.RemoveAllListeners();
-            currButton.onClick.AddListener(delegate {
-                GameGlobals.audioManager.PlayClip("Audio/snap");
-                SpendToken((GameProperties.Instrument) UISkillIconsButtons.IndexOf(currButton));
-                UpdateCommonUIElements();
-            });
+            //currButton.onClick.AddListener(delegate {
+            //    GameGlobals.audioManager.PlayClip("Audio/snap");
+            //    SpendToken((GameProperties.Instrument) UISkillIconsButtons.IndexOf(currButton));
+            //    UpdateCommonUIElements();
+            //});
         }
         
         UIplayerActionButton.onClick.RemoveAllListeners();
@@ -526,12 +526,13 @@ public class UIPlayer : Player
         {
             Button currButton = UISkillIconsButtons[i];
             currButton.onClick.RemoveAllListeners();
-            currButton.onClick.AddListener(delegate {
-                GameGlobals.audioManager.PlayClip("Audio/snap");
-                int currButtonIndex = UISkillIconsButtons.IndexOf(currButton);
-                ChangeDiceRollInstrument((GameProperties.Instrument)currButtonIndex);
-                UpdateCommonUIElements();
-            });
+            //currButton.onClick.AddListener(delegate
+            //{
+            //    GameGlobals.audioManager.PlayClip("Audio/snap");
+            //    int currButtonIndex = UISkillIconsButtons.IndexOf(currButton);
+            //    ChangeDiceRollInstrument((GameProperties.Instrument)currButtonIndex);
+            //    UpdateCommonUIElements();
+            //});
         }
 
 
