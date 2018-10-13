@@ -88,8 +88,8 @@ public static class GameProperties
     public static int numTutorialGamesToPlay = 0; //no tutorials
 
     //------------ Simulation --------------------
-    public static bool isSimulation = false;
-    public static int numGamesToSimulate = 10000;
+    public static bool isSimulation = true;
+    public static int numGamesToSimulate = 20;
 
     public static char testGameParameterization; //only used when generating the AI types automatically (for example when "isSimulation=true or isAutomaticBriefing==true")
 }

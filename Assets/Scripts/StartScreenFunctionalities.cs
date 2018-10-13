@@ -20,7 +20,7 @@ public class StartScreenFunctionalities : MonoBehaviour {
         GameGlobals.currGameRoundId = 0;
         GameGlobals.albumIdCount = 0;
 
-        GameGlobals.gameLogManager = new DebugLogManager();
+        GameGlobals.gameLogManager = new MySQLLogManager();
         GameGlobals.audioManager = new AudioManager();
 
 
@@ -58,10 +58,9 @@ public class StartScreenFunctionalities : MonoBehaviour {
             //gamecode is in the format ddmmhhmmss<3RandomLetters>[TestGameCondition]
 
             string generatedCode = date; //sb.ToString();
-
-            int numLettersToGenerate = (GameProperties.isAutomaticalBriefing || GameProperties.isSimulation) ? 3 : 4;
-            //generate 3 (or 4 depending on the game properties) random letters
-            for (int i = 0; i < numLettersToGenerate; i++)
+            
+            //generate 3 random letters
+            for (int i = 0; i < 3; i++)
             {
                 generatedCode += (char)('A' + Random.Range(0, 26));
             }
@@ -69,7 +68,9 @@ public class StartScreenFunctionalities : MonoBehaviour {
             if (GameProperties.isAutomaticalBriefing) //generate condition automatically
             {
                 int possibleConditions = 2;
-                GameProperties.testGameParameterization = (char)('A' + (Random.Range(0, possibleConditions)));
+                string lastConditionString = GameGlobals.gameLogManager.GetLastSessionConditionFromLog();
+                char lastCondition = (lastConditionString=="")? 'A' : lastConditionString.ToString()[0];
+                GameProperties.testGameParameterization = (char)('A' + ((lastCondition - 'A') + 1) % possibleConditions);
                 generatedCode += GameProperties.testGameParameterization;
             }
 
@@ -83,8 +84,6 @@ public class StartScreenFunctionalities : MonoBehaviour {
 
         //init fatima strings
         GameGlobals.FAtiMAScenarioPath = "/Scenarios/ForTheRecord.iat";
-
-        Application.ExternalEval("console.log(\"GameGlobals.FAtiMAScenarioPath: " + GameGlobals.FAtiMAScenarioPath + "\")");
 
         AssetManager.Instance.Bridge = new AssetManagerBridge();
         GameGlobals.FAtiMAIat = IntegratedAuthoringToolAsset.LoadFromFile(GameGlobals.FAtiMAScenarioPath);

@@ -12,10 +12,12 @@ public interface ILogManager
 {
     void InitLogs();
     void WritePlayerToLog(string sessionId, string gameId, string playerId, string playername, string type);
-    void WriteGameToLog(string sessionId, string gameId, string result);
+    void WriteGameToLog(string sessionId, string gameId, string condition, string result);
     void WriteAlbumResultsToLog(string sessionId, string currGameId, string currGameRoundId, string currAlbumId, string currAlbumName, string marktingState);
     void WritePlayerResultsToLog(string sessionId, string currGameId, string currGameRoundId, string playerId, string playerName, string money);
     void WriteEventToLog(string sessionId, string currGameId, string currGameRoundId, string playerId, string playerName, string eventType, string instrument, string coins);
+
+    string GetLastSessionConditionFromLog();
     void EndLogs();
 }
 
@@ -30,7 +32,7 @@ public class DebugLogManager : ILogManager
     {
         Debug.Log("WritePlayerToLog: " + sessionId + ";" + currGameId + ";" + playerId + ";" + playername + ";" + type);
     }
-    public void WriteGameToLog(string sessionId, string currGameId, string result)
+    public void WriteGameToLog(string sessionId, string currGameId, string condition, string result)
     {
         Debug.Log("WriteGameToLog: " + sessionId + ";" + currGameId + ";" + result);
     }
@@ -45,6 +47,13 @@ public class DebugLogManager : ILogManager
     public void WriteEventToLog(string sessionId, string currGameId, string currGameRoundId, string playerId, string playerName, string eventType, string skill, string coins)
     {
         Debug.Log("WriteEventToLog: " + sessionId + ";" + currGameId + ";" + currGameRoundId + ";" + playerId + ";" + playerName + ";" + eventType + ";" + skill + ";" + coins);
+    }
+
+
+    public string GetLastSessionConditionFromLog()
+    {
+        Debug.Log("GotLastSessionConditionFromLog");
+        return "A";
     }
 
     public void EndLogs()
@@ -101,12 +110,12 @@ public class FileLogManager : ILogManager
         }
         FlushLogs();
     }
-    public void WriteGameToLog(string sessionId, string currGameId, string result)
+    public void WriteGameToLog(string sessionId, string currGameId, string condition, string result)
     {
         //prevent access after disposal
         if (gameStatsFileWritter != null)
         {
-            gameStatsFileWritter.WriteLine(sessionId + ";" + currGameId + ";" + result);
+            gameStatsFileWritter.WriteLine(sessionId + ";" + currGameId + ";" + condition + ";" + result);
         }
         FlushLogs();
     }
@@ -138,52 +147,29 @@ public class FileLogManager : ILogManager
         FlushLogs();
     }
 
-    private void FlushLogs()
+
+    public string GetLastSessionConditionFromLog()
+    {
+        Debug.Log("GotLastSessionConditionFromLog");
+        return "A";
+    }
+
+
+    private bool FlushLogs()
     {
         gameStatsFileWritter.Flush();
         albumStatsFileWritter.Flush();
         playersLogFileWritter.Flush();
         playerStatsFileWritter.Flush();
         eventsLogFileWritter.Flush();
+        return true;
     }
+
     public void EndLogs()
     {
         FlushLogs();
     }
 
-}
-
-//google forms log manager
-public class GoogleFormsLogManager : ILogManager
-{
-    public void InitLogs() { }
-
-    public void WritePlayerToLog(string sessionId, string gameId, string playerId, string playerName, string type)
-    {
-        Application.ExternalEval("(window.open(\"https://docs.google.com/forms/d/e/1FAIpQLSfyUPtS4_dN6iJaQgKSfKhqNZH0tCyfMto_jyvApmumYkFuBg/viewform?usp=pp_url&entry.1243275873="+ sessionId + "&entry.1264259345="+playerId+"&entry.416810127="+playerName+"&entry.724890801="+type+"&submit=Submit\", \"_blank\")).close()");
-    }
-    public void WriteGameToLog(string sessionId, string gameId, string result)
-    {
-        Application.ExternalEval("(window.open(\"https://docs.google.com/forms/d/e/1FAIpQLSeL5rFO12-RniFZU3HtKHhJMg-jh6pqMqjc5rWAbgSFc3qKsg/formResponse?usp=pp_url&entry.1243275873="+ sessionId + "&entry.67037947=" + gameId+"&entry.1708403356="+result+"&submit=Submit\", \"_blank\")).close()");
-    }
-    public void WriteAlbumResultsToLog(string sessionId, string currGameId, string currGameRoundId, string currAlbumId, string currAlbumName, string marketingState)
-    {
-        Application.ExternalEval("(window.open(\"https://docs.google.com/forms/d/e/1FAIpQLSffdgyATkT9In487OPjpQ-sXPLDtXcKy6jSdIsWbOLk1dAbyQ/formResponse?ifq&entry.1243275873="+ sessionId + "&entry.67037947="+currGameId+"&entry.1708403356="+currGameRoundId+"&entry.1264259345="+currAlbumId+"&entry.416810127="+currAlbumName+"&entry.724890801="+marketingState+ "&submit=Submit\", \"_blank\")).close()");
-    }
-    public void WritePlayerResultsToLog(string sessionId, string currGameId, string currGameRoundId, string playerId, string playerName, string money)
-    {
-        Application.ExternalEval("(window.open(\"https://docs.google.com/forms/d/e/1FAIpQLSddPLzrQO1J_9vBGmGpjs1FOIGn3Z92fw23X-otjNQLG7cpSg/formResponse?usp=pp_url&entry.1243275873="+ sessionId + "&entry.67037947=" + currGameId+"&entry.1708403356="+currGameRoundId+"&entry.1264259345="+playerId+"&entry.416810127="+playerName+"&entry.724890801="+money+"&submit=Submit\", \"_blank\")).close()");
-
-    }
-    public void WriteEventToLog(string sessionId, string currGameId, string currGameRoundId, string playerId, string playerName, string eventType, string skill, string coins)
-    {
-        Application.ExternalEval("(window.open(\"https://docs.google.com/forms/d/e/1FAIpQLScYaTNzROIoL4P6D40B_mcpM1xZuXdJBJz_neHCvCxf0qWpLA/formResponse?usp=pp_url&entry.1243275873="+ sessionId + "&entry.67037947="+currGameId+"&entry.1708403356="+currGameRoundId+"&entry.1264259345="+playerId+"&entry.416810127="+playerName+"&entry.724890801="+eventType+"&entry.1712145275="+skill+"&entry.877028457="+coins+"&submit=Submit\", \"_blank\")).close()");
-
-    }
-
-    public void EndLogs()
-    {
-    }
 }
 
 //mySQL log manager
@@ -192,10 +178,13 @@ public class MySQLLogManager : ILogManager
     private string phpLogServerConnectionPath;
     private string databaseName;
 
+    private string currentGetResponse;
+
     public void InitLogs()
     {
-        phpLogServerConnectionPath = "http://localhost:3000/dbActions.php";
+        phpLogServerConnectionPath = "http://localhost:4000/dbActions.php";
         databaseName = "for_the_record_logs";
+        currentGetResponse = "";
     }
     public void WritePlayerToLog(string sessionId, string gameId, string playerId, string playerName, string type)
     {
@@ -207,25 +196,27 @@ public class MySQLLogManager : ILogManager
         string[] keys = { "sessionId", "gameId", "playerId", "playerName", "type" };
         string[] values = { sessionId, gameId, playerId, playerName, type };
 
-        PassTableArguments(form, "arrFields", "arrValues", keys,values);
+        PassTableArguments(form, "arrFields", "arrValues", "extraParams", keys, values, "");
         WWW phpConnection = new WWW(phpLogServerConnectionPath, form);
         Debug.Log("php error: "+phpConnection.error);
-        
+
+        while (!phpConnection.isDone) { } //wait until php is done
     }
-    public void WriteGameToLog(string sessionId, string gameId, string result)
+    public void WriteGameToLog(string sessionId, string gameId, string gameCondition, string result)
     {
         WWWForm form = new WWWForm();
         form.AddField("dbAction", "INSERT");
         form.AddField("databaseName", databaseName);
         form.AddField("tableName", "game_stats_log");
 
-        string[] keys = { "sessionId", "gameId", "result" };
-        string[] values = { sessionId , gameId, result };
+        string[] keys = { "sessionId", "gameId", "gameCondition" , "result" };
+        string[] values = { sessionId , gameId, gameCondition, result };
 
-        PassTableArguments(form, "arrFields", "arrValues", keys, values);
+        PassTableArguments(form, "arrFields", "arrValues", "extraParams", keys, values, "");
         WWW phpConnection = new WWW(phpLogServerConnectionPath, form);
         Debug.Log("php error: " + phpConnection.error);
 
+        while (!phpConnection.isDone) { } //wait until php is done
     }
     public void WriteAlbumResultsToLog(string sessionId, string currGameId, string currGameRoundId, string currAlbumId, string currAlbumName, string marketingState) {
         WWWForm form = new WWWForm();
@@ -236,10 +227,11 @@ public class MySQLLogManager : ILogManager
         string[] keys = { "sessionId", "gameId", "roundId", "albumId", "albumName", "marketingState" };
         string[] values = { sessionId, currGameId, currGameRoundId, currAlbumId, currAlbumName, marketingState};
 
-        PassTableArguments(form, "arrFields", "arrValues", keys, values);
+        PassTableArguments(form, "arrFields", "arrValues", "extraParams", keys, values, "");
         WWW phpConnection = new WWW(phpLogServerConnectionPath, form);
         Debug.Log("php error: " + phpConnection.error);
 
+        while (!phpConnection.isDone) { } //wait until php is done
     }
     public void WritePlayerResultsToLog(string sessionId, string currGameId, string currGameRoundId, string playerId, string playerName, string money) {
         WWWForm form = new WWWForm();
@@ -250,28 +242,51 @@ public class MySQLLogManager : ILogManager
         string[] keys = { "sessionId", "gameId", "roundId", "playerId", "playerName", "money" };
         string[] values = { sessionId, currGameId, currGameRoundId, playerId, playerName, money };
 
-        PassTableArguments(form, "arrFields", "arrValues", keys, values);
+        PassTableArguments(form, "arrFields", "arrValues", "extraParams", keys, values, "");
         WWW phpConnection = new WWW(phpLogServerConnectionPath, form);
         Debug.Log("php error: " + phpConnection.error);
 
+        while (!phpConnection.isDone) { } //wait until php is done
     }
     public void WriteEventToLog(string sessionId, string currGameId, string currGameRoundId, string playerId, string playerName, string eventType, string skill, string coins) {
         WWWForm form = new WWWForm();
         form.AddField("dbAction", "INSERT");
         form.AddField("databaseName", databaseName);
-        form.AddField("tableName", "events_log");
+        form.AddField("tableName", "player_actions_log");
 
         string[] keys = { "sessionId", "gameId", "roundId", "playerId", "playerName", "eventType", "skill", "coins" };
         string[] values = { sessionId, currGameId, currGameRoundId, playerId, playerName, eventType, skill, coins };
 
-        PassTableArguments(form, "arrFields", "arrValues", keys, values);
+        PassTableArguments(form, "arrFields", "arrValues", "extraParams", keys, values, "");
         WWW phpConnection = new WWW(phpLogServerConnectionPath, form);
         Debug.Log("php error: " + phpConnection.error);
 
+        while (!phpConnection.isDone) { } //wait until php is done
     }
+
+    public string GetLastSessionConditionFromLog()
+    {
+        WWWForm form = new WWWForm();
+        form.AddField("dbAction", "SELECT");
+        form.AddField("databaseName", databaseName);
+        form.AddField("tableName", "game_stats_log");
+
+        string[] keys = { "gameCondition" };
+
+        PassTableArguments(form, "arrFields", "arrValues", "extraParams", keys, new string[]{ "0" }, "WHERE timestampedId >= ALL( SELECT timestampedId FROM game_stats_log )");
+        WWW phpConnection = new WWW(phpLogServerConnectionPath, form);
+        Debug.Log("php error: " + phpConnection.error);
+
+        //return phpConnection.text;
+
+        while (!phpConnection.isDone) { } //wait until php is done
+        return phpConnection.text;
+    }
+    
+
     public void EndLogs() { }
 
-    private void PassTableArguments(WWWForm form, string keysTableName, string valuesTableName, string[] keys, string[] values)
+    private void PassTableArguments(WWWForm form, string keysTableName, string valuesTableName, string extraParamsName, string[] keys, string[] values, string extraParams)
     {
         for(int i=0; i < keys.Length; i++)
         {
@@ -281,5 +296,6 @@ public class MySQLLogManager : ILogManager
         {
             form.AddField(valuesTableName+"[]", values[i]);
         }
+        form.AddField(extraParamsName, extraParams);
     }
 }

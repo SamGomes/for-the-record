@@ -38,18 +38,15 @@ public class EndScreenFunctionalities : MonoBehaviour
             Object.Destroy(album.GetAlbumUI());
         }
         GameSceneManager.LoadStartScene();
-        Debug.Log("numGamesToSimulate: " + GameProperties.numGamesToSimulate);
+        Debug.Log("numGamesToSimulate: " + (GameProperties.numGamesToSimulate - GameGlobals.currGameId));
     }
 
     private IEnumerator LoadMainScreenAfterDelay(float delay)
     {
         yield return new WaitForSeconds(delay);
 
-        if (!GameProperties.isSimulation)
-        {
-            mainScene.SetActive(true);
-            LoadEndScreenUIElements();
-        }
+        mainScene.SetActive(true);
+        LoadEndScreenUIElements();        
     }
 
     private void LoadEndScreenUIElements()
@@ -65,64 +62,51 @@ public class EndScreenFunctionalities : MonoBehaviour
             newTableEntry.GetComponentsInChildren<Text>()[0].text = currPlayer.GetName();
             newTableEntry.GetComponentsInChildren<Text>()[1].text = currPlayer.GetMoney().ToString();
         }
-
-        GameGlobals.gameLogManager.WriteGameToLog(GameGlobals.currSessionId.ToString(), GameGlobals.currGameId.ToString(), GameGlobals.currGameState.ToString());
-
-        GameGlobals.gameLogManager.EndLogs();
-
-        if (GameProperties.isSimulation)
+        
+        Text UIEndGameButtonText = UIEndGameButton.GetComponentInChildren<Text>();
+        Text UIRestartGameButtonText = UIRestartGameButton.GetComponentInChildren<Text>();
+        if (GameProperties.isAutomaticalBriefing)
         {
-            if (GameGlobals.currGameId == GameProperties.numGamesToSimulate)
+            if (GameGlobals.currGameId > GameProperties.numTutorialGamesToPlay)
             {
-                RestartGame();
-            }
-        }
-        else
-        {
-            Text UIEndGameButtonText = UIEndGameButton.GetComponentInChildren<Text>();
-            Text UIRestartGameButtonText = UIRestartGameButton.GetComponentInChildren<Text>();
-            if (GameProperties.isAutomaticalBriefing)
-            {
-                if (GameGlobals.currGameId > GameProperties.numTutorialGamesToPlay)
-                {
-                    infoPoppupNeutralRef.DisplayPoppup("You reached the end of the experiment game. Your final task is to fill our questionnaires. To be able to do so, just copy your game code (included below). Thank you for your time!");
-                    //UIEndGameButton.gameObject.SetActive(true);
-                    //UIEndGameButton.interactable = true;
-                    //UIEndGameButtonText.text = "Final Notes";
-                    UIEndGameButton.gameObject.SetActive(false);
-                    UIEndGameButton.interactable = false;
-                    UIRestartGameButton.gameObject.SetActive(false);
-                    UIRestartGameButton.interactable = false;
+                infoPoppupNeutralRef.DisplayPoppup("You reached the end of the experiment game. Your final task is to fill our questionnaires. To be able to do so, just copy your game code (included below). Thank you for your time!");
+                //UIEndGameButton.gameObject.SetActive(true);
+                //UIEndGameButton.interactable = true;
+                //UIEndGameButtonText.text = "Final Notes";
+                UIEndGameButton.gameObject.SetActive(false);
+                UIEndGameButton.interactable = false;
+                UIRestartGameButton.gameObject.SetActive(false);
+                UIRestartGameButton.interactable = false;
 
-                    UIFinishedGameOverlay.SetActive(true);
-                }
-                else
-                {
-                    infoPoppupNeutralRef.DisplayPoppup("You reached the end of the tutorial game. We assume that you are prepared for the experiment game. Good luck!");
-                    UIRestartGameButton.gameObject.SetActive(true);
-                    UIRestartGameButton.interactable = true;
-                    if (GameGlobals.currGameId == GameProperties.numTutorialGamesToPlay)
-                    {
-                        UIRestartGameButtonText.text = "Ready for experiment game";
-                    }
-                    else
-                    {
-                        UIRestartGameButtonText.text = "Ready for another tutorial game";
-                    }
-                    UIEndGameButton.gameObject.SetActive(false);
-                    UIEndGameButton.interactable = false;
-                }
-
+                UIFinishedGameOverlay.SetActive(true);
             }
             else
             {
+                infoPoppupNeutralRef.DisplayPoppup("You reached the end of the tutorial game. We assume that you are prepared for the experiment game. Good luck!");
                 UIRestartGameButton.gameObject.SetActive(true);
                 UIRestartGameButton.interactable = true;
-                UIRestartGameButtonText.text = "Restart Game";
+                if (GameGlobals.currGameId == GameProperties.numTutorialGamesToPlay)
+                {
+                    UIRestartGameButtonText.text = "Ready for experiment game";
+                }
+                else
+                {
+                    UIRestartGameButtonText.text = "Ready for another tutorial game";
+                }
                 UIEndGameButton.gameObject.SetActive(false);
                 UIEndGameButton.interactable = false;
             }
+
         }
+        else
+        {
+            UIRestartGameButton.gameObject.SetActive(true);
+            UIRestartGameButton.interactable = true;
+            UIRestartGameButtonText.text = "Restart Game";
+            UIEndGameButton.gameObject.SetActive(false);
+            UIEndGameButton.interactable = false;
+        }
+        
 
 
         if (GameGlobals.albums != null)
@@ -171,7 +155,6 @@ public class EndScreenFunctionalities : MonoBehaviour
             {
                 //enable click on button for clipboard copying
                 EnableCopyToClipboard(GameGlobals.currSessionId);
-                UICopyGameIdButton
             });
 #endif
 
@@ -251,7 +234,28 @@ public class EndScreenFunctionalities : MonoBehaviour
             Debug.Log("[ERROR]: Game state returned NON FINISHED on game end!");
             return;
         }
-        StartCoroutine(LoadMainScreenAfterDelay(5.0f));
+
+
+
+        string parameteriztion = (GameProperties.isAutomaticalBriefing) ? GameProperties.testGameParameterization.ToString() : "-";
+        GameGlobals.gameLogManager.WriteGameToLog(GameGlobals.currSessionId.ToString(), GameGlobals.currGameId.ToString(), parameteriztion, GameGlobals.currGameState.ToString());
+        GameGlobals.gameLogManager.EndLogs();
+
+
+
+        if (GameProperties.isSimulation)
+        {
+            if (GameGlobals.currGameId < GameProperties.numGamesToSimulate)
+            {
+                RestartGame();
+            }
+            return;
+        }
+        else
+        {
+
+            StartCoroutine(LoadMainScreenAfterDelay(5.0f));
+        }
     }
 
 

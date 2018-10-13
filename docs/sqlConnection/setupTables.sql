@@ -18,8 +18,10 @@ CREATE TABLE players_log (
 );
 
 CREATE TABLE game_stats_log (
+    timestampedId INT AUTO_INCREMENT PRIMARY KEY,
     sessionId varchar(255),
     gameId varchar(255),
+    gameCondition varchar(255),
     result varchar(255)
 );
 

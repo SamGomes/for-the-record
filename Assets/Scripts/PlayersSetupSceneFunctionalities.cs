@@ -70,10 +70,13 @@ public class PlayersSetupSceneFunctionalities : MonoBehaviour {
 
     void Start ()
     {
+        
+
+        playerWarningPoppupRef = new PoppupScreenFunctionalities(true, null, null, poppupPrefab, playerCanvas, this.GetComponent<PlayerMonoBehaviourFunctionalities>(), Resources.Load<Sprite>("Textures/UI/Icons/Info"), new Color(0.9f, 0.9f, 0.9f), "Audio/snap");
+        Object.DontDestroyOnLoad(playerCanvas);
+
         if (!GameProperties.isSimulation)
         {
-            playerWarningPoppupRef = new PoppupScreenFunctionalities(true, null, null, poppupPrefab, playerCanvas, this.GetComponent<PlayerMonoBehaviourFunctionalities>(), Resources.Load<Sprite>("Textures/UI/Icons/Info"), new Color(0.9f, 0.9f, 0.9f), "Audio/snap");
-            Object.DontDestroyOnLoad(playerCanvas);
 
             if (GameProperties.isAutomaticalBriefing)
             {
@@ -99,6 +102,10 @@ public class PlayersSetupSceneFunctionalities : MonoBehaviour {
                 StartGame();
                 return;
             }
+
+
+
+
 
             this.customizeLabel = GameObject.Find("Canvas/SetupScreen/customizeLabel").gameObject;
 
@@ -196,9 +203,9 @@ public class PlayersSetupSceneFunctionalities : MonoBehaviour {
         }
         else
         {
-            GameGlobals.players.Add(new AIPlayerGreedyStrategy(GameGlobals.players.Count,"PL1"));
-            GameGlobals.players.Add(new AIPlayerBalancedStrategy(GameGlobals.players.Count,"PL2"));
-            GameGlobals.players.Add(new AIPlayerCoopStrategy(GameGlobals.players.Count,"PL3"));
+            GameGlobals.players.Add(new AIPlayerCoopStrategy(playerUIPrefab, playerCanvas, playerWarningPoppupRef, GameGlobals.players.Count, "John0", false));
+            GameGlobals.players.Add(new AIPlayerCoopStrategy(playerUIPrefab, playerCanvas, playerWarningPoppupRef, GameGlobals.players.Count, "John0", false));
+            GameGlobals.players.Add(new AIPlayerCoopStrategy(playerUIPrefab, playerCanvas, playerWarningPoppupRef, GameGlobals.players.Count, "John0", false));
             GameGlobals.gameDiceNG = new RandomDiceNG();
             StartGame();
         }

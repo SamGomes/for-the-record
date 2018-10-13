@@ -107,6 +107,7 @@ public class GameManager : MonoBehaviour {
         lastDecisionResponseReceived = false;
         currPlayerIndex = 0;
 
+        
         //get player poppups (can be from any player) and set methods
         if (GameGlobals.players.Count > 0)
         {
@@ -114,11 +115,10 @@ public class GameManager : MonoBehaviour {
             int pIndex = 0;
             while (firstUIPlayer == null && pIndex < GameGlobals.players.Count)
             {
-                firstUIPlayer = (UIPlayer)GameGlobals.players[pIndex++];
+                firstUIPlayer = (UIPlayer) GameGlobals.players[pIndex++];
                 if (firstUIPlayer != null)
                 {
                     firstUIPlayer.GetWarningScreenRef().AddOnShow(InterruptGame);
-
                     firstUIPlayer.GetWarningScreenRef().AddOnHide(ContinueGame);
                 }
             }
@@ -130,6 +130,9 @@ public class GameManager : MonoBehaviour {
         //these poppups load the end scene
         endPoppupLossRef = new PoppupScreenFunctionalities(false, InterruptGame, ContinueGame, poppupPrefab, canvas, this.GetComponent<PlayerMonoBehaviourFunctionalities>(), Resources.Load<Sprite>("Textures/UI/Icons/InfoLoss"), new Color(0.9f, 0.8f, 0.8f), delegate() { /*end game*/ if (this.gameMainSceneFinished) GameSceneManager.LoadEndScene(); return 0; });
         endPoppupWinRef = new PoppupScreenFunctionalities(false, InterruptGame, ContinueGame, poppupPrefab, canvas, this.GetComponent<PlayerMonoBehaviourFunctionalities>(), Resources.Load<Sprite>("Textures/UI/Icons/InfoWin"), new Color(0.9f, 0.9f, 0.8f), delegate () { /*end game*/ if (this.gameMainSceneFinished) GameSceneManager.LoadEndScene(); return 0; });
+
+        ChangeActivePlayerUI(((UIPlayer)(GameGlobals.players[0])), 2.0f);
+        
 
         gameMainSceneFinished = false;
         preferredInstrumentsChoosen = false;
@@ -148,11 +151,6 @@ public class GameManager : MonoBehaviour {
             currPlayer = GameGlobals.players[i];
             currPlayer.ReceiveGameManager(this);
             currPlayer.ReceiveTokens(1);
-        }
-
-        if ((UIPlayer)(GameGlobals.players[0]) != null)
-        {
-            ChangeActivePlayerUI(((UIPlayer)(GameGlobals.players[0])), 2.0f);
         }
        
         GameGlobals.currGameRoundId = 0; //first round
