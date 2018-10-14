@@ -50,7 +50,16 @@ public class PlayersSetupSceneFunctionalities : MonoBehaviour {
         GameGlobals.numberOfSpeakingPlayers = 2;
         AIPlayerCoopStrategy emys = new AIPlayerCoopStrategy(playerUIPrefab, playerCanvas, playerWarningPoppupRef, 0, "Emys", true);
         GameGlobals.players.Add(emys);
-        AIPlayerTitForTat glin = new AIPlayerTitForTat(playerUIPrefab, playerCanvas, playerWarningPoppupRef, 1, "Tits for that", true);
+        AIPlayerTitForTat glin = new AIPlayerTitForTat(playerUIPrefab, playerCanvas, playerWarningPoppupRef, 1, "Glin", true);
+        GameGlobals.players.Add(glin);
+        GameGlobals.players.Add(new UIPlayer(playerUIPrefab, playerCanvas, playerWarningPoppupRef, 2, "Player"));
+    }
+    void ConfigureAITestBUH()
+    {
+        GameGlobals.numberOfSpeakingPlayers = 2;
+        AIPlayerBalancedStrategy emys = new AIPlayerBalancedStrategy(playerUIPrefab, playerCanvas, playerWarningPoppupRef, 0, "Emys", true);
+        GameGlobals.players.Add(emys);
+        AIPlayerUnbalancedStrategy glin = new AIPlayerUnbalancedStrategy(playerUIPrefab, playerCanvas, playerWarningPoppupRef, 1, "Glin", true);
         GameGlobals.players.Add(glin);
         GameGlobals.players.Add(new UIPlayer(playerUIPrefab, playerCanvas, playerWarningPoppupRef, 2, "Player"));
     }
@@ -59,12 +68,32 @@ public class PlayersSetupSceneFunctionalities : MonoBehaviour {
     void ConfigureConditionA()
     {
         ConfigureAITestGCH();
-        GameGlobals.gameDiceNG = new LossDiceNG();
+        GameGlobals.gameDiceNG = new VictoryDiceNG();
     }
     void ConfigureConditionB()
     {
         ConfigureAITestGCH();
+        GameGlobals.gameDiceNG = new LossDiceNG();
+    }
+    void ConfigureConditionC()
+    {
+        ConfigureAITestCTH();
         GameGlobals.gameDiceNG = new VictoryDiceNG();
+    }
+    void ConfigureConditionD()
+    {
+        ConfigureAITestCTH();
+        GameGlobals.gameDiceNG = new LossDiceNG();
+    }
+    void ConfigureConditionE()
+    {
+        ConfigureAITestBUH();
+        GameGlobals.gameDiceNG = new VictoryDiceNG();
+    }
+    void ConfigureConditionF()
+    {
+        ConfigureAITestBUH();
+        GameGlobals.gameDiceNG = new LossDiceNG();
     }
 
 
@@ -97,6 +126,18 @@ public class PlayersSetupSceneFunctionalities : MonoBehaviour {
                         case 'B':
                             ConfigureConditionB();
                             break;
+                        //case 'C':
+                        //    ConfigureConditionC();
+                        //    break;
+                        //case 'D':
+                        //    ConfigureConditionD();
+                        //    break;
+                        //case 'E':
+                        //    ConfigureConditionE();
+                        //    break;
+                        //case 'F':
+                        //    ConfigureConditionF();
+                        //    break;
                     }
                 }
                 StartGame();
@@ -203,9 +244,9 @@ public class PlayersSetupSceneFunctionalities : MonoBehaviour {
         }
         else
         {
-            GameGlobals.players.Add(new AIPlayerCoopStrategy(playerUIPrefab, playerCanvas, playerWarningPoppupRef, GameGlobals.players.Count, "John0", false));
-            GameGlobals.players.Add(new AIPlayerCoopStrategy(playerUIPrefab, playerCanvas, playerWarningPoppupRef, GameGlobals.players.Count, "John0", false));
-            GameGlobals.players.Add(new AIPlayerCoopStrategy(playerUIPrefab, playerCanvas, playerWarningPoppupRef, GameGlobals.players.Count, "John0", false));
+            GameGlobals.players.Add(new AIPlayerUnbalancedStrategy(playerUIPrefab, playerCanvas, playerWarningPoppupRef, GameGlobals.players.Count, "John0", false));
+            GameGlobals.players.Add(new AIPlayerUnbalancedStrategy(playerUIPrefab, playerCanvas, playerWarningPoppupRef, GameGlobals.players.Count, "John0", false));
+            GameGlobals.players.Add(new AIPlayerUnbalancedStrategy(playerUIPrefab, playerCanvas, playerWarningPoppupRef, GameGlobals.players.Count, "John0", false));
             GameGlobals.gameDiceNG = new RandomDiceNG();
             StartGame();
         }

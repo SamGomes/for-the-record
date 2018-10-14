@@ -86,10 +86,11 @@ public static class GameProperties
     //----------- AutomaticBriefing -------------------
     public static bool isAutomaticalBriefing = true;
     public static int numTutorialGamesToPlay = 0; //no tutorials
+    public static int possibleConditions = 2;
 
     //------------ Simulation --------------------
-    public static bool isSimulation = true;
-    public static int numGamesToSimulate = 20;
+    public static bool isSimulation = false;
+    public static int numGamesToSimulate = 1000;
 
     public static char testGameParameterization; //only used when generating the AI types automatically (for example when "isSimulation=true or isAutomaticBriefing==true")
 }

@@ -67,10 +67,9 @@ public class StartScreenFunctionalities : MonoBehaviour {
 
             if (GameProperties.isAutomaticalBriefing) //generate condition automatically
             {
-                int possibleConditions = 2;
                 string lastConditionString = GameGlobals.gameLogManager.GetLastSessionConditionFromLog();
                 char lastCondition = (lastConditionString=="")? 'A' : lastConditionString.ToString()[0];
-                GameProperties.testGameParameterization = (char)('A' + ((lastCondition - 'A') + 1) % possibleConditions);
+                GameProperties.testGameParameterization = (char)('A' + ((lastCondition - 'A') + 1) % GameProperties.possibleConditions);
                 generatedCode += GameProperties.testGameParameterization;
             }
 

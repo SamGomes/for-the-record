@@ -156,7 +156,6 @@ public class UIPlayer : Player
         this.UIspendTokenInInstrumentButton = UILevelUpScreen.transform.Find("spendTokenSelection/spendTokenInPreferredInstrumentButton").GetComponent<Button>();
         UIspendTokenInInstrumentButton.onClick.AddListener(delegate ()
         {
-            Debug.Log("pressed");
             GameGlobals.audioManager.PlayClip("Audio/snap");
             if (numTokens == 0 && money >= GameProperties.tokenValue)
             {

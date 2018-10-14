@@ -438,7 +438,8 @@ public abstract class AIPlayer : UIPlayer
         }
         else
         {
-            LevelUpActions(currAlbum);
+            BuyTokens(1);
+            SpendToken(LevelUpActions(currAlbum));
             SendLevelUpResponse();
         }
     }
