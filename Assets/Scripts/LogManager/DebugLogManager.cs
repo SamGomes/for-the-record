@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 //Debug log manager
 public class DebugLogManager : ILogManager
@@ -28,7 +29,7 @@ public class DebugLogManager : ILogManager
         Debug.Log("WriteEventToLog: " + sessionId + ";" + currGameId + ";" + currGameRoundId + ";" + playerId + ";" + playerName + ";" + eventType + ";" + skill + ";" + coins);
     }
 
-    public string GetLastSessionConditionFromLog()
+    public string GetLastSessionConditionFromLog(Func<int> yieldedReactionToGet)
     {
         Debug.Log("GotLastSessionConditionFromLog");
         return "A";

@@ -1319,6 +1319,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   UIGameCodeDisplayPrefab: {fileID: 1182473457322476, guid: 9b8af997d7745e24dbb554f66e2c129e,
     type: 2}
+  monoBehaviourDummyPrefab: {fileID: 1503454843972168, guid: 17746bea579a0b14cb4dfcaf7832b7d1,
+    type: 2}
 --- !u!224 &2049605534
 RectTransform:
   m_ObjectHideFlags: 0

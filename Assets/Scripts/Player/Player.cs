@@ -236,7 +236,7 @@ public abstract class Player
         if (numTokens == 0) 
         {
             return 1;
-        }else if (skillSet[instrument] == GameProperties.maximumSkillLevelPerInstrument)
+        }else if (skillSet[instrument] == GameProperties.configurableProperties.maximumSkillLevelPerInstrument)
         {
             return 2;
         }
@@ -261,16 +261,16 @@ public abstract class Player
         }
 
         numTokens-=numTokensToConvert;
-        money += numTokensToConvert * GameProperties.tokenValue;
+        money += numTokensToConvert * GameProperties.configurableProperties.tokenValue;
 
         GameGlobals.gameLogManager.WriteEventToLog(GameGlobals.currSessionId.ToString(), GameGlobals.currGameId.ToString(), GameGlobals.currGameRoundId.ToString(), this.id.ToString(), this.name,"CONVERTED_TOKENS", "-" , numTokensToConvert.ToString());
         return 0;
     }
     public virtual int BuyTokens(int numTokensToBuy)
     {
-        int moneyToSpend = numTokensToBuy * GameProperties.tokenValue;
+        int moneyToSpend = numTokensToBuy * GameProperties.configurableProperties.tokenValue;
 
-        if (tokensBoughtOnCurrRound >= GameProperties.allowedPlayerTokenBuysPerRound)
+        if (tokensBoughtOnCurrRound >= GameProperties.configurableProperties.allowedPlayerTokenBuysPerRound)
         {
             return 1;
         }

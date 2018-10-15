@@ -1,17 +1,25 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Collections;
+using UnityEngine;
 
 //MySQL log manager
 public class MySQLLogManager : ILogManager
 {
     private string phpLogServerConnectionPath;
     private string databaseName;
-    private string currentGetResponse;
+    public WWW phpConnection;
+
+    private IEnumerator YieldedActions(WWW connection, Func<int> yieldedReaction)
+    {
+        yield return connection;
+        phpConnection = connection;
+        yieldedReaction();
+    }
 
     public void InitLogs()
     {
-        phpLogServerConnectionPath = "http://for-the-record-logs:4000/dbActions.php";
-        databaseName = "for_the_record_logs";
-        currentGetResponse = "";
+        phpLogServerConnectionPath = "http://fortherecordlogs.duckdns.org:4000/dbActions.php";
+        databaseName = "ist176415";
     }
     public void WritePlayerToLog(string sessionId, string gameId, string playerId, string playerName, string type)
     {
@@ -24,9 +32,9 @@ public class MySQLLogManager : ILogManager
         string[] values = { sessionId, gameId, playerId, playerName, type };
 
         PassTableArguments(form, "arrFields", "arrValues", "extraParams", keys, values, "");
-        WWW phpConnection = new WWW(phpLogServerConnectionPath, form);
+        phpConnection = new WWW(phpLogServerConnectionPath, form);
 
-        while (!phpConnection.isDone) { } //wait until php is done
+        //while (!phpConnection.isDone) { } //wait until php is done
     }
     public void WriteGameToLog(string sessionId, string gameId, string gameCondition, string result)
     {
@@ -39,9 +47,9 @@ public class MySQLLogManager : ILogManager
         string[] values = { sessionId, gameId, gameCondition, result };
 
         PassTableArguments(form, "arrFields", "arrValues", "extraParams", keys, values, "");
-        WWW phpConnection = new WWW(phpLogServerConnectionPath, form);
+        phpConnection = new WWW(phpLogServerConnectionPath, form);
 
-        while (!phpConnection.isDone) { } //wait until php is done
+        //while (!phpConnection.isDone) { } //wait until php is done
     }
     public void WriteAlbumResultsToLog(string sessionId, string currGameId, string currGameRoundId, string currAlbumId, string currAlbumName, string marketingState)
     {
@@ -54,9 +62,9 @@ public class MySQLLogManager : ILogManager
         string[] values = { sessionId, currGameId, currGameRoundId, currAlbumId, currAlbumName, marketingState };
 
         PassTableArguments(form, "arrFields", "arrValues", "extraParams", keys, values, "");
-        WWW phpConnection = new WWW(phpLogServerConnectionPath, form);
+        phpConnection = new WWW(phpLogServerConnectionPath, form);
 
-        while (!phpConnection.isDone) { } //wait until php is done
+        //while (!phpConnection.isDone) { } //wait until php is done
     }
     public void WritePlayerResultsToLog(string sessionId, string currGameId, string currGameRoundId, string playerId, string playerName, string money)
     {
@@ -69,9 +77,9 @@ public class MySQLLogManager : ILogManager
         string[] values = { sessionId, currGameId, currGameRoundId, playerId, playerName, money };
 
         PassTableArguments(form, "arrFields", "arrValues", "extraParams", keys, values, "");
-        WWW phpConnection = new WWW(phpLogServerConnectionPath, form);
+        phpConnection = new WWW(phpLogServerConnectionPath, form);
 
-        while (!phpConnection.isDone) { } //wait until php is done
+        //while (!phpConnection.isDone) { } //wait until php is done
     }
     public void WriteEventToLog(string sessionId, string currGameId, string currGameRoundId, string playerId, string playerName, string eventType, string skill, string coins)
     {
@@ -84,13 +92,14 @@ public class MySQLLogManager : ILogManager
         string[] values = { sessionId, currGameId, currGameRoundId, playerId, playerName, eventType, skill, coins };
 
         PassTableArguments(form, "arrFields", "arrValues", "extraParams", keys, values, "");
-        WWW phpConnection = new WWW(phpLogServerConnectionPath, form);
+        phpConnection = new WWW(phpLogServerConnectionPath, form);
 
-        while (!phpConnection.isDone) { } //wait until php is done
+        //while (!phpConnection.isDone) { } //wait until php is done
     }
 
-    public string GetLastSessionConditionFromLog()
+    public string GetLastSessionConditionFromLog(Func<int> yieldedReactionToGet)
     {
+       
         WWWForm form = new WWWForm();
         form.AddField("dbAction", "SELECT");
         form.AddField("databaseName", databaseName);
@@ -99,10 +108,13 @@ public class MySQLLogManager : ILogManager
         string[] keys = { "gameCondition" };
 
         PassTableArguments(form, "arrFields", "arrValues", "extraParams", keys, new string[] { "0" }, "WHERE timestampedId >= ALL( SELECT timestampedId FROM game_stats_log )");
-        WWW phpConnection = new WWW(phpLogServerConnectionPath, form);
+        phpConnection = new WWW(phpLogServerConnectionPath, form);
 
-        while (!phpConnection.isDone) { } //wait until php is done
-        return phpConnection.text;
+        GameGlobals.monoBehaviourFunctionalities.StartCoroutine(YieldedActions(phpConnection, yieldedReactionToGet));
+        
+
+        return "<error>";
+        //return phpConnection.text;
     }
 
     public void EndLogs() { }

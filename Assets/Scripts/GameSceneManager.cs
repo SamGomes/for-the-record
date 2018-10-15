@@ -9,7 +9,7 @@ public static class GameSceneManager{
 
     public static void LoadStartScene()
     {
-        if (!GameProperties.isSimulation)
+        if (!GameProperties.configurableProperties.isSimulation)
         {
             transitionEffect.LoadSceneWithEffect("startScene", LoadSceneMode.Single);
         }
@@ -20,7 +20,7 @@ public static class GameSceneManager{
     }
     public static void LoadPlayersSetupScene()
     {
-        if (!GameProperties.isSimulation)
+        if (!GameProperties.configurableProperties.isSimulation)
         {
             transitionEffect.LoadSceneWithEffect("playersSetupScene", LoadSceneMode.Single);
         }
@@ -31,7 +31,7 @@ public static class GameSceneManager{
     }
     public static void LoadMainScene()
     {
-        if (!GameProperties.isSimulation)
+        if (!GameProperties.configurableProperties.isSimulation)
         {
             transitionEffect.LoadSceneWithEffect("mainScene", LoadSceneMode.Single);
         }
@@ -42,7 +42,7 @@ public static class GameSceneManager{
     }
     public static void LoadEndScene()
     {
-        if (!GameProperties.isSimulation)
+        if (!GameProperties.configurableProperties.isSimulation)
         {
             transitionEffect.LoadSceneWithEffect("endScene", LoadSceneMode.Single);
         }

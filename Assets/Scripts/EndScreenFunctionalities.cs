@@ -38,7 +38,7 @@ public class EndScreenFunctionalities : MonoBehaviour
             Object.Destroy(album.GetAlbumUI());
         }
         GameSceneManager.LoadStartScene();
-        Debug.Log("numGamesToSimulate: " + (GameProperties.numGamesToSimulate - GameGlobals.currGameId));
+        Debug.Log("numGamesToSimulate: " + (GameProperties.configurableProperties.numGamesToSimulate - GameGlobals.currGameId));
     }
 
     private IEnumerator LoadMainScreenAfterDelay(float delay)
@@ -51,7 +51,7 @@ public class EndScreenFunctionalities : MonoBehaviour
 
     private void LoadEndScreenUIElements()
     {
-        PoppupScreenFunctionalities infoPoppupNeutralRef = new PoppupScreenFunctionalities(false, null, null, poppupPrefab, mainScene, this.GetComponent<PlayerMonoBehaviourFunctionalities>(), Resources.Load<Sprite>("Textures/UI/Icons/Info"), new Color(0.9f, 0.9f, 0.9f));
+        PoppupScreenFunctionalities infoPoppupNeutralRef = new PoppupScreenFunctionalities(false, null, null, poppupPrefab, mainScene, this.GetComponent<MonoBehaviourFunctionalities>(), Resources.Load<Sprite>("Textures/UI/Icons/Info"), new Color(0.9f, 0.9f, 0.9f));
 
         GameGlobals.players.Sort(SortPlayersByMoney);
         int numPlayers = GameGlobals.players.Count;
@@ -65,9 +65,9 @@ public class EndScreenFunctionalities : MonoBehaviour
         
         Text UIEndGameButtonText = UIEndGameButton.GetComponentInChildren<Text>();
         Text UIRestartGameButtonText = UIRestartGameButton.GetComponentInChildren<Text>();
-        if (GameProperties.isAutomaticalBriefing)
+        if (GameProperties.configurableProperties.isAutomaticalBriefing)
         {
-            if (GameGlobals.currGameId > GameProperties.numTutorialGamesToPlay)
+            if (GameGlobals.currGameId > GameProperties.configurableProperties.numTutorialGamesToPlay)
             {
                 infoPoppupNeutralRef.DisplayPoppup("You reached the end of the experiment game. Your final task is to fill our questionnaires. To be able to do so, just copy your game code (included below). Thank you for your time!");
                 //UIEndGameButton.gameObject.SetActive(true);
@@ -85,7 +85,7 @@ public class EndScreenFunctionalities : MonoBehaviour
                 infoPoppupNeutralRef.DisplayPoppup("You reached the end of the tutorial game. We assume that you are prepared for the experiment game. Good luck!");
                 UIRestartGameButton.gameObject.SetActive(true);
                 UIRestartGameButton.interactable = true;
-                if (GameGlobals.currGameId == GameProperties.numTutorialGamesToPlay)
+                if (GameGlobals.currGameId == GameProperties.configurableProperties.numTutorialGamesToPlay)
                 {
                     UIRestartGameButtonText.text = "Ready for experiment game";
                 }
@@ -237,15 +237,15 @@ public class EndScreenFunctionalities : MonoBehaviour
 
 
 
-        string parameteriztion = (GameProperties.isAutomaticalBriefing) ? GameProperties.testGameParameterization.ToString() : "-";
+        string parameteriztion = (GameProperties.configurableProperties.isAutomaticalBriefing) ? GameProperties.testGameParameterization.ToString() : "-";
         GameGlobals.gameLogManager.WriteGameToLog(GameGlobals.currSessionId.ToString(), GameGlobals.currGameId.ToString(), parameteriztion, GameGlobals.currGameState.ToString());
         GameGlobals.gameLogManager.EndLogs();
 
 
 
-        if (GameProperties.isSimulation)
+        if (GameProperties.configurableProperties.isSimulation)
         {
-            if (GameGlobals.currGameId < GameProperties.numGamesToSimulate)
+            if (GameGlobals.currGameId < GameProperties.configurableProperties.numGamesToSimulate)
             {
                 RestartGame();
             }

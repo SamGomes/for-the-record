@@ -2,7 +2,9 @@
 using FAtiMAScripts;
 
 using IntegratedAuthoringTool;
+using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 using UnityEngine;
@@ -10,11 +12,23 @@ using UnityEngine.UI;
 
 public class StartScreenFunctionalities : MonoBehaviour {
 
+    private StreamReader fileReader;
+
     private Button UIStartGameButton;
     public GameObject UIGameCodeDisplayPrefab;
+    public GameObject monoBehaviourDummyPrefab;
 
     private void InitGameGlobals()
     {
+
+        //Assign configurable game properties from file
+        DynamicallyConfigurableGameProperties configs = JsonUtility.FromJson<DynamicallyConfigurableGameProperties>(File.ReadAllText(Application.streamingAssetsPath + "/config.cfg"));
+        GameProperties.configurableProperties = configs;
+
+        GameObject monoBehaviourDummy = Instantiate(monoBehaviourDummyPrefab);
+        DontDestroyOnLoad(monoBehaviourDummy);
+        GameGlobals.monoBehaviourFunctionalities = monoBehaviourDummy.GetComponent<MonoBehaviourFunctionalities>();
+
         GameGlobals.numberOfSpeakingPlayers = 0;
         GameGlobals.currGameId++;
         GameGlobals.currGameRoundId = 0;
@@ -28,7 +42,7 @@ public class StartScreenFunctionalities : MonoBehaviour {
         //GameGlobals.playerIdCount = 0;
         //GameGlobals.albumIdCount = 0;
 
-        GameGlobals.albums = new List<Album>(GameProperties.numberOfAlbumsPerGame);
+        GameGlobals.albums = new List<Album>(GameProperties.configurableProperties.numberOfAlbumsPerGame);
         
         //destroy UIs if any
         if (GameGlobals.players!=null && GameGlobals.players.Count > 0)
@@ -46,7 +60,7 @@ public class StartScreenFunctionalities : MonoBehaviour {
             }
 
         }
-        GameGlobals.players = new List<Player>(GameProperties.numberOfPlayersPerGame);
+        GameGlobals.players = new List<Player>(GameProperties.configurableProperties.numberOfPlayersPerGame);
 
 
         //only generate session data in the first game
@@ -65,12 +79,12 @@ public class StartScreenFunctionalities : MonoBehaviour {
                 generatedCode += (char)('A' + Random.Range(0, 26));
             }
 
-            if (GameProperties.isAutomaticalBriefing) //generate condition automatically
+            if (GameProperties.configurableProperties.isAutomaticalBriefing) //generate condition automatically (asynchronous)
             {
-                string lastConditionString = GameGlobals.gameLogManager.GetLastSessionConditionFromLog();
-                char lastCondition = (lastConditionString=="")? 'A' : lastConditionString.ToString()[0];
-                GameProperties.testGameParameterization = (char)('A' + ((lastCondition - 'A') + 1) % GameProperties.possibleConditions);
-                generatedCode += GameProperties.testGameParameterization;
+                GameGlobals.gameLogManager.GetLastSessionConditionFromLog(AppendConditionToGameCode);
+            }
+            else{
+                this.UIStartGameButton.interactable = true;
             }
 
             GameGlobals.currSessionId = generatedCode;
@@ -88,7 +102,15 @@ public class StartScreenFunctionalities : MonoBehaviour {
         GameGlobals.FAtiMAIat = IntegratedAuthoringToolAsset.LoadFromFile(GameGlobals.FAtiMAScenarioPath);
     }
 
-
+    private int AppendConditionToGameCode()
+    {
+        string lastConditionString = ((MySQLLogManager) GameGlobals.gameLogManager).phpConnection.text;
+        char lastCondition = (lastConditionString == "") ? 'A' : lastConditionString.ToString()[0];
+        GameProperties.testGameParameterization = (char)('A' + ((lastCondition - 'A') + 1) % GameProperties.configurableProperties.possibleConditions);
+        GameGlobals.currSessionId += GameProperties.testGameParameterization;
+        if(!GameProperties.configurableProperties.isSimulation) this.UIStartGameButton.interactable = true;
+        return 0;
+    }
 
 
     private void StartGame()
@@ -102,16 +124,22 @@ public class StartScreenFunctionalities : MonoBehaviour {
         // Make the game perform as good as possible
         Application.targetFrameRate = 40;
 
+        this.UIStartGameButton = GameObject.Find("Canvas/StartScreen/startGameButton").gameObject.GetComponent<Button>();
+        this.UIStartGameButton.interactable = false;
+        
+        //play theme song
+        //GameGlobals.audioManager.PlayInfinitClip("Audio/theme/themeIntro", "Audio/theme/themeLoop");
+        UIStartGameButton.onClick.AddListener(delegate () { StartGame(); });
+
+
         InitGameGlobals();
 
-        
-        this.UIStartGameButton = GameObject.Find("Canvas/StartScreen/startGameButton").gameObject.GetComponent<Button>();
-        if (!GameProperties.isSimulation)
+        if (!GameProperties.configurableProperties.isSimulation)
         {
-            if (GameProperties.isAutomaticalBriefing)
+            if (GameProperties.configurableProperties.isAutomaticalBriefing)
             {
                 Text startButtonText = UIStartGameButton.GetComponentInChildren<Text>();
-                if (GameGlobals.currGameId < (GameProperties.numTutorialGamesToPlay+1))
+                if (GameGlobals.currGameId < (GameProperties.configurableProperties.numTutorialGamesToPlay+1))
                 {
                     startButtonText.text = "Start Tutorial Game";
                 }
@@ -120,11 +148,6 @@ public class StartScreenFunctionalities : MonoBehaviour {
                     startButtonText.text = "Start Experiment Game";
                 }
             }
-
-
-            //play theme song
-            //GameGlobals.audioManager.PlayInfinitClip("Audio/theme/themeIntro", "Audio/theme/themeLoop");
-            UIStartGameButton.onClick.AddListener(delegate () { StartGame(); });
         }
         else
         {

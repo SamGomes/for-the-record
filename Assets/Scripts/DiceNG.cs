@@ -41,9 +41,9 @@ public abstract class FixedDiceNG : IDiceNG
             foreach (GameProperties.Instrument instrument in System.Enum.GetValues(typeof(GameProperties.Instrument)))
             {
                 seriesForDices6[currPlayer][instrument] = new Dictionary<int, int[]>();
-                for (int j = 0; j < GameProperties.numberOfAlbumsPerGame; j++)
+                for (int j = 0; j < GameProperties.configurableProperties.numberOfAlbumsPerGame; j++)
                 {
-                    seriesForDices6[currPlayer][instrument][j] = new int[GameProperties.numberOfAlbumsPerGame];
+                    seriesForDices6[currPlayer][instrument][j] = new int[GameProperties.configurableProperties.numberOfAlbumsPerGame];
                 }
             }
         }
@@ -175,7 +175,7 @@ public class VictoryDiceNG : FixedDiceNG
         //trigger for market
         if (diceNumbers == 20)
         {
-            if (GameGlobals.currGameRoundId < GameProperties.numberOfAlbumsPerGame - 1)
+            if (GameGlobals.currGameRoundId < GameProperties.configurableProperties.numberOfAlbumsPerGame - 1)
             {
                 return RollDiceFor20(diceNumbers, rollOrderNumber, currNumberOfRolls);
             }
@@ -199,7 +199,7 @@ public class LossDiceNG : FixedDiceNG
         //trigger for market
         if (diceNumbers == 20)
         {
-            if (GameGlobals.currGameRoundId < GameProperties.numberOfAlbumsPerGame - 1)
+            if (GameGlobals.currGameRoundId < GameProperties.configurableProperties.numberOfAlbumsPerGame - 1)
             {
                 return RollDiceFor20(diceNumbers, rollOrderNumber, currNumberOfRolls);
             }

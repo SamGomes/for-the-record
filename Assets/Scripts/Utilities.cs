@@ -6,6 +6,7 @@ using UnityEngine;
 
 public static class GameGlobals
 {
+    public static MonoBehaviourFunctionalities monoBehaviourFunctionalities;
 
     public static List<Album> albums;
     public static List<Player> players;
@@ -69,29 +70,37 @@ public static class GameProperties
         TITFORTAT
     }
 
-    public static int tokenValue = 0; //1000;
-    public static int marketingPointValue = 1000; //config the initial number of dices to roll
+    public static DynamicallyConfigurableGameProperties configurableProperties;
 
-    public static int allowedPlayerActionsPerAlbum = 2;
-    public static int allowedPlayerTokenBuysPerRound = 1;
-
-    public static int maximumSkillLevelPerInstrument = 9000; //infinite
-
-    public static int numberOfAlbumsPerGame = 5;
-    public static int numberOfPlayersPerGame = 3;
-
-    public static int initNumberMarketDices = 2; //config the initial number of dices to roll
-
-
-    //----------- AutomaticBriefing -------------------
-    public static bool isAutomaticalBriefing = true;
-    public static int numTutorialGamesToPlay = 0; //no tutorials
-    public static int possibleConditions = 2;
-
-    //------------ Simulation --------------------
-    public static bool isSimulation = false;
-    public static int numGamesToSimulate = 1000;
 
     public static char testGameParameterization; //only used when generating the AI types automatically (for example when "isSimulation=true or isAutomaticBriefing==true")
 }
 
+[Serializable]
+public class DynamicallyConfigurableGameProperties
+{ 
+    //(default configurations already assigned)
+
+    public int tokenValue = 0; //1000;
+    public int marketingPointValue = 1000; //config the initial number of dices to roll
+
+    public int allowedPlayerActionsPerAlbum = 2;
+    public int allowedPlayerTokenBuysPerRound = 1;
+
+    public int maximumSkillLevelPerInstrument = 9000; //infinite
+
+    public int numberOfAlbumsPerGame = 5;
+    public int numberOfPlayersPerGame = 3;
+
+    public int initNumberMarketDices = 2; //config the initial number of dices to roll
+
+
+    //----------- AutomaticBriefing -------------------
+    public bool isAutomaticalBriefing = true;
+    public int numTutorialGamesToPlay = 0; //no tutorials
+    public int possibleConditions = 2;
+
+    //------------ Simulation --------------------
+    public bool isSimulation = false;
+    public int numGamesToSimulate = 1;
+}

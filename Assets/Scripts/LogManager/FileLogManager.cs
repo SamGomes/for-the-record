@@ -85,7 +85,7 @@ public class FileLogManager : ILogManager
         FlushLogs();
     }
 
-    public string GetLastSessionConditionFromLog()
+    public string GetLastSessionConditionFromLog(Func<int> yieldedReactionToGet)
     {
         Debug.Log("GotLastSessionConditionFromLog");
         return "A";

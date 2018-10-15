@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 public class UIPlayer : Player
 {
-    protected PlayerMonoBehaviourFunctionalities playerMonoBehaviourFunctionalities;
+    protected MonoBehaviourFunctionalities playerMonoBehaviourFunctionalities;
 
     private GameObject canvas;
     private GameObject playerUI;
@@ -49,7 +49,7 @@ public class UIPlayer : Player
     protected GameObject UISpeechBalloon;
 
 
-    public UIPlayer(GameObject playerUIPrefab, GameObject playerCanvas, PoppupScreenFunctionalities warningScreenRef, int id, string name) : base(id, name)
+    public UIPlayer(GameObject playerUIPrefab, GameObject playerCanvas, MonoBehaviourFunctionalities playerMonoBehaviourFunctionalities, PoppupScreenFunctionalities warningScreenRef, int id, string name) : base(id, name)
     {
         InitUI(playerUIPrefab, playerCanvas, warningScreenRef);
         
@@ -62,7 +62,7 @@ public class UIPlayer : Player
         //((UIPlayer)currPlayer).GetPlayerUI().transform.Rotate(new Vector3(0, 0, 1), -(i*refAngle) + 90.0f);
         
         //temporarily on canvas...
-        this.playerMonoBehaviourFunctionalities = playerCanvas.GetComponent<PlayerMonoBehaviourFunctionalities>();
+        this.playerMonoBehaviourFunctionalities = playerMonoBehaviourFunctionalities;
         //this.GetSpeechBaloonUI().GetComponentInChildren<Text>().text = Application.streamingAssetsPath +" "+ GameGlobals.FAtiMAScenarioPath;
         //this.GetSpeechBaloonUI().SetActive(true);
     }
@@ -157,7 +157,7 @@ public class UIPlayer : Player
         UIspendTokenInInstrumentButton.onClick.AddListener(delegate ()
         {
             GameGlobals.audioManager.PlayClip("Audio/snap");
-            if (numTokens == 0 && money >= GameProperties.tokenValue)
+            if (numTokens == 0 && money >= GameProperties.configurableProperties.tokenValue)
             {
                 BuyTokens(1);
             }
@@ -174,7 +174,7 @@ public class UIPlayer : Player
         UIspendTokenInMarketingButton.onClick.AddListener(delegate ()
         {
             GameGlobals.audioManager.PlayClip("Audio/snap");
-            if (numTokens == 0 && money >= GameProperties.tokenValue)
+            if (numTokens == 0 && money >= GameProperties.configurableProperties.tokenValue)
             {
                 BuyTokens(1);
             }
@@ -244,7 +244,7 @@ public class UIPlayer : Player
                     warningScreenRef.DisplayPoppup("You cannot level up more skills in this round!");
                     break;
                 case 2:
-                    warningScreenRef.DisplayPoppup("You cannot develop the same skill more than " + GameProperties.maximumSkillLevelPerInstrument + " times!");
+                    warningScreenRef.DisplayPoppup("You cannot develop the same skill more than " + GameProperties.configurableProperties.maximumSkillLevelPerInstrument + " times!");
                     break;
             }
         }

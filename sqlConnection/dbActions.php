@@ -1,5 +1,10 @@
 <?php
 
+header("Access-Control-Allow-Credentials: true");
+header("Access-Control-Allow-Headers: Accept, X-Access-Token, X-Application-Name, X-Request-Sent-Time");
+header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
+header("Access-Control-Allow-Origin: *");
+
 function insert_form_data($success, $table, $arrFields, $arrValues)
 {
     $sql = 'INSERT INTO '.$table.' ('.implode(',', $arrFields).') VALUES (\''.implode('\', \'',  $arrValues).'\')';
@@ -34,7 +39,7 @@ if (isset($_POST["dbAction"])) {
 	$extraParams = $_POST["extraParams"];
 
 
-	$connection = new mysqli('localhost','root','rootroot',$databaseName);
+	$connection = new mysqli('fortherecordlogs.duckdns.org','ist176415','rootroot', $databaseName);
 
 	// if(!$connection->connect_error){
 	// 	echo "1";

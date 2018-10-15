@@ -31,7 +31,7 @@ public abstract class AIPlayer : UIPlayer
 
     protected EmotionalModule emotionalModule;
 
-    public AIPlayer(GameObject playerUIPrefab, GameObject canvas, PoppupScreenFunctionalities warningScreenref, int id, string name, bool isSpeechAllowed) : base(playerUIPrefab, canvas, warningScreenref,id, name){
+    public AIPlayer(GameObject playerUIPrefab, GameObject canvas, MonoBehaviourFunctionalities playerMonoBehaviourFunctionalities, PoppupScreenFunctionalities warningScreenref, int id, string name, bool isSpeechAllowed) : base(playerUIPrefab, canvas, playerMonoBehaviourFunctionalities, warningScreenref,id, name){
 
         InitDelays();
 
@@ -81,7 +81,7 @@ public abstract class AIPlayer : UIPlayer
     
     #region Inform methods
     public override void InformChoosePreferredInstrument(Player nextPlayer) {
-        if (!GameProperties.isSimulation)
+        if (!GameProperties.configurableProperties.isSimulation)
         {
             playerMonoBehaviourFunctionalities.StartCoroutine(DelayedInformChoosePreferredInstrumentActions(nextPlayer, informChoosePreferredInstrumentDelay, true));
         }
@@ -91,7 +91,7 @@ public abstract class AIPlayer : UIPlayer
         }
     }
     public override void InformLevelUp(GameProperties.Instrument leveledUpInstrument) {
-        if (!GameProperties.isSimulation)
+        if (!GameProperties.configurableProperties.isSimulation)
         {
             playerMonoBehaviourFunctionalities.StartCoroutine(DelayedInformLevelUpActions(leveledUpInstrument,informLevelUpDelay,true));
         }
@@ -101,7 +101,7 @@ public abstract class AIPlayer : UIPlayer
         }
     }
     public override void InformPlayForInstrument(Player nextPlayer) {
-        if (!GameProperties.isSimulation)
+        if (!GameProperties.configurableProperties.isSimulation)
         {
             playerMonoBehaviourFunctionalities.StartCoroutine(DelayedInformPlayForInstrumentActions(nextPlayer, informPlayForInstrumentDelay, true));
         }
@@ -111,7 +111,7 @@ public abstract class AIPlayer : UIPlayer
         }
     }
     public override void InformLastDecision(Player nextPlayer) {
-        if (!GameProperties.isSimulation)
+        if (!GameProperties.configurableProperties.isSimulation)
         {
             playerMonoBehaviourFunctionalities.StartCoroutine(DelayedInformLastDecisionActions(nextPlayer, informLastDecisionDelay, true));
         }
@@ -123,7 +123,7 @@ public abstract class AIPlayer : UIPlayer
 
     public override void InformRollDicesValue(Player invoker, int maxValue, int obtainedValue) {
         //base.InformRollDicesValue(invoker, maxValue, obtainedValue, speakingRobotId);
-        if (!GameProperties.isSimulation)
+        if (!GameProperties.configurableProperties.isSimulation)
         {
             playerMonoBehaviourFunctionalities.StartCoroutine(DelayedInformRollDicesValueActions(invoker, maxValue, obtainedValue, informDiceRollDelay, true));
         }
@@ -134,7 +134,7 @@ public abstract class AIPlayer : UIPlayer
     }
     public override void InformAlbumResult(int albumValue, int marketValue) {
         //base.InformRollDicesValue(invoker, maxValue, obtainedValue, speakingRobotId);
-        if (!GameProperties.isSimulation)
+        if (!GameProperties.configurableProperties.isSimulation)
         {
             playerMonoBehaviourFunctionalities.StartCoroutine(DelayedInformAlbumResultActions(albumValue, marketValue, informAlbumResultDelay, true));
         }
@@ -145,7 +145,7 @@ public abstract class AIPlayer : UIPlayer
     }
     public override void InformGameResult(GameProperties.GameState state) {
         //base.InformRollDicesValue(invoker, maxValue, obtainedValue, speakingRobotId);
-        if (!GameProperties.isSimulation)
+        if (!GameProperties.configurableProperties.isSimulation)
         {
             playerMonoBehaviourFunctionalities.StartCoroutine(DelayedInformGameResultActions(state, informGameResultDelay, true));
         }
@@ -157,7 +157,7 @@ public abstract class AIPlayer : UIPlayer
     public override void InformNewAlbum()
     {
         //base.InformRollDicesValue(invoker, maxValue, obtainedValue, speakingRobotId);
-        if (!GameProperties.isSimulation)
+        if (!GameProperties.configurableProperties.isSimulation)
         {
             playerMonoBehaviourFunctionalities.StartCoroutine(DelayedInformNewAlbumActions(informNewAlbumDelay, true));
         }
@@ -419,7 +419,7 @@ public abstract class AIPlayer : UIPlayer
     public override void ChoosePreferredInstrument(Album currAlbum)
     {
         base.ChoosePreferredInstrument(currAlbum);
-        if (!GameProperties.isSimulation)
+        if (!GameProperties.configurableProperties.isSimulation)
         {
             playerMonoBehaviourFunctionalities.StartCoroutine(ThinkBeforeChoosingPreferredInstrument(currAlbum,choosePreferredInstrumentDelay, GameProperties.Instrument.NONE, false));
         }
@@ -432,7 +432,7 @@ public abstract class AIPlayer : UIPlayer
     public override void LevelUp(Album currAlbum)
     {
         base.LevelUp(currAlbum);
-        if (!GameProperties.isSimulation)
+        if (!GameProperties.configurableProperties.isSimulation)
         {
             playerMonoBehaviourFunctionalities.StartCoroutine(ThinkBeforeLevelingUp(currAlbum, levelUpThinkingDelay, GameProperties.Instrument.NONE, false));
         }
@@ -446,7 +446,7 @@ public abstract class AIPlayer : UIPlayer
     public override void PlayForInstrument(Album currAlbum)
     {
         base.PlayForInstrument(currAlbum);
-        if (!GameProperties.isSimulation)
+        if (!GameProperties.configurableProperties.isSimulation)
         {
             playerMonoBehaviourFunctionalities.StartCoroutine(ThinkBeforePlayForInstrument(currAlbum, playForInstrumentThinkingDelay, GameProperties.Instrument.NONE, false));
         }
@@ -459,7 +459,7 @@ public abstract class AIPlayer : UIPlayer
     public override void LastDecisionsPhase(Album currAlbum)
     {
         base.LastDecisionsPhase(currAlbum);
-        if (!GameProperties.isSimulation)
+        if (!GameProperties.configurableProperties.isSimulation)
         {
             playerMonoBehaviourFunctionalities.StartCoroutine(ThinkBeforeLastDecisionPhase(currAlbum, lastDecisionThinkingDelay, false, 0));
         }
@@ -581,7 +581,7 @@ public abstract class AIPlayer : UIPlayer
                 EventHelper.PropertyChange("Album(Result)", "Fail", name) });
             }
 
-            if (GameGlobals.albums.Count == GameProperties.numberOfAlbumsPerGame)
+            if (GameGlobals.albums.Count == GameProperties.configurableProperties.numberOfAlbumsPerGame)
             {
                 emotionalModule.Perceive(new Name[] {
                 EventHelper.PropertyChange("Album(Last)", "True", name) });
@@ -620,7 +620,7 @@ public abstract class AIPlayer : UIPlayer
 
 public class AIPlayerSimple : AIPlayer
 {
-    public AIPlayerSimple(GameObject playerUIPrefab, GameObject canvas, PoppupScreenFunctionalities warningScreenref, int id, string name, bool isSpeechAllowed) : base(playerUIPrefab, canvas, warningScreenref, id, name, isSpeechAllowed)
+    public AIPlayerSimple(GameObject playerUIPrefab, GameObject canvas, MonoBehaviourFunctionalities playerMonoBehaviourFunctionalities, PoppupScreenFunctionalities warningScreenref, int id, string name, bool isSpeechAllowed) : base(playerUIPrefab, canvas, playerMonoBehaviourFunctionalities, warningScreenref, id, name, isSpeechAllowed)
     {
         this.type = GameProperties.AIPlayerType.SIMPLE;
     }
@@ -652,7 +652,7 @@ public class AIPlayerSimple : AIPlayer
 
 public class AIPlayerRandomStrategy : AIPlayer
 {
-    public AIPlayerRandomStrategy(GameObject playerUIPrefab, GameObject canvas, PoppupScreenFunctionalities warningScreenref, int id, string name, bool isSpeechAllowed) : base(playerUIPrefab, canvas, warningScreenref, id, name, isSpeechAllowed)
+    public AIPlayerRandomStrategy(GameObject playerUIPrefab, GameObject canvas, MonoBehaviourFunctionalities playerMonoBehaviourFunctionalities, PoppupScreenFunctionalities warningScreenref, int id, string name, bool isSpeechAllowed) : base(playerUIPrefab, canvas, playerMonoBehaviourFunctionalities, warningScreenref, id, name, isSpeechAllowed)
     {
         this.type = GameProperties.AIPlayerType.RANDOM;
     }
@@ -686,7 +686,7 @@ public class AIPlayerRandomStrategy : AIPlayer
 
 public class AIPlayerCoopStrategy : AIPlayer
 {
-    public AIPlayerCoopStrategy(GameObject playerUIPrefab, GameObject canvas, PoppupScreenFunctionalities warningScreenref, int id, string name, bool isSpeechAllowed) : base(playerUIPrefab, canvas, warningScreenref, id, name, isSpeechAllowed)
+    public AIPlayerCoopStrategy(GameObject playerUIPrefab, GameObject canvas, MonoBehaviourFunctionalities playerMonoBehaviourFunctionalities, PoppupScreenFunctionalities warningScreenref, int id, string name, bool isSpeechAllowed) : base(playerUIPrefab, canvas, playerMonoBehaviourFunctionalities, warningScreenref, id, name, isSpeechAllowed)
     {
         this.type = GameProperties.AIPlayerType.COOPERATIVE;
     }
@@ -722,7 +722,7 @@ public class AIPlayerCoopStrategy : AIPlayer
 //this strategy always plays for markting except in the first play where it is cooperative. In the last decision it always trusts his markting.
 public class AIPlayerGreedyStrategy : AIPlayer
 {
-    public AIPlayerGreedyStrategy(GameObject playerUIPrefab, GameObject canvas, PoppupScreenFunctionalities warningScreenref, int id, string name, bool isSpeechAllowed) : base(playerUIPrefab, canvas, warningScreenref, id, name, isSpeechAllowed)
+    public AIPlayerGreedyStrategy(GameObject playerUIPrefab, GameObject canvas, MonoBehaviourFunctionalities playerMonoBehaviourFunctionalities, PoppupScreenFunctionalities warningScreenref, int id, string name, bool isSpeechAllowed) : base(playerUIPrefab, canvas, playerMonoBehaviourFunctionalities, warningScreenref, id, name, isSpeechAllowed)
     {
         this.type = GameProperties.AIPlayerType.GREEDY;
     }
@@ -754,7 +754,7 @@ public class AIPlayerGreedyStrategy : AIPlayer
 
 public class AIPlayerBalancedStrategy : AIPlayer
 {
-    public AIPlayerBalancedStrategy(GameObject playerUIPrefab, GameObject canvas, PoppupScreenFunctionalities warningScreenref, int id, string name, bool isSpeechAllowed) : base(playerUIPrefab, canvas, warningScreenref, id, name, isSpeechAllowed)
+    public AIPlayerBalancedStrategy(GameObject playerUIPrefab, GameObject canvas, MonoBehaviourFunctionalities playerMonoBehaviourFunctionalities, PoppupScreenFunctionalities warningScreenref, int id, string name, bool isSpeechAllowed) : base(playerUIPrefab, canvas, playerMonoBehaviourFunctionalities, warningScreenref, id, name, isSpeechAllowed)
     {
         this.type = GameProperties.AIPlayerType.BALANCED;
     }
@@ -806,7 +806,7 @@ public class AIPlayerBalancedStrategy : AIPlayer
 
 public class AIPlayerUnbalancedStrategy : AIPlayer
 {
-    public AIPlayerUnbalancedStrategy(GameObject playerUIPrefab, GameObject canvas, PoppupScreenFunctionalities warningScreenref, int id, string name, bool isSpeechAllowed) : base(playerUIPrefab, canvas, warningScreenref, id, name, isSpeechAllowed)
+    public AIPlayerUnbalancedStrategy(GameObject playerUIPrefab, GameObject canvas, MonoBehaviourFunctionalities playerMonoBehaviourFunctionalities, PoppupScreenFunctionalities warningScreenref, int id, string name, bool isSpeechAllowed) : base(playerUIPrefab, canvas, playerMonoBehaviourFunctionalities, warningScreenref, id, name, isSpeechAllowed)
     {
         this.type = GameProperties.AIPlayerType.UNBALANCED;
     }
@@ -862,7 +862,7 @@ public class AIPlayerTitForTat : AIPlayer
     private bool didSomeoneDefectedLastRound;
     private bool didSomeoneDefectedThisRound;
 
-    public AIPlayerTitForTat(GameObject playerUIPrefab, GameObject canvas, PoppupScreenFunctionalities warningScreenref, int id, string name, bool isSpeechAllowed) : base(playerUIPrefab, canvas, warningScreenref, id, name, isSpeechAllowed)
+    public AIPlayerTitForTat(GameObject playerUIPrefab, GameObject canvas, MonoBehaviourFunctionalities playerMonoBehaviourFunctionalities, PoppupScreenFunctionalities warningScreenref, int id, string name, bool isSpeechAllowed) : base(playerUIPrefab, canvas, playerMonoBehaviourFunctionalities, warningScreenref, id, name, isSpeechAllowed)
     {
         this.type = GameProperties.AIPlayerType.TITFORTAT;
         didSomeoneDefectedThisRound = false;

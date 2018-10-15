@@ -1,4 +1,7 @@
-﻿public interface ILogManager
+﻿using System;
+using System.IO;
+
+public interface ILogManager
 {
     void InitLogs();
     void WritePlayerToLog(string sessionId, string gameId, string playerId, string playername, string type);
@@ -7,6 +10,6 @@
     void WritePlayerResultsToLog(string sessionId, string currGameId, string currGameRoundId, string playerId, string playerName, string money);
     void WriteEventToLog(string sessionId, string currGameId, string currGameRoundId, string playerId, string playerName, string eventType, string instrument, string coins);
 
-    string GetLastSessionConditionFromLog();
+    string GetLastSessionConditionFromLog(Func<int> yieldedReactionToGet);
     void EndLogs();
 }

@@ -123,13 +123,13 @@ public class GameManager : MonoBehaviour {
                 }
             }
         }
-        infoPoppupLossRef = new PoppupScreenFunctionalities(false, InterruptGame, ContinueGame, poppupPrefab,canvas, this.GetComponent<PlayerMonoBehaviourFunctionalities>(),Resources.Load<Sprite>("Textures/UI/Icons/InfoLoss"), new Color(0.9f, 0.8f, 0.8f), "Audio/albumLoss");
-        infoPoppupWinRef = new PoppupScreenFunctionalities(false, InterruptGame, ContinueGame, poppupPrefab,canvas, this.GetComponent<PlayerMonoBehaviourFunctionalities>(),Resources.Load<Sprite>("Textures/UI/Icons/InfoWin"), new Color(0.9f, 0.9f, 0.8f), "Audio/albumVictory");
-        infoPoppupNeutralRef = new PoppupScreenFunctionalities(false, InterruptGame, ContinueGame, poppupPrefab,canvas, this.GetComponent<PlayerMonoBehaviourFunctionalities>(),Resources.Load<Sprite>("Textures/UI/Icons/Info"), new Color(0.9f, 0.9f, 0.9f), "Audio/snap");
+        infoPoppupLossRef = new PoppupScreenFunctionalities(false, InterruptGame, ContinueGame, poppupPrefab,canvas, GameGlobals.monoBehaviourFunctionalities, Resources.Load<Sprite>("Textures/UI/Icons/InfoLoss"), new Color(0.9f, 0.8f, 0.8f), "Audio/albumLoss");
+        infoPoppupWinRef = new PoppupScreenFunctionalities(false, InterruptGame, ContinueGame, poppupPrefab,canvas, GameGlobals.monoBehaviourFunctionalities, Resources.Load<Sprite>("Textures/UI/Icons/InfoWin"), new Color(0.9f, 0.9f, 0.8f), "Audio/albumVictory");
+        infoPoppupNeutralRef = new PoppupScreenFunctionalities(false, InterruptGame, ContinueGame, poppupPrefab,canvas, GameGlobals.monoBehaviourFunctionalities, Resources.Load<Sprite>("Textures/UI/Icons/Info"), new Color(0.9f, 0.9f, 0.9f), "Audio/snap");
 
         //these poppups load the end scene
-        endPoppupLossRef = new PoppupScreenFunctionalities(false, InterruptGame, ContinueGame, poppupPrefab, canvas, this.GetComponent<PlayerMonoBehaviourFunctionalities>(), Resources.Load<Sprite>("Textures/UI/Icons/InfoLoss"), new Color(0.9f, 0.8f, 0.8f), delegate() { /*end game*/ if (this.gameMainSceneFinished) GameSceneManager.LoadEndScene(); return 0; });
-        endPoppupWinRef = new PoppupScreenFunctionalities(false, InterruptGame, ContinueGame, poppupPrefab, canvas, this.GetComponent<PlayerMonoBehaviourFunctionalities>(), Resources.Load<Sprite>("Textures/UI/Icons/InfoWin"), new Color(0.9f, 0.9f, 0.8f), delegate () { /*end game*/ if (this.gameMainSceneFinished) GameSceneManager.LoadEndScene(); return 0; });
+        endPoppupLossRef = new PoppupScreenFunctionalities(false, InterruptGame, ContinueGame, poppupPrefab, canvas, GameGlobals.monoBehaviourFunctionalities, Resources.Load<Sprite>("Textures/UI/Icons/InfoLoss"), new Color(0.9f, 0.8f, 0.8f), delegate() { /*end game*/ if (this.gameMainSceneFinished) GameSceneManager.LoadEndScene(); return 0; });
+        endPoppupWinRef = new PoppupScreenFunctionalities(false, InterruptGame, ContinueGame, poppupPrefab, canvas, GameGlobals.monoBehaviourFunctionalities, Resources.Load<Sprite>("Textures/UI/Icons/InfoWin"), new Color(0.9f, 0.9f, 0.8f), delegate () { /*end game*/ if (this.gameMainSceneFinished) GameSceneManager.LoadEndScene(); return 0; });
 
         ChangeActivePlayerUI(((UIPlayer)(GameGlobals.players[0])), 2.0f);
         
@@ -156,8 +156,8 @@ public class GameManager : MonoBehaviour {
         GameGlobals.currGameRoundId = 0; //first round
         numMegaHits = 0;
 
-        marketLimit = Mathf.FloorToInt(GameProperties.numberOfAlbumsPerGame * 4.0f / 5.0f) - 1;
-        currNumberOfMarketDices = GameProperties.initNumberMarketDices;
+        marketLimit = Mathf.FloorToInt(GameProperties.configurableProperties.numberOfAlbumsPerGame * 4.0f / 5.0f) - 1;
+        currNumberOfMarketDices = GameProperties.configurableProperties.initNumberMarketDices;
 
         rollDiceForInstrumentOverlayAnimator = UIRollDiceForInstrumentOverlay.GetComponent<Animator>();
 
@@ -205,7 +205,7 @@ public class GameManager : MonoBehaviour {
         }
 
 
-        if (GameProperties.isSimulation) //start imidiately in simulation
+        if (GameProperties.configurableProperties.isSimulation) //start imidiately in simulation
         {
             StartGameRoundForAllPlayers("SimAlbum");
         }
@@ -274,12 +274,12 @@ public class GameManager : MonoBehaviour {
             rolledDiceNumbers[i] = randomIncrease;
             newAlbumInstrumentValue += randomIncrease;
         }
-        if (!GameProperties.isSimulation)
+        if (!GameProperties.configurableProperties.isSimulation)
         {
             string arrowText = "";
             if(instrument == GameProperties.Instrument.MARKETING)
             {
-                arrowText = "+" + newAlbumInstrumentValue * GameProperties.marketingPointValue + " $";
+                arrowText = "+" + newAlbumInstrumentValue * GameProperties.configurableProperties.marketingPointValue + " $";
             }
             else
             {
@@ -407,7 +407,7 @@ public class GameManager : MonoBehaviour {
         }
         GameGlobals.gameLogManager.WriteEventToLog(GameGlobals.currSessionId.ToString(), GameGlobals.currGameId.ToString(), GameGlobals.currGameRoundId.ToString(), "-", "-", "ROLLED_MARKET_DICES", "-", marketValue.ToString());
 
-        if (!GameProperties.isSimulation)
+        if (!GameProperties.configurableProperties.isSimulation)
         {
             StartCoroutine(PlayDiceUIs(GameGlobals.players[0], marketValue, rolledDiceNumbers, 20, dice20UI, "Animations/RollDiceForInstrumentOverlay/dice20/sprites/endingAlternatives/", Color.red, "Market Value: " + marketValue, diceRollDelay));
         }
@@ -432,7 +432,7 @@ public class GameManager : MonoBehaviour {
             currAlbum.SetMarketingState(GameProperties.AlbumMarketingState.FAIL);
         }
 
-        if (!GameProperties.isSimulation)
+        if (!GameProperties.configurableProperties.isSimulation)
         {
             if (newAlbumValue >= marketValue)
             {
@@ -454,8 +454,8 @@ public class GameManager : MonoBehaviour {
 
 
         //check for game loss (collapse) or victory on album registry
-        float victoryThreshold = Mathf.Ceil(GameProperties.numberOfAlbumsPerGame / 2.0f);
-        float numAlbumsLeft = (float)(GameProperties.numberOfAlbumsPerGame - numAlbums);
+        float victoryThreshold = Mathf.Ceil(GameProperties.configurableProperties.numberOfAlbumsPerGame / 2.0f);
+        float numAlbumsLeft = (float)(GameProperties.configurableProperties.numberOfAlbumsPerGame - numAlbums);
         if (numAlbumsLeft < victoryThreshold - numMegaHits)
         {
             GameGlobals.currGameState = GameProperties.GameState.LOSS;
@@ -608,7 +608,7 @@ public class GameManager : MonoBehaviour {
             else if(canSelectToCheckAlbumResult)
             {
                 canSelectToCheckAlbumResult = false;
-                if (GameProperties.isSimulation) //if simulation just do it, with no loads!
+                if (GameProperties.configurableProperties.isSimulation) //if simulation just do it, with no loads!
                 {
                     canCheckAlbumResult = true;
                 }
@@ -625,7 +625,7 @@ public class GameManager : MonoBehaviour {
                 canCheckAlbumResult = false;
                 canSelectToCheckAlbumResult = true;
 
-                if (!GameProperties.isSimulation)
+                if (!GameProperties.configurableProperties.isSimulation)
                 {
                     UIRollDiceForMarketValueScreen.SetActive(false);
                 }
@@ -652,7 +652,7 @@ public class GameManager : MonoBehaviour {
             //start next game round whenever ready, but only if game hasn't finished
             if(GameGlobals.currGameState == GameProperties.GameState.NOT_FINISHED)
             {
-                if (!GameProperties.isSimulation)
+                if (!GameProperties.configurableProperties.isSimulation)
                 {
                     UIAddAlbumToCollection(currAlbum);
                     UInewRoundScreen.SetActive(true);
@@ -662,7 +662,7 @@ public class GameManager : MonoBehaviour {
                     StartGameRoundForAllPlayers("SimAlbum");
                 }
             
-                if (GameGlobals.albums.Count < GameProperties.numberOfAlbumsPerGame)
+                if (GameGlobals.albums.Count < GameProperties.configurableProperties.numberOfAlbumsPerGame)
                 {
                     currSpeakingPlayerId = Random.Range(0, GameGlobals.numberOfSpeakingPlayers);
                     foreach (var player in GameGlobals.players)
@@ -676,15 +676,15 @@ public class GameManager : MonoBehaviour {
             //enter international market on the next album, increase the number of dices played for market
             if (GameGlobals.currGameRoundId == marketLimit)
             {
+                int oldNumberOfMarketDices = currNumberOfMarketDices;
                 currNumberOfMarketDices++;
 
                 //poppups are not displayed on simulations
-                if (!GameProperties.isSimulation)
+                if (!GameProperties.configurableProperties.isSimulation)
                 {
-                    infoPoppupNeutralRef.DisplayPoppup("You gained some experience publishing your last albums and so you will try your luck on the international market. From now on, 3 dices (instead of 2) are rolled for the market.");
+                    infoPoppupNeutralRef.DisplayPoppup("You gained some experience publishing your last albums and so you will try your luck on the international market. From now on, "+ currNumberOfMarketDices +" dices (instead of "+ oldNumberOfMarketDices + ") are rolled for the market.");
                 }
             }
-
 
 
             //reinit some things for next game if game result is known or max albums are achieved
@@ -709,14 +709,14 @@ public class GameManager : MonoBehaviour {
                         player.TakeAllMoney();
                     }
 
-                    if (!GameProperties.isSimulation)
+                    if (!GameProperties.configurableProperties.isSimulation)
                     {
                         endPoppupLossRef.DisplayPoppup("The band incurred in too much debt! No more albums can be produced!");
                     }
                 }
                 else
                 {
-                    if (!GameProperties.isSimulation)
+                    if (!GameProperties.configurableProperties.isSimulation)
                     {
                         endPoppupWinRef.DisplayPoppup("The band had a successful journey! Congratulations!");
                     }
@@ -732,7 +732,7 @@ public class GameManager : MonoBehaviour {
 
 
                 this.gameMainSceneFinished = true;
-                if (!GameProperties.isSimulation)
+                if (!GameProperties.configurableProperties.isSimulation)
                 {
                     UIadvanceRoundButton.gameObject.SetActive(false);
                     UIPrototypeArea.gameObject.SetActive(false);
@@ -815,7 +815,7 @@ public class GameManager : MonoBehaviour {
         //roll dices for marketing
         int marketingValue = RollDicesForInstrument(invoker, GameProperties.Instrument.MARKETING);
         invoker.SetAlbumContribution(GameProperties.Instrument.MARKETING, marketingValue);
-        invoker.ReceiveMoney(GameProperties.marketingPointValue * marketingValue);
+        invoker.ReceiveMoney(GameProperties.configurableProperties.marketingPointValue * marketingValue);
 
         lastDecisionResponseReceived = true;
     }

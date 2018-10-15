@@ -14,7 +14,7 @@ public class PoppupScreenFunctionalities
     private Func<int> OnShow;
     private Func<int> OnHide;
 
-    private PlayerMonoBehaviourFunctionalities playerMonoBehaviourFunctionalities;
+    private MonoBehaviourFunctionalities monoBehaviourFunctionalities;
 
     private int StopAllAnimations()
     {
@@ -52,7 +52,7 @@ public class PoppupScreenFunctionalities
     }
 
     // Use this for initialization
-    public PoppupScreenFunctionalities(bool isGlobal, Func<int> OnShow, Func<int> OnHide, GameObject poppupPrefab, GameObject canvas, PlayerMonoBehaviourFunctionalities playerMonoBehaviourFunctionalities, Sprite icon, Color backgroundColor)
+    public PoppupScreenFunctionalities(bool isGlobal, Func<int> OnShow, Func<int> OnHide, GameObject poppupPrefab, GameObject canvas, MonoBehaviourFunctionalities monoBehaviourFunctionalities, Sprite icon, Color backgroundColor)
     {
         poppupInstance = UnityEngine.Object.Instantiate(poppupPrefab, canvas.transform);
         if (isGlobal)
@@ -66,7 +66,7 @@ public class PoppupScreenFunctionalities
 
         this.UIcloseButton = poppupInstance.transform.Find("closeButton").GetComponent<Button>();
 
-        this.playerMonoBehaviourFunctionalities = playerMonoBehaviourFunctionalities;
+        this.monoBehaviourFunctionalities = monoBehaviourFunctionalities;
 
         this.OnHide = OnHide;
         this.OnShow = OnShow;
@@ -84,18 +84,18 @@ public class PoppupScreenFunctionalities
         this.audioPath = null;
     }
 
-    public PoppupScreenFunctionalities(bool isGlobal, Func<int> OnShow, Func<int> OnHide, GameObject poppupPrefab, GameObject canvas, PlayerMonoBehaviourFunctionalities playerMonoBehaviourFunctionalities, Sprite icon, Color backgroundColor, string audioPath)
-        : this(isGlobal, OnShow, OnHide, poppupPrefab, canvas, playerMonoBehaviourFunctionalities, icon, backgroundColor)
+    public PoppupScreenFunctionalities(bool isGlobal, Func<int> OnShow, Func<int> OnHide, GameObject poppupPrefab, GameObject canvas, MonoBehaviourFunctionalities monoBehaviourFunctionalities, Sprite icon, Color backgroundColor, string audioPath)
+        : this(isGlobal, OnShow, OnHide, poppupPrefab, canvas, monoBehaviourFunctionalities, icon, backgroundColor)
     {
         this.audioPath = audioPath;
     }
-    public PoppupScreenFunctionalities(bool isGlobal, Func<int> OnShow, Func<int> OnHide, GameObject poppupPrefab, GameObject canvas, PlayerMonoBehaviourFunctionalities playerMonoBehaviourFunctionalities, Sprite icon, Color backgroundColor, System.Func<int> additionalCloseButtonFunctionalities)
-        : this(isGlobal, OnShow, OnHide, poppupPrefab, canvas, playerMonoBehaviourFunctionalities, icon, backgroundColor)
+    public PoppupScreenFunctionalities(bool isGlobal, Func<int> OnShow, Func<int> OnHide, GameObject poppupPrefab, GameObject canvas, MonoBehaviourFunctionalities monoBehaviourFunctionalities, Sprite icon, Color backgroundColor, System.Func<int> additionalCloseButtonFunctionalities)
+        : this(isGlobal, OnShow, OnHide, poppupPrefab, canvas, monoBehaviourFunctionalities, icon, backgroundColor)
     {
         this.UIcloseButton.onClick.AddListener(delegate () { additionalCloseButtonFunctionalities(); });
     }
-    public PoppupScreenFunctionalities(bool isGlobal, Func<int> OnShow, Func<int> OnHide, GameObject poppupPrefab, GameObject canvas, PlayerMonoBehaviourFunctionalities playerMonoBehaviourFunctionalities, Sprite icon, Color backgroundColor, string audioPath, System.Func<int> additionalCloseButtonFunctionalities)
-        : this(isGlobal, OnShow, OnHide, poppupPrefab, canvas, playerMonoBehaviourFunctionalities, icon, backgroundColor)
+    public PoppupScreenFunctionalities(bool isGlobal, Func<int> OnShow, Func<int> OnHide, GameObject poppupPrefab, GameObject canvas, MonoBehaviourFunctionalities monoBehaviourFunctionalities, Sprite icon, Color backgroundColor, string audioPath, System.Func<int> additionalCloseButtonFunctionalities)
+        : this(isGlobal, OnShow, OnHide, poppupPrefab, canvas, monoBehaviourFunctionalities, icon, backgroundColor)
     {
         this.audioPath = audioPath;
         this.UIcloseButton.onClick.AddListener(delegate () { additionalCloseButtonFunctionalities(); });
@@ -148,6 +148,6 @@ public class PoppupScreenFunctionalities
 
     public void DisplayPoppupWithDelay(string text, float delay)
     {
-        playerMonoBehaviourFunctionalities.StartCoroutine(DisplayPoppupWithDelayCoroutine(text,delay));
+        monoBehaviourFunctionalities.StartCoroutine(DisplayPoppupWithDelayCoroutine(text,delay));
     }
 }
