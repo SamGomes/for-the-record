@@ -34,7 +34,8 @@ public class EmotionalModule : MonoBehaviour
     }
 
     void Start()
-    { 
+    {
+        this.speechBalloonDelayInSeconds = 2.0f;
         isStopped = false;
 
         string rpcPath = GameGlobals.FAtiMAIat.GetAllCharacterSources().FirstOrDefault().Source;
@@ -163,7 +164,7 @@ public class EmotionalModule : MonoBehaviour
         {
             return;
         }
-        StartCoroutine(DisplaySpeechBalloonForAWhile(text, 2.0f));
+        StartCoroutine(DisplaySpeechBalloonForAWhile(text, this.speechBalloonDelayInSeconds));
     }
 
     public void GazeAt(string target)

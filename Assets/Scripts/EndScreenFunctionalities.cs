@@ -63,7 +63,7 @@ public class EndScreenFunctionalities : MonoBehaviour
             newTableEntry.GetComponentsInChildren<Text>()[1].text = currPlayer.GetMoney().ToString();
         }
         
-        Text UIEndGameButtonText = UIEndGameButton.GetComponentInChildren<Text>();
+        //Text UIEndGameButtonText = UIEndGameButton.GetComponentInChildren<Text>();
         Text UIRestartGameButtonText = UIRestartGameButton.GetComponentInChildren<Text>();
         if (GameProperties.configurableProperties.isAutomaticalBriefing)
         {
@@ -237,7 +237,7 @@ public class EndScreenFunctionalities : MonoBehaviour
 
 
 
-        string parameteriztion = (GameProperties.configurableProperties.isAutomaticalBriefing) ? GameProperties.testGameParameterization.ToString() : "-";
+        string parameteriztion = (GameProperties.configurableProperties.isAutomaticalBriefing) ? GameProperties.configurableProperties.possibleParameterizations[GameGlobals.autoGameConfigurationIndex].ToString() : "-";
         GameGlobals.gameLogManager.WriteGameToLog(GameGlobals.currSessionId.ToString(), GameGlobals.currGameId.ToString(), parameteriztion, GameGlobals.currGameState.ToString());
         GameGlobals.gameLogManager.EndLogs();
 

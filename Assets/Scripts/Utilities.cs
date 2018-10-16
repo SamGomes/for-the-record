@@ -31,6 +31,9 @@ public static class GameGlobals
     public static string FAtiMAScenarioPath;
     public static IntegratedAuthoringToolAsset FAtiMAIat;
 
+    //only for simulation or auto debriefing
+    public static int autoGameConfigurationIndex;
+
 }
 
 public static class GameProperties
@@ -59,8 +62,9 @@ public static class GameProperties
         MEGA_HIT
     }
 
-    public enum AIPlayerType
+    public enum PlayerType
     {
+        HUMAN,
         SIMPLE,
         RANDOM,
         COOPERATIVE,
@@ -70,10 +74,14 @@ public static class GameProperties
         TITFORTAT
     }
 
+    public enum NGType
+    {
+        RANDOM,
+        VICTORY,
+        LOSS
+    }
+
     public static DynamicallyConfigurableGameProperties configurableProperties;
-
-
-    public static char testGameParameterization; //only used when generating the AI types automatically (for example when "isSimulation=true or isAutomaticBriefing==true")
 }
 
 [Serializable]
@@ -98,9 +106,41 @@ public class DynamicallyConfigurableGameProperties
     //----------- AutomaticBriefing -------------------
     public bool isAutomaticalBriefing = true;
     public int numTutorialGamesToPlay = 0; //no tutorials
-    public int possibleConditions = 2;
 
     //------------ Simulation --------------------
     public bool isSimulation = false;
     public int numGamesToSimulate = 1;
+
+    public List<GameParameterization> possibleParameterizations = new List<GameParameterization>(); //only used when generating the AI types automatically (for example when "isSimulation=true or isAutomaticBriefing==true")
+}
+
+[Serializable]
+public struct GameParameterization
+{
+    public string id;
+    public List<PlayerParameterization> playerParameterizations;
+    public string ngType;
+
+    public GameParameterization(string id, List<PlayerParameterization> playerParameterizations, string ngType)
+    {
+        this.id = id;
+        this.playerParameterizations = playerParameterizations;
+        this.ngType = ngType;
+    }
+
+}
+
+[Serializable]
+public struct PlayerParameterization
+{
+    public string name;
+    public string playerType;
+    public bool isSpeechAllowed;
+
+    public PlayerParameterization(string name, string playerType, bool isSpeechAllowed)
+    {
+        this.name = name;
+        this.isSpeechAllowed = isSpeechAllowed;
+        this.playerType = playerType;
+    }
 }

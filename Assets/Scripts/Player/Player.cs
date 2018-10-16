@@ -7,6 +7,8 @@ using UnityEngine.UI;
 
 public abstract class Player
 {
+    protected GameProperties.PlayerType type;
+
 
     protected int id;
     private string actionLog;

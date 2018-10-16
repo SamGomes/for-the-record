@@ -54,7 +54,7 @@ public class PoppupScreenFunctionalities
     // Use this for initialization
     public PoppupScreenFunctionalities(bool isGlobal, Func<int> OnShow, Func<int> OnHide, GameObject poppupPrefab, GameObject canvas, MonoBehaviourFunctionalities monoBehaviourFunctionalities, Sprite icon, Color backgroundColor)
     {
-        poppupInstance = UnityEngine.Object.Instantiate(poppupPrefab, canvas.transform);
+        poppupInstance = UnityEngine.Object.Instantiate(poppupPrefab, canvas.transform).gameObject;
         if (isGlobal)
         {
             UnityEngine.Object.DontDestroyOnLoad(poppupInstance); //do not despawn poppups

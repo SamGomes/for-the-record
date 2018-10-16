@@ -34,6 +34,7 @@ public class StartScreenFunctionalities : MonoBehaviour {
         GameGlobals.currGameRoundId = 0;
         GameGlobals.albumIdCount = 0;
 
+        GameGlobals.gameDiceNG = new RandomDiceNG();
         GameGlobals.gameLogManager = new MySQLLogManager();
         GameGlobals.audioManager = new AudioManager();
 
@@ -104,11 +105,34 @@ public class StartScreenFunctionalities : MonoBehaviour {
 
     private int AppendConditionToGameCode()
     {
+        List<GameParameterization> possibleConditions = GameProperties.configurableProperties.possibleParameterizations;
+
         string lastConditionString = ((MySQLLogManager) GameGlobals.gameLogManager).phpConnection.text;
-        char lastCondition = (lastConditionString == "") ? 'A' : lastConditionString.ToString()[0];
-        GameProperties.testGameParameterization = (char)('A' + ((lastCondition - 'A') + 1) % GameProperties.configurableProperties.possibleConditions);
-        GameGlobals.currSessionId += GameProperties.testGameParameterization;
-        if(!GameProperties.configurableProperties.isSimulation) this.UIStartGameButton.interactable = true;
+
+        int lastConditionIndex = 0;
+        if (lastConditionString != "")
+        {
+            string lastConditionChar = lastConditionString;
+            for (int i = 0; i < possibleConditions.Count; i++)
+            {
+                GameParameterization currParam = possibleConditions[i];
+                if (currParam.id == lastConditionChar)
+                {
+                    lastConditionIndex = i;
+                    break;
+                }
+            }
+        }
+        if (possibleConditions.Count <= 0)
+        {
+            Debug.Log("[ERROR]: isSimulation/ isAutomaticDebriefing is enabled but possibleConditions is empty!");
+        }
+        else
+        {
+            GameGlobals.autoGameConfigurationIndex = ((int)lastConditionIndex) +1 % possibleConditions.Count;
+            GameGlobals.currSessionId += GameProperties.configurableProperties.possibleParameterizations[GameGlobals.autoGameConfigurationIndex].id;
+            if(!GameProperties.configurableProperties.isSimulation) this.UIStartGameButton.interactable = true;
+        }
         return 0;
     }
 

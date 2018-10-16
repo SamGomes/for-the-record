@@ -331,7 +331,6 @@ public class GameManager : MonoBehaviour {
         GameObject diceArrowClone = Instantiate(diceArrowPrefab, UIRollDiceForInstrumentOverlay.transform);
         diceArrowClone.GetComponentInChildren<Image>().color = diceArrowColor;
         
-        Animator arrowAnimator = diceArrowClone.GetComponentInChildren<Animator>();
         Text arrowText = diceArrowClone.GetComponentInChildren<Text>();
         arrowText.text = diceArrowText;
         arrowText.color = diceArrowColor;

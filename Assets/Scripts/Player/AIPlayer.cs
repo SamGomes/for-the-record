@@ -7,8 +7,6 @@ using WellFormedNames;
 
 public abstract class AIPlayer : UIPlayer
 {
-    protected GameProperties.AIPlayerType type;
-
     protected float choosePreferredInstrumentDelay;
     protected float levelUpThinkingDelay;
     protected float playForInstrumentThinkingDelay;
@@ -39,11 +37,6 @@ public abstract class AIPlayer : UIPlayer
         emotionalModule = erp.AddComponent<EmotionalModule>();
         emotionalModule.Speaks = isSpeechAllowed;
         emotionalModule.ReceiveInvoker(this); //only pass the invoker after it is initialized
-    }
-
-    public AIPlayer(int id, string name) : base(id, name)
-    {
-        InitDelays();
     }
 
     public void InitDelays()
@@ -618,16 +611,11 @@ public abstract class AIPlayer : UIPlayer
 
 }
 
-public class AIPlayerSimple : AIPlayer
+public class AIPlayerSimpleStrategy : AIPlayer
 {
-    public AIPlayerSimple(GameObject playerUIPrefab, GameObject canvas, MonoBehaviourFunctionalities playerMonoBehaviourFunctionalities, PoppupScreenFunctionalities warningScreenref, int id, string name, bool isSpeechAllowed) : base(playerUIPrefab, canvas, playerMonoBehaviourFunctionalities, warningScreenref, id, name, isSpeechAllowed)
+    public AIPlayerSimpleStrategy(GameObject playerUIPrefab, GameObject canvas, MonoBehaviourFunctionalities playerMonoBehaviourFunctionalities, PoppupScreenFunctionalities warningScreenref, int id, string name, bool isSpeechAllowed) : base(playerUIPrefab, canvas, playerMonoBehaviourFunctionalities, warningScreenref, id, name, isSpeechAllowed)
     {
-        this.type = GameProperties.AIPlayerType.SIMPLE;
-    }
-    //for simulations
-    public AIPlayerSimple(int id, string name) : base(id, name)
-    {
-        this.type = GameProperties.AIPlayerType.SIMPLE;
+        this.type = GameProperties.PlayerType.SIMPLE;
     }
 
     protected override GameProperties.Instrument LevelUpActions(Album currAlbum)
@@ -654,12 +642,7 @@ public class AIPlayerRandomStrategy : AIPlayer
 {
     public AIPlayerRandomStrategy(GameObject playerUIPrefab, GameObject canvas, MonoBehaviourFunctionalities playerMonoBehaviourFunctionalities, PoppupScreenFunctionalities warningScreenref, int id, string name, bool isSpeechAllowed) : base(playerUIPrefab, canvas, playerMonoBehaviourFunctionalities, warningScreenref, id, name, isSpeechAllowed)
     {
-        this.type = GameProperties.AIPlayerType.RANDOM;
-    }
-    //for simulations
-    public AIPlayerRandomStrategy(int id, string name) : base(id, name)
-    {
-        this.type = GameProperties.AIPlayerType.RANDOM;
+        this.type = GameProperties.PlayerType.RANDOM;
     }
 
     protected override GameProperties.Instrument LevelUpActions(Album currAlbum)
@@ -688,12 +671,7 @@ public class AIPlayerCoopStrategy : AIPlayer
 {
     public AIPlayerCoopStrategy(GameObject playerUIPrefab, GameObject canvas, MonoBehaviourFunctionalities playerMonoBehaviourFunctionalities, PoppupScreenFunctionalities warningScreenref, int id, string name, bool isSpeechAllowed) : base(playerUIPrefab, canvas, playerMonoBehaviourFunctionalities, warningScreenref, id, name, isSpeechAllowed)
     {
-        this.type = GameProperties.AIPlayerType.COOPERATIVE;
-    }
-    //for simulations
-    public AIPlayerCoopStrategy(int id, string name) : base(id, name)
-    {
-        this.type = GameProperties.AIPlayerType.COOPERATIVE;
+        this.type = GameProperties.PlayerType.COOPERATIVE;
     }
 
     protected override GameProperties.Instrument LevelUpActions(Album currAlbum)
@@ -724,12 +702,7 @@ public class AIPlayerGreedyStrategy : AIPlayer
 {
     public AIPlayerGreedyStrategy(GameObject playerUIPrefab, GameObject canvas, MonoBehaviourFunctionalities playerMonoBehaviourFunctionalities, PoppupScreenFunctionalities warningScreenref, int id, string name, bool isSpeechAllowed) : base(playerUIPrefab, canvas, playerMonoBehaviourFunctionalities, warningScreenref, id, name, isSpeechAllowed)
     {
-        this.type = GameProperties.AIPlayerType.GREEDY;
-    }
-    //for simulations
-    public AIPlayerGreedyStrategy(int id, string name) : base(id, name)
-    {
-        this.type = GameProperties.AIPlayerType.GREEDY;
+        this.type = GameProperties.PlayerType.GREEDY;
     }
 
     protected override GameProperties.Instrument LevelUpActions(Album currAlbum)
@@ -756,12 +729,7 @@ public class AIPlayerBalancedStrategy : AIPlayer
 {
     public AIPlayerBalancedStrategy(GameObject playerUIPrefab, GameObject canvas, MonoBehaviourFunctionalities playerMonoBehaviourFunctionalities, PoppupScreenFunctionalities warningScreenref, int id, string name, bool isSpeechAllowed) : base(playerUIPrefab, canvas, playerMonoBehaviourFunctionalities, warningScreenref, id, name, isSpeechAllowed)
     {
-        this.type = GameProperties.AIPlayerType.BALANCED;
-    }
-    //for simulations
-    public AIPlayerBalancedStrategy(int id, string name) : base(id, name)
-    {
-        this.type = GameProperties.AIPlayerType.BALANCED;
+        this.type = GameProperties.PlayerType.BALANCED;
     }
 
     protected override GameProperties.Instrument LevelUpActions(Album currAlbum)
@@ -808,12 +776,7 @@ public class AIPlayerUnbalancedStrategy : AIPlayer
 {
     public AIPlayerUnbalancedStrategy(GameObject playerUIPrefab, GameObject canvas, MonoBehaviourFunctionalities playerMonoBehaviourFunctionalities, PoppupScreenFunctionalities warningScreenref, int id, string name, bool isSpeechAllowed) : base(playerUIPrefab, canvas, playerMonoBehaviourFunctionalities, warningScreenref, id, name, isSpeechAllowed)
     {
-        this.type = GameProperties.AIPlayerType.UNBALANCED;
-    }
-    //for simulations
-    public AIPlayerUnbalancedStrategy(int id, string name) : base(id, name)
-    {
-        this.type = GameProperties.AIPlayerType.UNBALANCED;
+        this.type = GameProperties.PlayerType.UNBALANCED;
     }
 
     protected override GameProperties.Instrument LevelUpActions(Album currAlbum)
@@ -857,23 +820,15 @@ public class AIPlayerUnbalancedStrategy : AIPlayer
 }
 
 
-public class AIPlayerTitForTat : AIPlayer
+public class AIPlayerTitForTatStrategy : AIPlayer
 {
     private bool didSomeoneDefectedLastRound;
     private bool didSomeoneDefectedThisRound;
 
-    public AIPlayerTitForTat(GameObject playerUIPrefab, GameObject canvas, MonoBehaviourFunctionalities playerMonoBehaviourFunctionalities, PoppupScreenFunctionalities warningScreenref, int id, string name, bool isSpeechAllowed) : base(playerUIPrefab, canvas, playerMonoBehaviourFunctionalities, warningScreenref, id, name, isSpeechAllowed)
+    public AIPlayerTitForTatStrategy(GameObject playerUIPrefab, GameObject canvas, MonoBehaviourFunctionalities playerMonoBehaviourFunctionalities, PoppupScreenFunctionalities warningScreenref, int id, string name, bool isSpeechAllowed) : base(playerUIPrefab, canvas, playerMonoBehaviourFunctionalities, warningScreenref, id, name, isSpeechAllowed)
     {
-        this.type = GameProperties.AIPlayerType.TITFORTAT;
+        this.type = GameProperties.PlayerType.TITFORTAT;
         didSomeoneDefectedThisRound = false;
-        didSomeoneDefectedLastRound = false;
-    }
-    //for simulations
-    public AIPlayerTitForTat(int id, string name) : base(id, name)
-    {
-        this.type = GameProperties.AIPlayerType.TITFORTAT;
-        didSomeoneDefectedThisRound = false;
-        didSomeoneDefectedLastRound = false;
     }
 
     protected override void InformLevelUpActions(GameProperties.Instrument leveledUpInstrument)

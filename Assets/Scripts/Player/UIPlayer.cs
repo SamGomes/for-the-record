@@ -51,6 +51,8 @@ public class UIPlayer : Player
 
     public UIPlayer(GameObject playerUIPrefab, GameObject playerCanvas, MonoBehaviourFunctionalities playerMonoBehaviourFunctionalities, PoppupScreenFunctionalities warningScreenRef, int id, string name) : base(id, name)
     {
+        this.type = GameProperties.PlayerType.HUMAN;
+
         InitUI(playerUIPrefab, playerCanvas, warningScreenRef);
         
         //position UI on canvas

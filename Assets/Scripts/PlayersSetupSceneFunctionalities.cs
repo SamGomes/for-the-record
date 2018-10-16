@@ -20,87 +20,67 @@ public class PlayersSetupSceneFunctionalities : MonoBehaviour {
     public GameObject playerCanvas;
     private PoppupScreenFunctionalities playerWarningPoppupRef;
     
+    void SetUpParameterization(GameParameterization parameterization)
+    {
+        GameGlobals.players.Clear();
+        int currPlayerId = 0;
+        for(int i=0; i<parameterization.playerParameterizations.Count; i++)
+        {
+            PlayerParameterization currParam = parameterization.playerParameterizations[i];
 
-    void ConfigureAllHumanPlayers()
-    {
-        GameGlobals.players.Add(new UIPlayer(playerUIPrefab,playerCanvas, GameGlobals.monoBehaviourFunctionalities, playerWarningPoppupRef, 0,"Player1"));
-        GameGlobals.players.Add(new UIPlayer(playerUIPrefab, playerCanvas, GameGlobals.monoBehaviourFunctionalities, playerWarningPoppupRef, 1, "Player2"));
-        GameGlobals.players.Add(new UIPlayer(playerUIPrefab, playerCanvas, GameGlobals.monoBehaviourFunctionalities, playerWarningPoppupRef, 2,"Player3"));
-    }
-    void ConfigureAITestRRH()
-    {
-        GameGlobals.numberOfSpeakingPlayers = 0;
-        AIPlayerRandomStrategy p1 = new AIPlayerRandomStrategy(playerUIPrefab, playerCanvas, GameGlobals.monoBehaviourFunctionalities, playerWarningPoppupRef, 0, "Player1", false);
-        GameGlobals.players.Add(p1);
-        AIPlayerRandomStrategy p2 = new AIPlayerRandomStrategy(playerUIPrefab, playerCanvas, GameGlobals.monoBehaviourFunctionalities, playerWarningPoppupRef, 1, "Player2", false);
-        GameGlobals.players.Add(p2);
-        GameGlobals.players.Add(new UIPlayer(playerUIPrefab, playerCanvas, GameGlobals.monoBehaviourFunctionalities, playerWarningPoppupRef, 2, "Player3"));
-    }
-    void ConfigureAITestGCH()
-    {
-        GameGlobals.numberOfSpeakingPlayers = 2;
-        AIPlayerGreedyStrategy emys = new AIPlayerGreedyStrategy(playerUIPrefab, playerCanvas, GameGlobals.monoBehaviourFunctionalities, playerWarningPoppupRef, 0, "Emys", true);
-        GameGlobals.players.Add(emys);
-        AIPlayerCoopStrategy glin = new AIPlayerCoopStrategy(playerUIPrefab, playerCanvas, GameGlobals.monoBehaviourFunctionalities, playerWarningPoppupRef, 1, "Glin", true);
-        GameGlobals.players.Add(glin);
-        GameGlobals.players.Add(new UIPlayer(playerUIPrefab, playerCanvas, GameGlobals.monoBehaviourFunctionalities, playerWarningPoppupRef, 2,"Player"));
-    }
-    void ConfigureAITestCTH()
-    {
-        GameGlobals.numberOfSpeakingPlayers = 2;
-        AIPlayerCoopStrategy emys = new AIPlayerCoopStrategy(playerUIPrefab, playerCanvas, GameGlobals.monoBehaviourFunctionalities, playerWarningPoppupRef, 0, "Emys", true);
-        GameGlobals.players.Add(emys);
-        AIPlayerTitForTat glin = new AIPlayerTitForTat(playerUIPrefab, playerCanvas, GameGlobals.monoBehaviourFunctionalities, playerWarningPoppupRef, 1, "Glin", true);
-        GameGlobals.players.Add(glin);
-        GameGlobals.players.Add(new UIPlayer(playerUIPrefab, playerCanvas, GameGlobals.monoBehaviourFunctionalities, playerWarningPoppupRef, 2, "Player"));
-    }
-    void ConfigureAITestBUH()
-    {
-        GameGlobals.numberOfSpeakingPlayers = 2;
-        AIPlayerBalancedStrategy emys = new AIPlayerBalancedStrategy(playerUIPrefab, playerCanvas, GameGlobals.monoBehaviourFunctionalities, playerWarningPoppupRef, 0, "Emys", true);
-        GameGlobals.players.Add(emys);
-        AIPlayerUnbalancedStrategy glin = new AIPlayerUnbalancedStrategy(playerUIPrefab, playerCanvas, GameGlobals.monoBehaviourFunctionalities, playerWarningPoppupRef, 1, "Glin", true);
-        GameGlobals.players.Add(glin);
-        GameGlobals.players.Add(new UIPlayer(playerUIPrefab, playerCanvas, GameGlobals.monoBehaviourFunctionalities, playerWarningPoppupRef, 2, "Player"));
-    }
+            switch (currParam.playerType)
+            {
+                case "HUMAN":
+                    GameGlobals.players.Add(new UIPlayer(playerUIPrefab, playerCanvas, GameGlobals.monoBehaviourFunctionalities, playerWarningPoppupRef, currPlayerId++, currParam.name));
+                    break;
+                case "SIMPLE":
+                    GameGlobals.players.Add(new AIPlayerSimpleStrategy(playerUIPrefab, playerCanvas, GameGlobals.monoBehaviourFunctionalities, playerWarningPoppupRef, currPlayerId++, currParam.name, currParam.isSpeechAllowed));
+                    break;
+                case "RANDOM":
+                    GameGlobals.players.Add(new AIPlayerRandomStrategy(playerUIPrefab, playerCanvas, GameGlobals.monoBehaviourFunctionalities, playerWarningPoppupRef, currPlayerId++, currParam.name, currParam.isSpeechAllowed));
+                    break;
+                case "COOPERATIVE":
+                    GameGlobals.players.Add(new AIPlayerCoopStrategy(playerUIPrefab, playerCanvas, GameGlobals.monoBehaviourFunctionalities, playerWarningPoppupRef, currPlayerId++, currParam.name, currParam.isSpeechAllowed));
+                    break;
+                case "GREEDY":
+                    GameGlobals.players.Add(new AIPlayerGreedyStrategy(playerUIPrefab, playerCanvas, GameGlobals.monoBehaviourFunctionalities, playerWarningPoppupRef, currPlayerId++, currParam.name, currParam.isSpeechAllowed));
+                    break;
+                case "BALANCED":
+                    GameGlobals.players.Add(new AIPlayerBalancedStrategy(playerUIPrefab, playerCanvas, GameGlobals.monoBehaviourFunctionalities, playerWarningPoppupRef, currPlayerId++, currParam.name, currParam.isSpeechAllowed));
+                    break;
+                case "UNBALANCED":
+                    GameGlobals.players.Add(new AIPlayerUnbalancedStrategy(playerUIPrefab, playerCanvas, GameGlobals.monoBehaviourFunctionalities, playerWarningPoppupRef, currPlayerId++, currParam.name, currParam.isSpeechAllowed));
+                    break;
+                case "TITFORTAT":
+                    GameGlobals.players.Add(new AIPlayerTitForTatStrategy(playerUIPrefab, playerCanvas, GameGlobals.monoBehaviourFunctionalities, playerWarningPoppupRef, currPlayerId++, currParam.name, currParam.isSpeechAllowed));
+                    break;
+                default:
+                    Debug.Log("[ERROR]: player type " + currParam.playerType+" not recognized.");
+                    break;
+            }
+        }
 
-
-    void ConfigureConditionA()
-    {
-        ConfigureAITestGCH();
-        GameGlobals.gameDiceNG = new VictoryDiceNG();
+        switch (parameterization.ngType)
+        {
+            case "RANDOM":
+                GameGlobals.gameDiceNG = new RandomDiceNG();
+                break;
+            case "LOSS":
+                GameGlobals.gameDiceNG = new LossDiceNG();
+                break;
+            case "VICTORY":
+                GameGlobals.gameDiceNG = new VictoryDiceNG();
+                break;
+            default:
+                Debug.Log("[ERROR]: dice NG type " + parameterization.ngType + " not recognized.");
+                break;
+        }
+        //GameProperties.configurableProperties.possibleParameterizations.Add(parameterization);
+        //string json = JsonUtility.ToJson(GameProperties.configurableProperties);
     }
-    void ConfigureConditionB()
-    {
-        ConfigureAITestGCH();
-        GameGlobals.gameDiceNG = new LossDiceNG();
-    }
-    void ConfigureConditionC()
-    {
-        ConfigureAITestCTH();
-        GameGlobals.gameDiceNG = new VictoryDiceNG();
-    }
-    void ConfigureConditionD()
-    {
-        ConfigureAITestCTH();
-        GameGlobals.gameDiceNG = new LossDiceNG();
-    }
-    void ConfigureConditionE()
-    {
-        ConfigureAITestBUH();
-        GameGlobals.gameDiceNG = new VictoryDiceNG();
-    }
-    void ConfigureConditionF()
-    {
-        ConfigureAITestBUH();
-        GameGlobals.gameDiceNG = new LossDiceNG();
-    }
-
 
     void Start ()
     {
-        
-
         playerWarningPoppupRef = new PoppupScreenFunctionalities(true, null, null, poppupPrefab, playerCanvas, GameGlobals.monoBehaviourFunctionalities, Resources.Load<Sprite>("Textures/UI/Icons/Info"), new Color(0.9f, 0.9f, 0.9f), "Audio/snap");
         Object.DontDestroyOnLoad(playerCanvas);
 
@@ -111,38 +91,28 @@ public class PlayersSetupSceneFunctionalities : MonoBehaviour {
             {
                 if (GameGlobals.currGameId < (GameProperties.configurableProperties.numTutorialGamesToPlay + 1)) //gameId starts in 1, 1 is the first game (tutorial)
                 {
-                    ConfigureAITestRRH();
-                    GameGlobals.gameDiceNG = new RandomDiceNG();
+                    //play test game
+                    GameParameterization testGameParam = new GameParameterization();
+                    testGameParam.playerParameterizations = new List<PlayerParameterization>() {
+                        new PlayerParameterization("Sam","COOPERATIVE",false),
+                        new PlayerParameterization("Richard","GREEDY",false),
+                        new PlayerParameterization("Player","HUMAN",false),
+                    };
+                    testGameParam.ngType = "RANDOM";
+                    SetUpParameterization(testGameParam);
                 }
                 else
                 {
-                    string gameCode = GameGlobals.currSessionId;
-                    //choose right parameterization for test game
-                    switch (GameProperties.testGameParameterization)
-                    {
-                        case 'A':
-                            ConfigureConditionA();
-                            break;
-                        case 'B':
-                            ConfigureConditionB();
-                            break;
-                        //case 'C':
-                        //    ConfigureConditionC();
-                        //    break;
-                        //case 'D':
-                        //    ConfigureConditionD();
-                        //    break;
-                        //case 'E':
-                        //    ConfigureConditionE();
-                        //    break;
-                        //case 'F':
-                        //    ConfigureConditionF();
-                        //    break;
-                    }
+                    //play experiment game
+                    SetUpParameterization(GameProperties.configurableProperties.possibleParameterizations[GameGlobals.autoGameConfigurationIndex]);
                 }
                 StartGame();
                 return;
             }
+
+
+            GameParameterization manualGameParam = new GameParameterization();
+            manualGameParam.playerParameterizations = new List<PlayerParameterization>();
 
 
             this.customizeLabel = GameObject.Find("Canvas/SetupScreen/customizeLabel").gameObject;
@@ -171,42 +141,41 @@ public class PlayersSetupSceneFunctionalities : MonoBehaviour {
 
             UIStartGameButton.onClick.AddListener(delegate { StartGame(); });
             UIAddPlayerButton.onClick.AddListener(delegate {
-                GameGlobals.players.Add(new UIPlayer(playerUIPrefab, playerCanvas, GameGlobals.monoBehaviourFunctionalities, playerWarningPoppupRef, GameGlobals.players.Count,UINameSelectionInputBox.text));
-                CheckForAllPlayersRegistered();
+                manualGameParam.playerParameterizations.Add(new PlayerParameterization("Sam", "HUMAN", false));
+                CheckForAllPlayersRegistered(manualGameParam);
             });
 
-            for(int i=0; i < UIAIPlayerSelectionButtons.Length; i++)
+
+            manualGameParam.ngType = "RANDOM";
+            for (int i=0; i < UIAIPlayerSelectionButtons.Length; i++)
             {
                 GameGlobals.numberOfSpeakingPlayers++;
                 Button button = UIAIPlayerSelectionButtons[i];
                 button.onClick.AddListener(delegate
                 {
                     int index = new List<Button>(UIAIPlayerSelectionButtons).IndexOf(button);
-                    UIPlayer newPlayer = new UIPlayer(0,"");
-                    switch ((GameProperties.AIPlayerType) (index+2))
+                    switch ((GameProperties.PlayerType) (index+3))
                     {
-                        case GameProperties.AIPlayerType.SIMPLE:
-                            newPlayer = new AIPlayerSimple(playerUIPrefab, playerCanvas, GameGlobals.monoBehaviourFunctionalities, playerWarningPoppupRef, GameGlobals.players.Count, "John0", true);
+                        case GameProperties.PlayerType.SIMPLE:
+                            manualGameParam.playerParameterizations.Add(new PlayerParameterization("Sam", "SIMPLE", false));
                             break;
-                        case GameProperties.AIPlayerType.COOPERATIVE:
-                            newPlayer = new AIPlayerCoopStrategy(playerUIPrefab, playerCanvas, GameGlobals.monoBehaviourFunctionalities, playerWarningPoppupRef, GameGlobals.players.Count, "John1", true);
+                        case GameProperties.PlayerType.COOPERATIVE:
+                            manualGameParam.playerParameterizations.Add(new PlayerParameterization("Cristoph", "COOPERATIVE", false));
                             break;
-                        case GameProperties.AIPlayerType.GREEDY:
-                            newPlayer = new AIPlayerGreedyStrategy(playerUIPrefab, playerCanvas, GameGlobals.monoBehaviourFunctionalities, playerWarningPoppupRef, GameGlobals.players.Count,"John2", true);
+                        case GameProperties.PlayerType.GREEDY:
+                            manualGameParam.playerParameterizations.Add(new PlayerParameterization("Giovanni", "GREEDY", false));
                             break;
-                        case GameProperties.AIPlayerType.BALANCED:
-                            newPlayer = new AIPlayerBalancedStrategy(playerUIPrefab, playerCanvas, GameGlobals.monoBehaviourFunctionalities, playerWarningPoppupRef, GameGlobals.players.Count,"John3", true);
+                        case GameProperties.PlayerType.BALANCED:
+                            manualGameParam.playerParameterizations.Add(new PlayerParameterization("Brian", "BALANCED", false));
                             break;
-                        case GameProperties.AIPlayerType.UNBALANCED:
-                            newPlayer = new AIPlayerUnbalancedStrategy(playerUIPrefab, playerCanvas, GameGlobals.monoBehaviourFunctionalities, playerWarningPoppupRef, GameGlobals.players.Count, "John4", true);
+                        case GameProperties.PlayerType.UNBALANCED:
+                            manualGameParam.playerParameterizations.Add(new PlayerParameterization("Ulrich", "UNBALANCED", false));
                             break;
-                        case GameProperties.AIPlayerType.TITFORTAT:
-                            newPlayer = new AIPlayerTitForTat(playerUIPrefab, playerCanvas, GameGlobals.monoBehaviourFunctionalities, playerWarningPoppupRef, GameGlobals.players.Count, "John5", true);
+                        case GameProperties.PlayerType.TITFORTAT:
+                            manualGameParam.playerParameterizations.Add(new PlayerParameterization("Tim", "TITFORTAT", false));
                             break;
                     }
-                    GameGlobals.players.Add(newPlayer);
-                    GameGlobals.gameDiceNG = new RandomDiceNG();
-                    CheckForAllPlayersRegistered();
+                    CheckForAllPlayersRegistered(manualGameParam);
                 });
             }
 
@@ -217,34 +186,42 @@ public class PlayersSetupSceneFunctionalities : MonoBehaviour {
                 {
                     if (button.gameObject.name.EndsWith("1"))
                     {
-                        ConfigureAllHumanPlayers();
-                        GameGlobals.gameDiceNG = new RandomDiceNG();
+                        manualGameParam.playerParameterizations.Add(new PlayerParameterization("Player", "HUMAN", false));
+                        manualGameParam.playerParameterizations.Add(new PlayerParameterization("Player", "HUMAN", false));
+                        manualGameParam.playerParameterizations.Add(new PlayerParameterization("Player", "HUMAN", false));
+                        manualGameParam.ngType = "RANDOM";
                     }
                     else if (button.gameObject.name.EndsWith("2"))
                     {
-                        ConfigureAITestRRH();
-                        GameGlobals.gameDiceNG = new RandomDiceNG();
+                        manualGameParam.playerParameterizations.Add(new PlayerParameterization("Player", "COOPERATIVE", false));
+                        manualGameParam.playerParameterizations.Add(new PlayerParameterization("Player", "GREEDY", false));
+                        manualGameParam.playerParameterizations.Add(new PlayerParameterization("Player", "HUMAN", false));
+                        manualGameParam.ngType = "VICTORY";
                     }
                     else if (button.gameObject.name.EndsWith("3"))
                     {
-                        ConfigureConditionA();
+                        manualGameParam.playerParameterizations.Add(new PlayerParameterization("Player", "COOPERATIVE", false));
+                        manualGameParam.playerParameterizations.Add(new PlayerParameterization("Player", "GREEDY", false));
+                        manualGameParam.playerParameterizations.Add(new PlayerParameterization("Player", "HUMAN", false));
+                        manualGameParam.ngType = "LOSS";
                     }
                     else if (button.gameObject.name.EndsWith("4"))
                     {
-                        ConfigureConditionB();
+                        manualGameParam.playerParameterizations.Add(new PlayerParameterization("Player", "COOPERATIVE", false));
+                        manualGameParam.playerParameterizations.Add(new PlayerParameterization("Player", "GREEDY", false));
+                        manualGameParam.playerParameterizations.Add(new PlayerParameterization("Player", "HUMAN", false));
+                        manualGameParam.ngType = "RANDOM";
                     }
                     button.interactable = false;
-                    CheckForAllPlayersRegistered();
+                    CheckForAllPlayersRegistered(manualGameParam);
                 });
             }
 
         }
         else
         {
-            GameGlobals.players.Add(new AIPlayerCoopStrategy(playerUIPrefab, playerCanvas, GameGlobals.monoBehaviourFunctionalities, playerWarningPoppupRef, GameGlobals.players.Count, "John0", false));
-            GameGlobals.players.Add(new AIPlayerCoopStrategy(playerUIPrefab, playerCanvas, GameGlobals.monoBehaviourFunctionalities, playerWarningPoppupRef, GameGlobals.players.Count, "John0", false));
-            GameGlobals.players.Add(new AIPlayerCoopStrategy(playerUIPrefab, playerCanvas, GameGlobals.monoBehaviourFunctionalities, playerWarningPoppupRef, GameGlobals.players.Count, "John0", false));
-            GameGlobals.gameDiceNG = new RandomDiceNG();
+            //fetch config for simulation
+            SetUpParameterization(GameProperties.configurableProperties.possibleParameterizations[GameGlobals.autoGameConfigurationIndex]);
             StartGame();
         }
     }
@@ -254,11 +231,13 @@ public class PlayersSetupSceneFunctionalities : MonoBehaviour {
         GameSceneManager.LoadMainScene();
     }
 
-    void CheckForAllPlayersRegistered()
+    void CheckForAllPlayersRegistered(GameParameterization param)
     {
         UINameSelectionInputBox.text = "";
-        if (GameGlobals.players.Count == GameProperties.configurableProperties.numberOfPlayersPerGame)
+        if (param.playerParameterizations.Count == GameProperties.configurableProperties.numberOfPlayersPerGame)
         {
+            SetUpParameterization(param);
+
             UIStartGameButton.gameObject.SetActive(true);
             customizeLabel.gameObject.SetActive(false);
             UIAddPlayerButton.gameObject.SetActive(false);
