@@ -20,9 +20,11 @@ public class StartScreenFunctionalities : MonoBehaviour {
 
     private void InitGameGlobals()
     {
+        GameProperties.configurableProperties = new DynamicallyConfigurableGameProperties();
 
-        //Assign configurable game properties from file
-        DynamicallyConfigurableGameProperties configs = JsonUtility.FromJson<DynamicallyConfigurableGameProperties>(File.ReadAllText(Application.streamingAssetsPath + "/config.cfg"));
+        //Assign configurable game properties from file if any
+        string configText = File.ReadAllText(Application.streamingAssetsPath + "/config.cfg");
+        DynamicallyConfigurableGameProperties configs = JsonUtility.FromJson<DynamicallyConfigurableGameProperties>(configText);
         GameProperties.configurableProperties = configs;
 
         GameObject monoBehaviourDummy = Instantiate(monoBehaviourDummyPrefab);
@@ -97,7 +99,7 @@ public class StartScreenFunctionalities : MonoBehaviour {
         }
 
         //init fatima strings
-        GameGlobals.FAtiMAScenarioPath = "/Scenarios/ForTheRecord.iat";
+        GameGlobals.FAtiMAScenarioPath = "/Scenarios/ForTheRecord-EN.iat";
 
         AssetManager.Instance.Bridge = new AssetManagerBridge();
         GameGlobals.FAtiMAIat = IntegratedAuthoringToolAsset.LoadFromFile(GameGlobals.FAtiMAScenarioPath);
@@ -109,7 +111,7 @@ public class StartScreenFunctionalities : MonoBehaviour {
 
         string lastConditionString = ((MySQLLogManager) GameGlobals.gameLogManager).phpConnection.text;
 
-        int lastConditionIndex = 0;
+        int lastConditionIndex = -1;
         if (lastConditionString != "")
         {
             string lastConditionChar = lastConditionString;
@@ -129,8 +131,9 @@ public class StartScreenFunctionalities : MonoBehaviour {
         }
         else
         {
-            GameGlobals.autoGameConfigurationIndex = ((int)lastConditionIndex) +1 % possibleConditions.Count;
-            GameGlobals.currSessionId += GameProperties.configurableProperties.possibleParameterizations[GameGlobals.autoGameConfigurationIndex].id;
+            int autoGameConfigurationIndex = ((int)lastConditionIndex) +1 % possibleConditions.Count;
+            GameProperties.currGameParameterization = GameProperties.configurableProperties.possibleParameterizations[autoGameConfigurationIndex];
+            GameGlobals.currSessionId += GameProperties.currGameParameterization.id;
             if(!GameProperties.configurableProperties.isSimulation) this.UIStartGameButton.interactable = true;
         }
         return 0;

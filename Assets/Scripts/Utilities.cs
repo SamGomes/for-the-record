@@ -30,10 +30,6 @@ public static class GameGlobals
     //fatima stuff
     public static string FAtiMAScenarioPath;
     public static IntegratedAuthoringToolAsset FAtiMAIat;
-
-    //only for simulation or auto debriefing
-    public static int autoGameConfigurationIndex;
-
 }
 
 public static class GameProperties
@@ -81,6 +77,8 @@ public static class GameProperties
         LOSS
     }
 
+    public static GameParameterization currGameParameterization; //assigned automatically when isAutomaticDebriefing or isSimulation is assigned
+
     public static DynamicallyConfigurableGameProperties configurableProperties;
 }
 
@@ -104,7 +102,7 @@ public class DynamicallyConfigurableGameProperties
 
 
     //----------- AutomaticBriefing -------------------
-    public bool isAutomaticalBriefing = true;
+    public bool isAutomaticalBriefing = false;
     public int numTutorialGamesToPlay = 0; //no tutorials
 
     //------------ Simulation --------------------
@@ -137,10 +135,20 @@ public struct PlayerParameterization
     public string playerType;
     public bool isSpeechAllowed;
 
-    public PlayerParameterization(string name, string playerType, bool isSpeechAllowed)
+    //used when the the game ngType is not RANDOM
+    public int[] fixedInstrumentDiceResults; 
+    public int[] fixedMarketingDiceResults;
+
+    public PlayerParameterization(string name, string playerType, bool isSpeechAllowed, int[] fixedInstrumentDiceResults, int[] fixedMarketingDiceResults)
     {
         this.name = name;
         this.isSpeechAllowed = isSpeechAllowed;
         this.playerType = playerType;
+
+        this.fixedInstrumentDiceResults = fixedInstrumentDiceResults;
+        this.fixedMarketingDiceResults = fixedMarketingDiceResults;
     }
+
+    public PlayerParameterization(string name, string playerType, bool isSpeechAllowed) : this(name, playerType, isSpeechAllowed, new int[] { }, new int[] { }) { }
+    public PlayerParameterization(string name, string playerType) : this(name, playerType, false, new int[] { }, new int[] { }) { }
 }

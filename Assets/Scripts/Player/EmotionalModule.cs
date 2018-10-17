@@ -35,7 +35,6 @@ public class EmotionalModule : MonoBehaviour
 
     void Start()
     {
-        this.speechBalloonDelayInSeconds = 2.0f;
         isStopped = false;
 
         string rpcPath = GameGlobals.FAtiMAIat.GetAllCharacterSources().FirstOrDefault().Source;

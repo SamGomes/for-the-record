@@ -65,10 +65,10 @@ public class PlayersSetupSceneFunctionalities : MonoBehaviour {
             case "RANDOM":
                 GameGlobals.gameDiceNG = new RandomDiceNG();
                 break;
-            case "LOSS":
+            case "FIXED:LOSS":
                 GameGlobals.gameDiceNG = new LossDiceNG();
                 break;
-            case "VICTORY":
+            case "FIXED:VICTORY":
                 GameGlobals.gameDiceNG = new VictoryDiceNG();
                 break;
             default:
@@ -99,12 +99,7 @@ public class PlayersSetupSceneFunctionalities : MonoBehaviour {
                         new PlayerParameterization("Player","HUMAN",false),
                     };
                     testGameParam.ngType = "RANDOM";
-                    SetUpParameterization(testGameParam);
-                }
-                else
-                {
-                    //play experiment game
-                    SetUpParameterization(GameProperties.configurableProperties.possibleParameterizations[GameGlobals.autoGameConfigurationIndex]);
+                    GameProperties.currGameParameterization = testGameParam;
                 }
                 StartGame();
                 return;
@@ -141,7 +136,7 @@ public class PlayersSetupSceneFunctionalities : MonoBehaviour {
 
             UIStartGameButton.onClick.AddListener(delegate { StartGame(); });
             UIAddPlayerButton.onClick.AddListener(delegate {
-                manualGameParam.playerParameterizations.Add(new PlayerParameterization("Sam", "HUMAN", false));
+                manualGameParam.playerParameterizations.Add(new PlayerParameterization("Sam", "HUMAN"));
                 CheckForAllPlayersRegistered(manualGameParam);
             });
 
@@ -186,30 +181,30 @@ public class PlayersSetupSceneFunctionalities : MonoBehaviour {
                 {
                     if (button.gameObject.name.EndsWith("1"))
                     {
-                        manualGameParam.playerParameterizations.Add(new PlayerParameterization("Player", "HUMAN", false));
-                        manualGameParam.playerParameterizations.Add(new PlayerParameterization("Player", "HUMAN", false));
-                        manualGameParam.playerParameterizations.Add(new PlayerParameterization("Player", "HUMAN", false));
+                        manualGameParam.playerParameterizations.Add(new PlayerParameterization("Player", "HUMAN"));
+                        manualGameParam.playerParameterizations.Add(new PlayerParameterization("Player", "HUMAN"));
+                        manualGameParam.playerParameterizations.Add(new PlayerParameterization("Player", "HUMAN"));
                         manualGameParam.ngType = "RANDOM";
                     }
                     else if (button.gameObject.name.EndsWith("2"))
                     {
                         manualGameParam.playerParameterizations.Add(new PlayerParameterization("Player", "COOPERATIVE", false));
                         manualGameParam.playerParameterizations.Add(new PlayerParameterization("Player", "GREEDY", false));
-                        manualGameParam.playerParameterizations.Add(new PlayerParameterization("Player", "HUMAN", false));
+                        manualGameParam.playerParameterizations.Add(new PlayerParameterization("Player", "HUMAN"));
                         manualGameParam.ngType = "VICTORY";
                     }
                     else if (button.gameObject.name.EndsWith("3"))
                     {
                         manualGameParam.playerParameterizations.Add(new PlayerParameterization("Player", "COOPERATIVE", false));
                         manualGameParam.playerParameterizations.Add(new PlayerParameterization("Player", "GREEDY", false));
-                        manualGameParam.playerParameterizations.Add(new PlayerParameterization("Player", "HUMAN", false));
+                        manualGameParam.playerParameterizations.Add(new PlayerParameterization("Player", "HUMAN"));
                         manualGameParam.ngType = "LOSS";
                     }
                     else if (button.gameObject.name.EndsWith("4"))
                     {
                         manualGameParam.playerParameterizations.Add(new PlayerParameterization("Player", "COOPERATIVE", false));
                         manualGameParam.playerParameterizations.Add(new PlayerParameterization("Player", "GREEDY", false));
-                        manualGameParam.playerParameterizations.Add(new PlayerParameterization("Player", "HUMAN", false));
+                        manualGameParam.playerParameterizations.Add(new PlayerParameterization("Player", "HUMAN"));
                         manualGameParam.ngType = "RANDOM";
                     }
                     button.interactable = false;
@@ -221,13 +216,13 @@ public class PlayersSetupSceneFunctionalities : MonoBehaviour {
         else
         {
             //fetch config for simulation
-            SetUpParameterization(GameProperties.configurableProperties.possibleParameterizations[GameGlobals.autoGameConfigurationIndex]);
             StartGame();
         }
     }
 	
 	void StartGame()
     {
+        SetUpParameterization(GameProperties.currGameParameterization);
         GameSceneManager.LoadMainScene();
     }
 
@@ -236,7 +231,7 @@ public class PlayersSetupSceneFunctionalities : MonoBehaviour {
         UINameSelectionInputBox.text = "";
         if (param.playerParameterizations.Count == GameProperties.configurableProperties.numberOfPlayersPerGame)
         {
-            SetUpParameterization(param);
+            GameProperties.currGameParameterization = param;
 
             UIStartGameButton.gameObject.SetActive(true);
             customizeLabel.gameObject.SetActive(false);

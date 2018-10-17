@@ -237,8 +237,7 @@ public class EndScreenFunctionalities : MonoBehaviour
 
 
 
-        string parameteriztion = (GameProperties.configurableProperties.isAutomaticalBriefing) ? GameProperties.configurableProperties.possibleParameterizations[GameGlobals.autoGameConfigurationIndex].ToString() : "-";
-        GameGlobals.gameLogManager.WriteGameToLog(GameGlobals.currSessionId.ToString(), GameGlobals.currGameId.ToString(), parameteriztion, GameGlobals.currGameState.ToString());
+        GameGlobals.gameLogManager.WriteGameToLog(GameGlobals.currSessionId.ToString(), GameGlobals.currGameId.ToString(), GameProperties.currGameParameterization.id, GameGlobals.currGameState.ToString());
         GameGlobals.gameLogManager.EndLogs();
 
 

@@ -494,7 +494,7 @@ public abstract class AIPlayer : UIPlayer
             //Fatima call
             emotionalModule.Perceive(new Name[] {
             EventHelper.PropertyChange("Character(Name)", name, name),
-                EventHelper.PropertyChange("Album(Last)", "False", name),
+            EventHelper.PropertyChange("Album(Last)", "False", name),
             EventHelper.PropertyChange("State(Game)", "ChoosePreferredInstrument", name) });
             emotionalModule.Decide();
 

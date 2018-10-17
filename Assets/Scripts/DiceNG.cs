@@ -24,7 +24,6 @@ public abstract class FixedDiceNG : IDiceNG
 
     //associate one player and one round to dice results (1 dice, 2 dices, etc. )
     private Dictionary<Player, Dictionary<GameProperties.Instrument, Dictionary<int, int[]>>> seriesForDices6;
-    private int currTotalDiceValue;
     private List<int> currIndividualDiceValues;
     protected System.Random random = new System.Random();
 
@@ -47,56 +46,43 @@ public abstract class FixedDiceNG : IDiceNG
                 }
             }
         }
+        
 
-        Player player1 = GameGlobals.players[0];
-        Player player2 = GameGlobals.players[1];
-        Player player3 = GameGlobals.players[2];
-
-        foreach (GameProperties.Instrument instrument in System.Enum.GetValues(typeof(GameProperties.Instrument)))
+        for (int i=0; i<GameGlobals.players.Count; i++)
         {
-            if (instrument == GameProperties.Instrument.MARKETING)
+            Player currPlayer = GameGlobals.players[i];
+            PlayerParameterization currPlayerParam = GameProperties.currGameParameterization.playerParameterizations[i];
+
+            int lastVisitedIndex = 0;
+
+            for (int j = 0; j < GameProperties.configurableProperties.numberOfAlbumsPerGame; j++)
             {
-                break;
+                foreach (GameProperties.Instrument instrument in System.Enum.GetValues(typeof(GameProperties.Instrument)))
+                {
+                    int[] currPossibleResults = new int[j+1];
+                    for (int k = 0; k <= j; k++)
+                    {
+                        if (currPlayerParam.fixedMarketingDiceResults == null || currPlayerParam.fixedInstrumentDiceResults == null) //failsafe
+                        {
+                            currPossibleResults[k] = 0;
+                            continue;
+                        }
+
+                        if (instrument == GameProperties.Instrument.MARKETING)
+                        {
+                            currPossibleResults[k] = currPlayerParam.fixedMarketingDiceResults[lastVisitedIndex + k];
+                        }
+                        else
+                        {
+                            currPossibleResults[k] = currPlayerParam.fixedInstrumentDiceResults[lastVisitedIndex + k];
+                        }
+                    }
+
+                    seriesForDices6[currPlayer][instrument][j] = currPossibleResults;
+                }
+                lastVisitedIndex += (j+1);
             }
-
-            seriesForDices6[player1][instrument][0] = new int[] { 4 };
-            seriesForDices6[player1][instrument][1] = new int[] { 2, 0 };
-            seriesForDices6[player1][instrument][2] = new int[] { 3, 0, 0 };
-            seriesForDices6[player1][instrument][3] = new int[] { 5, 0, 0, 0 };
-            seriesForDices6[player1][instrument][4] = new int[] { 1, 0, 0, 0, 0 };
-
-            seriesForDices6[player2][instrument][0] = new int[] { 2 }; // Av
-            seriesForDices6[player2][instrument][1] = new int[] { 0, 10 }; // Avg: 6
-            seriesForDices6[player2][instrument][2] = new int[] { 0, 0, 9 }; // Avg: 9
-            seriesForDices6[player2][instrument][3] = new int[] { 0, 0, 0, 18 }; // Avg: 12
-            seriesForDices6[player2][instrument][4] = new int[] { 0, 0, 0, 0, 21 }; // Avg: 15
-
-
-            seriesForDices6[player3][instrument][0] = new int[] { 6 };
-            seriesForDices6[player3][instrument][1] = new int[] { 4, 8 };
-            seriesForDices6[player3][instrument][2] = new int[] { 3, 6, 13 };
-            seriesForDices6[player3][instrument][3] = new int[] { 1, 9, 11, 15 };
-            seriesForDices6[player3][instrument][4] = new int[] { 5, 10, 8, 13, 23 };
         }
-
-        seriesForDices6[player1][GameProperties.Instrument.MARKETING][0] = new int[] { 0 };
-        seriesForDices6[player1][GameProperties.Instrument.MARKETING][1] = new int[] { 5, 0 };
-        seriesForDices6[player1][GameProperties.Instrument.MARKETING][2] = new int[] { 0, 0, 0 };
-        seriesForDices6[player1][GameProperties.Instrument.MARKETING][3] = new int[] { 0, 0, 11, 0 };
-        seriesForDices6[player1][GameProperties.Instrument.MARKETING][4] = new int[] { 0, 0, 0, 18, 0 }; // Total: 34k
-
-        seriesForDices6[player2][GameProperties.Instrument.MARKETING][0] = new int[] { 0 };
-        seriesForDices6[player2][GameProperties.Instrument.MARKETING][1] = new int[] { 0, 0 };
-        seriesForDices6[player2][GameProperties.Instrument.MARKETING][2] = new int[] { 0, 0, 0 };
-        seriesForDices6[player2][GameProperties.Instrument.MARKETING][3] = new int[] { 0, 0, 0, 0 };
-        seriesForDices6[player2][GameProperties.Instrument.MARKETING][4] = new int[] { 0, 0, 0, 0, 0 };
-
-        seriesForDices6[player3][GameProperties.Instrument.MARKETING][0] = new int[] { 0 };
-        seriesForDices6[player3][GameProperties.Instrument.MARKETING][1] = new int[] { 4, 0 };
-        seriesForDices6[player3][GameProperties.Instrument.MARKETING][2] = new int[] { 0, 0, 0 };
-        seriesForDices6[player3][GameProperties.Instrument.MARKETING][3] = new int[] { 5, 7, 10, 0 };
-        seriesForDices6[player3][GameProperties.Instrument.MARKETING][4] = new int[] { 2, 6, 11, 14, 0 }; //Max : 28K
-
 }
 
     protected int BadMarketRNG(int diceNumbers, int currNumberOfRolls)
@@ -114,7 +100,6 @@ public abstract class FixedDiceNG : IDiceNG
     {
         if (rollOrderNumber == 0) //first dart being launched
         {
-            currTotalDiceValue = 0;
             currIndividualDiceValues.Clear();
 
             //achieve the right value
