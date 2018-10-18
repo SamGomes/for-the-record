@@ -18,18 +18,28 @@ public class StartScreenFunctionalities : MonoBehaviour {
     public GameObject UIGameCodeDisplayPrefab;
     public GameObject monoBehaviourDummyPrefab;
 
-    private void InitGameGlobals()
+    private IEnumerator InitGameGlobals()
     {
+        string configText = "";
         GameProperties.configurableProperties = new DynamicallyConfigurableGameProperties();
 
         //Assign configurable game properties from file if any
-        string configText = File.ReadAllText(Application.streamingAssetsPath + "/config.cfg");
+        //Application.ExternalEval("console.log('streaming assets: "+ Application.streamingAssetsPath + "')");
+
+        string path = Application.streamingAssetsPath + "/config.cfg";
+        if (path.Contains("://") || path.Contains(":///")) //url instead of path
+        {
+            WWW www = new WWW(path);
+            yield return www;
+            configText = www.text;
+        }
+        else
+        {
+            configText = File.ReadAllText(path);
+        }
         DynamicallyConfigurableGameProperties configs = JsonUtility.FromJson<DynamicallyConfigurableGameProperties>(configText);
         GameProperties.configurableProperties = configs;
 
-        GameObject monoBehaviourDummy = Instantiate(monoBehaviourDummyPrefab);
-        DontDestroyOnLoad(monoBehaviourDummy);
-        GameGlobals.monoBehaviourFunctionalities = monoBehaviourDummy.GetComponent<MonoBehaviourFunctionalities>();
 
         GameGlobals.numberOfSpeakingPlayers = 0;
         GameGlobals.currGameId++;
@@ -157,7 +167,11 @@ public class StartScreenFunctionalities : MonoBehaviour {
         UIStartGameButton.onClick.AddListener(delegate () { StartGame(); });
 
 
-        InitGameGlobals();
+        //thanks WebGL, because of you I've got to init a game global to init the rest of the game globals!
+        GameObject monoBehaviourDummy = Instantiate(monoBehaviourDummyPrefab);
+        DontDestroyOnLoad(monoBehaviourDummy);
+        GameGlobals.monoBehaviourFunctionalities = monoBehaviourDummy.GetComponent<MonoBehaviourFunctionalities>();
+        GameGlobals.monoBehaviourFunctionalities.StartCoroutine(InitGameGlobals());
 
         if (!GameProperties.configurableProperties.isSimulation)
         {

@@ -57,7 +57,7 @@ public class PoppupScreenFunctionalities
         poppupInstance = UnityEngine.Object.Instantiate(poppupPrefab, canvas.transform).gameObject;
         if (isGlobal)
         {
-            UnityEngine.Object.DontDestroyOnLoad(poppupInstance); //do not despawn poppups
+            UnityEngine.Object.DontDestroyOnLoad(canvas); //canvas is the one to call as it is the root of poppupInstance. Also do not despawn poppups
         }
 
         Image backround = poppupInstance.transform.Find("messageBackground").GetComponent<Image>();
@@ -71,13 +71,22 @@ public class PoppupScreenFunctionalities
         this.OnHide = OnHide;
         this.OnShow = OnShow;
 
+        if (OnShow != null)
+        {
+            this.AddOnShow(OnShow);
+        }
+        if(OnHide != null)
+        { 
+            this.AddOnHide(OnHide);
+        }
+
+        //avoid warnings
+        OnHide = null;
+        OnShow = null;
+
         HidePoppupPanel();
         UIcloseButton.onClick.AddListener(delegate ()
         {
-            if (OnHide!=null)
-            {
-                OnHide();
-            }
             HidePoppupPanel();
         });
 

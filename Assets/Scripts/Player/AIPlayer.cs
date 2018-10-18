@@ -545,12 +545,14 @@ public abstract class AIPlayer : UIPlayer
     //diceRollInstrument not used in current version, maintained to improve flexibility
     {
         yield return new WaitForSeconds(delay);
+
         if (!isSendingResponse)
         {
             //Fatima call
             emotionalModule.NumDices = skillSet[preferredInstrument];
             emotionalModule.Perceive(new Name[] {
-            EventHelper.PropertyChange("State(Game)", "PlayForInstrument", name) });
+                EventHelper.PropertyChange("State(Game)", "PlayForInstrument", name)
+            });
             emotionalModule.Decide();
 
             diceRollInstrument = PlayforInstrumentActions(currAlbum);

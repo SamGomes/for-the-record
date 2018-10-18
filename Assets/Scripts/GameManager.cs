@@ -87,11 +87,13 @@ public class GameManager : MonoBehaviour {
 
     public int InterruptGame()
     {
+        Debug.Log("interrupted");
         interruptionRequests++;
         return 0;
     }
     public int ContinueGame()
     {
+        Debug.Log("continued");
         interruptionRequests--;
         return 0;
     }
@@ -779,7 +781,6 @@ public class GameManager : MonoBehaviour {
     {
         //auto level up after choosing instrument
         invoker.SpendToken(invoker.GetPreferredInstrument());
-
         choosePreferedInstrumentResponseReceived = true;
     }
     public void LevelUpResponse(Player invoker)
