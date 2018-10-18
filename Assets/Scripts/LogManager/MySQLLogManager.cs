@@ -7,13 +7,13 @@ public class MySQLLogManager : ILogManager
 {
     private string phpLogServerConnectionPath;
     private string databaseName;
-    public WWW phpConnection;
+    private WWW phpConnection;
 
-    private IEnumerator YieldedActions(WWW connection, Func<int> yieldedReaction)
+    private IEnumerator YieldedActions(WWW connection, Func<string,int> yieldedReaction)
     {
         yield return connection;
         phpConnection = connection;
-        yieldedReaction();
+        yieldedReaction(phpConnection.text);
     }
 
     public void InitLogs()
@@ -97,7 +97,7 @@ public class MySQLLogManager : ILogManager
         //while (!phpConnection.isDone) { } //wait until php is done
     }
 
-    public string GetLastSessionConditionFromLog(Func<int> yieldedReactionToGet)
+    public void GetLastSessionConditionFromLog(Func<string,int> yieldedReactionToGet)
     {
        
         WWWForm form = new WWWForm();
@@ -111,10 +111,6 @@ public class MySQLLogManager : ILogManager
         phpConnection = new WWW(phpLogServerConnectionPath, form);
 
         GameGlobals.monoBehaviourFunctionalities.StartCoroutine(YieldedActions(phpConnection, yieldedReactionToGet));
-        
-
-        return "<error>";
-        //return phpConnection.text;
     }
 
     public void EndLogs() { }

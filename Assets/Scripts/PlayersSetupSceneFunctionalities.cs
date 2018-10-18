@@ -24,9 +24,33 @@ public class PlayersSetupSceneFunctionalities : MonoBehaviour {
     {
         GameGlobals.players.Clear();
         int currPlayerId = 0;
-        for(int i=0; i<parameterization.playerParameterizations.Count; i++)
+        for (int i = 0; i < parameterization.playerParameterizations.Count; i++)
         {
             PlayerParameterization currParam = parameterization.playerParameterizations[i];
+
+            GameProperties.Instrument currLikedInstrument = GameProperties.Instrument.NONE;
+
+            switch (currParam.likedInstrument)
+            {
+                case "GUITAR":
+                    currLikedInstrument = GameProperties.Instrument.GUITAR;
+                    break;
+                case "DRUMS":
+                    currLikedInstrument = GameProperties.Instrument.DRUMS;
+                    break;
+                case "VOCALS":
+                    currLikedInstrument = GameProperties.Instrument.VOCALS;
+                    break;
+                case "KEYBOARD":
+                    currLikedInstrument = GameProperties.Instrument.KEYBOARD;
+                    break;
+                case "BASS":
+                    currLikedInstrument = GameProperties.Instrument.BASS;
+                    break;
+                default:
+                    currLikedInstrument = GameProperties.Instrument.GUITAR;
+                    break;
+            }
 
             switch (currParam.playerType)
             {
@@ -34,25 +58,25 @@ public class PlayersSetupSceneFunctionalities : MonoBehaviour {
                     GameGlobals.players.Add(new UIPlayer(playerUIPrefab, playerCanvas, GameGlobals.monoBehaviourFunctionalities, playerWarningPoppupRef, currPlayerId++, currParam.name));
                     break;
                 case "SIMPLE":
-                    GameGlobals.players.Add(new AIPlayerSimpleStrategy(playerUIPrefab, playerCanvas, GameGlobals.monoBehaviourFunctionalities, playerWarningPoppupRef, currPlayerId++, currParam.name, currParam.isSpeechAllowed));
+                    GameGlobals.players.Add(new AIPlayerSimpleStrategy(playerUIPrefab, playerCanvas, GameGlobals.monoBehaviourFunctionalities, playerWarningPoppupRef, currPlayerId++, currParam.name, currParam.isSpeechAllowed, currLikedInstrument));
                     break;
                 case "RANDOM":
-                    GameGlobals.players.Add(new AIPlayerRandomStrategy(playerUIPrefab, playerCanvas, GameGlobals.monoBehaviourFunctionalities, playerWarningPoppupRef, currPlayerId++, currParam.name, currParam.isSpeechAllowed));
+                    GameGlobals.players.Add(new AIPlayerRandomStrategy(playerUIPrefab, playerCanvas, GameGlobals.monoBehaviourFunctionalities, playerWarningPoppupRef, currPlayerId++, currParam.name, currParam.isSpeechAllowed, currLikedInstrument));
                     break;
                 case "COOPERATIVE":
-                    GameGlobals.players.Add(new AIPlayerCoopStrategy(playerUIPrefab, playerCanvas, GameGlobals.monoBehaviourFunctionalities, playerWarningPoppupRef, currPlayerId++, currParam.name, currParam.isSpeechAllowed));
+                    GameGlobals.players.Add(new AIPlayerCoopStrategy(playerUIPrefab, playerCanvas, GameGlobals.monoBehaviourFunctionalities, playerWarningPoppupRef, currPlayerId++, currParam.name, currParam.isSpeechAllowed, currLikedInstrument));
                     break;
                 case "GREEDY":
-                    GameGlobals.players.Add(new AIPlayerGreedyStrategy(playerUIPrefab, playerCanvas, GameGlobals.monoBehaviourFunctionalities, playerWarningPoppupRef, currPlayerId++, currParam.name, currParam.isSpeechAllowed));
+                    GameGlobals.players.Add(new AIPlayerGreedyStrategy(playerUIPrefab, playerCanvas, GameGlobals.monoBehaviourFunctionalities, playerWarningPoppupRef, currPlayerId++, currParam.name, currParam.isSpeechAllowed, currLikedInstrument));
                     break;
                 case "BALANCED":
-                    GameGlobals.players.Add(new AIPlayerBalancedStrategy(playerUIPrefab, playerCanvas, GameGlobals.monoBehaviourFunctionalities, playerWarningPoppupRef, currPlayerId++, currParam.name, currParam.isSpeechAllowed));
+                    GameGlobals.players.Add(new AIPlayerBalancedStrategy(playerUIPrefab, playerCanvas, GameGlobals.monoBehaviourFunctionalities, playerWarningPoppupRef, currPlayerId++, currParam.name, currParam.isSpeechAllowed, currLikedInstrument));
                     break;
                 case "UNBALANCED":
-                    GameGlobals.players.Add(new AIPlayerUnbalancedStrategy(playerUIPrefab, playerCanvas, GameGlobals.monoBehaviourFunctionalities, playerWarningPoppupRef, currPlayerId++, currParam.name, currParam.isSpeechAllowed));
+                    GameGlobals.players.Add(new AIPlayerUnbalancedStrategy(playerUIPrefab, playerCanvas, GameGlobals.monoBehaviourFunctionalities, playerWarningPoppupRef, currPlayerId++, currParam.name, currParam.isSpeechAllowed, currLikedInstrument));
                     break;
                 case "TITFORTAT":
-                    GameGlobals.players.Add(new AIPlayerTitForTatStrategy(playerUIPrefab, playerCanvas, GameGlobals.monoBehaviourFunctionalities, playerWarningPoppupRef, currPlayerId++, currParam.name, currParam.isSpeechAllowed));
+                    GameGlobals.players.Add(new AIPlayerTitForTatStrategy(playerUIPrefab, playerCanvas, GameGlobals.monoBehaviourFunctionalities, playerWarningPoppupRef, currPlayerId++, currParam.name, currParam.isSpeechAllowed, currLikedInstrument));
                     break;
                 default:
                     Debug.Log("[ERROR]: player type " + currParam.playerType+" not recognized.");

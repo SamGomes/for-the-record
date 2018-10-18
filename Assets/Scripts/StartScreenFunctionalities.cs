@@ -37,7 +37,7 @@ public class StartScreenFunctionalities : MonoBehaviour {
         GameGlobals.albumIdCount = 0;
 
         GameGlobals.gameDiceNG = new RandomDiceNG();
-        GameGlobals.gameLogManager = new MySQLLogManager();
+        GameGlobals.gameLogManager = new DebugLogManager();
         GameGlobals.audioManager = new AudioManager();
 
 
@@ -105,11 +105,9 @@ public class StartScreenFunctionalities : MonoBehaviour {
         GameGlobals.FAtiMAIat = IntegratedAuthoringToolAsset.LoadFromFile(GameGlobals.FAtiMAScenarioPath);
     }
 
-    private int AppendConditionToGameCode()
+    private int AppendConditionToGameCode(string lastConditionString)
     {
         List<GameParameterization> possibleConditions = GameProperties.configurableProperties.possibleParameterizations;
-
-        string lastConditionString = ((MySQLLogManager) GameGlobals.gameLogManager).phpConnection.text;
 
         int lastConditionIndex = -1;
         if (lastConditionString != "")

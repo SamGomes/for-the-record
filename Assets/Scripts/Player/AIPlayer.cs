@@ -1,5 +1,6 @@
 ﻿using RolePlayCharacter;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -7,6 +8,8 @@ using WellFormedNames;
 
 public abstract class AIPlayer : UIPlayer
 {
+    protected GameProperties.Instrument likedInstrument; //Instrument I would like to get (not guaranteed to get)
+
     protected float choosePreferredInstrumentDelay;
     protected float levelUpThinkingDelay;
     protected float playForInstrumentThinkingDelay;
@@ -29,9 +32,13 @@ public abstract class AIPlayer : UIPlayer
 
     protected EmotionalModule emotionalModule;
 
-    public AIPlayer(GameObject playerUIPrefab, GameObject canvas, MonoBehaviourFunctionalities playerMonoBehaviourFunctionalities, PoppupScreenFunctionalities warningScreenref, int id, string name, bool isSpeechAllowed) : base(playerUIPrefab, canvas, playerMonoBehaviourFunctionalities, warningScreenref,id, name){
-
+    public AIPlayer(GameObject playerUIPrefab, GameObject canvas, MonoBehaviourFunctionalities playerMonoBehaviourFunctionalities, 
+        PoppupScreenFunctionalities warningScreenref,
+        int id, string name, bool isSpeechAllowed, GameProperties.Instrument likedInstrument) : base(playerUIPrefab, canvas, playerMonoBehaviourFunctionalities, warningScreenref, id, name)
+    { 
         InitDelays();
+
+        this.likedInstrument = likedInstrument;
 
         GameObject erp = new GameObject("EmotionalRoboticPlayer");
         emotionalModule = erp.AddComponent<EmotionalModule>();
@@ -371,9 +378,10 @@ public abstract class AIPlayer : UIPlayer
     //All AI players pick one of the available instruments similarly
     //All AI players play for the available instruments similarly
     protected virtual GameProperties.Instrument ChoosePreferredInstrumentActions(Album currAlbum) {
-
-        foreach (GameProperties.Instrument instrument in skillSet.Keys)
+        List<GameProperties.Instrument> skillSetKeys = new List<GameProperties.Instrument>(skillSet.Keys);
+        for (int i=(int)likedInstrument; i<skillSetKeys.Count; i= ((i+1)%skillSetKeys.Count))
         {
+            GameProperties.Instrument currInstrument = skillSetKeys[i];
             bool instrumentIsAvailable = true;
             //check if other players have the same preferred instrument
             foreach (Player player in GameGlobals.players)
@@ -382,7 +390,7 @@ public abstract class AIPlayer : UIPlayer
                 {
                     continue;
                 }
-                if (player.GetPreferredInstrument() == instrument)
+                if (player.GetPreferredInstrument() == currInstrument)
                 {
                     instrumentIsAvailable = false;
                     break;
@@ -390,11 +398,10 @@ public abstract class AIPlayer : UIPlayer
             }
             if (instrumentIsAvailable)
             {
-                return instrument;
+                return currInstrument;
             }
         }
         return GameProperties.Instrument.NONE;
-
     }
     protected virtual GameProperties.Instrument LevelUpActions(Album currAlbum) { return GameProperties.Instrument.NONE; }
     protected virtual GameProperties.Instrument PlayforInstrumentActions(Album currAlbum) {
@@ -613,7 +620,8 @@ public abstract class AIPlayer : UIPlayer
 
 public class AIPlayerSimpleStrategy : AIPlayer
 {
-    public AIPlayerSimpleStrategy(GameObject playerUIPrefab, GameObject canvas, MonoBehaviourFunctionalities playerMonoBehaviourFunctionalities, PoppupScreenFunctionalities warningScreenref, int id, string name, bool isSpeechAllowed) : base(playerUIPrefab, canvas, playerMonoBehaviourFunctionalities, warningScreenref, id, name, isSpeechAllowed)
+    public AIPlayerSimpleStrategy(GameObject playerUIPrefab, GameObject canvas, MonoBehaviourFunctionalities playerMonoBehaviourFunctionalities, PoppupScreenFunctionalities warningScreenref, int id, string name, bool isSpeechAllowed) : this(playerUIPrefab, canvas, playerMonoBehaviourFunctionalities, warningScreenref, id, name, isSpeechAllowed, GameProperties.Instrument.NONE) { }
+    public AIPlayerSimpleStrategy(GameObject playerUIPrefab, GameObject canvas, MonoBehaviourFunctionalities playerMonoBehaviourFunctionalities, PoppupScreenFunctionalities warningScreenref, int id, string name, bool isSpeechAllowed, GameProperties.Instrument likedInstrument) : base(playerUIPrefab, canvas, playerMonoBehaviourFunctionalities, warningScreenref, id, name, isSpeechAllowed, likedInstrument)
     {
         this.type = GameProperties.PlayerType.SIMPLE;
     }
@@ -640,7 +648,8 @@ public class AIPlayerSimpleStrategy : AIPlayer
 
 public class AIPlayerRandomStrategy : AIPlayer
 {
-    public AIPlayerRandomStrategy(GameObject playerUIPrefab, GameObject canvas, MonoBehaviourFunctionalities playerMonoBehaviourFunctionalities, PoppupScreenFunctionalities warningScreenref, int id, string name, bool isSpeechAllowed) : base(playerUIPrefab, canvas, playerMonoBehaviourFunctionalities, warningScreenref, id, name, isSpeechAllowed)
+    public AIPlayerRandomStrategy(GameObject playerUIPrefab, GameObject canvas, MonoBehaviourFunctionalities playerMonoBehaviourFunctionalities, PoppupScreenFunctionalities warningScreenref, int id, string name, bool isSpeechAllowed) : this(playerUIPrefab, canvas, playerMonoBehaviourFunctionalities, warningScreenref, id, name, isSpeechAllowed, GameProperties.Instrument.NONE) { }
+    public AIPlayerRandomStrategy(GameObject playerUIPrefab, GameObject canvas, MonoBehaviourFunctionalities playerMonoBehaviourFunctionalities, PoppupScreenFunctionalities warningScreenref, int id, string name, bool isSpeechAllowed, GameProperties.Instrument likedInstrument) : base(playerUIPrefab, canvas, playerMonoBehaviourFunctionalities, warningScreenref, id, name, isSpeechAllowed, likedInstrument)
     {
         this.type = GameProperties.PlayerType.RANDOM;
     }
@@ -669,7 +678,8 @@ public class AIPlayerRandomStrategy : AIPlayer
 
 public class AIPlayerCoopStrategy : AIPlayer
 {
-    public AIPlayerCoopStrategy(GameObject playerUIPrefab, GameObject canvas, MonoBehaviourFunctionalities playerMonoBehaviourFunctionalities, PoppupScreenFunctionalities warningScreenref, int id, string name, bool isSpeechAllowed) : base(playerUIPrefab, canvas, playerMonoBehaviourFunctionalities, warningScreenref, id, name, isSpeechAllowed)
+    public AIPlayerCoopStrategy(GameObject playerUIPrefab, GameObject canvas, MonoBehaviourFunctionalities playerMonoBehaviourFunctionalities, PoppupScreenFunctionalities warningScreenref, int id, string name, bool isSpeechAllowed) : this(playerUIPrefab, canvas, playerMonoBehaviourFunctionalities, warningScreenref, id, name, isSpeechAllowed, GameProperties.Instrument.NONE) { }
+    public AIPlayerCoopStrategy(GameObject playerUIPrefab, GameObject canvas, MonoBehaviourFunctionalities playerMonoBehaviourFunctionalities, PoppupScreenFunctionalities warningScreenref, int id, string name, bool isSpeechAllowed, GameProperties.Instrument likedInstrument) : base(playerUIPrefab, canvas, playerMonoBehaviourFunctionalities, warningScreenref, id, name, isSpeechAllowed, likedInstrument)
     {
         this.type = GameProperties.PlayerType.COOPERATIVE;
     }
@@ -700,7 +710,8 @@ public class AIPlayerCoopStrategy : AIPlayer
 //this strategy always plays for markting except in the first play where it is cooperative. In the last decision it always trusts his markting.
 public class AIPlayerGreedyStrategy : AIPlayer
 {
-    public AIPlayerGreedyStrategy(GameObject playerUIPrefab, GameObject canvas, MonoBehaviourFunctionalities playerMonoBehaviourFunctionalities, PoppupScreenFunctionalities warningScreenref, int id, string name, bool isSpeechAllowed) : base(playerUIPrefab, canvas, playerMonoBehaviourFunctionalities, warningScreenref, id, name, isSpeechAllowed)
+    public AIPlayerGreedyStrategy(GameObject playerUIPrefab, GameObject canvas, MonoBehaviourFunctionalities playerMonoBehaviourFunctionalities, PoppupScreenFunctionalities warningScreenref, int id, string name, bool isSpeechAllowed) : this(playerUIPrefab, canvas, playerMonoBehaviourFunctionalities, warningScreenref, id, name, isSpeechAllowed, GameProperties.Instrument.NONE) { }
+    public AIPlayerGreedyStrategy(GameObject playerUIPrefab, GameObject canvas, MonoBehaviourFunctionalities playerMonoBehaviourFunctionalities, PoppupScreenFunctionalities warningScreenref, int id, string name, bool isSpeechAllowed, GameProperties.Instrument likedInstrument) : base(playerUIPrefab, canvas, playerMonoBehaviourFunctionalities, warningScreenref, id, name, isSpeechAllowed, likedInstrument)
     {
         this.type = GameProperties.PlayerType.GREEDY;
     }
@@ -727,7 +738,8 @@ public class AIPlayerGreedyStrategy : AIPlayer
 
 public class AIPlayerBalancedStrategy : AIPlayer
 {
-    public AIPlayerBalancedStrategy(GameObject playerUIPrefab, GameObject canvas, MonoBehaviourFunctionalities playerMonoBehaviourFunctionalities, PoppupScreenFunctionalities warningScreenref, int id, string name, bool isSpeechAllowed) : base(playerUIPrefab, canvas, playerMonoBehaviourFunctionalities, warningScreenref, id, name, isSpeechAllowed)
+    public AIPlayerBalancedStrategy(GameObject playerUIPrefab, GameObject canvas, MonoBehaviourFunctionalities playerMonoBehaviourFunctionalities, PoppupScreenFunctionalities warningScreenref, int id, string name, bool isSpeechAllowed) : this(playerUIPrefab, canvas, playerMonoBehaviourFunctionalities, warningScreenref, id, name, isSpeechAllowed, GameProperties.Instrument.NONE) { }
+    public AIPlayerBalancedStrategy(GameObject playerUIPrefab, GameObject canvas, MonoBehaviourFunctionalities playerMonoBehaviourFunctionalities, PoppupScreenFunctionalities warningScreenref, int id, string name, bool isSpeechAllowed, GameProperties.Instrument likedInstrument) : base(playerUIPrefab, canvas, playerMonoBehaviourFunctionalities, warningScreenref, id, name, isSpeechAllowed, likedInstrument)
     {
         this.type = GameProperties.PlayerType.BALANCED;
     }
@@ -774,7 +786,8 @@ public class AIPlayerBalancedStrategy : AIPlayer
 
 public class AIPlayerUnbalancedStrategy : AIPlayer
 {
-    public AIPlayerUnbalancedStrategy(GameObject playerUIPrefab, GameObject canvas, MonoBehaviourFunctionalities playerMonoBehaviourFunctionalities, PoppupScreenFunctionalities warningScreenref, int id, string name, bool isSpeechAllowed) : base(playerUIPrefab, canvas, playerMonoBehaviourFunctionalities, warningScreenref, id, name, isSpeechAllowed)
+    public AIPlayerUnbalancedStrategy(GameObject playerUIPrefab, GameObject canvas, MonoBehaviourFunctionalities playerMonoBehaviourFunctionalities, PoppupScreenFunctionalities warningScreenref, int id, string name, bool isSpeechAllowed) : this(playerUIPrefab, canvas, playerMonoBehaviourFunctionalities, warningScreenref, id, name, isSpeechAllowed, GameProperties.Instrument.NONE){ }
+    public AIPlayerUnbalancedStrategy(GameObject playerUIPrefab, GameObject canvas, MonoBehaviourFunctionalities playerMonoBehaviourFunctionalities, PoppupScreenFunctionalities warningScreenref, int id, string name, bool isSpeechAllowed, GameProperties.Instrument likedInstrument) : base(playerUIPrefab, canvas, playerMonoBehaviourFunctionalities, warningScreenref, id, name, isSpeechAllowed, likedInstrument)
     {
         this.type = GameProperties.PlayerType.UNBALANCED;
     }
@@ -825,7 +838,8 @@ public class AIPlayerTitForTatStrategy : AIPlayer
     private bool didSomeoneDefectedLastRound;
     private bool didSomeoneDefectedThisRound;
 
-    public AIPlayerTitForTatStrategy(GameObject playerUIPrefab, GameObject canvas, MonoBehaviourFunctionalities playerMonoBehaviourFunctionalities, PoppupScreenFunctionalities warningScreenref, int id, string name, bool isSpeechAllowed) : base(playerUIPrefab, canvas, playerMonoBehaviourFunctionalities, warningScreenref, id, name, isSpeechAllowed)
+    public AIPlayerTitForTatStrategy(GameObject playerUIPrefab, GameObject canvas, MonoBehaviourFunctionalities playerMonoBehaviourFunctionalities, PoppupScreenFunctionalities warningScreenref, int id, string name, bool isSpeechAllowed) : this(playerUIPrefab, canvas, playerMonoBehaviourFunctionalities, warningScreenref, id, name, isSpeechAllowed, GameProperties.Instrument.NONE) { }
+    public AIPlayerTitForTatStrategy(GameObject playerUIPrefab, GameObject canvas, MonoBehaviourFunctionalities playerMonoBehaviourFunctionalities, PoppupScreenFunctionalities warningScreenref, int id, string name, bool isSpeechAllowed, GameProperties.Instrument likedInstrument) : base(playerUIPrefab, canvas, playerMonoBehaviourFunctionalities, warningScreenref, id, name, isSpeechAllowed, likedInstrument)
     {
         this.type = GameProperties.PlayerType.TITFORTAT;
         didSomeoneDefectedThisRound = false;

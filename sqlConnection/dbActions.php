@@ -39,7 +39,7 @@ if (isset($_POST["dbAction"])) {
 	$extraParams = $_POST["extraParams"];
 
 
-	$connection = new mysqli('fortherecordlogs.duckdns.org','ist176415','rootroot', $databaseName);
+	$connection = new mysqli('fortherecordlogs.duckdns.org','root','rootroot', $databaseName);
 
 	// if(!$connection->connect_error){
 	// 	echo "1";

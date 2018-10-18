@@ -29,10 +29,10 @@ public class DebugLogManager : ILogManager
         Debug.Log("WriteEventToLog: " + sessionId + ";" + currGameId + ";" + currGameRoundId + ";" + playerId + ";" + playerName + ";" + eventType + ";" + skill + ";" + coins);
     }
 
-    public string GetLastSessionConditionFromLog(Func<int> yieldedReactionToGet)
+    public void GetLastSessionConditionFromLog(Func<string,int> yieldedReactionToGet)
     {
         Debug.Log("GotLastSessionConditionFromLog");
-        return "A";
+        yieldedReactionToGet("A");
     }
 
     public void EndLogs()

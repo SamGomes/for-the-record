@@ -10,6 +10,6 @@ public interface ILogManager
     void WritePlayerResultsToLog(string sessionId, string currGameId, string currGameRoundId, string playerId, string playerName, string money);
     void WriteEventToLog(string sessionId, string currGameId, string currGameRoundId, string playerId, string playerName, string eventType, string instrument, string coins);
 
-    string GetLastSessionConditionFromLog(Func<int> yieldedReactionToGet);
+    void GetLastSessionConditionFromLog(Func<string,int> yieldedReactionToGet);
     void EndLogs();
 }

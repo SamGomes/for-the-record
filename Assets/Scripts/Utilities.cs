@@ -131,6 +131,7 @@ public struct GameParameterization
 [Serializable]
 public struct PlayerParameterization
 {
+
     public string name;
     public string playerType;
     public bool isSpeechAllowed;
@@ -139,7 +140,9 @@ public struct PlayerParameterization
     public int[] fixedInstrumentDiceResults; 
     public int[] fixedMarketingDiceResults;
 
-    public PlayerParameterization(string name, string playerType, bool isSpeechAllowed, int[] fixedInstrumentDiceResults, int[] fixedMarketingDiceResults)
+    public string likedInstrument;
+
+    public PlayerParameterization(string name, string playerType, bool isSpeechAllowed, int[] fixedInstrumentDiceResults, int[] fixedMarketingDiceResults, string likedInstrument)
     {
         this.name = name;
         this.isSpeechAllowed = isSpeechAllowed;
@@ -147,8 +150,10 @@ public struct PlayerParameterization
 
         this.fixedInstrumentDiceResults = fixedInstrumentDiceResults;
         this.fixedMarketingDiceResults = fixedMarketingDiceResults;
-    }
 
+        this.likedInstrument = likedInstrument;
+    }
+    public PlayerParameterization(string name, string playerType, bool isSpeechAllowed, int[] fixedInstrumentDiceResults, int[] fixedMarketingDiceResults) : this(name, playerType, isSpeechAllowed, fixedInstrumentDiceResults, fixedMarketingDiceResults, null) { }
     public PlayerParameterization(string name, string playerType, bool isSpeechAllowed) : this(name, playerType, isSpeechAllowed, new int[] { }, new int[] { }) { }
-    public PlayerParameterization(string name, string playerType) : this(name, playerType, false, new int[] { }, new int[] { }) { }
+    public PlayerParameterization(string name, string playerType) : this(name, playerType, false) { }
 }
