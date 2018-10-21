@@ -80,7 +80,14 @@ public static class GameProperties
     public static GameParameterization currGameParameterization; //assigned automatically when isAutomaticDebriefing or isSimulation is assigned
 
     public static DynamicallyConfigurableGameProperties configurableProperties;
+
+    public static bool displayFetchExternalConfigFileOption = true;
 }
+
+
+
+
+//configurations classes
 
 [Serializable]
 public class DynamicallyConfigurableGameProperties

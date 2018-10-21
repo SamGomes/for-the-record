@@ -12,15 +12,29 @@ using UnityEngine.UI;
 
 public class StartScreenFunctionalities : MonoBehaviour {
 
+
     private StreamReader fileReader;
+    
+    private Transform UIStartScreen;
+    public GameObject UILoadExternalConfigPrefab;
 
     private Button UIStartGameButton;
     public GameObject UIGameCodeDisplayPrefab;
     public GameObject monoBehaviourDummyPrefab;
 
+    private int autoGameConfigurationIndex;
+
+
+    private void UpdateGameConfig(string configText)
+    {
+        DynamicallyConfigurableGameProperties configs = JsonUtility.FromJson<DynamicallyConfigurableGameProperties>(configText);
+        GameProperties.configurableProperties = configs;
+    }
+
     private IEnumerator InitGameGlobals()
     {
         string configText = "";
+
         GameProperties.configurableProperties = new DynamicallyConfigurableGameProperties();
 
         //Assign configurable game properties from file if any
@@ -37,9 +51,8 @@ public class StartScreenFunctionalities : MonoBehaviour {
         {
             configText = File.ReadAllText(path);
         }
-        DynamicallyConfigurableGameProperties configs = JsonUtility.FromJson<DynamicallyConfigurableGameProperties>(configText);
-        GameProperties.configurableProperties = configs;
 
+        UpdateGameConfig(configText);
 
         GameGlobals.numberOfSpeakingPlayers = 0;
         GameGlobals.currGameId++;
@@ -95,6 +108,7 @@ public class StartScreenFunctionalities : MonoBehaviour {
             if (GameProperties.configurableProperties.isAutomaticalBriefing) //generate condition automatically (asynchronous)
             {
                 GameGlobals.gameLogManager.GetLastSessionConditionFromLog(AppendConditionToGameCode);
+                GameProperties.currGameParameterization = GameProperties.configurableProperties.possibleParameterizations[autoGameConfigurationIndex];
             }
             else{
                 this.UIStartGameButton.interactable = true;
@@ -135,14 +149,12 @@ public class StartScreenFunctionalities : MonoBehaviour {
         }
         if (possibleConditions.Count <= 0)
         {
-            Debug.Log("[ERROR]: isSimulation/ isAutomaticDebriefing is enabled but possibleConditions is empty!");
+            Debug.Log("[WARNING]: isSimulation/ isAutomaticDebriefing is enabled but possibleConditions is still empty!");
         }
         else
         {
-            int autoGameConfigurationIndex = ((int)lastConditionIndex) +1 % possibleConditions.Count;
-            GameProperties.currGameParameterization = GameProperties.configurableProperties.possibleParameterizations[autoGameConfigurationIndex];
+            autoGameConfigurationIndex = ((int)lastConditionIndex) +1 % possibleConditions.Count;
             GameGlobals.currSessionId += GameProperties.currGameParameterization.id;
-            if(!GameProperties.configurableProperties.isSimulation) this.UIStartGameButton.interactable = true;
         }
         return 0;
     }
@@ -153,15 +165,8 @@ public class StartScreenFunctionalities : MonoBehaviour {
         GameSceneManager.LoadPlayersSetupScene();
     }
 
-	void Start()
+    private void InitGame()
     {
-
-        // Make the game perform as good as possible
-        Application.targetFrameRate = 40;
-
-        this.UIStartGameButton = GameObject.Find("Canvas/StartScreen/startGameButton").gameObject.GetComponent<Button>();
-        this.UIStartGameButton.interactable = false;
-        
         //play theme song
         //GameGlobals.audioManager.PlayInfinitClip("Audio/theme/themeIntro", "Audio/theme/themeLoop");
         UIStartGameButton.onClick.AddListener(delegate () { StartGame(); });
@@ -175,6 +180,7 @@ public class StartScreenFunctionalities : MonoBehaviour {
 
         if (!GameProperties.configurableProperties.isSimulation)
         {
+            this.UIStartGameButton.interactable = true;
             if (GameProperties.configurableProperties.isAutomaticalBriefing)
             {
                 Text startButtonText = UIStartGameButton.GetComponentInChildren<Text>();
@@ -193,4 +199,31 @@ public class StartScreenFunctionalities : MonoBehaviour {
             StartGame();
         }
 	}
+
+    private void Start()
+    {
+        // Make the game perform as good as possible
+        Application.targetFrameRate = 40;
+        UIStartScreen = GameObject.Find("Canvas/StartScreen").transform;
+        if (GameProperties.displayFetchExternalConfigFileOption)
+        {
+            GameObject UILoadExternalConfig = Instantiate(UILoadExternalConfigPrefab,UIStartScreen);
+            InputField UIExternalConfig = UILoadExternalConfig.transform.Find("text").gameObject.GetComponent<InputField>();
+            Button UILoadExternalConfigButton = UILoadExternalConfig.transform.Find("button").gameObject.GetComponent<Button>();
+
+            UILoadExternalConfigButton.onClick.AddListener(delegate ()
+            {
+                string configText = UIExternalConfig.text;
+                UpdateGameConfig(configText);
+                GameProperties.currGameParameterization = GameProperties.configurableProperties.possibleParameterizations[autoGameConfigurationIndex];
+            });
+        }
+        
+
+        this.UIStartGameButton = GameObject.Find("Canvas/StartScreen/startGameButton").gameObject.GetComponent<Button>();
+        this.UIStartGameButton.interactable = false;
+
+
+        InitGame();
+    }
 }
