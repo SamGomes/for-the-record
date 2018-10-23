@@ -10,6 +10,9 @@ using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEngine.UI;
 
+using System.Runtime.InteropServices;
+
+
 public class StartScreenFunctionalities : MonoBehaviour {
 
 
@@ -24,6 +27,8 @@ public class StartScreenFunctionalities : MonoBehaviour {
 
     private int autoGameConfigurationIndex;
 
+    [DllImport("__Internal")]
+    private static extern void EnableFileLoad(string fileText);
 
     private void UpdateGameConfig(string configText)
     {
@@ -62,7 +67,7 @@ public class StartScreenFunctionalities : MonoBehaviour {
         GameGlobals.gameDiceNG = new RandomDiceNG();
         GameGlobals.gameLogManager = new DebugLogManager();
         GameGlobals.audioManager = new AudioManager();
-
+       
 
         GameGlobals.gameLogManager.InitLogs();
         //GameGlobals.playerIdCount = 0;
@@ -211,14 +216,26 @@ public class StartScreenFunctionalities : MonoBehaviour {
             InputField UIExternalConfig = UILoadExternalConfig.transform.Find("text").gameObject.GetComponent<InputField>();
             Button UILoadExternalConfigButton = UILoadExternalConfig.transform.Find("button").gameObject.GetComponent<Button>();
 
+#if UNITY_EDITOR
             UILoadExternalConfigButton.onClick.AddListener(delegate ()
             {
                 string configText = UIExternalConfig.text;
                 UpdateGameConfig(configText);
                 GameProperties.currGameParameterization = GameProperties.configurableProperties.possibleParameterizations[autoGameConfigurationIndex];
             });
+#elif UNITY_WEBGL
+            string configText = "";
+            EnableFileLoad(configText);
+            UILoadExternalConfigButton.onClick.AddListener(delegate ()
+            {
+                Application.ExternalEval("console.log("+configText+")");
+                UpdateGameConfig(configText);
+                GameProperties.currGameParameterization = GameProperties.configurableProperties.possibleParameterizations[autoGameConfigurationIndex];
+            });
+#endif
+
         }
-        
+
 
         this.UIStartGameButton = GameObject.Find("Canvas/StartScreen/startGameButton").gameObject.GetComponent<Button>();
         this.UIStartGameButton.interactable = false;
