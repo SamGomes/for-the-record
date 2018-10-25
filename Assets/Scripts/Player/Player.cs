@@ -9,7 +9,6 @@ public abstract class Player
 {
     protected GameProperties.PlayerType type;
 
-
     protected int id;
     private string actionLog;
     protected GameManager gameManagerRef;
@@ -63,8 +62,6 @@ public abstract class Player
             albumContributions[instrument] = 0;
         }
 
-        //main gameplay stuff
-        RegisterMeOnPlayersLog();
     }
 
     public void ReceiveGameManager(GameManager gameManagerRef) {

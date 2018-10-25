@@ -8,6 +8,7 @@ using UnityEngine;
 //MySQL log manager
 public class MySQLLogManager : ILogManager
 {
+    private bool isGameRunning;
     private struct PendingCall
     {
         public WWWForm form;
@@ -33,30 +34,44 @@ public class MySQLLogManager : ILogManager
 
     private IEnumerator ConsumePendingCalls(WWW currConnection)
     {
-        Debug.Log("pendingCallsSize: " + pendingCalls.Count);
+        //Debug.Log("number of pending calls: " + pendingCalls.Count);
         List<PendingCall> currList = new List<PendingCall>(pendingCalls); //in order to not access main list while being updated
-        foreach (PendingCall call in currList)
+        if (!isGameRunning && currList.Count == 0)
         {
-            yield return currConnection;
-            currConnection = new WWW(phpLogServerConnectionPath, call.form);
-            yield return currConnection;
-            if (call.yieldedReaction != null)
-            {
-                call.yieldedReaction(currConnection.text);
-            }
-            pendingCalls.Remove(call);
+            //finish monitorizing calls
+            yield return null;
         }
-        yield return currConnection;
-        yield return new WaitForSeconds(0.05f);
-        GameGlobals.monoBehaviourFunctionalities.StartCoroutine(ConsumePendingCalls(phpConnection));
+        else
+        {
+            foreach (PendingCall call in currList)
+            {
+                yield return currConnection;
+                //if (currConnection != null)
+                //{
+                //    currConnection.Dispose(); //remove not needed connections
+                //}
+                currConnection = new WWW(phpLogServerConnectionPath, call.form);
+                yield return currConnection;
+                if (call.yieldedReaction != null)
+                {
+                    call.yieldedReaction(currConnection.text);
+                }
+                pendingCalls.Remove(call);
+            }
+            yield return currConnection;
+            yield return new WaitForSeconds(0.05f);
+            GameGlobals.monoBehaviourFunctionalities.StartCoroutine(ConsumePendingCalls(phpConnection));
+        }
     }
 
     public void InitLogs()
     {
         Debug.Log("InitLogs ");
 
-        phpLogServerConnectionPath = "http://localhost:4000/dbActions.php";
+        phpLogServerConnectionPath = "http://fortherecordlogs.duckdns.org:4000/dbActions.php";
         databaseName = "fortherecordlogs";
+
+        isGameRunning = true;
 
         pendingCalls = new List<PendingCall>();
         GameGlobals.monoBehaviourFunctionalities.StartCoroutine(ConsumePendingCalls(phpConnection));
@@ -163,7 +178,9 @@ public class MySQLLogManager : ILogManager
 
     }
 
-    public void EndLogs() { }
+    public void EndLogs() {
+        isGameRunning = false;
+    }
     private void PassTableArguments(WWWForm form, string keysTableName, string valuesTableName, string extraParamsName, string[] keys, string[] values, string extraParams)
     {
         for (int i = 0; i < keys.Length; i++)

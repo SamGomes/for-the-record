@@ -247,6 +247,15 @@ public class PlayersSetupSceneFunctionalities : MonoBehaviour {
 	void StartGame()
     {
         SetUpParameterization(GameProperties.currGameParameterization);
+        
+        //write players in log before starting the game
+        Player currPlayer = null;
+        for (int i = 0; i < GameProperties.configurableProperties.numberOfPlayersPerGame; i++)
+        {
+            currPlayer = GameGlobals.players[i];
+            currPlayer.RegisterMeOnPlayersLog();
+        }
+
         GameSceneManager.LoadMainScene();
     }
 

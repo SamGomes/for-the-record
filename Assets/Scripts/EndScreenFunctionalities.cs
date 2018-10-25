@@ -149,8 +149,7 @@ public class EndScreenFunctionalities : MonoBehaviour
                 te.Copy();
             });
 #elif UNITY_WEBGL
-            var pointer = new PointerEventData(EventSystem.current);
-            ExecuteEvents.Execute(UICopyGameIdButton.gameObject, pointer, ExecuteEvents.pointerClickHandler);
+            EnableCopyToClipboard(GameGlobals.currSessionId);
             UICopyGameIdButton.onClick.AddListener(delegate ()
             {
                 //enable click on button for clipboard copying
