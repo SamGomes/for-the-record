@@ -5,6 +5,23 @@ header("Access-Control-Allow-Headers: Accept, X-Access-Token, X-Application-Name
 header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
 header("Access-Control-Allow-Origin: *");
 
+
+function update_form_data($success, $table, $arrFields, $arrValues, $extraParams)
+{
+    $sql = 'UPDATE '.$table.' SET ';
+
+	for ($i = 0; $i < count($arrFields); $i++) {
+		$sql = $sql . ' ' . $arrFields[$i]. ' = "'. $arrValues[$i] . '"';
+		if($i < (count($arrFields) - 1)){
+			$sql = $sql . ',';
+		}
+	}
+	$sql = $sql ." ". $extraParams;
+
+    error_log($sql);
+    return mysqli_query($success,$sql);
+}
+
 function insert_form_data($success, $table, $arrFields, $arrValues)
 {
     $sql = 'INSERT INTO '.$table.' ('.implode(',', $arrFields).') VALUES (\''.implode('\', \'',  $arrValues).'\')';
@@ -14,6 +31,7 @@ function insert_form_data($success, $table, $arrFields, $arrValues)
 function select_form_data($success, $table, $arrFields, $extraParams)
 {
     $sql = 'SELECT '.implode(',', $arrFields).' FROM '.$table.' '.$extraParams;
+    error_log($sql);
     $query = mysqli_query($success, $sql);
     if($query === FALSE) { 
 	   die(mysqli_error());
@@ -23,10 +41,9 @@ function select_form_data($success, $table, $arrFields, $extraParams)
 
 	while($row = mysqli_fetch_assoc($query)){
 		foreach($arrFields as $arrField){
-			echo $row[$arrField];
+			echo $row[$arrField]; //return results to outside with echo
 		}
 	}
-    //echo $result;
 }
 
 
@@ -39,7 +56,7 @@ if (isset($_POST["dbAction"])) {
 	$extraParams = $_POST["extraParams"];
 
 
-	$connection = new mysqli('fortherecordlogs.duckdns.org','root','rootroot', $databaseName);
+	$connection = new mysqli('localhost','admin','admin', $databaseName);
 
 	// if(!$connection->connect_error){
 	// 	echo "1";
@@ -53,6 +70,10 @@ if (isset($_POST["dbAction"])) {
 	case 'SELECT':
 		# code...
 		select_form_data($connection,$tableName,$arrFields,$extraParams);
+		break;
+	case 'UPDATE':
+		# code...
+		update_form_data($connection,$tableName,$arrFields, $arrValues, $extraParams);
 		break;
 	default:
 		# code...

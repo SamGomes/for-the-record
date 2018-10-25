@@ -40,10 +40,13 @@ public abstract class AIPlayer : UIPlayer
 
         this.likedInstrument = likedInstrument;
 
-        GameObject erp = new GameObject("EmotionalRoboticPlayer");
-        emotionalModule = erp.AddComponent<EmotionalModule>();
-        emotionalModule.Speaks = isSpeechAllowed;
-        emotionalModule.ReceiveInvoker(this); //only pass the invoker after it is initialized
+        if (!GameProperties.configurableProperties.isSimulation && isSpeechAllowed)
+        {
+            GameObject erp = new GameObject("EmotionalRoboticPlayer");
+            emotionalModule = erp.AddComponent<EmotionalModule>();
+            emotionalModule.Speaks = isSpeechAllowed;
+            emotionalModule.ReceiveInvoker(this); //only pass the invoker after it is initialized
+        }
     }
 
     public void InitDelays()
@@ -168,147 +171,165 @@ public abstract class AIPlayer : UIPlayer
     }
 
     protected virtual void InformChoosePreferredInstrumentActions(Player nextPlayer){
-         emotionalModule.GazeAt(nextPlayer.GetName());
+        if (emotionalModule != null)
+        {
+            emotionalModule.GazeAt(nextPlayer.GetName());
+        }
     }
     protected virtual void InformLevelUpActions(GameProperties.Instrument leveledUpInstrument)
     {
-        Player currentPlayer = gameManagerRef.GetCurrentPlayer();
-        int currSpeakingPlayerId = gameManagerRef.GetCurrSpeakingPlayerId();
-
-        if (currSpeakingPlayerId == id && currentPlayer.GetName() == "Player")
+        if (emotionalModule != null)
         {
-            Debug.Log(name + ": É a vez do " + currentPlayer.GetName());
-            emotionalModule.Perceive(new Name[] {
+            Player currentPlayer = gameManagerRef.GetCurrentPlayer();
+            int currSpeakingPlayerId = gameManagerRef.GetCurrSpeakingPlayerId();
+
+            if (currSpeakingPlayerId == id && currentPlayer.GetName() == "Player")
+            {
+                Debug.Log(name + ": É a vez do " + currentPlayer.GetName());
+                emotionalModule.Perceive(new Name[] {
                 EventHelper.PropertyChange("CurrentPlayer(Name)", currentPlayer.GetName(), name),
                 EventHelper.PropertyChange("State(Game)", "LevelUp", name) });
-            emotionalModule.Decide();
-        }
-        else if (currentPlayer != this)
-        {
-            emotionalModule.GazeAt(currentPlayer.GetName());
+                emotionalModule.Decide();
+            }
+            else if (currentPlayer != this)
+            {
+                emotionalModule.GazeAt(currentPlayer.GetName());
+            }
         }
     }
     protected virtual void InformPlayForInstrumentActions(Player nextPlayer)
     {
-        emotionalModule.GazeAt(nextPlayer.GetName());
+        if (emotionalModule != null)
+        {
+            emotionalModule.GazeAt(nextPlayer.GetName());
+        }
     }
     protected virtual void InformLastDecisionActions(Player nextPlayer)
     {
-        emotionalModule.GazeAt(nextPlayer.GetName());
+        if (emotionalModule != null)
+        {
+            emotionalModule.GazeAt(nextPlayer.GetName());
+        }
     }
 
     protected virtual void InformRollDicesValueActions(Player invoker, int maxValue, int obtainedValue)
     {
-        //Fatima calls
-        emotionalModule.GazeAt("screen");
-        // rolling d6 dice(s)
-        if (maxValue % 20 != 0)
+        if (emotionalModule != null)
         {
-            int currSpeakingPlayerId = gameManagerRef.GetCurrSpeakingPlayerId();
-            if (invoker == this)
+            //Fatima calls
+            emotionalModule.GazeAt("screen");
+            // rolling d6 dice(s)
+            if (maxValue % 20 != 0)
             {
-                emotionalModule.DicesValue = obtainedValue;
-                float luckFactor = (float)obtainedValue / (float)maxValue;
-
-                if (luckFactor >= 0.5)
+                int currSpeakingPlayerId = gameManagerRef.GetCurrSpeakingPlayerId();
+                if (invoker == this)
                 {
-                    emotionalModule.Perceive(new Name[] {
+                    emotionalModule.DicesValue = obtainedValue;
+                    float luckFactor = (float)obtainedValue / (float)maxValue;
+
+                    if (luckFactor >= 0.5)
+                    {
+                        emotionalModule.Perceive(new Name[] {
                         EventHelper.PropertyChange("State(Game)", "SelfRollInstrumentDice", name),
                         EventHelper.PropertyChange("Roll(InstrumentDice)", "Luck", invoker.GetName()) });
-                }
-                else
-                {
-                    emotionalModule.Perceive(new Name[] {
+                    }
+                    else
+                    {
+                        emotionalModule.Perceive(new Name[] {
                         EventHelper.PropertyChange("State(Game)", "SelfRollInstrumentDice", name),
                         EventHelper.PropertyChange("Roll(InstrumentDice)", "BadLuck", invoker.GetName()) });
+                    }
+                    emotionalModule.Decide();
                 }
-                emotionalModule.Decide();
-            }
-            else if (currSpeakingPlayerId == id && invoker.GetName() == "Player")
-            {
-
-                float luckFactor = (float)obtainedValue / (float)maxValue;
-
-                if (luckFactor > 0.7)
+                else if (currSpeakingPlayerId == id && invoker.GetName() == "Player")
                 {
-                    emotionalModule.Perceive(new Name[] {
+
+                    float luckFactor = (float)obtainedValue / (float)maxValue;
+
+                    if (luckFactor > 0.7)
+                    {
+                        emotionalModule.Perceive(new Name[] {
             EventHelper.PropertyChange("State(Game)", "OtherRollInstrumentDice", name),
             EventHelper.PropertyChange("Roll(InstrumentDice)", "Luck", invoker.GetName()) });
-                }
-                else if (luckFactor < 0.2)
-                {
-                    emotionalModule.Perceive(new Name[] {
+                    }
+                    else if (luckFactor < 0.2)
+                    {
+                        emotionalModule.Perceive(new Name[] {
             EventHelper.PropertyChange("State(Game)", "OtherRollInstrumentDice", name),
             EventHelper.PropertyChange("Roll(InstrumentDice)", "BadLuck", invoker.GetName()) });
-                }
-                else
-                {
-                    emotionalModule.Perceive(new Name[] {
+                    }
+                    else
+                    {
+                        emotionalModule.Perceive(new Name[] {
             EventHelper.PropertyChange("State(Game)", "OtherRollInstrumentDice", name),
             EventHelper.PropertyChange("Roll(InstrumentDice)", "Neutral", invoker.GetName()) });
+                    }
+                    emotionalModule.Decide();
                 }
-                emotionalModule.Decide();
-            }
-            else if (invoker != this)
-            {
-                emotionalModule.GazeAt(invoker.GetName());
+                else if (invoker != this)
+                {
+                    emotionalModule.GazeAt(invoker.GetName());
+                }
             }
         }
-
-
     }
     protected virtual void InformAlbumResultActions(int albumValue, int marketValue)
     {
-
-        //Fatima calls
-        int currSpeakingPlayerId = gameManagerRef.GetCurrSpeakingPlayerId();
-
-        if (albumValue >= marketValue)
+        if (emotionalModule != null)
         {
-            emotionalModule.Perceive(new Name[] {
+            //Fatima calls
+            int currSpeakingPlayerId = gameManagerRef.GetCurrSpeakingPlayerId();
+
+            if (albumValue >= marketValue)
+            {
+                emotionalModule.Perceive(new Name[] {
             EventHelper.PropertyChange("State(Game)", "RollMarketDice", name),
             EventHelper.PropertyChange("Roll(MarketDice)", "Success", name) });
-        }
-        else
-        {
-            emotionalModule.Perceive(new Name[] {
+            }
+            else
+            {
+                emotionalModule.Perceive(new Name[] {
             EventHelper.PropertyChange("State(Game)", "RollMarketDice", name),
             EventHelper.PropertyChange("Roll(MarketDice)", "Fail", name) });
-        }
+            }
 
-        if (currSpeakingPlayerId == id)
-        {
-            emotionalModule.Decide();
-        }
-        else
-        {
-            emotionalModule.GazeAt("Player");
+            if (currSpeakingPlayerId == id)
+            {
+                emotionalModule.Decide();
+            }
+            else
+            {
+                emotionalModule.GazeAt("Player");
+            }
         }
     }
     protected virtual void InformGameResultActions(GameProperties.GameState state)
     {
-        //Fatima calls
-        int currSpeakingPlayerId = gameManagerRef.GetCurrSpeakingPlayerId();
-        if (state == GameProperties.GameState.VICTORY)
+        if (emotionalModule != null)
         {
-            emotionalModule.Perceive(new Name[] {
+            //Fatima calls
+            int currSpeakingPlayerId = gameManagerRef.GetCurrSpeakingPlayerId();
+            if (state == GameProperties.GameState.VICTORY)
+            {
+                emotionalModule.Perceive(new Name[] {
             EventHelper.PropertyChange("State(Game)", "GameEnd", name),
             EventHelper.PropertyChange("Game(Result)", "Victory", name) });
-        }
-        else if (state == GameProperties.GameState.LOSS)
-        {
-            emotionalModule.Perceive(new Name[] {
+            }
+            else if (state == GameProperties.GameState.LOSS)
+            {
+                emotionalModule.Perceive(new Name[] {
             EventHelper.PropertyChange("State(Game)", "GameEnd", name),
             EventHelper.PropertyChange("Game(Result)", "Loss", name) });
-        }
+            }
 
-        if (currSpeakingPlayerId == id)
-        {
-            emotionalModule.Decide();
-        }
-        else
-        {
-            emotionalModule.GazeAt("Player");
+            if (currSpeakingPlayerId == id)
+            {
+                emotionalModule.Decide();
+            }
+            else
+            {
+                emotionalModule.GazeAt("Player");
+            }
         }
     }
     protected virtual void InformNewAlbumActions()
@@ -318,12 +339,15 @@ public abstract class AIPlayer : UIPlayer
 
         if (currSpeakingPlayerId == id && currentPlayer.GetName() == "Player")
         {
-            //Fatima call
-            Debug.Log(name + ": É a vez do " + currentPlayer.GetName());
-            emotionalModule.Perceive(new Name[] {
+            if (emotionalModule != null)
+            {
+                //Fatima call
+                Debug.Log(name + ": É a vez do " + currentPlayer.GetName());
+                emotionalModule.Perceive(new Name[] {
                 EventHelper.PropertyChange("CurrentPlayer(Name)", currentPlayer.GetName(), name),
                 EventHelper.PropertyChange("State(Game)", "LevelUp", name) });
-            emotionalModule.Decide();
+                emotionalModule.Decide();
+            }
         }
     }
     #endregion
@@ -498,12 +522,15 @@ public abstract class AIPlayer : UIPlayer
         yield return new WaitForSeconds(delay);
         if (!isSendingResponse)
         {
-            //Fatima call
-            emotionalModule.Perceive(new Name[] {
-            EventHelper.PropertyChange("Character(Name)", name, name),
-            EventHelper.PropertyChange("Album(Last)", "False", name),
-            EventHelper.PropertyChange("State(Game)", "ChoosePreferredInstrument", name) });
-            emotionalModule.Decide();
+            if (emotionalModule != null)
+            {
+                //Fatima call
+                emotionalModule.Perceive(new Name[] {
+                EventHelper.PropertyChange("Character(Name)", name, name),
+                EventHelper.PropertyChange("Album(Last)", "False", name),
+                EventHelper.PropertyChange("State(Game)", "ChoosePreferredInstrument", name) });
+                emotionalModule.Decide();
+            }
 
             preferredInstrument = ChoosePreferredInstrumentActions(currAlbum);
             playerMonoBehaviourFunctionalities.StartCoroutine(ThinkBeforeChoosingPreferredInstrument(currAlbum, sendResponsesDelay, preferredInstrument, true));
@@ -520,11 +547,14 @@ public abstract class AIPlayer : UIPlayer
         yield return new WaitForSeconds(delay);
         if (!isSendingResponse)
         {
-            //Fatima call
-            emotionalModule.Perceive(new Name[] {
-            EventHelper.PropertyChange("CurrentPlayer(Name)", name, name),
-            EventHelper.PropertyChange("State(Game)", "LevelUp", name) });
-            emotionalModule.Decide();
+            if (emotionalModule != null)
+            {
+                //Fatima call
+                emotionalModule.Perceive(new Name[] {
+                EventHelper.PropertyChange("CurrentPlayer(Name)", name, name),
+                EventHelper.PropertyChange("State(Game)", "LevelUp", name) });
+                emotionalModule.Decide();
+            }
 
             chosenLevelUpInstrument = LevelUpActions(currAlbum);
             playerMonoBehaviourFunctionalities.StartCoroutine(ThinkBeforeLevelingUp(currAlbum, sendResponsesDelay, chosenLevelUpInstrument, true));
@@ -548,12 +578,17 @@ public abstract class AIPlayer : UIPlayer
 
         if (!isSendingResponse)
         {
-            //Fatima call
-            emotionalModule.NumDices = skillSet[preferredInstrument];
-            emotionalModule.Perceive(new Name[] {
-                EventHelper.PropertyChange("State(Game)", "PlayForInstrument", name)
-            });
-            emotionalModule.Decide();
+
+            if (emotionalModule != null)
+            {
+                //Fatima call
+                emotionalModule.NumDices = skillSet[preferredInstrument];
+                emotionalModule.Perceive(new Name[] {
+                    EventHelper.PropertyChange("State(Game)", "PlayForInstrument", name)
+                });
+                emotionalModule.Decide();
+            }
+            
 
             diceRollInstrument = PlayforInstrumentActions(currAlbum);
             playerMonoBehaviourFunctionalities.StartCoroutine(ThinkBeforePlayForInstrument(currAlbum, sendResponsesDelay, diceRollInstrument, true));
@@ -568,28 +603,29 @@ public abstract class AIPlayer : UIPlayer
         yield return new WaitForSeconds(delay);
         if (!isSendingResponse)
         {
-
-            //Fatima call
-            if (currAlbum.GetMarketingState() == GameProperties.AlbumMarketingState.MEGA_HIT)
+            if (emotionalModule != null)
             {
-                emotionalModule.Perceive(new Name[] {
+                //Fatima call
+                if (currAlbum.GetMarketingState() == GameProperties.AlbumMarketingState.MEGA_HIT)
+                {
+                    emotionalModule.Perceive(new Name[] {
                 EventHelper.PropertyChange("State(Game)", "LastDecisionsPhase", name),
                 EventHelper.PropertyChange("Album(Result)", "Success", name) });
-            }
-            else
-            {
-                emotionalModule.Perceive(new Name[] {
+                }
+                else
+                {
+                    emotionalModule.Perceive(new Name[] {
                 EventHelper.PropertyChange("State(Game)", "LastDecisionsPhase", name),
                 EventHelper.PropertyChange("Album(Result)", "Fail", name) });
-            }
+                }
 
-            if (GameGlobals.albums.Count == GameProperties.configurableProperties.numberOfAlbumsPerGame)
-            {
-                emotionalModule.Perceive(new Name[] {
+                if (GameGlobals.albums.Count == GameProperties.configurableProperties.numberOfAlbumsPerGame)
+                {
+                    emotionalModule.Perceive(new Name[] {
                 EventHelper.PropertyChange("Album(Last)", "True", name) });
+                }
+                emotionalModule.Decide();
             }
-            emotionalModule.Decide();
-
 
             int condition = LastDecisionsActions(currAlbum);
             playerMonoBehaviourFunctionalities.StartCoroutine(ThinkBeforeLastDecisionPhase(currAlbum, sendResponsesDelay, true, condition));
@@ -615,7 +651,10 @@ public abstract class AIPlayer : UIPlayer
 
     public void FlushAIUtterance(string text)
     {
-        emotionalModule.FlushUtterance(text);
+        if (emotionalModule != null)
+        {
+            emotionalModule.FlushUtterance(text);
+        }
     }
 
 }

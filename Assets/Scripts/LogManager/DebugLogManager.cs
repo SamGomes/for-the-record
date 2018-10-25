@@ -16,6 +16,10 @@ public class DebugLogManager : ILogManager
     {
         Debug.Log("WriteGameToLog: " + sessionId + ";" + currGameId + ";" + result);
     }
+    public void UpdateGameResultInLog(string sessionId, string gameId, string result)
+    {
+        Debug.Log("UpdateGameInLog: " + sessionId + ";" + gameId + ";" + result);
+    }
     public void WriteAlbumResultsToLog(string sessionId, string currGameId, string currGameRoundId, string currAlbumId, string currAlbumName, string marktingState)
     {
         Debug.Log("WriteAlbumResultsToLog: " + sessionId + ";" + currGameId + ";" + currGameRoundId + ";" + currAlbumId + ";" + currAlbumName + ";" + marktingState);

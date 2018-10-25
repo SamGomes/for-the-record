@@ -57,6 +57,10 @@ public class FileLogManager : ILogManager
         }
         FlushLogs();
     }
+    public void UpdateGameResultInLog(string sessionId, string gameId, string result)
+    {
+        //TODO
+    }
     public void WriteAlbumResultsToLog(string sessionId, string currGameId, string currGameRoundId, string currAlbumId, string currAlbumName, string marktingState)
     {
         //prevent access after disposal

@@ -1,10 +1,10 @@
-DROP TABLE IF EXISTS ist176415.players_log;
-DROP TABLE IF EXISTS ist176415.game_stats_log;
-DROP TABLE IF EXISTS ist176415.album_stats_log;
-DROP TABLE IF EXISTS ist176415.player_stats_log;
-DROP TABLE IF EXISTS ist176415.player_actions_log;
+DROP TABLE IF EXISTS forTheRecordLogs.players_log;
+DROP TABLE IF EXISTS forTheRecordLogs.game_stats_log;
+DROP TABLE IF EXISTS forTheRecordLogs.album_stats_log;
+DROP TABLE IF EXISTS forTheRecordLogs.player_stats_log;
+DROP TABLE IF EXISTS forTheRecordLogs.player_actions_log;
 
-USE ist176415;
+USE forTheRecordLogs;
 
 CREATE TABLE players_log (
     sessionId varchar(255),
