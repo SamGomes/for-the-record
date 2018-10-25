@@ -65,11 +65,9 @@ public class StartScreenFunctionalities : MonoBehaviour {
         GameGlobals.albumIdCount = 0;
 
         GameGlobals.gameDiceNG = new RandomDiceNG();
-        GameGlobals.gameLogManager = new DebugLogManager();
         GameGlobals.audioManager = new AudioManager();
        
 
-        GameGlobals.gameLogManager.InitLogs();
         //GameGlobals.playerIdCount = 0;
         //GameGlobals.albumIdCount = 0;
 
@@ -97,6 +95,9 @@ public class StartScreenFunctionalities : MonoBehaviour {
         //only generate session data in the first game
         if (GameGlobals.currGameId == 1)
         {
+            GameGlobals.gameLogManager = new MySQLLogManager();
+            GameGlobals.gameLogManager.InitLogs();
+
             string date = System.DateTime.Now.ToString("ddHHmm");
 
             //generate external game code from currsessionid and lock it in place
@@ -110,21 +111,22 @@ public class StartScreenFunctionalities : MonoBehaviour {
                 generatedCode += (char)('A' + Random.Range(0, 26));
             }
 
-            if (GameProperties.configurableProperties.isAutomaticalBriefing) //generate condition automatically (asynchronous)
-            {
-                GameGlobals.gameLogManager.GetLastSessionConditionFromLog(AppendConditionToGameCode);
-                GameProperties.currGameParameterization = GameProperties.configurableProperties.possibleParameterizations[autoGameConfigurationIndex];
-            }
-            else{
-                this.UIStartGameButton.interactable = true;
-            }
-
             GameGlobals.currSessionId = generatedCode;
 
             //update the gamecode UI
             //GameObject UIGameCodeDisplay = Object.Instantiate(UIGameCodeDisplayPrefab);
             //UIGameCodeDisplay.GetComponentInChildren<Text>().text = "Game Code: " + GameGlobals.currSessionId;
             //Object.DontDestroyOnLoad(UIGameCodeDisplay);
+        }
+
+        if (GameProperties.configurableProperties.isAutomaticalBriefing) //generate condition automatically (asynchronous)
+        {
+            GameGlobals.gameLogManager.GetLastSessionConditionFromLog(YieldedActionsAfterGet);
+            GameProperties.currGameParameterization = GameProperties.configurableProperties.possibleParameterizations[autoGameConfigurationIndex];
+        }
+        else
+        {
+            this.UIStartGameButton.interactable = true;
         }
 
         //init fatima strings
@@ -134,7 +136,20 @@ public class StartScreenFunctionalities : MonoBehaviour {
         GameGlobals.FAtiMAIat = IntegratedAuthoringToolAsset.LoadFromFile(GameGlobals.FAtiMAScenarioPath);
     }
 
-    private int AppendConditionToGameCode(string lastConditionString)
+
+    private int YieldedActionsAfterGet(string lastConditionString)
+    {
+        SetParameterizationCondition(lastConditionString);
+        this.UIStartGameButton.interactable = true;
+
+        if (GameProperties.configurableProperties.isSimulation) //start game right after getting the condition
+        {
+            StartGame();
+        }
+        return 0;
+    }
+
+    private int SetParameterizationCondition(string lastConditionString)
     {
         List<GameParameterization> possibleConditions = GameProperties.configurableProperties.possibleParameterizations;
 
@@ -158,8 +173,10 @@ public class StartScreenFunctionalities : MonoBehaviour {
         }
         else
         {
-            autoGameConfigurationIndex = ((int)lastConditionIndex) +1 % possibleConditions.Count;
-            GameGlobals.currSessionId += GameProperties.currGameParameterization.id;
+            autoGameConfigurationIndex = (((int)lastConditionIndex) +1) % (possibleConditions.Count);
+            GameProperties.currGameParameterization = GameProperties.configurableProperties.possibleParameterizations[autoGameConfigurationIndex];
+            if (GameGlobals.currGameId == 1) GameGlobals.currSessionId += GameProperties.currGameParameterization.id; //session code with last digit being the condition if any
+            GameGlobals.gameLogManager.WriteGameToLog(GameGlobals.currSessionId.ToString(), GameGlobals.currGameId.ToString(), GameProperties.currGameParameterization.id, GameGlobals.currGameState.ToString());
         }
         return 0;
     }
@@ -172,6 +189,7 @@ public class StartScreenFunctionalities : MonoBehaviour {
 
     private void InitGame()
     {
+
         //play theme song
         //GameGlobals.audioManager.PlayInfinitClip("Audio/theme/themeIntro", "Audio/theme/themeLoop");
         UIStartGameButton.onClick.AddListener(delegate () { StartGame(); });
@@ -183,9 +201,9 @@ public class StartScreenFunctionalities : MonoBehaviour {
         GameGlobals.monoBehaviourFunctionalities = monoBehaviourDummy.GetComponent<MonoBehaviourFunctionalities>();
         GameGlobals.monoBehaviourFunctionalities.StartCoroutine(InitGameGlobals());
 
+
         if (!GameProperties.configurableProperties.isSimulation)
         {
-            this.UIStartGameButton.interactable = true;
             if (GameProperties.configurableProperties.isAutomaticalBriefing)
             {
                 Text startButtonText = UIStartGameButton.GetComponentInChildren<Text>();
@@ -198,10 +216,6 @@ public class StartScreenFunctionalities : MonoBehaviour {
                     startButtonText.text = "Start Experiment Game";
                 }
             }
-        }
-        else
-        {
-            StartGame();
         }
 	}
 

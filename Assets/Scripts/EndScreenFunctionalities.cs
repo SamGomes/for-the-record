@@ -208,6 +208,9 @@ public class EndScreenFunctionalities : MonoBehaviour
         //GameGlobals.currGameState = GameProperties.GameState.VICTORY;
         //GameGlobals.currGameId = 2;
 
+        GameGlobals.gameLogManager.UpdateGameResultInLog(GameGlobals.currSessionId.ToString(), GameGlobals.currGameId.ToString(), GameGlobals.currGameState.ToString());
+
+
         UIVictoryOverlay.SetActive(false);
         UILossOverlay.SetActive(false);
         UIFinishedGameOverlay.SetActive(false);
@@ -237,7 +240,7 @@ public class EndScreenFunctionalities : MonoBehaviour
 
 
 
-        GameGlobals.gameLogManager.WriteGameToLog(GameGlobals.currSessionId.ToString(), GameGlobals.currGameId.ToString(), GameProperties.currGameParameterization.id, GameGlobals.currGameState.ToString());
+        //GameGlobals.gameLogManager.WriteGameToLog(GameGlobals.currSessionId.ToString(), GameGlobals.currGameId.ToString(), GameProperties.currGameParameterization.id, GameGlobals.currGameState.ToString());
         GameGlobals.gameLogManager.EndLogs();
 
 

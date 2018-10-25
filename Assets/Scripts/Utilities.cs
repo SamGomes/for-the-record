@@ -81,7 +81,7 @@ public static class GameProperties
 
     public static DynamicallyConfigurableGameProperties configurableProperties;
 
-    public static bool displayFetchExternalConfigFileOption = true;
+    public static bool displayFetchExternalConfigFileOption = false;
 }
 
 
