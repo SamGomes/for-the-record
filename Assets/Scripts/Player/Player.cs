@@ -241,10 +241,10 @@ public abstract class Player
         }
 
         numTokens--;
+        leveledUpInstrument = instrument;
         if (!unchangedSkillSetInstruments.ContainsKey(instrument))
         {
             unchangedSkillSetInstruments[instrument] = skillSet[instrument];
-            leveledUpInstrument = instrument;
         }
         skillSet[instrument]++;
 

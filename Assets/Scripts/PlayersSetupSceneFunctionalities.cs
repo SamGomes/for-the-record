@@ -4,6 +4,7 @@ using UnityEngine.UI;
 
 public class PlayersSetupSceneFunctionalities : MonoBehaviour {
 
+    private bool isErrorEncountered;
     private GameObject customizeLabel;
 
     private InputField UINameSelectionInputBox;
@@ -19,7 +20,8 @@ public class PlayersSetupSceneFunctionalities : MonoBehaviour {
     public GameObject playerUIPrefab;
     public GameObject playerCanvas;
     private PoppupScreenFunctionalities playerWarningPoppupRef;
-    
+    private PoppupScreenFunctionalities setupWarningPoppupRef;
+
     void SetUpParameterization(GameParameterization parameterization)
     {
         GameGlobals.players.Clear();
@@ -49,6 +51,8 @@ public class PlayersSetupSceneFunctionalities : MonoBehaviour {
                     break;
                 default:
                     currLikedInstrument = GameProperties.Instrument.GUITAR;
+                    //isErrorEncountered = true;
+                    //setupWarningPoppupRef.DisplayPoppup("did not parse the liked instrument of player. Guitar assumed..." + currParam.name);
                     break;
             }
 
@@ -79,7 +83,9 @@ public class PlayersSetupSceneFunctionalities : MonoBehaviour {
                     GameGlobals.players.Add(new AIPlayerTitForTatStrategy(playerUIPrefab, playerCanvas, GameGlobals.monoBehaviourFunctionalities, playerWarningPoppupRef, currPlayerId++, currParam.name, currParam.isSpeechAllowed, currLikedInstrument));
                     break;
                 default:
-                    Debug.Log("[ERROR]: player type " + currParam.playerType+" not recognized.");
+                    isErrorEncountered = true;
+                    setupWarningPoppupRef.DisplayPoppup("Error on parsing the player type of " + currParam.name);
+                    Debug.Log("[ERROR]: Error on parsing the player type of " + currParam.name);
                     break;
             }
         }
@@ -96,7 +102,9 @@ public class PlayersSetupSceneFunctionalities : MonoBehaviour {
                 GameGlobals.gameDiceNG = new VictoryDiceNG();
                 break;
             default:
-                Debug.Log("[ERROR]: dice NG type " + parameterization.ngType + " not recognized.");
+                isErrorEncountered = true;
+                setupWarningPoppupRef.DisplayPoppup("Error on parsing the NG Type of parameterization " + parameterization.ngType);
+                Debug.Log("[ERROR]: Error on parsing the NG Type of parameterization " + parameterization.ngType);
                 break;
         }
         //GameProperties.configurableProperties.possibleParameterizations.Add(parameterization);
@@ -105,8 +113,12 @@ public class PlayersSetupSceneFunctionalities : MonoBehaviour {
 
     void Start ()
     {
+        isErrorEncountered = false;
         playerWarningPoppupRef = new PoppupScreenFunctionalities(true, null, null, poppupPrefab, playerCanvas, GameGlobals.monoBehaviourFunctionalities, Resources.Load<Sprite>("Textures/UI/Icons/Info"), new Color(0.9f, 0.9f, 0.9f), "Audio/snap");
+        setupWarningPoppupRef = new PoppupScreenFunctionalities(true, null, null, poppupPrefab, playerCanvas, GameGlobals.monoBehaviourFunctionalities, Resources.Load<Sprite>("Textures/UI/Icons/Info"), new Color(0.9f, 0.9f, 0.9f), "Audio/snap");
         Object.DontDestroyOnLoad(playerCanvas);
+
+       
 
         if (!GameProperties.configurableProperties.isSimulation)
         {
@@ -247,7 +259,12 @@ public class PlayersSetupSceneFunctionalities : MonoBehaviour {
 	void StartGame()
     {
         SetUpParameterization(GameProperties.currGameParameterization);
-        
+
+        if (isErrorEncountered)
+        {
+            return;
+        }
+
         //write players in log before starting the game
         Player currPlayer = null;
         for (int i = 0; i < GameProperties.configurableProperties.numberOfPlayersPerGame; i++)

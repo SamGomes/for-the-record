@@ -95,6 +95,7 @@ public class StartScreenFunctionalities : MonoBehaviour {
         //only generate session data in the first game
         if (GameGlobals.currGameId == 1)
         {
+            //GameGlobals.gameLogManager = new DebugLogManager();
             GameGlobals.gameLogManager = new MySQLLogManager();
             GameGlobals.gameLogManager.InitLogs();
 
