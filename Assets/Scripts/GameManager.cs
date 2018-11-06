@@ -781,6 +781,8 @@ public class GameManager : MonoBehaviour {
     {
         //auto level up after choosing instrument
         invoker.SpendToken(invoker.GetPreferredInstrument());
+        invoker.BuyTokens(1);
+        invoker.SpendToken(GameProperties.Instrument.MARKETING);
         choosePreferedInstrumentResponseReceived = true;
     }
     public void LevelUpResponse(Player invoker)
