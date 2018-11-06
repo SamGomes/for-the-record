@@ -5,10 +5,9 @@
 "asmCodeUrl": "docs.asm.code.unityweb",
 "asmMemoryUrl": "docs.asm.memory.unityweb",
 "asmFrameworkUrl": "docs.asm.framework.unityweb",
-"TOTAL_MEMORY": 536870912,
+"TOTAL_MEMORY": 268435456,
 "graphicsAPI": ["WebGL 2.0", "WebGL 1.0"],
 "webglContextAttributes": {"preserveDrawingBuffer": false},
-"splashScreenStyle": "Light",
-"backgroundColor": "#9F9F9F",
-"cacheControl": {"default": "must-revalidate"}
+"splashScreenStyle": "Dark",
+"backgroundColor": "#231F20"
 }

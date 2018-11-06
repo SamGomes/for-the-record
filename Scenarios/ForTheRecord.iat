@@ -13,15 +13,15 @@
 					"Meaning": "Victory",
 					"Style": "-",
 					"Utterance": "Esta banda é um sucesso",
-					"UtteranceId": "TTS-5A6DCEC64EE02C84F35CBEF98CC89C9E"
+					"UtteranceId": "TTS-47F41F3F2513BCB47038C9EF9AB7F320"
 				}, 
 				{
 					"CurrentState": "LevelUp",
 					"NextState": "-",
 					"Meaning": "Me",
-					"Style": "Emys",
+					"Style": "Defect",
 					"Utterance": "Vou pôr um ponto no marqting",
-					"UtteranceId": "TTS-01BE6E3B310431DA1FBCAB3969B5931D"
+					"UtteranceId": "TTS-7C3593EAD0BC5DC9C0E76F2DD8139C6C"
 				}, 
 				{
 					"CurrentState": "LastDecisionsPhase",
@@ -29,7 +29,7 @@
 					"Meaning": "Fail",
 					"Style": "Emys",
 					"Utterance": "Assim não vamos lá. ",
-					"UtteranceId": "TTS-83EF49C14A232EE276E83FB541D38F3D"
+					"UtteranceId": "TTS-A1CE756B7C672D9D752F09CFC4D4AA8A"
 				}, 
 				{
 					"CurrentState": "RollMarketDice",
@@ -37,7 +37,7 @@
 					"Meaning": "Fail",
 					"Style": "Glin",
 					"Utterance": "O nosso álbum foi um fracasso!",
-					"UtteranceId": "TTS-3A6608D8F88C466FBB56295A6D96891F"
+					"UtteranceId": "TTS-3D5E8727F3049AEB48582F46CC888C9B"
 				}, 
 				{
 					"CurrentState": "LastDecisionsPhase",
@@ -45,7 +45,7 @@
 					"Meaning": "Success",
 					"Style": "Emys",
 					"Utterance": "Vou usar os meus |numDices| pontos de márqting para ver o que consigo ",
-					"UtteranceId": "TTS-46DB73F86BDBE88225659E99D6794305"
+					"UtteranceId": "TTS-8DC0207E9C3A94C72F6F48B0CFC0CF75"
 				}, 
 				{
 					"CurrentState": "RollMarketDice",
@@ -53,7 +53,7 @@
 					"Meaning": "Fail",
 					"Style": "Emys",
 					"Utterance": "Que desgraça de álbum ",
-					"UtteranceId": "TTS-93C69911F8110BC3DF0D6CC2907E54CA"
+					"UtteranceId": "TTS-88A198E1D73AF6E331EB20D4629E0100"
 				}, 
 				{
 					"CurrentState": "OtherRollInstrumentDice",
@@ -61,7 +61,7 @@
 					"Meaning": "Luck",
 					"Style": "-",
 					"Utterance": "Que sorte! ",
-					"UtteranceId": "TTS-3539E78514FB4B498C246F4F1766E404"
+					"UtteranceId": "TTS-42BC3C097C016744EB6BE2645B2330F9"
 				}, 
 				{
 					"CurrentState": "NewAlbum",
@@ -69,7 +69,7 @@
 					"Meaning": "Middle",
 					"Style": "-",
 					"Utterance": "Bora gravar um álbum novo",
-					"UtteranceId": "TTS-ED5E3C9EBA5D27CC2BCB2BDA8720D516"
+					"UtteranceId": "TTS-4AEE258F8156734F0AB1BCC897D5CC88"
 				}, 
 				{
 					"CurrentState": "ChoosePreferredInstrument",
@@ -77,7 +77,7 @@
 					"Meaning": "-",
 					"Style": "Glin",
 					"Utterance": "Eu vou escolher o baixo. ",
-					"UtteranceId": "TTS-6308E51CFF361BDD1A80F98A6F992F07"
+					"UtteranceId": "TTS-4EDEF5AB8D4D255F2B87FB406400E4D7"
 				}, 
 				{
 					"CurrentState": "OtherRollInstrumentDice",
@@ -85,7 +85,7 @@
 					"Meaning": "BadLuck",
 					"Style": "-",
 					"Utterance": "Credo!  ",
-					"UtteranceId": "TTS-D74F00D2EDBCB5220E8D3625CC22260A"
+					"UtteranceId": "TTS-F96795AB4545163D408348877FAC3073"
 				}, 
 				{
 					"CurrentState": "SelfRollInstrumentDice",
@@ -93,7 +93,7 @@
 					"Meaning": "Luck",
 					"Style": "Glin",
 					"Utterance": "Ena, somei |dicesValue| pontos! ",
-					"UtteranceId": "TTS-6EE96FE42611DD86FAB36E9609F3309C"
+					"UtteranceId": "TTS-BE464A9C1FE275BD1B0056F161BE6B82"
 				}, 
 				{
 					"CurrentState": "LastDecisionsPhase",
@@ -101,7 +101,7 @@
 					"Meaning": "Fail",
 					"Style": "Glin",
 					"Utterance": "Isto correu mal. ",
-					"UtteranceId": "TTS-2BB2F4A82998273CD84DE10EA5BA1DE0"
+					"UtteranceId": "TTS-BA72113E039D00D96A4C2223FE642EDD"
 				}, 
 				{
 					"CurrentState": "LastDecisionsPhase",
@@ -109,7 +109,7 @@
 					"Meaning": "Fail",
 					"Style": "Emys",
 					"Utterance": "Assim não vamos lá. ",
-					"UtteranceId": "TTS-83EF49C14A232EE276E83FB541D38F3D"
+					"UtteranceId": "TTS-A1CE756B7C672D9D752F09CFC4D4AA8A"
 				}, 
 				{
 					"CurrentState": "LastDecisionsPhase",
@@ -117,7 +117,7 @@
 					"Meaning": "Success",
 					"Style": "Glin",
 					"Utterance": "Aqui está a recompensa.",
-					"UtteranceId": "TTS-335FC3EEAECBE2CCC1FB34624396B3AB"
+					"UtteranceId": "TTS-FE0F1EDE9462C630C7F8CD88AC2CDDF1"
 				}, 
 				{
 					"CurrentState": "LastDecisionsPhase",
@@ -125,23 +125,23 @@
 					"Meaning": "Fail",
 					"Style": "Glin",
 					"Utterance": "Que desgraça ",
-					"UtteranceId": "TTS-F46A2B055ACBB075B4704BBFCC1CE785"
+					"UtteranceId": "TTS-1FDE15C5378C59BEF9195B6E4D428239"
 				}, 
 				{
 					"CurrentState": "LevelUp",
 					"NextState": "-",
 					"Meaning": "Me",
-					"Style": "Glin",
+					"Style": "Defect",
+					"Utterance": "Vou melhorar o marqting ",
+					"UtteranceId": "TTS-474CEFB3216832D4E786EAB2C89544E1"
+				}, 
+				{
+					"CurrentState": "LevelUp",
+					"NextState": "-",
+					"Meaning": "Me",
+					"Style": "Cooperate",
 					"Utterance": "Vou pôr outro ponto no instrumento.",
-					"UtteranceId": "TTS-0AF047D0FD4D3616C47B9FF543C9FEDC"
-				}, 
-				{
-					"CurrentState": "LevelUp",
-					"NextState": "-",
-					"Meaning": "Me",
-					"Style": "Glin",
-					"Utterance": "Prefiro melhorar o meu instrumento. ",
-					"UtteranceId": "TTS-A8A09E6B54A2857ED1690717623645C4"
+					"UtteranceId": "TTS-16583705E72E9F902868C8ECFD0133D1"
 				}, 
 				{
 					"CurrentState": "LastDecisionsPhase",
@@ -149,7 +149,7 @@
 					"Meaning": "Success",
 					"Style": "Emys",
 					"Utterance": "Aqui vou eu com |numDices| dados. Ena, tanto dinheiro!",
-					"UtteranceId": "TTS-32DA063C4A47388E2F7FA3A1F936B2FB"
+					"UtteranceId": "TTS-78C4DE21D6598C00BFA2BC77486A3401"
 				}, 
 				{
 					"CurrentState": "RollMarketDice",
@@ -157,7 +157,7 @@
 					"Meaning": "Success",
 					"Style": "Glin",
 					"Utterance": "Este álbum correu muito bem.",
-					"UtteranceId": "TTS-BA598F703027215CCDEFEB99D281DDBF"
+					"UtteranceId": "TTS-390FCD5D88C3718695849C84110FAD52"
 				}, 
 				{
 					"CurrentState": "PlayForInstrument",
@@ -165,7 +165,7 @@
 					"Meaning": "-",
 					"Style": "Emys",
 					"Utterance": "Deixa ver quanto calha com o meu único dado.",
-					"UtteranceId": "TTS-23150BDBFB99296C72F2398275E7B422"
+					"UtteranceId": "TTS-5113E9DC454BA0E4C62DBE2310530E4B"
 				}, 
 				{
 					"CurrentState": "RollMarketDice",
@@ -173,7 +173,7 @@
 					"Meaning": "Fail",
 					"Style": "Emys",
 					"Utterance": "Este álbum não correu nada bem.",
-					"UtteranceId": "TTS-2C773D9EEA932F274031A8AE3FE14F96"
+					"UtteranceId": "TTS-EC398F7992935F6C2442726C13A41B82"
 				}, 
 				{
 					"CurrentState": "SelfRollInstrumentDice",
@@ -181,7 +181,7 @@
 					"Meaning": "BadLuck",
 					"Style": "Glin",
 					"Utterance": "Eish, só consegui |dicesValue| pontos! ",
-					"UtteranceId": "TTS-3BFF22C3389A2640170AE1D64E61E574"
+					"UtteranceId": "TTS-ECF15138F96264C3D5884E86C523937B"
 				}, 
 				{
 					"CurrentState": "LevelUp",
@@ -189,7 +189,7 @@
 					"Meaning": "Other",
 					"Style": "-",
 					"Utterance": "És tu a jogar",
-					"UtteranceId": "TTS-36DF8A2DFD07CCC5C47B5E62DB9574BB"
+					"UtteranceId": "TTS-7410B2D42D75DE9AE9F4F290535944C0"
 				}, 
 				{
 					"CurrentState": "RollMarketDice",
@@ -197,7 +197,7 @@
 					"Meaning": "Fail",
 					"Style": "Glin",
 					"Utterance": "O nosso álbum não teve sucesso ",
-					"UtteranceId": "TTS-FB191DF67E71038C76CE073C09A45387"
+					"UtteranceId": "TTS-9ACE5D40CB0613A8D1B5559C4AA91505"
 				}, 
 				{
 					"CurrentState": "LastDecisionsPhase",
@@ -205,7 +205,7 @@
 					"Meaning": "Success",
 					"Style": "Glin",
 					"Utterance": "Foi puxado mas conseguimos! ",
-					"UtteranceId": "TTS-690ECF19C4354808E553E63FF0695A59"
+					"UtteranceId": "TTS-58EAB868EE887B7C51FEFB6A19F09179"
 				}, 
 				{
 					"CurrentState": "ChoosePreferredInstrument",
@@ -213,7 +213,7 @@
 					"Meaning": "-",
 					"Style": "Emys",
 					"Utterance": "Eu quero ser o vocalista. ",
-					"UtteranceId": "TTS-38332E5C1B411A9B977EBC702F5A9F6D"
+					"UtteranceId": "TTS-106EA35EB7B533E6170BE2B31ADAA7E5"
 				}, 
 				{
 					"CurrentState": "LevelUp",
@@ -221,7 +221,7 @@
 					"Meaning": "Other",
 					"Style": "-",
 					"Utterance": "És tu!",
-					"UtteranceId": "TTS-789D0E7E4C2E0A5E269E369E24720484"
+					"UtteranceId": "TTS-D21116A64C78BDC760B490230FB8180B"
 				}, 
 				{
 					"CurrentState": "RollMarketDice",
@@ -229,7 +229,7 @@
 					"Meaning": "Success",
 					"Style": "Emys",
 					"Utterance": "O nosso álbum triunfou.",
-					"UtteranceId": "TTS-7FF9BDAC242D7F64F6AC53AE3683DE38"
+					"UtteranceId": "TTS-09272E8E43862F88484E854B56F84F5E"
 				}, 
 				{
 					"CurrentState": "SelfRollInstrumentDice",
@@ -237,7 +237,7 @@
 					"Meaning": "BadLuck",
 					"Style": "Emys",
 					"Utterance": "Mais |dicesValue| pontos para o nosso álbum! ",
-					"UtteranceId": "TTS-C801B38CFCBC7915D1ACA01F8CD375C2"
+					"UtteranceId": "TTS-5DEA510B92BE8B01AAADCC339A524F20"
 				}, 
 				{
 					"CurrentState": "LastDecisionsPhase",
@@ -245,15 +245,7 @@
 					"Meaning": "Fail",
 					"Style": "Glin",
 					"Utterance": "A ver se isto melhora... ",
-					"UtteranceId": "TTS-B11671AA2EF0B90A49EA11DE0E865023"
-				}, 
-				{
-					"CurrentState": "LevelUp",
-					"NextState": "-",
-					"Meaning": "Me",
-					"Style": "Emys",
-					"Utterance": "Vou melhorar o marqting ",
-					"UtteranceId": "TTS-53EE81207432F8C2B26AE24A332FA096"
+					"UtteranceId": "TTS-371E0D7D5D775ECBB1BD5EB84775455B"
 				}, 
 				{
 					"CurrentState": "SelfRollInstrumentDice",
@@ -261,7 +253,7 @@
 					"Meaning": "Luck",
 					"Style": "Emys",
 					"Utterance": "Mais |dicesValue| pontos do vocalista ",
-					"UtteranceId": "TTS-9765191627FC41713BF5CCB964EE5665"
+					"UtteranceId": "TTS-6132EA351AD7D5D6C8BC460A14618DC8"
 				}, 
 				{
 					"CurrentState": "NewAlbum",
@@ -269,7 +261,7 @@
 					"Meaning": "End",
 					"Style": "-",
 					"Utterance": "Último álbum, este vai ser decisivo...",
-					"UtteranceId": "TTS-003A661A023264122EBA1E1837697BF0"
+					"UtteranceId": "TTS-E21CA8CBEB001CB017673ED13DA3A982"
 				}, 
 				{
 					"CurrentState": "NewAlbum",
@@ -277,7 +269,7 @@
 					"Meaning": "Middle",
 					"Style": "-",
 					"Utterance": "Vamos lá, mais um álbum?",
-					"UtteranceId": "TTS-BDF6A7619F782B4D22674B96693816A1"
+					"UtteranceId": "TTS-0E3D410EF0C59EE986923709EE600C4F"
 				}, 
 				{
 					"CurrentState": "GameEnd",
@@ -285,7 +277,7 @@
 					"Meaning": "Loss",
 					"Style": "-",
 					"Utterance": "A nossa banda fracassou",
-					"UtteranceId": "TTS-6CF2C6BDB5A1E763E04745F9F001E104"
+					"UtteranceId": "TTS-148609DDC2CCFBF7E2642193A96BC969"
 				}, 
 				{
 					"CurrentState": "LastDecisionsPhase",
@@ -293,7 +285,7 @@
 					"Meaning": "Fail",
 					"Style": "Glin",
 					"Utterance": "Assim, esta banda não vai longe. ",
-					"UtteranceId": "TTS-51E679AB655355DB7240A11071B0DE0E"
+					"UtteranceId": "TTS-89C2B0B9F79DD18BBC2B80BBEF674228"
 				}, 
 				{
 					"CurrentState": "LevelUp",
@@ -301,7 +293,7 @@
 					"Meaning": "Other",
 					"Style": "-",
 					"Utterance": "És tu!",
-					"UtteranceId": "TTS-789D0E7E4C2E0A5E269E369E24720484"
+					"UtteranceId": "TTS-D21116A64C78BDC760B490230FB8180B"
 				}, 
 				{
 					"CurrentState": "PlayForInstrument",
@@ -309,7 +301,7 @@
 					"Meaning": "-",
 					"Style": "Glin",
 					"Utterance": "Aqui vou eu gravar o baixo",
-					"UtteranceId": "TTS-295BEAD3A2949CFAECB5E8897BDC77E2"
+					"UtteranceId": "TTS-AC7109F5F346CAE9D0DA59ABB9C80FF7"
 				}, 
 				{
 					"CurrentState": "PlayForInstrument",
@@ -317,7 +309,7 @@
 					"Meaning": "-",
 					"Style": "Emys",
 					"Utterance": "Agora sou eu a lançar o meu dado do instrumento.",
-					"UtteranceId": "TTS-43BC1E561B7DFD5A4AF26CE293BA0E90"
+					"UtteranceId": "TTS-07C5DC7F9DA868DA1831FCB4B06B5B59"
 				}, 
 				{
 					"CurrentState": "RollMarketDice",
@@ -325,7 +317,7 @@
 					"Meaning": "Success",
 					"Style": "Emys",
 					"Utterance": "O nosso álbum foi um êxito.",
-					"UtteranceId": "TTS-D7E5850CEC8EB04FA916611B76584318"
+					"UtteranceId": "TTS-151DF799EC1C8C928E67C8A8BE11ED66"
 				}, 
 				{
 					"CurrentState": "RollMarketDice",
@@ -333,7 +325,7 @@
 					"Meaning": "Success",
 					"Style": "Emys",
 					"Utterance": "O nosso álbum foi um sucesso!",
-					"UtteranceId": "TTS-5747780DD99C99737D77EA30BF9E6292"
+					"UtteranceId": "TTS-890D4130DCBACA684183F1F643BAAA06"
 				}, 
 				{
 					"CurrentState": "PlayForInstrument",
@@ -341,7 +333,7 @@
 					"Meaning": "-",
 					"Style": "Glin",
 					"Utterance": "Sou eu. Vou lançar os meus |numDices| dados.",
-					"UtteranceId": "TTS-29AC8FA088A3777E3F73AACC7E57ABB5"
+					"UtteranceId": "TTS-05866E962598619CC1A3CDD1251F7DBB"
 				}, 
 				{
 					"CurrentState": "PlayForInstrument",
@@ -349,7 +341,7 @@
 					"Meaning": "-",
 					"Style": "Emys",
 					"Utterance": "O vocalista vai cantar.",
-					"UtteranceId": "TTS-3DAF2EF523B02D28AAE13CC1EDBFB94F"
+					"UtteranceId": "TTS-3F49567E9AF0F86213FE76266ACDC594"
 				}, 
 				{
 					"CurrentState": "LastDecisionsPhase",
@@ -357,7 +349,7 @@
 					"Meaning": "Success",
 					"Style": "Emys",
 					"Utterance": " Está na altura de ser pago, aqui vou eu com os meus |numDices| dados. ",
-					"UtteranceId": "TTS-E19E46ED85C610B5C0B9CB465BA466AF"
+					"UtteranceId": "TTS-4E5CEB7877E715B11E64829B43E28370"
 				}, 
 				{
 					"CurrentState": "OtherRollInstrumentDice",
@@ -365,7 +357,7 @@
 					"Meaning": "Luck",
 					"Style": "-",
 					"Utterance": "Nada mau... ",
-					"UtteranceId": "TTS-CDCA0BAC648DDE34E29BCAF264D4B33D"
+					"UtteranceId": "TTS-B5B0821D104A41568D185281B81C194A"
 				}, 
 				{
 					"CurrentState": "LastDecisionsPhase",
@@ -373,7 +365,7 @@
 					"Meaning": "Fail",
 					"Style": "Emys",
 					"Utterance": "De facto isto não correu bem ",
-					"UtteranceId": "TTS-5F703E537FE6CEB5216433C2F12F2F69"
+					"UtteranceId": "TTS-85B5AAB5DD76BD7601CD10F2A3FBAAAB"
 				}, 
 				{
 					"CurrentState": "LastDecisionsPhase",
@@ -381,7 +373,7 @@
 					"Meaning": "Success",
 					"Style": "Emys",
 					"Utterance": "Deixa lá ver o que consigo com os meus |numDices| pontos de márqting ",
-					"UtteranceId": "TTS-E4889DAB48430AB54DFB90B7F9377042"
+					"UtteranceId": "TTS-9C50743E54D0E6E1A9CF2E3AE4062251"
 				}, 
 				{
 					"CurrentState": "LastDecisionsPhase",
@@ -389,7 +381,7 @@
 					"Meaning": "Success",
 					"Style": "Glin",
 					"Utterance": "Está na hora de fazer lucro. ",
-					"UtteranceId": "TTS-E94A5AEAEC768D24DA2C52548B4DC7A9"
+					"UtteranceId": "TTS-61DCDCE063D8E4089080D9417E6634B2"
 				}, 
 				{
 					"CurrentState": "OtherRollInstrumentDice",
@@ -397,7 +389,7 @@
 					"Meaning": "BadLuck",
 					"Style": "-",
 					"Utterance": "Eish  ",
-					"UtteranceId": "TTS-C9D09E069BCDCF23A773C71629FBFF6A"
+					"UtteranceId": "TTS-22FEF7F25841E0581D02158128D8E5E0"
 				}, 
 				{
 					"CurrentState": "LastDecisionsPhase",
@@ -405,7 +397,7 @@
 					"Meaning": "Fail",
 					"Style": "Emys",
 					"Utterance": "Tivemos azar. ",
-					"UtteranceId": "TTS-48FB459310C9DD00EC6559A1C8AA31E1"
+					"UtteranceId": "TTS-B1FB9C2400FCD45E0D0E32486F04E1DC"
 				}, 
 				{
 					"CurrentState": "PlayForInstrument",
@@ -413,7 +405,7 @@
 					"Meaning": "-",
 					"Style": "Glin",
 					"Utterance": "Deixa ver o que me sai com estes |numDices| dados.",
-					"UtteranceId": "TTS-20B5F9CC029DF6118258120E13345B38"
+					"UtteranceId": "TTS-62569ED0510A07F76FC50EEAEB47D5F7"
 				}, 
 				{
 					"CurrentState": "NewAlbum",
@@ -421,7 +413,15 @@
 					"Meaning": "Beginning",
 					"Style": "-",
 					"Utterance": "Espero que ésta banda tenha sucesso... não se esqueçam que com 3 álbuns falhados perdemos tudo",
-					"UtteranceId": "TTS-32C15069AA4F2073DEB37B637B9B77A4"
+					"UtteranceId": "TTS-C503AAFA51C0D277547E75EE45620EA4"
+				}, 
+				{
+					"CurrentState": "LevelUp",
+					"NextState": "-",
+					"Meaning": "Me",
+					"Style": "Cooperate",
+					"Utterance": "Prefiro melhorar o meu instrumento. ",
+					"UtteranceId": "TTS-7FA0FBBBFD6185CEF0B3768C74771C94"
 				}]
 		},
 	"types": [
