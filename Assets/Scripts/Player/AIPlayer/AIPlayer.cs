@@ -191,14 +191,12 @@ public abstract class AIPlayer : UIPlayer
                 {
                     emotionalModule.Perceive(new Name[] {
                         EventHelper.PropertyChange("CurrentPlayer(Name)", currentPlayer.GetName(), name),
-                        EventHelper.PropertyChange("Action(Game)", "Defect", name),
                         EventHelper.PropertyChange("State(Game)", "LevelUp", name) });
                 }
                 else
                 {
                     emotionalModule.Perceive(new Name[] {
                         EventHelper.PropertyChange("CurrentPlayer(Name)", currentPlayer.GetName(), name),
-                        EventHelper.PropertyChange("Action(Game)", "Cooperate", name),
                         EventHelper.PropertyChange("State(Game)", "LevelUp", name) });
                 }
                 emotionalModule.Decide();
@@ -559,16 +557,31 @@ public abstract class AIPlayer : UIPlayer
         yield return new WaitForSeconds(delay);
         if (!isSendingResponse)
         {
+
+            chosenLevelUpInstrument = LevelUpActions(currAlbum);
             if (emotionalModule != null)
             {
                 //Fatima call
-                emotionalModule.Perceive(new Name[] {
-                EventHelper.PropertyChange("CurrentPlayer(Name)", name, name),
-                EventHelper.PropertyChange("State(Game)", "LevelUp", name) });
+                if (chosenLevelUpInstrument == GameProperties.Instrument.MARKETING)
+                {
+                    emotionalModule.Perceive(new Name[] {
+                        EventHelper.PropertyChange("CurrentPlayer(Name)", name, name),
+                        EventHelper.PropertyChange("Action(Game)", "Defect", name),
+                        EventHelper.PropertyChange("State(Game)", "LevelUp", name) });
+                    Debug.Log("DEFECT");
+                }
+                else
+                {
+                    emotionalModule.Perceive(new Name[] {
+                        EventHelper.PropertyChange("CurrentPlayer(Name)", name, name),
+                        EventHelper.PropertyChange("Action(Game)", "Cooperate", name),
+                        EventHelper.PropertyChange("State(Game)", "LevelUp", name) });
+                    Debug.Log("COOPERATE");
+                }
                 emotionalModule.Decide();
             }
 
-            chosenLevelUpInstrument = LevelUpActions(currAlbum);
+
             playerMonoBehaviourFunctionalities.StartCoroutine(ThinkBeforeLevelingUp(currAlbum, sendResponsesDelay, chosenLevelUpInstrument, true));
         }
         else
