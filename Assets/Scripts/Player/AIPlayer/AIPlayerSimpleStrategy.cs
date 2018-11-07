@@ -14,18 +14,18 @@ public class AIPlayerSimpleStrategy : AIPlayer
         return GameProperties.Instrument.GUITAR;
 
     }
-    protected override int LastDecisionsActions(Album currAlbum)
-    {
-        int condition = 0;
-        if (currAlbum.GetMarketingState() == GameProperties.AlbumMarketingState.MEGA_HIT)
-        {
-            condition = 0;
-        }
-        if (currAlbum.GetMarketingState() == GameProperties.AlbumMarketingState.FAIL)
-        {
-            condition = 2;
-        }
-        return condition;
-    }
+    //protected override int LastDecisionsActions(Album currAlbum)
+    //{
+    //    int condition = 0;
+    //    if (currAlbum.GetMarketingState() == GameProperties.AlbumMarketingState.MEGA_HIT)
+    //    {
+    //        condition = 0;
+    //    }
+    //    if (currAlbum.GetMarketingState() == GameProperties.AlbumMarketingState.FAIL)
+    //    {
+    //        condition = 2;
+    //    }
+    //    return condition;
+    //}
 }
 

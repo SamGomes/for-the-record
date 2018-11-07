@@ -15,18 +15,18 @@ public class AIPlayerRandomStrategy : AIPlayer
         instrumentToLevelUp = (Random.Range(0, 2) > 0) ? preferredInstrument : GameProperties.Instrument.MARKETING;
         return instrumentToLevelUp;
     }
-    protected override int LastDecisionsActions(Album currAlbum)
-    {
-        int condition = 0;
-        if (currAlbum.GetMarketingState() == GameProperties.AlbumMarketingState.MEGA_HIT)
-        {
-            condition = 0;
-        }
-        if (currAlbum.GetMarketingState() == GameProperties.AlbumMarketingState.FAIL)
-        {
-            condition = 2;
-        }
-        return condition;
-    }
+    //protected override int LastDecisionsActions(Album currAlbum)
+    //{
+    //    int condition = 0;
+    //    if (currAlbum.GetMarketingState() == GameProperties.AlbumMarketingState.MEGA_HIT)
+    //    {
+    //        condition = 0;
+    //    }
+    //    if (currAlbum.GetMarketingState() == GameProperties.AlbumMarketingState.FAIL)
+    //    {
+    //        condition = 2;
+    //    }
+    //    return condition;
+    //}
 }
 
