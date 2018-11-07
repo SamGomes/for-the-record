@@ -163,9 +163,9 @@
 					"CurrentState": "PlayForInstrument",
 					"NextState": "-",
 					"Meaning": "-",
-					"Style": "Emys",
-					"Utterance": "<gaze(screen)> Let's see how many points I can get with my single dice.",
-					"UtteranceId": "TTS-7DE3578FF85CD9F7F791488CC45FB34D"
+					"Style": "Glin",
+					"Utterance": "<gaze(screen)> Let's see how many points I can get.",
+					"UtteranceId": "TTS-50EC14868F24F2AC062465D770ED131A"
 				}, 
 				{
 					"CurrentState": "RollMarketDice",
@@ -372,16 +372,16 @@
 					"NextState": "-",
 					"Meaning": "Success",
 					"Style": "Emys",
-					"Utterance": "<gaze(screen)> Let me see how much I can make with my |numDices| dice in marketing.",
-					"UtteranceId": "TTS-BF821400F02406297C3F611C26C98450"
-				}, 
-				{
-					"CurrentState": "LastDecisionsPhase",
-					"NextState": "-",
-					"Meaning": "Success",
-					"Style": "Glin",
 					"Utterance": "<gaze(screen)> It's time to make a profit.",
 					"UtteranceId": "TTS-74703F2F2A037D2951DAF33A21F58432"
+				}, 
+				{
+					"CurrentState": "PlayForInstrument",
+					"NextState": "-",
+					"Meaning": "-",
+					"Style": "Emys",
+					"Utterance": "<gaze(screen)> Let me see what I can get with my |numDices| dice.",
+					"UtteranceId": "TTS-02417EB95920610F9FE4C478848BD4B1"
 				}, 
 				{
 					"CurrentState": "OtherRollInstrumentDice",
@@ -400,14 +400,6 @@
 					"UtteranceId": "TTS-62DB46D76E9AA0C9DA16B9478EF173D0"
 				}, 
 				{
-					"CurrentState": "PlayForInstrument",
-					"NextState": "-",
-					"Meaning": "-",
-					"Style": "Glin",
-					"Utterance": "<gaze(screen)> Let me see what I can get with my |numDices| dice.",
-					"UtteranceId": "TTS-02417EB95920610F9FE4C478848BD4B1"
-				}, 
-				{
 					"CurrentState": "NewAlbum",
 					"NextState": "-",
 					"Meaning": "Beginning",
@@ -422,6 +414,14 @@
 					"Style": "Cooperate",
 					"Utterance": "<gaze(screen)> I prefer to upgrade my instrument skill",
 					"UtteranceId": "TTS-32DD94078051560AE4CD737606CE80AA"
+				}, 
+				{
+					"CurrentState": "LastDecisionsPhase",
+					"NextState": "-",
+					"Meaning": "Success",
+					"Style": "Glin",
+					"Utterance": "<gaze(screen)> Let me see how much I can make with my |numDices| dice in marketing.",
+					"UtteranceId": "TTS-BF821400F02406297C3F611C26C98450"
 				}]
 		},
 	"types": [
