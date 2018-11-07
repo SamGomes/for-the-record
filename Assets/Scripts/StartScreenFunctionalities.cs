@@ -134,7 +134,7 @@ public class StartScreenFunctionalities : MonoBehaviour {
         else
         {
             //create session parameterization
-            SessionParameterization mock = new SessionParameterization("myAss");
+            SessionParameterization mock = new SessionParameterization("mock");
             GameProperties.configurableProperties.possibleParameterizations.Add(mock);
             this.UIStartGameButton.interactable = true;
 
@@ -188,6 +188,7 @@ public class StartScreenFunctionalities : MonoBehaviour {
                 }
             }
         }
+
         if (possibleConditions.Count <= 0)
         {
             Debug.Log("[WARNING]: isSimulation/ isAutomaticDebriefing is enabled but possibleConditions is still empty!");

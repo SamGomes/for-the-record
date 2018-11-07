@@ -51,6 +51,17 @@ public static class GameProperties
         MARKETING,
         NONE
     }
+
+    public enum MusicianRole
+    {
+        GUITARIST,
+        DRUMMER,
+        VOCALIST,
+        PIANIST,
+        BASSIST,
+        MANAGER,
+        NONE
+    }
     public enum AlbumMarketingState
     {
         NON_PUBLISHED,

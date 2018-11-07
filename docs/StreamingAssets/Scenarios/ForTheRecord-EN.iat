@@ -13,15 +13,15 @@
 					"Meaning": "Victory",
 					"Style": "-",
 					"Utterance": "<gaze(Player)> This <animate(joy4)>  band rocks!",
-					"UtteranceId": "TTS-5A6DCEC64EE02C84F35CBEF98CC89C9E"
+					"UtteranceId": "TTS-2BA25A2361365BB71B9E0FF358B9C85A"
 				}, 
 				{
 					"CurrentState": "LevelUp",
 					"NextState": "-",
 					"Meaning": "Me",
-					"Style": "Emys",
-					"Utterance": "<gaze(screen)> I will upgrade my marketing skill. ",
-					"UtteranceId": "TTS-01BE6E3B310431DA1FBCAB3969B5931D"
+					"Style": "Cooperate",
+					"Utterance": "<gaze(screen)> I will put one more point on my instrument",
+					"UtteranceId": "TTS-63E477216570678F422EC0C53A0D0A90"
 				}, 
 				{
 					"CurrentState": "LastDecisionsPhase",
@@ -29,7 +29,7 @@
 					"Meaning": "Fail",
 					"Style": "Emys",
 					"Utterance": "<gaze(screen)> We will collapse if we continue to play this way.  ",
-					"UtteranceId": "TTS-83EF49C14A232EE276E83FB541D38F3D"
+					"UtteranceId": "TTS-C714081A486045537AB857FAAD24D3AB"
 				}, 
 				{
 					"CurrentState": "RollMarketDice",
@@ -37,7 +37,7 @@
 					"Meaning": "Fail",
 					"Style": "Glin",
 					"Utterance": "<gaze(Player)> Our <animate(sadness3)> album was a flop!",
-					"UtteranceId": "TTS-3A6608D8F88C466FBB56295A6D96891F"
+					"UtteranceId": "TTS-668CC963BB97935C791D993346C28915"
 				}, 
 				{
 					"CurrentState": "LastDecisionsPhase",
@@ -45,7 +45,7 @@
 					"Meaning": "Success",
 					"Style": "Emys",
 					"Utterance": " <gaze(screen)> Let me use my |numDices| marketing dices to see what I can get.",
-					"UtteranceId": "TTS-46DB73F86BDBE88225659E99D6794305"
+					"UtteranceId": "TTS-D427D0BD5EEEB2B642166066E3831781"
 				}, 
 				{
 					"CurrentState": "RollMarketDice",
@@ -53,7 +53,7 @@
 					"Meaning": "Fail",
 					"Style": "Emys",
 					"Utterance": "<gaze(screen)> What a terrible album we produced!",
-					"UtteranceId": "TTS-93C69911F8110BC3DF0D6CC2907E54CA"
+					"UtteranceId": "TTS-3CBF9C8092361B16B2435395617F2F3F"
 				}, 
 				{
 					"CurrentState": "OtherRollInstrumentDice",
@@ -61,7 +61,7 @@
 					"Meaning": "Luck",
 					"Style": "-",
 					"Utterance": "That was very lucky! <glance(Player)> ",
-					"UtteranceId": "TTS-3539E78514FB4B498C246F4F1766E404"
+					"UtteranceId": "TTS-7287958CED5C672683043619974230CF"
 				}, 
 				{
 					"CurrentState": "NewAlbum",
@@ -69,15 +69,15 @@
 					"Meaning": "Middle",
 					"Style": "-",
 					"Utterance": "<gaze(Player)> Lets record a new album.",
-					"UtteranceId": "TTS-ED5E3C9EBA5D27CC2BCB2BDA8720D516"
+					"UtteranceId": "TTS-BDF9883D8AF22747CD5AE91393C271D0"
 				}, 
 				{
-					"CurrentState": "ChoosePreferredInstrument",
+					"CurrentState": "PlayForInstrument",
 					"NextState": "-",
 					"Meaning": "-",
-					"Style": "Glin",
-					"Utterance": "<gaze(screen)> I choose to play the bass. ",
-					"UtteranceId": "TTS-6308E51CFF361BDD1A80F98A6F992F07"
+					"Style": "Emys",
+					"Utterance": "<gaze(screen)> Let's hear the |musicianRole|.",
+					"UtteranceId": "TTS-A342078EA6FE47E756BEA0322FC2CC85"
 				}, 
 				{
 					"CurrentState": "OtherRollInstrumentDice",
@@ -85,7 +85,7 @@
 					"Meaning": "BadLuck",
 					"Style": "-",
 					"Utterance": "Gosh!  <glance(Player)> ",
-					"UtteranceId": "TTS-D74F00D2EDBCB5220E8D3625CC22260A"
+					"UtteranceId": "TTS-4AECA608F9CEDE6594CE3E7C391381A9"
 				}, 
 				{
 					"CurrentState": "SelfRollInstrumentDice",
@@ -93,7 +93,7 @@
 					"Meaning": "Luck",
 					"Style": "Glin",
 					"Utterance": "<gaze(screen)> Wow, that is |dicesValue| points more! ",
-					"UtteranceId": "TTS-6EE96FE42611DD86FAB36E9609F3309C"
+					"UtteranceId": "TTS-BF4B1DA88AC6F7EF0D5B03076384EB2E"
 				}, 
 				{
 					"CurrentState": "LastDecisionsPhase",
@@ -101,7 +101,7 @@
 					"Meaning": "Fail",
 					"Style": "Glin",
 					"Utterance": "<gaze(screen)> This went wrong.",
-					"UtteranceId": "TTS-2BB2F4A82998273CD84DE10EA5BA1DE0"
+					"UtteranceId": "TTS-CD7D55B70F521C595E8DDCA2CCBE36AC"
 				}, 
 				{
 					"CurrentState": "LastDecisionsPhase",
@@ -109,7 +109,7 @@
 					"Meaning": "Fail",
 					"Style": "Emys",
 					"Utterance": "<gaze(screen)> This way we are not going to make it. ",
-					"UtteranceId": "TTS-83EF49C14A232EE276E83FB541D38F3D"
+					"UtteranceId": "TTS-917E72E61A0D53B2A7B561738F6654B6"
 				}, 
 				{
 					"CurrentState": "LastDecisionsPhase",
@@ -117,7 +117,7 @@
 					"Meaning": "Success",
 					"Style": "Glin",
 					"Utterance": "<gaze(screen)> Here is the reward.<gaze(Player)> ",
-					"UtteranceId": "TTS-335FC3EEAECBE2CCC1FB34624396B3AB"
+					"UtteranceId": "TTS-620BC53491F5F00FDCFC18B0B5905AB1"
 				}, 
 				{
 					"CurrentState": "LastDecisionsPhase",
@@ -125,23 +125,23 @@
 					"Meaning": "Fail",
 					"Style": "Glin",
 					"Utterance": "<gaze(screen)> What a disaster",
-					"UtteranceId": "TTS-F46A2B055ACBB075B4704BBFCC1CE785"
+					"UtteranceId": "TTS-D07F72FCE149C1EAB2119E7C195B7DC3"
 				}, 
 				{
 					"CurrentState": "LevelUp",
 					"NextState": "-",
 					"Meaning": "Me",
-					"Style": "Glin",
-					"Utterance": "<gaze(screen)> I will put one more point on my instrument",
-					"UtteranceId": "TTS-0AF047D0FD4D3616C47B9FF543C9FEDC"
+					"Style": "Defect",
+					"Utterance": "<gaze(screen)> I will improve the marketing skill.",
+					"UtteranceId": "TTS-0DE3A15FF759969BA3B1550127DA23AF"
 				}, 
 				{
 					"CurrentState": "LevelUp",
 					"NextState": "-",
 					"Meaning": "Me",
-					"Style": "Glin",
-					"Utterance": "<gaze(screen)> I prefer to upgrade my instrument skill",
-					"UtteranceId": "TTS-A8A09E6B54A2857ED1690717623645C4"
+					"Style": "Defect",
+					"Utterance": "<gaze(screen)> I will upgrade my marketing skill. ",
+					"UtteranceId": "TTS-66054503FA05B2D538A9707CE1E5FAD4"
 				}, 
 				{
 					"CurrentState": "LastDecisionsPhase",
@@ -149,7 +149,7 @@
 					"Meaning": "Success",
 					"Style": "Emys",
 					"Utterance": "<gaze(screen)> Here I go with |numDices| dice.",
-					"UtteranceId": "TTS-32DA063C4A47388E2F7FA3A1F936B2FB"
+					"UtteranceId": "TTS-01B8A270C1DBF0A97AE82EC80D2AA18F"
 				}, 
 				{
 					"CurrentState": "RollMarketDice",
@@ -157,15 +157,15 @@
 					"Meaning": "Success",
 					"Style": "Glin",
 					"Utterance": "<gaze(Player)> This <animate(joy3)> album succeeded.",
-					"UtteranceId": "TTS-BA598F703027215CCDEFEB99D281DDBF"
+					"UtteranceId": "TTS-5C1816EC7633FF3064A51448D69B15AD"
 				}, 
 				{
 					"CurrentState": "PlayForInstrument",
 					"NextState": "-",
 					"Meaning": "-",
-					"Style": "Emys",
-					"Utterance": "<gaze(screen)> Let's see how many points I can get with my single dice.",
-					"UtteranceId": "TTS-23150BDBFB99296C72F2398275E7B422"
+					"Style": "Glin",
+					"Utterance": "<gaze(screen)> Let's see how many points I can get.",
+					"UtteranceId": "TTS-50EC14868F24F2AC062465D770ED131A"
 				}, 
 				{
 					"CurrentState": "RollMarketDice",
@@ -173,7 +173,7 @@
 					"Meaning": "Fail",
 					"Style": "Emys",
 					"Utterance": "<gaze(Player)> This <animate(sadness3)> album was a disaster.",
-					"UtteranceId": "TTS-2C773D9EEA932F274031A8AE3FE14F96"
+					"UtteranceId": "TTS-010448436160921897BBC627D34F6AEC"
 				}, 
 				{
 					"CurrentState": "SelfRollInstrumentDice",
@@ -181,7 +181,7 @@
 					"Meaning": "BadLuck",
 					"Style": "Glin",
 					"Utterance": "<gaze(screen)> Ouch, I just managed to get |dicesValue| points! ",
-					"UtteranceId": "TTS-3BFF22C3389A2640170AE1D64E61E574"
+					"UtteranceId": "TTS-942B51FAE62D776882ACF60C2BA56371"
 				}, 
 				{
 					"CurrentState": "LevelUp",
@@ -189,7 +189,7 @@
 					"Meaning": "Other",
 					"Style": "-",
 					"Utterance": "<gaze(Player)> It's your turn!",
-					"UtteranceId": "TTS-36DF8A2DFD07CCC5C47B5E62DB9574BB"
+					"UtteranceId": "TTS-7970C5A2EC92ECCCD12483D6EEF31E35"
 				}, 
 				{
 					"CurrentState": "RollMarketDice",
@@ -197,7 +197,7 @@
 					"Meaning": "Fail",
 					"Style": "Glin",
 					"Utterance": "<gaze(screen)> Our <animate(sadness3)> album did not succeed.",
-					"UtteranceId": "TTS-FB191DF67E71038C76CE073C09A45387"
+					"UtteranceId": "TTS-1349060CB36E85DEC7866840F78B159C"
 				}, 
 				{
 					"CurrentState": "LastDecisionsPhase",
@@ -205,15 +205,15 @@
 					"Meaning": "Success",
 					"Style": "Glin",
 					"Utterance": "<gaze(screen)> It was hard but we made it! ",
-					"UtteranceId": "TTS-690ECF19C4354808E553E63FF0695A59"
+					"UtteranceId": "TTS-5790553F296234EED2EBA1F737978BA5"
 				}, 
 				{
 					"CurrentState": "ChoosePreferredInstrument",
 					"NextState": "-",
 					"Meaning": "-",
-					"Style": "Emys",
-					"Utterance": "<gaze(screen)> I want to be the lead singer.",
-					"UtteranceId": "TTS-38332E5C1B411A9B977EBC702F5A9F6D"
+					"Style": "Glin",
+					"Utterance": "<gaze(screen)> I choose to play the |instrument|.",
+					"UtteranceId": "TTS-ED17E6A69CB11A01EAF1E260554C5605"
 				}, 
 				{
 					"CurrentState": "LevelUp",
@@ -221,7 +221,7 @@
 					"Meaning": "Other",
 					"Style": "-",
 					"Utterance": "<gaze(Player)> It's you!",
-					"UtteranceId": "TTS-789D0E7E4C2E0A5E269E369E24720484"
+					"UtteranceId": "TTS-C983E72852E9C578AF3B274B5BA865E9"
 				}, 
 				{
 					"CurrentState": "RollMarketDice",
@@ -229,7 +229,7 @@
 					"Meaning": "Success",
 					"Style": "Emys",
 					"Utterance": "<gaze(Player)> Our <animate(joy3)> album was a blast.",
-					"UtteranceId": "TTS-7FF9BDAC242D7F64F6AC53AE3683DE38"
+					"UtteranceId": "TTS-F2BE7EF817E1F79BDA534D1CE2C45E83"
 				}, 
 				{
 					"CurrentState": "SelfRollInstrumentDice",
@@ -237,7 +237,7 @@
 					"Meaning": "BadLuck",
 					"Style": "Emys",
 					"Utterance": "<gaze(screen)> |dicesValue| more points for our album! ",
-					"UtteranceId": "TTS-C801B38CFCBC7915D1ACA01F8CD375C2"
+					"UtteranceId": "TTS-8BDBC55321B23A35A4F6F6C90CA3FBDD"
 				}, 
 				{
 					"CurrentState": "LastDecisionsPhase",
@@ -245,15 +245,15 @@
 					"Meaning": "Fail",
 					"Style": "Glin",
 					"Utterance": "<gaze(screen)> Let's hope for the best...",
-					"UtteranceId": "TTS-B11671AA2EF0B90A49EA11DE0E865023"
+					"UtteranceId": "TTS-097FA65D65FFF3ECE65EDFC11D5AAC24"
 				}, 
 				{
-					"CurrentState": "LevelUp",
+					"CurrentState": "ChoosePreferredInstrument",
 					"NextState": "-",
-					"Meaning": "Me",
+					"Meaning": "-",
 					"Style": "Emys",
-					"Utterance": "<gaze(screen)> I will improve the marketing skill.",
-					"UtteranceId": "TTS-53EE81207432F8C2B26AE24A332FA096"
+					"Utterance": "<gaze(screen)> I want to be the |musicianRole|.",
+					"UtteranceId": "TTS-7486D8CBA613C0D354FFDE9C1CF448F9"
 				}, 
 				{
 					"CurrentState": "SelfRollInstrumentDice",
@@ -261,7 +261,7 @@
 					"Meaning": "Luck",
 					"Style": "Emys",
 					"Utterance": "<gaze(screen)> |dicesValue| points from the singer ",
-					"UtteranceId": "TTS-9765191627FC41713BF5CCB964EE5665"
+					"UtteranceId": "TTS-08CDBB79DCB04D96954AD0FBD9E1B6A5"
 				}, 
 				{
 					"CurrentState": "NewAlbum",
@@ -269,7 +269,7 @@
 					"Meaning": "End",
 					"Style": "-",
 					"Utterance": "<gaze(Player)> Last album! This one is crucial...",
-					"UtteranceId": "TTS-003A661A023264122EBA1E1837697BF0"
+					"UtteranceId": "TTS-7E269657ED5EC0C42CA2F3675F45A54A"
 				}, 
 				{
 					"CurrentState": "NewAlbum",
@@ -277,7 +277,7 @@
 					"Meaning": "Middle",
 					"Style": "-",
 					"Utterance": "<gaze(Player)> Let's record one more album!",
-					"UtteranceId": "TTS-BDF6A7619F782B4D22674B96693816A1"
+					"UtteranceId": "TTS-C1C5652239E5E7B2C84C020949AA651A"
 				}, 
 				{
 					"CurrentState": "GameEnd",
@@ -285,7 +285,7 @@
 					"Meaning": "Loss",
 					"Style": "-",
 					"Utterance": "<gaze(Player)> Our <animate(sadness3)> band failed.",
-					"UtteranceId": "TTS-6CF2C6BDB5A1E763E04745F9F001E104"
+					"UtteranceId": "TTS-AF6CCBC84D6BC26426FDFB95232F9BEB"
 				}, 
 				{
 					"CurrentState": "LastDecisionsPhase",
@@ -293,7 +293,7 @@
 					"Meaning": "Fail",
 					"Style": "Glin",
 					"Utterance": "<gaze(screen)> We are not going very far this way.",
-					"UtteranceId": "TTS-51E679AB655355DB7240A11071B0DE0E"
+					"UtteranceId": "TTS-1DAAA15D6C1977D303A489B59C499639"
 				}, 
 				{
 					"CurrentState": "LevelUp",
@@ -301,15 +301,7 @@
 					"Meaning": "Other",
 					"Style": "-",
 					"Utterance": "<gaze(Player)> It is your turn!",
-					"UtteranceId": "TTS-789D0E7E4C2E0A5E269E369E24720484"
-				}, 
-				{
-					"CurrentState": "PlayForInstrument",
-					"NextState": "-",
-					"Meaning": "-",
-					"Style": "Glin",
-					"Utterance": "<gaze(screen)> I will record the bass",
-					"UtteranceId": "TTS-295BEAD3A2949CFAECB5E8897BDC77E2"
+					"UtteranceId": "TTS-96F15D5C8CDFF857C45CB405577E84F2"
 				}, 
 				{
 					"CurrentState": "PlayForInstrument",
@@ -317,7 +309,7 @@
 					"Meaning": "-",
 					"Style": "Emys",
 					"Utterance": "<gaze(screen)> Now it is my turn to launch the dice of my instrument.",
-					"UtteranceId": "TTS-43BC1E561B7DFD5A4AF26CE293BA0E90"
+					"UtteranceId": "TTS-96CF471F0FD0EF9818210A6CE342437F"
 				}, 
 				{
 					"CurrentState": "RollMarketDice",
@@ -325,7 +317,7 @@
 					"Meaning": "Success",
 					"Style": "Emys",
 					"Utterance": "<gaze(Player)> Our <animate(joy3)> album was a hit.",
-					"UtteranceId": "TTS-D7E5850CEC8EB04FA916611B76584318"
+					"UtteranceId": "TTS-CD300F4D349280D56C56A580E7A2D2B4"
 				}, 
 				{
 					"CurrentState": "RollMarketDice",
@@ -333,7 +325,7 @@
 					"Meaning": "Success",
 					"Style": "Emys",
 					"Utterance": "<gaze(Player)> Our <animate(joy3)> album was a success!",
-					"UtteranceId": "TTS-5747780DD99C99737D77EA30BF9E6292"
+					"UtteranceId": "TTS-6CE7847D35EDC325EF6F15E35C64C433"
 				}, 
 				{
 					"CurrentState": "PlayForInstrument",
@@ -341,15 +333,15 @@
 					"Meaning": "-",
 					"Style": "Glin",
 					"Utterance": "<gaze(screen)> It's me now. I'm going to play my |numDices| dice.",
-					"UtteranceId": "TTS-29AC8FA088A3777E3F73AACC7E57ABB5"
+					"UtteranceId": "TTS-B6416135DDE1B9B02B08E3746F5115FC"
 				}, 
 				{
 					"CurrentState": "PlayForInstrument",
 					"NextState": "-",
 					"Meaning": "-",
-					"Style": "Emys",
-					"Utterance": "<gaze(screen)> Let's hear the singer.",
-					"UtteranceId": "TTS-3DAF2EF523B02D28AAE13CC1EDBFB94F"
+					"Style": "Glin",
+					"Utterance": "<gaze(screen)> I will record the |instrument|.",
+					"UtteranceId": "TTS-AA02D0EECD693F1527C8F715E7A1DC96"
 				}, 
 				{
 					"CurrentState": "LastDecisionsPhase",
@@ -357,7 +349,7 @@
 					"Meaning": "Success",
 					"Style": "Emys",
 					"Utterance": "<gaze(screen)>  It's time to get paid. Here I go with my |numDices| dice. ",
-					"UtteranceId": "TTS-E19E46ED85C610B5C0B9CB465BA466AF"
+					"UtteranceId": "TTS-8F57AEE565A29D6B2664B8528D1A3469"
 				}, 
 				{
 					"CurrentState": "OtherRollInstrumentDice",
@@ -365,7 +357,7 @@
 					"Meaning": "Luck",
 					"Style": "-",
 					"Utterance": "Not bad... <glance(Player)> ",
-					"UtteranceId": "TTS-CDCA0BAC648DDE34E29BCAF264D4B33D"
+					"UtteranceId": "TTS-7106BA2081CCE9C2ABD0D670DCCC0176"
 				}, 
 				{
 					"CurrentState": "LastDecisionsPhase",
@@ -373,23 +365,23 @@
 					"Meaning": "Fail",
 					"Style": "Emys",
 					"Utterance": "<gaze(screen)> This did not went well.",
-					"UtteranceId": "TTS-5F703E537FE6CEB5216433C2F12F2F69"
+					"UtteranceId": "TTS-B91FB8234C55311CAF0B42C9D90986B6"
 				}, 
 				{
 					"CurrentState": "LastDecisionsPhase",
 					"NextState": "-",
 					"Meaning": "Success",
 					"Style": "Emys",
-					"Utterance": "<gaze(screen)> Let me see how much I can make with my |numDices| dice in marketing.",
-					"UtteranceId": "TTS-E4889DAB48430AB54DFB90B7F9377042"
+					"Utterance": "<gaze(screen)> It's time to make a profit.",
+					"UtteranceId": "TTS-74703F2F2A037D2951DAF33A21F58432"
 				}, 
 				{
-					"CurrentState": "LastDecisionsPhase",
+					"CurrentState": "PlayForInstrument",
 					"NextState": "-",
-					"Meaning": "Success",
-					"Style": "Glin",
-					"Utterance": "<gaze(screen)> It's time to make a profit.",
-					"UtteranceId": "TTS-E94A5AEAEC768D24DA2C52548B4DC7A9"
+					"Meaning": "-",
+					"Style": "Emys",
+					"Utterance": "<gaze(screen)> Let me see what I can get with my |numDices| dice.",
+					"UtteranceId": "TTS-02417EB95920610F9FE4C478848BD4B1"
 				}, 
 				{
 					"CurrentState": "OtherRollInstrumentDice",
@@ -397,7 +389,7 @@
 					"Meaning": "BadLuck",
 					"Style": "-",
 					"Utterance": "Damn. <glance(Player)> ",
-					"UtteranceId": "TTS-C9D09E069BCDCF23A773C71629FBFF6A"
+					"UtteranceId": "TTS-8B136EB5632D5AEF605508931EE75D03"
 				}, 
 				{
 					"CurrentState": "LastDecisionsPhase",
@@ -405,15 +397,7 @@
 					"Meaning": "Fail",
 					"Style": "Emys",
 					"Utterance": "<gaze(screen)> We had bad luck. ",
-					"UtteranceId": "TTS-48FB459310C9DD00EC6559A1C8AA31E1"
-				}, 
-				{
-					"CurrentState": "PlayForInstrument",
-					"NextState": "-",
-					"Meaning": "-",
-					"Style": "Glin",
-					"Utterance": "<gaze(screen)> Let me see what I can get with my |numDices| dice.",
-					"UtteranceId": "TTS-20B5F9CC029DF6118258120E13345B38"
+					"UtteranceId": "TTS-62DB46D76E9AA0C9DA16B9478EF173D0"
 				}, 
 				{
 					"CurrentState": "NewAlbum",
@@ -421,7 +405,23 @@
 					"Meaning": "Beginning",
 					"Style": "-",
 					"Utterance": "<gaze(Player)> I hope our band <animate(joy3)> succeeds... Don't forget that, with 3 failed albums, we lose everything.",
-					"UtteranceId": "TTS-32C15069AA4F2073DEB37B637B9B77A4"
+					"UtteranceId": "TTS-10B3887E69D7B0C81C706957FAC22D36"
+				}, 
+				{
+					"CurrentState": "LevelUp",
+					"NextState": "-",
+					"Meaning": "Me",
+					"Style": "Cooperate",
+					"Utterance": "<gaze(screen)> I prefer to upgrade my instrument skill",
+					"UtteranceId": "TTS-32DD94078051560AE4CD737606CE80AA"
+				}, 
+				{
+					"CurrentState": "LastDecisionsPhase",
+					"NextState": "-",
+					"Meaning": "Success",
+					"Style": "Glin",
+					"Utterance": "<gaze(screen)> Let me see how much I can make with my |numDices| dice in marketing.",
+					"UtteranceId": "TTS-BF821400F02406297C3F611C26C98450"
 				}]
 		},
 	"types": [
