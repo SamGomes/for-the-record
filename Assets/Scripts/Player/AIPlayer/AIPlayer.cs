@@ -181,26 +181,11 @@ public abstract class AIPlayer : UIPlayer
     {
         if (emotionalModule != null)
         {
-            int currSpeakingPlayerId = gameManagerRef.GetCurrSpeakingPlayerId();
-
-            if (currSpeakingPlayerId == this.id && invoker.GetName() == "Player")
+            int currSpeakingPlayerId = gameManagerRef.GetCurrSpeakingPlayerId(); if (currSpeakingPlayerId == id && invoker.GetName() == "Player")
             {
-                Debug.Log(name + ": É a vez do " + invoker.GetName());
-                if (leveledUpInstrument == GameProperties.Instrument.MARKETING)
-                {
-                    emotionalModule.Perceive(new Name[] {
-                        EventHelper.PropertyChange("CurrentPlayer(Name)", invoker.GetName(), name),
-                        EventHelper.PropertyChange("Action(Game)", "Defect", name),
-                        EventHelper.PropertyChange("State(Game)", "LevelUp", name) });
-                }
-                else
-                {
-                    emotionalModule.Perceive(new Name[] {
-                        EventHelper.PropertyChange("CurrentPlayer(Name)", invoker.GetName(), name),
-                        EventHelper.PropertyChange("Action(Game)", "Cooperate", name),
-                        EventHelper.PropertyChange("State(Game)", "LevelUp", name) });
-                }
-                emotionalModule.Decide();
+                Debug.Log(name + ": É a vez do " + invoker.GetName()); emotionalModule.Perceive(new Name[] {
+                       EventHelper.PropertyChange("CurrentPlayer(Name)", invoker.GetName(), name),
+                       EventHelper.PropertyChange("State(Game)", "LevelUp", name) }); emotionalModule.Decide();
             }
             else if (invoker != this)
             {
@@ -369,10 +354,10 @@ public abstract class AIPlayer : UIPlayer
         yield return new WaitForSeconds(delay);
         InformChoosePreferredInstrumentActions(nextPlayer);
     }
-    private IEnumerator DelayedInformLevelUpActions(Player player, GameProperties.Instrument leveledUpInstrument, float delay, bool isInformDelayed)
+    private IEnumerator DelayedInformLevelUpActions(Player invoker, GameProperties.Instrument leveledUpInstrument, float delay, bool isInformDelayed)
     {
         yield return new WaitForSeconds(delay);
-        InformLevelUpActions(player, leveledUpInstrument);
+        InformLevelUpActions(invoker, leveledUpInstrument);
     }
     private IEnumerator DelayedInformPlayForInstrumentActions(Player nextPlayer, float delay, bool isInformDelayed)
     {
@@ -558,16 +543,31 @@ public abstract class AIPlayer : UIPlayer
         yield return new WaitForSeconds(delay);
         if (!isSendingResponse)
         {
+
+            chosenLevelUpInstrument = LevelUpActions(currAlbum);
             if (emotionalModule != null)
             {
                 //Fatima call
-                emotionalModule.Perceive(new Name[] {
-                EventHelper.PropertyChange("CurrentPlayer(Name)", name, name),
-                EventHelper.PropertyChange("State(Game)", "LevelUp", name) });
+                if (chosenLevelUpInstrument == GameProperties.Instrument.MARKETING)
+                {
+                    emotionalModule.Perceive(new Name[] {
+                        EventHelper.PropertyChange("CurrentPlayer(Name)", name, name),
+                        EventHelper.PropertyChange("Action(Game)", "Defect", name),
+                        EventHelper.PropertyChange("State(Game)", "LevelUp", name) });
+                    Debug.Log("DEFECT");
+                }
+                else
+                {
+                    emotionalModule.Perceive(new Name[] {
+                        EventHelper.PropertyChange("CurrentPlayer(Name)", name, name),
+                        EventHelper.PropertyChange("Action(Game)", "Cooperate", name),
+                        EventHelper.PropertyChange("State(Game)", "LevelUp", name) });
+                    Debug.Log("COOPERATE");
+                }
                 emotionalModule.Decide();
             }
 
-            chosenLevelUpInstrument = LevelUpActions(currAlbum);
+
             playerMonoBehaviourFunctionalities.StartCoroutine(ThinkBeforeLevelingUp(currAlbum, sendResponsesDelay, chosenLevelUpInstrument, true));
         }
         else
