@@ -13,9 +13,9 @@ public class AIPlayerTitForTatStrategy : AIPlayer
         didSomeoneDefectedThisRound = false;
     }
 
-    protected override void InformLevelUpActions(GameProperties.Instrument leveledUpInstrument)
+    protected override void InformLevelUpActions(Player invoker, GameProperties.Instrument leveledUpInstrument)
     {
-        if (didSomeoneDefectedThisRound == false)
+        if (didSomeoneDefectedThisRound == false && invoker.GetPlayerType()!= GameProperties.PlayerType.TITFORTAT)
         {
             didSomeoneDefectedThisRound = (leveledUpInstrument == GameProperties.Instrument.MARKETING);
         }

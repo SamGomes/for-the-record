@@ -37,7 +37,6 @@ public abstract class AIPlayer : UIPlayer
         int id, string name, bool isSpeechAllowed, GameProperties.Instrument likedInstrument) : base(playerUIPrefab, canvas, playerMonoBehaviourFunctionalities, warningScreenref, id, name)
     { 
         InitDelays();
-
         this.likedInstrument = likedInstrument;
 
         if (!GameProperties.configurableProperties.isSimulation && isSpeechAllowed)
@@ -47,6 +46,8 @@ public abstract class AIPlayer : UIPlayer
             emotionalModule.Speaks = isSpeechAllowed;
             emotionalModule.ReceiveInvoker(this); //only pass the invoker after it is initialized
         }
+
+        this.type = GameProperties.PlayerType.AIPLAYER_NOT_ASSIGNED;
     }
 
     public void InitDelays()
@@ -93,14 +94,14 @@ public abstract class AIPlayer : UIPlayer
             InformChoosePreferredInstrumentActions(nextPlayer);
         }
     }
-    public override void InformLevelUp(GameProperties.Instrument leveledUpInstrument) {
+    public override void InformLevelUp(Player invoker, GameProperties.Instrument leveledUpInstrument) {
         if (!GameProperties.configurableProperties.isSimulation)
         {
-            playerMonoBehaviourFunctionalities.StartCoroutine(DelayedInformLevelUpActions(leveledUpInstrument,informLevelUpDelay,true));
+            playerMonoBehaviourFunctionalities.StartCoroutine(DelayedInformLevelUpActions(invoker, leveledUpInstrument,informLevelUpDelay,true));
         }
         else
         {
-            InformLevelUpActions(leveledUpInstrument);
+            InformLevelUpActions(invoker, leveledUpInstrument);
         }
     }
     public override void InformPlayForInstrument(Player nextPlayer) {
@@ -176,36 +177,34 @@ public abstract class AIPlayer : UIPlayer
             emotionalModule.GazeAt(nextPlayer.GetName());
         }
     }
-    protected virtual void InformLevelUpActions(GameProperties.Instrument leveledUpInstrument)
+    protected virtual void InformLevelUpActions(Player invoker, GameProperties.Instrument leveledUpInstrument)
     {
         if (emotionalModule != null)
         {
-            Player currentPlayer = gameManagerRef.GetCurrentPlayer();
             int currSpeakingPlayerId = gameManagerRef.GetCurrSpeakingPlayerId();
 
-            if (currSpeakingPlayerId == id && currentPlayer.GetName() == "Player")
+            if (currSpeakingPlayerId == this.id && invoker.GetName() == "Player")
             {
-                Debug.Log(name + ": É a vez do " + currentPlayer.GetName());
-
+                Debug.Log(name + ": É a vez do " + invoker.GetName());
                 if (leveledUpInstrument == GameProperties.Instrument.MARKETING)
                 {
                     emotionalModule.Perceive(new Name[] {
-                        EventHelper.PropertyChange("CurrentPlayer(Name)", currentPlayer.GetName(), name),
+                        EventHelper.PropertyChange("CurrentPlayer(Name)", invoker.GetName(), name),
                         EventHelper.PropertyChange("Action(Game)", "Defect", name),
                         EventHelper.PropertyChange("State(Game)", "LevelUp", name) });
                 }
                 else
                 {
                     emotionalModule.Perceive(new Name[] {
-                        EventHelper.PropertyChange("CurrentPlayer(Name)", currentPlayer.GetName(), name),
+                        EventHelper.PropertyChange("CurrentPlayer(Name)", invoker.GetName(), name),
                         EventHelper.PropertyChange("Action(Game)", "Cooperate", name),
                         EventHelper.PropertyChange("State(Game)", "LevelUp", name) });
                 }
                 emotionalModule.Decide();
             }
-            else if (currentPlayer != this)
+            else if (invoker != this)
             {
-                emotionalModule.GazeAt(currentPlayer.GetName());
+                emotionalModule.GazeAt(invoker.GetName());
             }
         }
     }
@@ -370,10 +369,10 @@ public abstract class AIPlayer : UIPlayer
         yield return new WaitForSeconds(delay);
         InformChoosePreferredInstrumentActions(nextPlayer);
     }
-    private IEnumerator DelayedInformLevelUpActions(GameProperties.Instrument leveledUpInstrument, float delay, bool isInformDelayed)
+    private IEnumerator DelayedInformLevelUpActions(Player player, GameProperties.Instrument leveledUpInstrument, float delay, bool isInformDelayed)
     {
         yield return new WaitForSeconds(delay);
-        InformLevelUpActions(leveledUpInstrument);
+        InformLevelUpActions(player, leveledUpInstrument);
     }
     private IEnumerator DelayedInformPlayForInstrumentActions(Player nextPlayer, float delay, bool isInformDelayed)
     {

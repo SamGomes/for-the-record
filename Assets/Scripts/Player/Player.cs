@@ -82,7 +82,7 @@ public abstract class Player
     public abstract void LastDecisionsPhase(Album currAlbum);
 
     public abstract void InformChoosePreferredInstrument(Player nextPlayer);
-    public abstract void InformLevelUp(GameProperties.Instrument leveledUpInstrument);
+    public abstract void InformLevelUp(Player invoker, GameProperties.Instrument leveledUpInstrument);
     public abstract void InformPlayForInstrument(Player nextPlayer);
     public abstract void InformLastDecision(Player nextPlayer);
     public abstract void InformRollDicesValue(Player invoker, int maxValue, int obtainedValue);
@@ -98,6 +98,10 @@ public abstract class Player
     public string GetName()
     {
         return this.name;
+    }
+    public GameProperties.PlayerType GetPlayerType()
+    {
+        return this.type;
     }
 
     public void ChoosePreferredInstrumentRequest(Album currAlbum)

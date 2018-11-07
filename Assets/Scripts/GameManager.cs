@@ -525,7 +525,7 @@ public class GameManager : MonoBehaviour {
                 foreach (var player in GameGlobals.players)
                 {
                     if (player == currPlayer) continue;
-                    player.InformLevelUp(currPlayer.GetLeveledUpInstrument());
+                    player.InformLevelUp(currPlayer, currPlayer.GetLeveledUpInstrument());
                 }
             //}
             numPlayersToLevelUp--;

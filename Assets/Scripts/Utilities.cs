@@ -60,6 +60,7 @@ public static class GameProperties
 
     public enum PlayerType
     {
+        AIPLAYER_NOT_ASSIGNED,
         HUMAN,
         SIMPLE,
         RANDOM,
