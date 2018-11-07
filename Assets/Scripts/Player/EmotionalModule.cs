@@ -76,11 +76,13 @@ public class EmotionalModule : MonoBehaviour
 
     public string StripSpeechSentence(string rawMessage)
     {
+        Debug.Log("StripSpeechSentence - " + invoker.GetId() + "  " + invoker.GetPreferredInstrument());
         var strippedDialog = rawMessage;
         strippedDialog = strippedDialog.Replace("|dicesValue|", DicesValue.ToString());
         strippedDialog = strippedDialog.Replace("|numDices|", NumDices.ToString());
         strippedDialog = strippedDialog.Replace("|instrument|", invoker.GetPreferredInstrument().ToString().ToLower());
-        strippedDialog = Regex.Replace(strippedDialog, @"<.*?>\s+|\s+<.*?>|\s+<.*?>\s+", "");
+        strippedDialog = strippedDialog.Replace("|musicianRole|", Enum.GetName(typeof(GameProperties.MusicianRole), invoker.GetPreferredInstrument()).ToLower()); 
+         strippedDialog = Regex.Replace(strippedDialog, @"<.*?>\s+|\s+<.*?>|\s+<.*?>\s+", "");
         return strippedDialog;
     }
 

@@ -72,12 +72,12 @@
 					"UtteranceId": "TTS-BDF9883D8AF22747CD5AE91393C271D0"
 				}, 
 				{
-					"CurrentState": "ChoosePreferredInstrument",
+					"CurrentState": "PlayForInstrument",
 					"NextState": "-",
 					"Meaning": "-",
-					"Style": "Glin",
-					"Utterance": "<gaze(screen)> I choose to play the bass. ",
-					"UtteranceId": "TTS-5ECF4D5BC3A77496AD9F508F17EC2A42"
+					"Style": "Emys",
+					"Utterance": "<gaze(screen)> Let's hear the |musicianRole|.",
+					"UtteranceId": "TTS-A342078EA6FE47E756BEA0322FC2CC85"
 				}, 
 				{
 					"CurrentState": "OtherRollInstrumentDice",
@@ -211,9 +211,9 @@
 					"CurrentState": "ChoosePreferredInstrument",
 					"NextState": "-",
 					"Meaning": "-",
-					"Style": "Emys",
-					"Utterance": "<gaze(screen)> I want to be the lead singer.",
-					"UtteranceId": "TTS-ABA9172670D86E5211E743D00BF2BB1D"
+					"Style": "Glin",
+					"Utterance": "<gaze(screen)> I choose to play the |instrument|.",
+					"UtteranceId": "TTS-ED17E6A69CB11A01EAF1E260554C5605"
 				}, 
 				{
 					"CurrentState": "LevelUp",
@@ -246,6 +246,14 @@
 					"Style": "Glin",
 					"Utterance": "<gaze(screen)> Let's hope for the best...",
 					"UtteranceId": "TTS-097FA65D65FFF3ECE65EDFC11D5AAC24"
+				}, 
+				{
+					"CurrentState": "ChoosePreferredInstrument",
+					"NextState": "-",
+					"Meaning": "-",
+					"Style": "Emys",
+					"Utterance": "<gaze(screen)> I want to be the |musicianRole|.",
+					"UtteranceId": "TTS-7486D8CBA613C0D354FFDE9C1CF448F9"
 				}, 
 				{
 					"CurrentState": "SelfRollInstrumentDice",
@@ -299,14 +307,6 @@
 					"CurrentState": "PlayForInstrument",
 					"NextState": "-",
 					"Meaning": "-",
-					"Style": "Glin",
-					"Utterance": "<gaze(screen)> I will record the bass",
-					"UtteranceId": "TTS-0DCEB6098612F175ECEE07A6E6F651C0"
-				}, 
-				{
-					"CurrentState": "PlayForInstrument",
-					"NextState": "-",
-					"Meaning": "-",
 					"Style": "Emys",
 					"Utterance": "<gaze(screen)> Now it is my turn to launch the dice of my instrument.",
 					"UtteranceId": "TTS-96CF471F0FD0EF9818210A6CE342437F"
@@ -339,9 +339,9 @@
 					"CurrentState": "PlayForInstrument",
 					"NextState": "-",
 					"Meaning": "-",
-					"Style": "Emys",
-					"Utterance": "<gaze(screen)> Let's hear the singer.",
-					"UtteranceId": "TTS-50C317279A04526BF67DD091F2049538"
+					"Style": "Glin",
+					"Utterance": "<gaze(screen)> I will record the |instrument|.",
+					"UtteranceId": "TTS-AA02D0EECD693F1527C8F715E7A1DC96"
 				}, 
 				{
 					"CurrentState": "LastDecisionsPhase",

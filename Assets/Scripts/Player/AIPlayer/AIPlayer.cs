@@ -518,15 +518,6 @@ public abstract class AIPlayer : UIPlayer
         yield return new WaitForSeconds(delay);
         if (!isSendingResponse)
         {
-            if (emotionalModule != null)
-            {
-                //Fatima call
-                emotionalModule.Perceive(new Name[] {
-                EventHelper.PropertyChange("Character(Name)", name, name),
-                EventHelper.PropertyChange("Album(Last)", "False", name),
-                EventHelper.PropertyChange("State(Game)", "ChoosePreferredInstrument", name) });
-                emotionalModule.Decide();
-            }
 
             preferredInstrument = ChoosePreferredInstrumentActions(currAlbum);
             playerMonoBehaviourFunctionalities.StartCoroutine(ThinkBeforeChoosingPreferredInstrument(currAlbum, sendResponsesDelay, preferredInstrument, true));
@@ -536,6 +527,15 @@ public abstract class AIPlayer : UIPlayer
             playerMonoBehaviourFunctionalities.StartCoroutine(SimulateMouseClick(UISkillIconsButtons[(int)preferredInstrument],0.3f));
             yield return new WaitForSeconds(1.0f); //wait before pushing the other button
             playerMonoBehaviourFunctionalities.StartCoroutine(SimulateMouseClick(UIplayerActionButton,0.3f));
+            if (emotionalModule != null)
+            {
+                //Fatima call
+                emotionalModule.Perceive(new Name[] {
+                EventHelper.PropertyChange("Character(Name)", name, name),
+                EventHelper.PropertyChange("Album(Last)", "False", name),
+                EventHelper.PropertyChange("State(Game)", "ChoosePreferredInstrument", name) });
+                emotionalModule.Decide();
+            }
         }
     }
     private IEnumerator ThinkBeforeLevelingUp(Album currAlbum, float delay, GameProperties.Instrument chosenLevelUpInstrument, bool isSendingResponse)
