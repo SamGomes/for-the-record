@@ -186,9 +186,21 @@ public abstract class AIPlayer : UIPlayer
             if (currSpeakingPlayerId == id && currentPlayer.GetName() == "Player")
             {
                 Debug.Log(name + ": É a vez do " + currentPlayer.GetName());
-                emotionalModule.Perceive(new Name[] {
-                EventHelper.PropertyChange("CurrentPlayer(Name)", currentPlayer.GetName(), name),
-                EventHelper.PropertyChange("State(Game)", "LevelUp", name) });
+
+                if (leveledUpInstrument == GameProperties.Instrument.MARKETING)
+                {
+                    emotionalModule.Perceive(new Name[] {
+                        EventHelper.PropertyChange("CurrentPlayer(Name)", currentPlayer.GetName(), name),
+                        EventHelper.PropertyChange("Action(Game)", "Defect", name),
+                        EventHelper.PropertyChange("State(Game)", "LevelUp", name) });
+                }
+                else
+                {
+                    emotionalModule.Perceive(new Name[] {
+                        EventHelper.PropertyChange("CurrentPlayer(Name)", currentPlayer.GetName(), name),
+                        EventHelper.PropertyChange("Action(Game)", "Cooperate", name),
+                        EventHelper.PropertyChange("State(Game)", "LevelUp", name) });
+                }
                 emotionalModule.Decide();
             }
             else if (currentPlayer != this)
