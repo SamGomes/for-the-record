@@ -107,7 +107,8 @@ public class PlayersSetupSceneFunctionalities : MonoBehaviour {
                 Debug.Log("[ERROR]: Error on parsing the NG Type of parameterization " + parameterization.ngType);
                 break;
         }
-        //GameProperties.configurableProperties.possibleParameterizations.Add(parameterization);
+        
+        //Game.gameParameterizations.Add(parameterization);
         //string json = JsonUtility.ToJson(GameProperties.configurableProperties);
     }
 
@@ -119,24 +120,12 @@ public class PlayersSetupSceneFunctionalities : MonoBehaviour {
         Object.DontDestroyOnLoad(playerCanvas);
 
        
-
         if (!GameProperties.configurableProperties.isSimulation)
         {
 
             if (GameProperties.configurableProperties.isAutomaticalBriefing)
             {
-                if (GameGlobals.currGameId < (GameProperties.configurableProperties.numTutorialGamesToPlay + 1)) //gameId starts in 1, 1 is the first game (tutorial)
-                {
-                    //play test game
-                    GameParameterization testGameParam = new GameParameterization();
-                    testGameParam.playerParameterizations = new List<PlayerParameterization>() {
-                        new PlayerParameterization("Sam","COOPERATIVE",false),
-                        new PlayerParameterization("Richard","GREEDY",false),
-                        new PlayerParameterization("Player","HUMAN",false),
-                    };
-                    testGameParam.ngType = "RANDOM";
-                    GameProperties.currGameParameterization = testGameParam;
-                }
+                GameProperties.currGameParameterization = GameProperties.currSessionParameterization.gameParameterizations[GameGlobals.currGameId - 1];
                 StartGame();
                 return;
             }
@@ -185,11 +174,11 @@ public class PlayersSetupSceneFunctionalities : MonoBehaviour {
                 button.onClick.AddListener(delegate
                 {
                     int index = new List<Button>(UIAIPlayerSelectionButtons).IndexOf(button);
-                    switch ((GameProperties.PlayerType) (index+3))
+                    switch ((GameProperties.PlayerType) (index+4))
                     {
-                        case GameProperties.PlayerType.SIMPLE:
-                            manualGameParam.playerParameterizations.Add(new PlayerParameterization("Sam", "SIMPLE", false));
-                            break;
+                        //case GameProperties.PlayerType.SIMPLE:
+                        //    manualGameParam.playerParameterizations.Add(new PlayerParameterization("Sam", "SIMPLE", false));
+                        //    break;
                         case GameProperties.PlayerType.COOPERATIVE:
                             manualGameParam.playerParameterizations.Add(new PlayerParameterization("Cristoph", "COOPERATIVE", false));
                             break;
@@ -227,20 +216,6 @@ public class PlayersSetupSceneFunctionalities : MonoBehaviour {
                         manualGameParam.playerParameterizations.Add(new PlayerParameterization("Player", "COOPERATIVE", false));
                         manualGameParam.playerParameterizations.Add(new PlayerParameterization("Player", "GREEDY", false));
                         manualGameParam.playerParameterizations.Add(new PlayerParameterization("Player", "HUMAN"));
-                        manualGameParam.ngType = "VICTORY";
-                    }
-                    else if (button.gameObject.name.EndsWith("3"))
-                    {
-                        manualGameParam.playerParameterizations.Add(new PlayerParameterization("Player", "COOPERATIVE", false));
-                        manualGameParam.playerParameterizations.Add(new PlayerParameterization("Player", "GREEDY", false));
-                        manualGameParam.playerParameterizations.Add(new PlayerParameterization("Player", "HUMAN"));
-                        manualGameParam.ngType = "LOSS";
-                    }
-                    else if (button.gameObject.name.EndsWith("4"))
-                    {
-                        manualGameParam.playerParameterizations.Add(new PlayerParameterization("Player", "COOPERATIVE", false));
-                        manualGameParam.playerParameterizations.Add(new PlayerParameterization("Player", "GREEDY", false));
-                        manualGameParam.playerParameterizations.Add(new PlayerParameterization("Player", "HUMAN"));
                         manualGameParam.ngType = "RANDOM";
                     }
                     button.interactable = false;
@@ -272,6 +247,8 @@ public class PlayersSetupSceneFunctionalities : MonoBehaviour {
             currPlayer = GameGlobals.players[i];
             currPlayer.RegisterMeOnPlayersLog();
         }
+
+        string json = JsonUtility.ToJson(GameProperties.configurableProperties);
 
         GameSceneManager.LoadMainScene();
     }

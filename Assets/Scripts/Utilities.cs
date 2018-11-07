@@ -79,7 +79,8 @@ public static class GameProperties
     }
 
     public static GameParameterization currGameParameterization; //assigned automatically when isAutomaticDebriefing or isSimulation is assigned
-
+    public static SessionParameterization currSessionParameterization; //assigned automatically when isAutomaticDebriefing or isSimulation is assigned
+    
     public static DynamicallyConfigurableGameProperties configurableProperties;
 
     public static bool displayFetchExternalConfigFileOption = false;
@@ -111,25 +112,44 @@ public class DynamicallyConfigurableGameProperties
 
     //----------- AutomaticBriefing -------------------
     public bool isAutomaticalBriefing = false;
-    public int numTutorialGamesToPlay = 0; //no tutorials
+    public int numSessionGames = 0; //no tutorials
 
     //------------ Simulation --------------------
     public bool isSimulation = false;
     public int numGamesToSimulate = 1;
 
-    public List<GameParameterization> possibleParameterizations = new List<GameParameterization>(); //only used when generating the AI types automatically (for example when "isSimulation=true or isAutomaticBriefing==true")
+    public List<SessionParameterization> possibleParameterizations = new List<SessionParameterization>(); //only used when generating the AI types automatically (for example when "isSimulation=true or isAutomaticBriefing==true")
 }
+
+[Serializable]
+public struct SessionParameterization
+{
+    public string id;
+    public List<GameParameterization> gameParameterizations;
+
+    public SessionParameterization(string id)
+    {
+        this.id = id;
+        this.gameParameterizations = new List<GameParameterization>();
+    }
+
+    public SessionParameterization(string id, List<GameParameterization> gameParameterizations)
+    {
+        this.id = id;
+        this.gameParameterizations = gameParameterizations;
+    }
+
+}
+
 
 [Serializable]
 public struct GameParameterization
 {
-    public string id;
     public List<PlayerParameterization> playerParameterizations;
     public string ngType;
 
     public GameParameterization(string id, List<PlayerParameterization> playerParameterizations, string ngType)
     {
-        this.id = id;
         this.playerParameterizations = playerParameterizations;
         this.ngType = ngType;
     }

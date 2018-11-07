@@ -67,9 +67,9 @@ public class EndScreenFunctionalities : MonoBehaviour
         Text UIRestartGameButtonText = UIRestartGameButton.GetComponentInChildren<Text>();
         if (GameProperties.configurableProperties.isAutomaticalBriefing)
         {
-            if (GameGlobals.currGameId > GameProperties.configurableProperties.numTutorialGamesToPlay)
+            if (GameGlobals.currGameId >= GameProperties.configurableProperties.numSessionGames)
             {
-                infoPoppupNeutralRef.DisplayPoppup("You reached the end of the first game. You should now fill in the first questionnaire and you need to memorize the following code and also your score.");
+                infoPoppupNeutralRef.DisplayPoppup("You reached the end of the experiment. You should now fill in the first questionnaire and you need to memorize the following code and also your score.");
                 //UIEndGameButton.gameObject.SetActive(true);
                 //UIEndGameButton.interactable = true;
                 //UIEndGameButtonText.text = "Final Notes";
@@ -82,19 +82,15 @@ public class EndScreenFunctionalities : MonoBehaviour
             }
             else
             {
-                infoPoppupNeutralRef.DisplayPoppup("You reached the end of the tutorial game. We assume that you are prepared for the experiment game. Good luck!");
+                infoPoppupNeutralRef.DisplayPoppup("You reached the end of one of the games to play in this session. We assume that you are prepared for the experiment game. Good luck!");
                 UIRestartGameButton.gameObject.SetActive(true);
                 UIRestartGameButton.interactable = true;
-                if (GameGlobals.currGameId == GameProperties.configurableProperties.numTutorialGamesToPlay)
-                {
-                    UIRestartGameButtonText.text = "Ready for experiment game";
-                }
-                else
-                {
-                    UIRestartGameButtonText.text = "Ready for another tutorial game";
-                }
+                UIRestartGameButtonText.text = "Ready for another game";
+                
                 UIEndGameButton.gameObject.SetActive(false);
                 UIEndGameButton.interactable = false;
+
+                UIFinishedGameOverlay.SetActive(false);
             }
 
         }
@@ -150,13 +146,7 @@ public class EndScreenFunctionalities : MonoBehaviour
         UIRestartGameButton.onClick.AddListener(delegate () {
             RestartGame();
         });
-
-       // UIEndGameButton.onClick.AddListener(delegate () {
-            //mainScene.SetActive(false);
-
-           
-            UIFinishedGameOverlay.SetActive(true);
-        //});
+       
     }
 
     //in order to sort the players list by money earned
@@ -171,10 +161,12 @@ public class EndScreenFunctionalities : MonoBehaviour
     {
         //mock
         //GameProperties.configurableProperties = new DynamicallyConfigurableGameProperties();
+        //GameProperties.configurableProperties.numSessionGames = 3;
+        //GameProperties.configurableProperties.isAutomaticalBriefing = true;
         //GameGlobals.currSessionId = System.DateTime.Now.ToString("yyyy/MM/dd/HH-mm-ss");
         //GameGlobals.gameLogManager = new DebugLogManager();
         //GameGlobals.gameLogManager.InitLogs();
-        //GameGlobals.albums = new System.Collections.Generic.List<Album>(5);
+        //GameGlobals.albums = new List<Album>(5);
         //Album newAlbum = new Album("1", albumUIPrefab);
         //GameGlobals.albums.Add(newAlbum);
         //newAlbum = new Album("2", albumUIPrefab);
@@ -189,7 +181,7 @@ public class EndScreenFunctionalities : MonoBehaviour
         //GameGlobals.albums.Add(newAlbum);
         //newAlbum = new Album("7", albumUIPrefab);
         //GameGlobals.albums.Add(newAlbum);
-        //GameGlobals.players = new System.Collections.Generic.List<Player>(5);
+        //GameGlobals.players = new List<Player>(5);
         //GameGlobals.players.Add(new UIPlayer(0, "PL1"));
         //GameGlobals.players.Add(new UIPlayer(1, "PL2"));
         //GameGlobals.players.Add(new UIPlayer(2, "PL3"));

@@ -36,7 +36,7 @@ public class DebugLogManager : ILogManager
     public void GetLastSessionConditionFromLog(Func<string,int> yieldedReactionToGet)
     {
         Debug.Log("GotLastSessionConditionFromLog");
-        yieldedReactionToGet("A");
+        yieldedReactionToGet("B");
     }
 
     public void EndLogs()

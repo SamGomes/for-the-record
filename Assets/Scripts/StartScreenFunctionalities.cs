@@ -25,7 +25,7 @@ public class StartScreenFunctionalities : MonoBehaviour {
     public GameObject UIGameCodeDisplayPrefab;
     public GameObject monoBehaviourDummyPrefab;
 
-    private int autoGameConfigurationIndex;
+    private int autoSessionConfigurationIndex;
 
     [DllImport("__Internal")]
     private static extern void EnableFileLoad(string fileText);
@@ -41,6 +41,7 @@ public class StartScreenFunctionalities : MonoBehaviour {
         string configText = "";
 
         GameProperties.configurableProperties = new DynamicallyConfigurableGameProperties();
+
 
         //Assign configurable game properties from file if any
         //Application.ExternalEval("console.log('streaming assets: "+ Application.streamingAssetsPath + "')");
@@ -58,6 +59,7 @@ public class StartScreenFunctionalities : MonoBehaviour {
         }
 
         UpdateGameConfig(configText);
+
 
         GameGlobals.numberOfSpeakingPlayers = 0;
         GameGlobals.currGameId++;
@@ -95,8 +97,8 @@ public class StartScreenFunctionalities : MonoBehaviour {
         //only generate session data in the first game
         if (GameGlobals.currGameId == 1)
         {
-            GameGlobals.gameLogManager = new DebugLogManager();
-            //GameGlobals.gameLogManager = new MySQLLogManager();
+            //GameGlobals.gameLogManager = new DebugLogManager();
+            GameGlobals.gameLogManager = new MySQLLogManager();
             GameGlobals.gameLogManager.InitLogs();
 
             string date = System.DateTime.Now.ToString("ddHHmm");
@@ -118,17 +120,27 @@ public class StartScreenFunctionalities : MonoBehaviour {
             //GameObject UIGameCodeDisplay = Object.Instantiate(UIGameCodeDisplayPrefab);
             //UIGameCodeDisplay.GetComponentInChildren<Text>().text = "Game Code: " + GameGlobals.currSessionId;
             //Object.DontDestroyOnLoad(UIGameCodeDisplay);
-        }
-
-        if (GameProperties.configurableProperties.isAutomaticalBriefing) //generate condition automatically (asynchronous)
-        {
-            GameGlobals.gameLogManager.GetLastSessionConditionFromLog(YieldedActionsAfterGet);
-            GameProperties.currGameParameterization = GameProperties.configurableProperties.possibleParameterizations[autoGameConfigurationIndex];
+        
         }
         else
         {
             this.UIStartGameButton.interactable = true;
         }
+
+        if (GameProperties.configurableProperties.isAutomaticalBriefing) //generate condition automatically (asynchronous)
+        {
+            GameGlobals.gameLogManager.GetLastSessionConditionFromLog(YieldedActionsAfterGet); //changes session code
+        }
+        else
+        {
+            //create session parameterization
+            SessionParameterization mock = new SessionParameterization("myAss");
+            GameProperties.configurableProperties.possibleParameterizations.Add(mock);
+            this.UIStartGameButton.interactable = true;
+
+            GameProperties.configurableProperties.numSessionGames = 0; //not used
+        }
+
 
         //init fatima strings
         GameGlobals.FAtiMAScenarioPath = "/Scenarios/ForTheRecord-EN.iat";
@@ -141,7 +153,15 @@ public class StartScreenFunctionalities : MonoBehaviour {
     private int YieldedActionsAfterGet(string lastConditionString)
     {
         SetParameterizationCondition(lastConditionString);
-        this.UIStartGameButton.interactable = true;
+        GameProperties.configurableProperties.numSessionGames = GameProperties.currSessionParameterization.gameParameterizations.Count;
+        if (GameProperties.configurableProperties.numSessionGames >= 1)
+        {
+            this.UIStartGameButton.interactable = true;
+        }
+        else {
+            Debug.Log("number of session games cannot be less than 1");
+            this.UIStartGameButton.interactable = false;
+        }
 
         if (GameProperties.configurableProperties.isSimulation) //start game right after getting the condition
         {
@@ -152,7 +172,7 @@ public class StartScreenFunctionalities : MonoBehaviour {
 
     private int SetParameterizationCondition(string lastConditionString)
     {
-        List<GameParameterization> possibleConditions = GameProperties.configurableProperties.possibleParameterizations;
+        List<SessionParameterization> possibleConditions = GameProperties.configurableProperties.possibleParameterizations;
 
         int lastConditionIndex = -1;
         if (lastConditionString != "")
@@ -160,8 +180,8 @@ public class StartScreenFunctionalities : MonoBehaviour {
             string lastConditionChar = lastConditionString;
             for (int i = 0; i < possibleConditions.Count; i++)
             {
-                GameParameterization currParam = possibleConditions[i];
-                if (currParam.id == lastConditionChar)
+                SessionParameterization currSessionParams = possibleConditions[i];
+                if (currSessionParams.id == lastConditionChar)
                 {
                     lastConditionIndex = i;
                     break;
@@ -174,10 +194,10 @@ public class StartScreenFunctionalities : MonoBehaviour {
         }
         else
         {
-            autoGameConfigurationIndex = (((int)lastConditionIndex) +1) % (possibleConditions.Count);
-            GameProperties.currGameParameterization = GameProperties.configurableProperties.possibleParameterizations[autoGameConfigurationIndex];
-            if (GameGlobals.currGameId == 1) GameGlobals.currSessionId += GameProperties.currGameParameterization.id; //session code with last digit being the condition if any
-            GameGlobals.gameLogManager.WriteGameToLog(GameGlobals.currSessionId.ToString(), GameGlobals.currGameId.ToString(), GameProperties.currGameParameterization.id, GameGlobals.currGameState.ToString());
+            autoSessionConfigurationIndex = (((int)lastConditionIndex) +1) % (possibleConditions.Count);
+            GameProperties.currSessionParameterization = GameProperties.configurableProperties.possibleParameterizations[autoSessionConfigurationIndex];
+            if (GameGlobals.currGameId == 1) GameGlobals.currSessionId += GameProperties.currSessionParameterization.id; //session code with last digit being the condition if any
+            GameGlobals.gameLogManager.WriteGameToLog(GameGlobals.currSessionId.ToString(), GameGlobals.currGameId.ToString(), GameProperties.currSessionParameterization.id, GameGlobals.currGameState.ToString());
         }
         return 0;
     }
@@ -191,6 +211,7 @@ public class StartScreenFunctionalities : MonoBehaviour {
     private void InitGame()
     {
 
+        
         //play theme song
         //GameGlobals.audioManager.PlayInfinitClip("Audio/theme/themeIntro", "Audio/theme/themeLoop");
         UIStartGameButton.onClick.AddListener(delegate () { StartGame(); });
@@ -201,24 +222,7 @@ public class StartScreenFunctionalities : MonoBehaviour {
         DontDestroyOnLoad(monoBehaviourDummy);
         GameGlobals.monoBehaviourFunctionalities = monoBehaviourDummy.GetComponent<MonoBehaviourFunctionalities>();
         GameGlobals.monoBehaviourFunctionalities.StartCoroutine(InitGameGlobals());
-
-
-        if (!GameProperties.configurableProperties.isSimulation)
-        {
-            if (GameProperties.configurableProperties.isAutomaticalBriefing)
-            {
-                Text startButtonText = UIStartGameButton.GetComponentInChildren<Text>();
-                if (GameGlobals.currGameId < (GameProperties.configurableProperties.numTutorialGamesToPlay+1))
-                {
-                    startButtonText.text = "Start Tutorial Game";
-                }
-                else
-                {
-                    startButtonText.text = "Start Experiment Game";
-                }
-            }
-        }
-	}
+    }
 
     private void Start()
     {
@@ -236,7 +240,7 @@ public class StartScreenFunctionalities : MonoBehaviour {
             {
                 string configText = UIExternalConfig.text;
                 UpdateGameConfig(configText);
-                GameProperties.currGameParameterization = GameProperties.configurableProperties.possibleParameterizations[autoGameConfigurationIndex];
+                GameProperties.currSessionParameterization = GameProperties.configurableProperties.possibleParameterizations[autoSessionConfigurationIndex];
             });
 #elif UNITY_WEBGL
             string configText = "";
@@ -245,7 +249,7 @@ public class StartScreenFunctionalities : MonoBehaviour {
             {
                 Application.ExternalEval("console.log("+configText+")");
                 UpdateGameConfig(configText);
-                GameProperties.currGameParameterization = GameProperties.configurableProperties.possibleParameterizations[autoGameConfigurationIndex];
+                GameProperties.currGameParameterization = GameProperties.configurableProperties.possibleParameterizations[autoSessionConfigurationIndex];
             });
 #endif
 
