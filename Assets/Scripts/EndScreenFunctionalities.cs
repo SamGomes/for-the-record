@@ -69,7 +69,7 @@ public class EndScreenFunctionalities : MonoBehaviour
         {
             if (GameGlobals.currGameId > GameProperties.configurableProperties.numTutorialGamesToPlay)
             {
-                infoPoppupNeutralRef.DisplayPoppup("You reached the end of the experiment game. Your final task is to fill our questionnaires. To be able to do so, just copy your game code (included below). Thank you for your time!");
+                infoPoppupNeutralRef.DisplayPoppup("You reached the end of the first game. You should now fill in the first questionnaire and you need to memorize the following code and also your score.");
                 //UIEndGameButton.gameObject.SetActive(true);
                 //UIEndGameButton.interactable = true;
                 //UIEndGameButtonText.text = "Final Notes";
@@ -139,8 +139,11 @@ public class EndScreenFunctionalities : MonoBehaviour
             UIFinishedGameOverlay.transform.Find("text/gameId").GetComponent<Text>().text = GameGlobals.currSessionId;
             UIFinishedGameOverlay.transform.Find("text/WebGLInputField/Text").GetComponent<Text>().text = GameGlobals.currSessionId;
             Button UICopyGameIdButton = UIFinishedGameOverlay.transform.Find("text/copyGameIdButton").GetComponent<Button>();
+            Button UINextGameButton = UIFinishedGameOverlay.transform.Find("text/nextGameButton").GetComponent<Button>();
 
-
+            UINextGameButton.onClick.AddListener(delegate () {
+                RestartGame();
+            });
 
         }
 
