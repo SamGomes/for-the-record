@@ -19,9 +19,9 @@
 					"CurrentState": "LevelUp",
 					"NextState": "-",
 					"Meaning": "Me",
-					"Style": "Emys",
-					"Utterance": "<gaze(screen)> Vou pôr um ponto no marqting ",
-					"UtteranceId": "TTS-01BE6E3B310431DA1FBCAB3969B5931D"
+					"Style": "Cooperate",
+					"Utterance": "<gaze(screen)> Vou pôr outro ponto no instrumento.",
+					"UtteranceId": "TTS-0AF047D0FD4D3616C47B9FF543C9FEDC"
 				}, 
 				{
 					"CurrentState": "LastDecisionsPhase",
@@ -131,17 +131,17 @@
 					"CurrentState": "LevelUp",
 					"NextState": "-",
 					"Meaning": "Me",
-					"Style": "Glin",
-					"Utterance": "<gaze(screen)> Vou pôr outro ponto no instrumento.",
-					"UtteranceId": "TTS-0AF047D0FD4D3616C47B9FF543C9FEDC"
+					"Style": "Defect",
+					"Utterance": "<gaze(screen)> Vou melhorar o marqting ",
+					"UtteranceId": "TTS-53EE81207432F8C2B26AE24A332FA096"
 				}, 
 				{
 					"CurrentState": "LevelUp",
 					"NextState": "-",
 					"Meaning": "Me",
-					"Style": "Glin",
-					"Utterance": "<gaze(screen)> Prefiro melhorar o meu instrumento. ",
-					"UtteranceId": "TTS-A8A09E6B54A2857ED1690717623645C4"
+					"Style": "Defect",
+					"Utterance": "<gaze(screen)> Vou pôr um ponto no marqting ",
+					"UtteranceId": "TTS-01BE6E3B310431DA1FBCAB3969B5931D"
 				}, 
 				{
 					"CurrentState": "LastDecisionsPhase",
@@ -246,14 +246,6 @@
 					"Style": "Glin",
 					"Utterance": "<gaze(screen)> A ver se isto melhora... ",
 					"UtteranceId": "TTS-B11671AA2EF0B90A49EA11DE0E865023"
-				}, 
-				{
-					"CurrentState": "LevelUp",
-					"NextState": "-",
-					"Meaning": "Me",
-					"Style": "Emys",
-					"Utterance": "<gaze(screen)> Vou melhorar o marqting ",
-					"UtteranceId": "TTS-53EE81207432F8C2B26AE24A332FA096"
 				}, 
 				{
 					"CurrentState": "SelfRollInstrumentDice",
@@ -422,6 +414,14 @@
 					"Style": "-",
 					"Utterance": "<gaze(Player)> Espero que ésta banda <animate(joy3)> tenha sucesso... não se esqueçam que com 3 álbuns falhados perdemos tudo",
 					"UtteranceId": "TTS-32C15069AA4F2073DEB37B637B9B77A4"
+				}, 
+				{
+					"CurrentState": "LevelUp",
+					"NextState": "-",
+					"Meaning": "Me",
+					"Style": "Cooperate",
+					"Utterance": "<gaze(screen)> Prefiro melhorar o meu instrumento. ",
+					"UtteranceId": "TTS-A8A09E6B54A2857ED1690717623645C4"
 				}]
 		},
 	"types": [
