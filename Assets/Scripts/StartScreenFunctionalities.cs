@@ -250,7 +250,7 @@ public class StartScreenFunctionalities : MonoBehaviour {
             {
                 Application.ExternalEval("console.log("+configText+")");
                 UpdateGameConfig(configText);
-                GameProperties.currGameParameterization = GameProperties.configurableProperties.possibleParameterizations[autoSessionConfigurationIndex];
+                GameProperties.currSessionParameterization = GameProperties.configurableProperties.possibleParameterizations[autoSessionConfigurationIndex];
             });
 #endif
 
