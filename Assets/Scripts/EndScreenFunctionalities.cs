@@ -14,6 +14,7 @@ public class EndScreenFunctionalities : MonoBehaviour
 
     public Button UIRestartGameButton;
     public Button UIEndGameButton;
+    public Text UIWarningText;
 
     public GameObject UIAlbumCollectionDisplay;
     public GameObject UIIndividualTable;
@@ -74,6 +75,8 @@ public class EndScreenFunctionalities : MonoBehaviour
                 //UIEndGameButton.gameObject.SetActive(true);
                 //UIEndGameButton.interactable = true;
                 //UIEndGameButtonText.text = "Final Notes";
+                UIWarningText.text = "You reached the end of the second game.Please write down your score, as well as the following gamecode, and fill the second questionnaire to finish the experiment.";
+
                 UIEndGameButton.gameObject.SetActive(false);
                 UIEndGameButton.interactable = false;
                 UIRestartGameButton.gameObject.SetActive(false);
@@ -88,6 +91,7 @@ public class EndScreenFunctionalities : MonoBehaviour
                 UIRestartGameButton.gameObject.SetActive(true);
                 UIRestartGameButton.interactable = true;
                 UIRestartGameButtonText.text = "Next game";
+                UIWarningText.text = "Please write down your score (the total amount of money you made) and fill the first questionnaire. Please, do not move to next game until the questionnaire mentions you to do so.";
                 
                 UIEndGameButton.gameObject.SetActive(false);
                 UIEndGameButton.interactable = false;
