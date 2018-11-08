@@ -631,6 +631,7 @@ public abstract class AIPlayer : UIPlayer
                 //Fatima call
                 if (currAlbum.GetMarketingState() == GameProperties.AlbumMarketingState.MEGA_HIT)
                 {
+                    emotionalModule.NumDices = skillSet[GameProperties.Instrument.MARKETING];
                     emotionalModule.Perceive(new Name[] {
                 EventHelper.PropertyChange("State(Game)", "LastDecisionsPhase", name),
                 EventHelper.PropertyChange("Album(Result)", "Success", name) });
