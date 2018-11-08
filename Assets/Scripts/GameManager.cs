@@ -437,7 +437,7 @@ public class GameManager : MonoBehaviour {
         {
             if (newAlbumValue >= marketValue)
             {
-                infoPoppupWinRef.DisplayPoppupWithDelay("As your album value (" + newAlbumValue + ") was EQUAL or HIGHER than the market value (" + marketValue + "), the album was successfully published! Congratulations! Everyone can choose to receive 3000 $ or to receive based on their own marketing skill.", diceRollDelay);
+                infoPoppupWinRef.DisplayPoppupWithDelay("As your album value (" + newAlbumValue + ") was EQUAL or HIGHER than the market value (" + marketValue + "), the album was successfully published! Congratulations! Everyone can now receive based on their own marketing skill.", diceRollDelay);
             }
             else
             {
