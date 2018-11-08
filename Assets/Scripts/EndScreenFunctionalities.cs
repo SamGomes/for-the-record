@@ -70,7 +70,7 @@ public class EndScreenFunctionalities : MonoBehaviour
             if (GameGlobals.currGameId >= GameProperties.configurableProperties.numSessionGames)
             {
                 //infoPoppupNeutralRef.DisplayPoppup("You reached the end of the experiment. You should now fill in the first questionnaire and you need to memorize the following code and also your score.");
-                infoPoppupNeutralRef.DisplayPoppup("You reached the end of the second game. You should memorize both your score and the following code, and fill the second questionnaire to finish the experiment.");
+                infoPoppupNeutralRef.DisplayPoppup("You reached the end of the second game. Please write down your score, as well as the following gamecode, and fill the second questionnaire to finish the experiment.");
                 //UIEndGameButton.gameObject.SetActive(true);
                 //UIEndGameButton.interactable = true;
                 //UIEndGameButtonText.text = "Final Notes";
@@ -84,7 +84,7 @@ public class EndScreenFunctionalities : MonoBehaviour
             else
             {
                 //infoPoppupNeutralRef.DisplayPoppup("You reached the end of one of the games to play in this session. We assume that you are prepared for the experiment game. Good luck!");
-                infoPoppupNeutralRef.DisplayPoppup("You reached the end of the first game. You should memorize your score and fill the first questionnaire. Please, do not move to next game until the questionnaire mentions you to do so.");
+                infoPoppupNeutralRef.DisplayPoppup("You reached the end of the first game. Please write down your score (the total amount of money you made) and fill the first questionnaire. Please, do not move to next game until the questionnaire mentions you to do so.");
                 UIRestartGameButton.gameObject.SetActive(true);
                 UIRestartGameButton.interactable = true;
                 UIRestartGameButtonText.text = "Next game";
