@@ -214,7 +214,7 @@ public abstract class AIPlayer : UIPlayer
         {
             //Fatima calls
             emotionalModule.GazeAt("screen");
-            // rolling d6 dice(s)
+            // rolling d6 dice
             if (maxValue % 20 != 0)
             {
                 int currSpeakingPlayerId = gameManagerRef.GetCurrSpeakingPlayerId();
