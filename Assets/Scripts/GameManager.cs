@@ -266,7 +266,7 @@ public class GameManager : MonoBehaviour {
         int numTokensForInstrument = skillSet[instrument];
 
         //UI stuff
-        UIRollDiceForInstrumentOverlay.transform.Find("title/Text").GetComponent<Text>().text = currPlayer.GetName() + " rolling "+ numTokensForInstrument + " dice(s) for " + instrument.ToString() + " ...";
+        UIRollDiceForInstrumentOverlay.transform.Find("title/Text").GetComponent<Text>().text = currPlayer.GetName() + " rolling "+ numTokensForInstrument + " dice for " + instrument.ToString() + " ...";
 
         int[] rolledDiceNumbers = new int[numTokensForInstrument]; //save each rolled dice number to display in the UI
 

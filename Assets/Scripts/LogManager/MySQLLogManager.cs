@@ -68,7 +68,7 @@ public class MySQLLogManager : ILogManager
     {
         Debug.Log("InitLogs ");
 
-        phpLogServerConnectionPath = "http://fortherecordlogs.duckdns.org:4000/dbActions.php";
+        phpLogServerConnectionPath = "https://fortherecordlogs.duckdns.org:4000/dbActions.php";
         databaseName = "fortherecordlogs";
 
         isGameRunning = true;
