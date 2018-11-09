@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -90,23 +91,35 @@ public class PlayersSetupSceneFunctionalities : MonoBehaviour {
             }
         }
 
-        switch (parameterization.ngType)
+        string pattern = "FIXED:[WL]+";
+        Match m = Regex.Match(parameterization.ngType, pattern, RegexOptions.IgnoreCase);
+        if (m.Success)
         {
-            case "RANDOM":
-                GameGlobals.gameDiceNG = new RandomDiceNG();
-                break;
-            case "FIXED:LOSS":
-                GameGlobals.gameDiceNG = new LossDiceNG();
-                break;
-            case "FIXED:VICTORY":
-                GameGlobals.gameDiceNG = new VictoryDiceNG();
-                break;
-            default:
-                isErrorEncountered = true;
-                setupWarningPoppupRef.DisplayPoppup("Error on parsing the NG Type of parameterization " + parameterization.ngType);
-                Debug.Log("[ERROR]: Error on parsing the NG Type of parameterization " + parameterization.ngType);
-                break;
+            int index = parameterization.ngType.IndexOf(":");
+            string gameResults = parameterization.ngType.Substring(index + 1);
+            GameGlobals.gameDiceNG = new PredefinedDiceNG(gameResults);
         }
+        else
+        {
+            switch (parameterization.ngType)
+            {
+                case "RANDOM":
+                    GameGlobals.gameDiceNG = new RandomDiceNG();
+                    break;
+                case "FIXED:LOSS":
+                    GameGlobals.gameDiceNG = new LossDiceNG();
+                    break;
+                case "FIXED:VICTORY":
+                    GameGlobals.gameDiceNG = new VictoryDiceNG();
+                    break;
+                default:
+                    isErrorEncountered = true;
+                    setupWarningPoppupRef.DisplayPoppup("Error on parsing the NG Type of parameterization " + parameterization.ngType);
+                    Debug.Log("[ERROR]: Error on parsing the NG Type of parameterization " + parameterization.ngType);
+                    break;
+            }
+        }
+
         
         //Game.gameParameterizations.Add(parameterization);
         //string json = JsonUtility.ToJson(GameProperties.configurableProperties);

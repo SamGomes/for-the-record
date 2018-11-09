@@ -207,3 +207,44 @@ public class LossDiceNG : FixedDiceNG
         }
     }
 }
+public class PredefinedDiceNG : FixedDiceNG
+{
+    private string predefinedResults;
+
+    public PredefinedDiceNG(string gameResults)
+    {
+        predefinedResults = gameResults;
+    }
+
+    public override int RollTheDice(Player whoRollsTheDice, GameProperties.Instrument diceTarget, int diceNumbers, int rollOrderNumber, int currNumberOfRolls)
+    {
+
+        //trigger for market
+        if (diceNumbers == 20)
+        {
+            char gameResult = predefinedResults[0];
+            // if it is the last die to be rolled for market update the prefefinedResults
+            if (rollOrderNumber == currNumberOfRolls - 1)
+            {
+                predefinedResults = predefinedResults.Substring(1);
+            }
+
+            if (gameResult == 'W')
+            {
+                return GoodMarketRNG(diceNumbers, currNumberOfRolls);
+            }
+            else if (gameResult == 'L')
+            {
+                return BadMarketRNG(diceNumbers, currNumberOfRolls);
+            }
+            else
+            {
+                return random.Next(1, diceNumbers + 1);
+            }
+        }
+        else
+        {
+            return RollDiceFor6(whoRollsTheDice, diceTarget, diceNumbers, rollOrderNumber, currNumberOfRolls);
+        }
+    }
+}
