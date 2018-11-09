@@ -133,17 +133,8 @@ public class PlayersSetupSceneFunctionalities : MonoBehaviour {
         Object.DontDestroyOnLoad(playerCanvas);
 
        
-        if (!GameProperties.configurableProperties.isSimulation)
+        if (!GameProperties.configurableProperties.isSimulation && !GameProperties.configurableProperties.isAutomaticalBriefing)
         {
-
-            if (GameProperties.configurableProperties.isAutomaticalBriefing)
-            {
-                GameProperties.currGameParameterization = GameProperties.currSessionParameterization.gameParameterizations[GameGlobals.currGameId - 1];
-                StartGame();
-                return;
-            }
-
-
             GameParameterization manualGameParam = new GameParameterization();
             manualGameParam.playerParameterizations = new List<PlayerParameterization>();
 
@@ -239,7 +230,9 @@ public class PlayersSetupSceneFunctionalities : MonoBehaviour {
         }
         else
         {
-            //fetch config for simulation
+            //auto fetch config
+            List<GameParameterization> gameParameterizations = GameProperties.currSessionParameterization.gameParameterizations;
+            GameProperties.currGameParameterization = gameParameterizations[(GameGlobals.currGameId - 1) % gameParameterizations.Count];
             StartGame();
         }
     }

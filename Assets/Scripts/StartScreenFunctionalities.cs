@@ -152,16 +152,21 @@ public class StartScreenFunctionalities : MonoBehaviour {
 
     private int YieldedActionsAfterGet(string lastConditionString)
     {
-        SetParameterizationCondition(lastConditionString);
-        GameProperties.configurableProperties.numSessionGames = GameProperties.currSessionParameterization.gameParameterizations.Count;
-        if (GameProperties.configurableProperties.numSessionGames >= 1)
+        if (GameGlobals.currGameId == 1)
         {
-            this.UIStartGameButton.interactable = true;
+            SetParameterizationCondition(lastConditionString);
+            GameProperties.configurableProperties.numSessionGames = GameProperties.currSessionParameterization.gameParameterizations.Count;
+            if (GameProperties.configurableProperties.numSessionGames >= 1)
+            {
+                this.UIStartGameButton.interactable = true;
+            }
+            else {
+                Debug.Log("number of session games cannot be less than 1");
+                this.UIStartGameButton.interactable = false;
+            }
         }
-        else {
-            Debug.Log("number of session games cannot be less than 1");
-            this.UIStartGameButton.interactable = false;
-        }
+
+        GameGlobals.gameLogManager.WriteGameToLog(GameGlobals.currSessionId.ToString(), GameGlobals.currGameId.ToString(), GameProperties.currSessionParameterization.id, GameGlobals.currGameState.ToString());
 
         if (GameProperties.configurableProperties.isSimulation) //start game right after getting the condition
         {
@@ -198,7 +203,6 @@ public class StartScreenFunctionalities : MonoBehaviour {
             autoSessionConfigurationIndex = (((int)lastConditionIndex) +1) % (possibleConditions.Count);
             GameProperties.currSessionParameterization = GameProperties.configurableProperties.possibleParameterizations[autoSessionConfigurationIndex];
             if (GameGlobals.currGameId == 1) GameGlobals.currSessionId += GameProperties.currSessionParameterization.id; //session code with last digit being the condition if any
-            GameGlobals.gameLogManager.WriteGameToLog(GameGlobals.currSessionId.ToString(), GameGlobals.currGameId.ToString(), GameProperties.currSessionParameterization.id, GameGlobals.currGameState.ToString());
         }
         return 0;
     }
