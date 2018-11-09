@@ -252,7 +252,7 @@
 					"NextState": "-",
 					"Meaning": "Luck",
 					"Style": "Emys",
-					"Utterance": "<gaze(screen)> |dicesValue| points from the singer ",
+					"Utterance": "<gaze(screen)> |dicesValue| points from the |musicianRole| ",
 					"UtteranceId": "TTS-08CDBB79DCB04D96954AD0FBD9E1B6A5"
 				}, 
 				{
