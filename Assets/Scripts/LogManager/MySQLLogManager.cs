@@ -185,11 +185,11 @@ public class MySQLLogManager : ILogManager
     {
         for (int i = 0; i < keys.Length; i++)
         {
-            form.AddField(keysTableName + "[]", keys[i]);
+            form.AddField(keysTableName, keys[i]);
         }
         for (int i = 0; i < values.Length; i++)
         {
-            form.AddField(valuesTableName + "[]", values[i]);
+            form.AddField(valuesTableName, values[i]);
         }
         form.AddField(extraParamsName, extraParams);
     }

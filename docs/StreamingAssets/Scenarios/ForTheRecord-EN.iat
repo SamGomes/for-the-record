@@ -40,14 +40,6 @@
 					"UtteranceId": "TTS-668CC963BB97935C791D993346C28915"
 				}, 
 				{
-					"CurrentState": "LastDecisionsPhase",
-					"NextState": "-",
-					"Meaning": "Success",
-					"Style": "Emys",
-					"Utterance": " <gaze(screen)> Let me use my |numDices| marketing dices to see what I can get.",
-					"UtteranceId": "TTS-D427D0BD5EEEB2B642166066E3831781"
-				}, 
-				{
 					"CurrentState": "RollMarketDice",
 					"NextState": "-",
 					"Meaning": "Fail",
@@ -422,6 +414,14 @@
 					"Style": "Glin",
 					"Utterance": "<gaze(screen)> Let me see how much I can make with my |numDices| dice in marketing.",
 					"UtteranceId": "TTS-BF821400F02406297C3F611C26C98450"
+				}, 
+				{
+					"CurrentState": "LastDecisionsPhase",
+					"NextState": "-",
+					"Meaning": "Success",
+					"Style": "Emys",
+					"Utterance": " <gaze(screen)> Let me use my |numDices| marketing dice to see what I can get.",
+					"UtteranceId": "TTS-35E1F4939CF77B0233A5106EDA03C80F"
 				}]
 		},
 	"types": [
