@@ -94,12 +94,14 @@ public class StartScreenFunctionalities : MonoBehaviour {
         GameGlobals.players = new List<Player>(GameProperties.configurableProperties.numberOfPlayersPerGame);
 
 
+        GameGlobals.gameLogManager = new MySQLLogManager();
+        GameGlobals.gameLogManager.InitLogs();
+
         //only generate session data in the first game
         if (GameGlobals.currGameId == 1)
         {
             //GameGlobals.gameLogManager = new DebugLogManager();
-            GameGlobals.gameLogManager = new MySQLLogManager();
-            GameGlobals.gameLogManager.InitLogs();
+            
 
             string date = System.DateTime.Now.ToString("ddHHmm");
 
