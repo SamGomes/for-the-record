@@ -94,7 +94,7 @@ public class StartScreenFunctionalities : MonoBehaviour {
         GameGlobals.players = new List<Player>(GameProperties.configurableProperties.numberOfPlayersPerGame);
 
 
-        GameGlobals.gameLogManager = new MySQLLogManager();
+        GameGlobals.gameLogManager = new DebugLogManager();
         GameGlobals.gameLogManager.InitLogs();
 
         //only generate session data in the first game
