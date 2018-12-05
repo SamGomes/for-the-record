@@ -94,7 +94,7 @@ public class StartScreenFunctionalities : MonoBehaviour {
         GameGlobals.players = new List<Player>(GameProperties.configurableProperties.numberOfPlayersPerGame);
 
 
-        GameGlobals.gameLogManager = new MySQLLogManager();
+        GameGlobals.gameLogManager = new MongoDBLogManager();
         GameGlobals.gameLogManager.InitLogs();
 
         //only generate session data in the first game
@@ -218,11 +218,9 @@ public class StartScreenFunctionalities : MonoBehaviour {
     private void InitGame()
     {
 
-        
         //play theme song
         //GameGlobals.audioManager.PlayInfinitClip("Audio/theme/themeIntro", "Audio/theme/themeLoop");
         UIStartGameButton.onClick.AddListener(delegate () { StartGame(); });
-
 
         //thanks WebGL, because of you I've got to init a game global to init the rest of the game globals!
         GameObject monoBehaviourDummy = Instantiate(monoBehaviourDummyPrefab);
