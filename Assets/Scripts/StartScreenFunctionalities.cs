@@ -154,6 +154,11 @@ public class StartScreenFunctionalities : MonoBehaviour {
 
     private int YieldedActionsAfterGet(string lastConditionString)
     {
+        if (lastConditionString == "") //no games were found
+        {
+            List<SessionParameterization> possibleConditions = GameProperties.configurableProperties.possibleParameterizations;
+            lastConditionString = possibleConditions[0].id;
+        }
         if (GameGlobals.currGameId == 1)
         {
             SetParameterizationCondition(lastConditionString);
