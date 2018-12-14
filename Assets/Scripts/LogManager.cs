@@ -63,6 +63,7 @@ public class FileLogManager : ILogManager
     private StreamWriter playerStatsFileWritter;
     private StreamWriter gameStatsFileWritter;
     private StreamWriter eventsLogFileWritter;
+    private StreamWriter changeDecisionLogFileWritter;
 
     private bool isInitialized = false;
     
@@ -83,12 +84,16 @@ public class FileLogManager : ILogManager
 		playerStatsFileWritter = File.CreateText(directoryPath + "/playerGameStatsLog.txt");
 		gameStatsFileWritter = File.CreateText(directoryPath + "/gameStatsLog.txt");
 		eventsLogFileWritter = File.CreateText(directoryPath + "/eventsLog.txt");
+        changeDecisionLogFileWritter = File.CreateText(directoryPath + "/changeDecisionLog.txt");
 
         albumStatsFileWritter.WriteLine("\"SessionId\";\"GameId\";\"RoundId\";\"AlbumId\";\"AlbumName\";\"MState\"");
         playersLogFileWritter.WriteLine("\"SessionId\";\"GameId\";\"PlayerId\";\"PlayerName\";\"AIType\"");
         playerStatsFileWritter.WriteLine("\"SessionId\";\"GameId\";\"RoundId\";\"PlayerId\";\"PlayerName\";\"Money\"");
         gameStatsFileWritter.WriteLine("\"SessionId\";\"GameId\";\"Result\"");
         eventsLogFileWritter.WriteLine("\"SessionId\";\"GameId\";\"RoundId\";\"PlayerId\";\"PlayerName\";\"Event Type\";\"Instrument\";\"Value\"");
+        changeDecisionLogFileWritter.WriteLine("\"SessionId\";\"GameId\";\"RoundId\";\"PlayerId\";\"PlayerName\";\"Previous Decision\";\"New Decision\"");
+
+        FlushLogs();
 
         isInitialized = true;
     }
@@ -137,6 +142,15 @@ public class FileLogManager : ILogManager
         }
         FlushLogs();
     }
+    public void WriteChangeDecisionToLog(string sessionId, string currGameId, string currGameRoundId, string playerId, string playerName, string previousDecision, string nextDecision)
+    {
+        //prevent access after disposal
+        if (eventsLogFileWritter != null)
+        {
+            eventsLogFileWritter.WriteLine(sessionId + ";" + currGameId + ";" + currGameRoundId + ";" + playerId + ";" + playerName + ";" + previousDecision + ";" + nextDecision);
+        }
+        FlushLogs();
+    }
 
     private void FlushLogs()
     {
@@ -145,7 +159,9 @@ public class FileLogManager : ILogManager
         playersLogFileWritter.Flush();
         playerStatsFileWritter.Flush();
         eventsLogFileWritter.Flush();
+        changeDecisionLogFileWritter.Flush();
     }
+
     public void EndLogs()
     {
         FlushLogs();
