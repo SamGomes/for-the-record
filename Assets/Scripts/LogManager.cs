@@ -151,9 +151,9 @@ public class FileLogManager : ILogManager
     public void WriteChangeDecisionToLog(string sessionId, string currGameId, string currGameRoundId, string playerId, string playerName, string previousDecision, string nextDecision)
     {
         //prevent access after disposal
-        if (eventsLogFileWritter != null)
+        if (changeDecisionLogFileWritter != null)
         {
-            eventsLogFileWritter.WriteLine(sessionId + ";" + currGameId + ";" + currGameRoundId + ";" + playerId + ";" + playerName + ";" + previousDecision + ";" + nextDecision);
+            changeDecisionLogFileWritter.WriteLine(sessionId + ";" + currGameId + ";" + currGameRoundId + ";" + playerId + ";" + playerName + ";" + previousDecision + ";" + nextDecision);
         }
         changeDecisionLogFileWritter.Flush();
     }

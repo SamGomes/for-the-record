@@ -260,14 +260,15 @@ public abstract class Player
     public virtual int ToggleToken()
     {
         skillSet[lastInstrumentToken]--;
+        GameProperties.Instrument newInstr;
         if(lastInstrumentToken == preferredInstrument)
         {
 
-            lastInstrumentToken = GameProperties.Instrument.MARKETING;
+            newInstr = GameProperties.Instrument.MARKETING;
         }
         else
         {
-            lastInstrumentToken = preferredInstrument;
+            newInstr = preferredInstrument;
         }
 
         if (!unchangedSkillSetInstruments.ContainsKey(lastInstrumentToken))
@@ -275,10 +276,11 @@ public abstract class Player
             unchangedSkillSetInstruments[lastInstrumentToken] = skillSet[lastInstrumentToken];
         }
 
-        skillSet[lastInstrumentToken]++;
+        skillSet[newInstr]++;
 
-        //TODO: Log changement of action
-        //GameGlobals.gameLogManager.WriteEventToLog(GameGlobals.currSessionId.ToString(), GameGlobals.currGameId.ToString(), GameGlobals.currGameRoundId.ToString(), this.id.ToString(), this.name, "SPENT_TOKEN", instrument.ToString(), "-");
+        GameGlobals.gameLogManager.WriteChangeDecisionToLog(GameGlobals.currSessionId.ToString(), GameGlobals.currGameId.ToString(), GameGlobals.currGameRoundId.ToString(), this.id.ToString(), this.name.ToString(), this.lastInstrumentToken.ToString(), newInstr.ToString());
+
+        lastInstrumentToken = newInstr;
 
         return 0;
     }
