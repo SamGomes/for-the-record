@@ -84,12 +84,21 @@ public class PlayersSetupSceneFunctionalities : MonoBehaviour {
                 Button button = UIConfigButtons[i];
                 button.onClick.AddListener(delegate
                 {
-                    if (button.gameObject.name.EndsWith("1"))
+                    /*if (button.gameObject.name.EndsWith("1"))
                     {
                         GameGlobals.players.Add(new UIPlayer("Player1"));
                         GameGlobals.players.Add(new UIPlayer("Player2"));
                         GameGlobals.players.Add(new UIPlayer("Player3"));
                         GameGlobals.gameDiceNG = new RandomDiceNG();
+                    }*/
+
+                    // We whant that during the demonstration, player always win !
+                    if (button.gameObject.name.EndsWith("1"))
+                    {
+                        GameGlobals.players.Add(new UIPlayer("Player1"));
+                        GameGlobals.players.Add(new UIPlayer("Player2"));
+                        GameGlobals.players.Add(new UIPlayer("Player3"));
+                        GameGlobals.gameDiceNG = new VictoryDiceNG();
                     }
                     else if (button.gameObject.name.EndsWith("2"))
                     {
