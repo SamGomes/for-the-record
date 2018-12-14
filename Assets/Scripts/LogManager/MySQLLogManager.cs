@@ -105,7 +105,7 @@ public class MySQLLogManager : ILogManager
 
         pendingCalls.Add(new PendingCall(form, null));
     }
-    public void UpdateGameResultInLog(string sessionId, string gameId, string result)
+    public void UpdateGameResultInLog(string sessionId, string gameId, string condition, string result)
     {
         WWWForm form = new WWWForm();
         form.AddField("dbAction", "UPDATE");

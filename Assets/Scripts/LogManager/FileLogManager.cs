@@ -57,7 +57,7 @@ public class FileLogManager : ILogManager
         }
         FlushLogs();
     }
-    public void UpdateGameResultInLog(string sessionId, string gameId, string result)
+    public void UpdateGameResultInLog(string sessionId, string gameId, string condition, string result)
     {
         //TODO
     }

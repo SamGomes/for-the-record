@@ -16,7 +16,7 @@ public class DebugLogManager : ILogManager
     {
         Debug.Log("WriteGameToLog: " + sessionId + ";" + currGameId + ";" + result);
     }
-    public void UpdateGameResultInLog(string sessionId, string gameId, string result)
+    public void UpdateGameResultInLog(string sessionId, string gameId, string condition, string result)
     {
         Debug.Log("UpdateGameInLog: " + sessionId + ";" + gameId + ";" + result);
     }

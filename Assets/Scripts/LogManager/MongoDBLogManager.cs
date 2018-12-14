@@ -8,14 +8,14 @@ using UnityEngine.Networking;
 public class MongoDBLogManager : ILogManager
 {
     private bool isGameRunning;
-    
+
     private string databaseName;
     private string myApiKey;
 
     Hashtable postHeader;
     private List<PendingCall> pendingCalls;
-    private WWW phpConnection;
-    
+    private UnityWebRequestAsyncOperation currRequest;
+
     [Serializable]
     public class DataEntryPlayerLog
     {
@@ -84,21 +84,21 @@ public class MongoDBLogManager : ILogManager
 
     private struct PendingCall
     {
-        public WWW www;
+        public UnityWebRequest www;
         public Func<string, int> yieldedReaction;
-        public PendingCall(WWW www, Func<string, int> yieldedReaction)
+        public PendingCall(UnityWebRequest www, Func<string, int> yieldedReaction)
         {
             this.yieldedReaction = yieldedReaction;
             this.www = www;
+            www.SetRequestHeader("Content-Type", "application/json"); //in order to be recognized by the mongo server
         }
     }
-    private IEnumerator ConsumePendingCalls(WWW currConnection)
+    private IEnumerator ConsumePendingCalls(UnityWebRequestAsyncOperation currConnection)
     {
         //Debug.Log("number of pending calls: " + pendingCalls.Count);
         List<PendingCall> currList = new List<PendingCall>(pendingCalls); //in order to not access main list while being updated
         if (!isGameRunning && currList.Count == 0)
         {
-
             //finish monitorizing calls
             yield return null;
         }
@@ -107,17 +107,18 @@ public class MongoDBLogManager : ILogManager
             foreach (PendingCall call in currList)
             {
                 yield return currConnection;
-                currConnection = call.www;
+                currConnection = call.www.SendWebRequest();
                 yield return currConnection;
+                Debug.Log("remote call error code returned (no return means no error): "+call.www.error);
                 if (call.yieldedReaction != null)
                 {
-                    call.yieldedReaction(currConnection.text);
+                    call.yieldedReaction(call.www.downloadHandler.text);
                 }
                 pendingCalls.Remove(call);
             }
             yield return currConnection;
             yield return new WaitForSeconds(0.05f);
-            GameGlobals.monoBehaviourFunctionalities.StartCoroutine(ConsumePendingCalls(phpConnection));
+            GameGlobals.monoBehaviourFunctionalities.StartCoroutine(ConsumePendingCalls(currRequest));
         }
     }
 
@@ -126,21 +127,34 @@ public class MongoDBLogManager : ILogManager
         databaseName = "fortherecordlogs";
         myApiKey = "skgyQ8WGQIP6tfmjytmcjzlgZDU2jWBD";
 
-        postHeader = new Hashtable();
-        postHeader.Add("Content-Type", "application/json");
-
         pendingCalls = new List<PendingCall>();
         isGameRunning = true;
-        GameGlobals.monoBehaviourFunctionalities.StartCoroutine(ConsumePendingCalls(phpConnection));
+        GameGlobals.monoBehaviourFunctionalities.StartCoroutine(ConsumePendingCalls(currRequest));
     }
 
-    private WWW ConvertEntityToWriteWWW(System.Object entity, string database, string collection)
+    private UnityWebRequest ConvertEntityToPostRequest(System.Object entity, string database, string collection)
     {
         string url = "https://api.mlab.com/api/1/databases/" + databaseName + "/collections/" + collection + "?apiKey=" + myApiKey;
 
         string entityJson = JsonUtility.ToJson(entity);
         byte[] formData = System.Text.Encoding.UTF8.GetBytes(entityJson);
-        WWW www = new WWW(url, formData, postHeader);
+        UnityWebRequest www = UnityWebRequest.Post(url, entityJson);
+        www.uploadHandler = (UploadHandler)new UploadHandlerRaw(formData);
+        www.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
+        return www;
+    }
+    private UnityWebRequest ConvertEntityToGetRequest(string database, string collection, string query)
+    {
+        string url = "https://api.mlab.com/api/1/databases/" + databaseName + "/collections/" + collection + "?apiKey=" + myApiKey + query;
+        UnityWebRequest www = UnityWebRequest.Get(url);
+        return www;
+    }
+    private UnityWebRequest ConvertEntityToPutRequest(System.Object entity, string database, string collection, string query)
+    {
+        string url = "https://api.mlab.com/api/1/databases/" + databaseName + "/collections/" + collection + "?apiKey=" + myApiKey + query;
+
+        string entityJson = JsonUtility.ToJson(entity);
+        UnityWebRequest www = UnityWebRequest.Put(url, entityJson);
         return www;
     }
 
@@ -155,7 +169,7 @@ public class MongoDBLogManager : ILogManager
             playerName = playerName,
             type = type
         };
-        pendingCalls.Add(new PendingCall(ConvertEntityToWriteWWW(entity, databaseName, "playerslog"), null));
+        pendingCalls.Add(new PendingCall(ConvertEntityToPostRequest(entity, databaseName, "playerslog"), null));
     }
 
     public void WriteGameToLog(string sessionId, string currGameId, string condition, string result)
@@ -167,20 +181,23 @@ public class MongoDBLogManager : ILogManager
             condition = condition,
             result = result
         };
-        pendingCalls.Add(new PendingCall(ConvertEntityToWriteWWW(entity, databaseName, "gameresultslog"), null));
+        pendingCalls.Add(new PendingCall(ConvertEntityToPostRequest(entity, databaseName, "gameresultslog"), null));
     }
-    public void UpdateGameResultInLog(string sessionId, string gameId, string result)
+    public void UpdateGameResultInLog(string sessionId, string currGameId, string condition, string result)
     {
+        var entity = new DataEntryGameResultLog
+        {
+            sessionId = sessionId,
+            currGameId = currGameId,
+            condition = condition,
+            result = result
+        };
+        string collection = "gameresultslog";
+        string query = "&q={\"currGameId\": \"" + currGameId + "\", \"sessionId\":\"" + sessionId + "\"}";
 
-        //var collection = database.GetCollection<DataEntryPlayerLog>("playerstatslog");
-        //var entity = new DataEntryGameResultLog
-        //{
-        //    sessionId = sessionId,
-        //    currGameId = currGameId,
-        //    condition = condition,
-        //    result = result
-        //};
-        //collection.Update(entity);
+        string entityJson = JsonUtility.ToJson(entity);
+        pendingCalls.Add(new PendingCall(ConvertEntityToPutRequest(entity, databaseName, collection, query), null));
+
     }
     public void WriteAlbumResultsToLog(string sessionId, string currGameId, string currGameRoundId, string currAlbumId, string currAlbumName, string marktingState)
     {
@@ -193,7 +210,7 @@ public class MongoDBLogManager : ILogManager
             currAlbumName = currAlbumName,
             marktingState = marktingState
         };
-        pendingCalls.Add(new PendingCall(ConvertEntityToWriteWWW(entity, databaseName, "albumresultslog"), null));
+        pendingCalls.Add(new PendingCall(ConvertEntityToPostRequest(entity, databaseName, "albumresultslog"), null));
     }
     public void WritePlayerResultsToLog(string sessionId, string currGameId, string currGameRoundId, string playerId, string playerName, string money)
     {
@@ -206,7 +223,7 @@ public class MongoDBLogManager : ILogManager
             playerName = playerName,
             money = money
         };
-        pendingCalls.Add(new PendingCall(ConvertEntityToWriteWWW(entity, databaseName, "playerresultslog"), null));
+        pendingCalls.Add(new PendingCall(ConvertEntityToPostRequest(entity, databaseName, "playerresultslog"), null));
     }
     public void WriteEventToLog(string sessionId, string currGameId, string currGameRoundId, string playerId, string playerName,
         string eventType, string skill, string coins)
@@ -222,25 +239,22 @@ public class MongoDBLogManager : ILogManager
             skill = skill,
             coins = coins
         };
-        pendingCalls.Add(new PendingCall(ConvertEntityToWriteWWW(entity, databaseName, "eventslog"), null));
+        pendingCalls.Add(new PendingCall(ConvertEntityToPostRequest(entity, databaseName, "eventslog"), null));
     }
 
     public void GetLastSessionConditionFromLog(Func<string, int> yieldedReactionToGet)
     {
-        string tableName = "gameresultslog";
-        string url = "https://api.mlab.com/api/1/databases/" + databaseName + "/collections/" +
-            tableName + "?apiKey=" + myApiKey + "&s={\"_id\": -1}&l=1"; //query which returns the last game result
-        WWW www = new WWW(url);
-        
-        pendingCalls.Add(new PendingCall(www, delegate (string lastGameEntry)
+        string query = "&s={\"_id\": -1}&l=1"; //query which returns the last game result
+
+        pendingCalls.Add(new PendingCall(ConvertEntityToGetRequest(databaseName, "gameresultslog", query), delegate (string lastGameEntry)
         {
             string lastConditionString = "";
-            
+
             lastGameEntry = "{ \"results\": " + lastGameEntry + "}";
             DataEntryGameResultLogQueryResult lastGameEntriesObject = JsonUtility.FromJson<DataEntryGameResultLogQueryResult>(lastGameEntry);
             if (lastGameEntriesObject.results.Count > 0)
             {
-                lastConditionString = ((DataEntryGameResultLog)(lastGameEntriesObject.results[lastGameEntriesObject.results.Count-1])).condition;
+                lastConditionString = ((DataEntryGameResultLog)(lastGameEntriesObject.results[lastGameEntriesObject.results.Count - 1])).condition;
             }
             return yieldedReactionToGet(lastConditionString);
         }));

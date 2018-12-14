@@ -194,7 +194,7 @@ public class EndScreenFunctionalities : MonoBehaviour
         //GameGlobals.currGameState = GameProperties.GameState.VICTORY;
         //GameGlobals.currGameId = 2;
 
-        GameGlobals.gameLogManager.UpdateGameResultInLog(GameGlobals.currSessionId.ToString(), GameGlobals.currGameId.ToString(), GameGlobals.currGameState.ToString());
+        GameGlobals.gameLogManager.UpdateGameResultInLog(GameGlobals.currSessionId.ToString(), GameGlobals.currGameId.ToString(), GameProperties.currSessionParameterization.id, GameGlobals.currGameState.ToString());
 
 
         UIVictoryOverlay.SetActive(false);

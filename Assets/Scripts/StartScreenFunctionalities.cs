@@ -174,6 +174,7 @@ public class StartScreenFunctionalities : MonoBehaviour {
         }
 
         GameGlobals.gameLogManager.WriteGameToLog(GameGlobals.currSessionId.ToString(), GameGlobals.currGameId.ToString(), GameProperties.currSessionParameterization.id, GameGlobals.currGameState.ToString());
+        
 
         if (GameProperties.configurableProperties.isSimulation) //start game right after getting the condition
         {
