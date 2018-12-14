@@ -6,6 +6,12 @@ public class UIPlayer : Player
 {
 
     private GameObject playerUI;
+    private GameObject surePopup;
+
+
+    public Button UIChangeDecisionYes;
+    public Button UIChangeDecisionNo;
+
     private GameObject playerMarkerUI;
     private GameObject playerDisablerUI;
     private GameObject playerSelfDisablerUI;
@@ -54,6 +60,12 @@ public class UIPlayer : Player
     {
         return this.playerUI;
     }
+
+    public GameObject GetPlayerSureUI()
+    {
+        return this.surePopup;
+    }
+
     public GameObject GetPlayerMarkerUI()
     {
         return this.playerMarkerUI;
@@ -64,7 +76,7 @@ public class UIPlayer : Player
     }
 
 
-    public virtual void InitUI(GameObject playerUIPrefab, GameObject canvas, PoppupScreenFunctionalities warningScreenRef)
+    public virtual void InitUI(GameObject playerUIPrefab, GameObject surePopUpPrefab, GameObject canvas, PoppupScreenFunctionalities warningScreenRef)
     {
         this.warningScreenRef = warningScreenRef;
 
@@ -180,6 +192,10 @@ public class UIPlayer : Player
 
         this.UIReceiveFailButton = UILastDecisionsFailScreen.transform.Find("receiveButton").gameObject.GetComponent<Button>();
 
+        this.surePopup = Object.Instantiate(surePopUpPrefab, canvas.transform);
+        this.UIChangeDecisionYes = surePopup.transform.Find("Pop-up/YesButton").gameObject.GetComponent<Button>();
+        this.UIChangeDecisionNo = surePopup.transform.Find("Pop-up/NoButton").gameObject.GetComponent<Button>();
+        surePopup.SetActive(false);
 
         UInameText.text = this.name;
         UpdateCommonUIElements();
@@ -217,6 +233,13 @@ public class UIPlayer : Player
             }
         }
         return result;
+    }
+
+    public override int ToggleToken()
+    {
+        base.ToggleToken();
+        UpdateCommonUIElements();
+        return 0;
     }
     public override int ConvertTokensToMoney(int numTokensToConvert)
     {
@@ -344,6 +367,7 @@ public class UIPlayer : Player
         }
         return success;
     }
+
 
 
     public override int ChangeDiceRollInstrument(GameProperties.Instrument instrument)
@@ -569,6 +593,29 @@ public class UIPlayer : Player
         UpdateCommonUIElements();
     }
 
+    public override int SendBeSureResponse(bool response)
+    {
+        surePopup.SetActive(false);
+        return base.SendBeSureResponse(response);
+    }
+
+    public override void AskBeSure()
+    {
+        this.surePopup.SetActive(true);
+        UIChangeDecisionNo.onClick.RemoveAllListeners();
+        UIChangeDecisionNo.onClick.AddListener(delegate {
+            SendBeSureResponse(true);
+        });
+
+        UIChangeDecisionYes.onClick.RemoveAllListeners();
+        UIChangeDecisionYes.onClick.AddListener(delegate {
+            SendBeSureResponse(false);
+        });
+
+
+        UpdateCommonUIElements();
+    }
+
 
     public override void InformChoosePreferredInstrument(Player nextPlayer) { }
     public override void InformLevelUp() { }
@@ -587,6 +634,7 @@ public class UIPlayer : Player
         UIPlayForInstrumentScreen.SetActive(false);
         UILastDecisionsScreen.SetActive(false);
         UIplayerActionButton.gameObject.SetActive(false);
+        surePopup.SetActive(false);
     }
 
     public void DisableAllInputs()
@@ -601,7 +649,7 @@ public class UIPlayer : Player
     public override void InitPlayer(params object[] args)
     {
         base.InitPlayer(args);
-        InitUI((GameObject)args[0], (GameObject)args[1], (PoppupScreenFunctionalities)args[2]);
+        InitUI((GameObject)args[0], (GameObject)args[1], (GameObject)args[2], (PoppupScreenFunctionalities)args[3]);
     }
     public override void ResetPlayer(params object[] args)
     {

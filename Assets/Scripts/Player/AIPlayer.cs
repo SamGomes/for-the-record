@@ -38,9 +38,9 @@ public abstract class AIPlayer : UIPlayer
         GameGlobals.gameLogManager.WritePlayerToLog(GameGlobals.currSessionId.ToString(), GameGlobals.currGameId.ToString(), this.id.ToString(), this.name, this.type.ToString());
     }
 
-    public override void InitUI(GameObject playerUIPrefab, GameObject canvas, PoppupScreenFunctionalities warningScreenRef)
+    public override void InitUI(GameObject playerUIPrefab, GameObject sureUIPrefab, GameObject canvas, PoppupScreenFunctionalities warningScreenRef)
     {
-        base.InitUI(playerUIPrefab, canvas, warningScreenRef);
+        base.InitUI(playerUIPrefab, sureUIPrefab, canvas, warningScreenRef);
         this.DisableAllInputs();
     }
 
@@ -176,6 +176,7 @@ public abstract class AIPlayer : UIPlayer
         }
     }
     protected virtual int LastDecisionsActions(Album currAlbum) { return 0; }
+   
 
     public override void ChoosePreferredInstrument(Album currAlbum)
     {
@@ -228,6 +229,11 @@ public abstract class AIPlayer : UIPlayer
             int condition = LastDecisionsActions(currAlbum);
             SendLastDecisionsPhaseResponse(condition);
         }
+    }
+
+    public override void AskBeSure()
+    {
+        SendBeSureResponse(true);
     }
 
     //predicting hri-s

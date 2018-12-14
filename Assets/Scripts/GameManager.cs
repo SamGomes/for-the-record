@@ -30,6 +30,8 @@ public class GameManager : MonoBehaviour {
     public GameObject UIRollDiceForInstrumentOverlay;
     public GameObject UIRollDiceForMarketValueScreen;
 
+    public GameObject PopUpChangeDecisionPrefab;
+
     public GameObject dice6UI;
     public GameObject dice20UI;
 
@@ -57,6 +59,7 @@ public class GameManager : MonoBehaviour {
     private bool playForInstrumentResponseReceived;
     private bool levelUpResponseReceived;
     private bool lastDecisionResponseReceived;
+    private bool beSureResponseReceived;
 
     private int currPlayerIndex;
     private int currSpeakingPlayerId;
@@ -96,6 +99,7 @@ public class GameManager : MonoBehaviour {
         playForInstrumentResponseReceived = false;
         levelUpResponseReceived = false;
         lastDecisionResponseReceived = false;
+        beSureResponseReceived = false;
         currPlayerIndex = 0;
 
         interruptionRequests = 0;
@@ -125,7 +129,7 @@ public class GameManager : MonoBehaviour {
         for (int i = 0; i < numPlayers; i++)
         {
             currPlayer = GameGlobals.players[i];
-            currPlayer.InitPlayer(playerUIPrefab, canvas, warningPoppupRef);
+            currPlayer.InitPlayer(playerUIPrefab, PopUpChangeDecisionPrefab, canvas, warningPoppupRef);
             if ((currPlayer as UIPlayer) != null) //check if player has UI
             {
 
@@ -151,6 +155,7 @@ public class GameManager : MonoBehaviour {
     private IEnumerator ChangeActivePlayerUI(UIPlayer player, float delay)
     {
         player.GetPlayerUI().transform.SetAsLastSibling();
+        player.GetPlayerSureUI().transform.SetAsLastSibling();
         //yield return new WaitForSeconds(delay);
         int numPlayers = GameGlobals.players.Count;
         for (int i = 0; i < numPlayers; i++)
@@ -490,6 +495,16 @@ public class GameManager : MonoBehaviour {
                 
             }
         }
+
+        if (beSureResponseReceived)
+        {
+            beSureResponseReceived = false;
+            //TODO: Remove debug
+            Debug.Log("SUUUUUUUUUUUUUUURE");
+
+            levelUpResponseReceived = true;
+        }
+
         if (playForInstrumentResponseReceived)
         {
             currSpeakingPlayerId = Random.Range(0, GameGlobals.numberOfSpeakingPlayers);
@@ -717,8 +732,8 @@ public class GameManager : MonoBehaviour {
         choosePreferedInstrumentResponseReceived = true;
     }
     public void LevelUpResponse(Player invoker)
-    {   
-        levelUpResponseReceived = true;
+    {
+        invoker.AskBeSure();
     }
     public void PlayerPlayForInstrumentResponse(Player invoker)
     {
@@ -751,6 +766,16 @@ public class GameManager : MonoBehaviour {
         invoker.ReceiveMoney(GameProperties.marketingPointValue * marketingValue);
 
         lastDecisionResponseReceived = true;
+    }
+
+    public void BeSureResponse(Player invoker, bool value)
+    {
+        if (!value)
+        {
+            invoker.ToggleToken();
+        }
+
+        beSureResponseReceived = true;
     }
 
 

@@ -13,6 +13,8 @@ public abstract class Player
     private string actionLog;
     protected GameManager gameManagerRef;
 
+    private GameProperties.Instrument lastInstrumentToken;
+
     protected string name;
 
     protected int numTokens;
@@ -74,6 +76,7 @@ public abstract class Player
     public abstract void LevelUp(Album currAlbum);
     public abstract void PlayForInstrument(Album currAlbum);
     public abstract void LastDecisionsPhase(Album currAlbum);
+    public abstract void AskBeSure();
 
     public abstract void InformChoosePreferredInstrument(Player nextPlayer);
     public abstract void InformLevelUp();
@@ -117,6 +120,11 @@ public abstract class Player
     public void LastDecisionsPhaseRequest(Album currAlbum)
     {
         LastDecisionsPhase(currAlbum);
+    }
+
+    public void BeSureRequest()
+    {
+        AskBeSure();
     }
 
     public virtual int SendChoosePreferredInstrumentResponse()
@@ -163,6 +171,11 @@ public abstract class Player
                 gameManagerRef.LastDecisionsPhaseGet0Response(this);
                 break;
         }
+        return 0;
+    }
+    public virtual int SendBeSureResponse(bool response)
+    {
+        gameManagerRef.BeSureResponse(this, response);
         return 0;
     }
 
@@ -239,8 +252,34 @@ public abstract class Player
             unchangedSkillSetInstruments[instrument] = skillSet[instrument];
         }
         skillSet[instrument]++;
+        lastInstrumentToken = instrument;
 
         GameGlobals.gameLogManager.WriteEventToLog(GameGlobals.currSessionId.ToString(), GameGlobals.currGameId.ToString(), GameGlobals.currGameRoundId.ToString(), this.id.ToString(), this.name,"SPENT_TOKEN", instrument.ToString() , "-");
+        return 0;
+    }
+    public virtual int ToggleToken()
+    {
+        skillSet[lastInstrumentToken]--;
+        if(lastInstrumentToken == preferredInstrument)
+        {
+
+            lastInstrumentToken = GameProperties.Instrument.MARKETING;
+        }
+        else
+        {
+            lastInstrumentToken = preferredInstrument;
+        }
+
+        if (!unchangedSkillSetInstruments.ContainsKey(lastInstrumentToken))
+        {
+            unchangedSkillSetInstruments[lastInstrumentToken] = skillSet[lastInstrumentToken];
+        }
+
+        skillSet[lastInstrumentToken]++;
+
+        //TODO: Log changement of action
+        //GameGlobals.gameLogManager.WriteEventToLog(GameGlobals.currSessionId.ToString(), GameGlobals.currGameId.ToString(), GameGlobals.currGameRoundId.ToString(), this.id.ToString(), this.name, "SPENT_TOKEN", instrument.ToString(), "-");
+
         return 0;
     }
     public virtual int ConvertTokensToMoney(int numTokensToConvert)
