@@ -1,2 +1,0 @@
-"SessionId";"GameId";"Result"
-43315.6680981472;1;VICTORY

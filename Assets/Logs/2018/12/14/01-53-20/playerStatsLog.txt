@@ -1,0 +1,2 @@
+"SessionId";"GameId";"PlayerId";"PlayerName";"AIType"
+2018/12/14/01-53-20;1;0;Emys;GREEDY

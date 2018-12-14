@@ -1,1 +1,0 @@
-"SessionId";"GameId";"RoundId";"AlbumId";"AlbumName";"MState"

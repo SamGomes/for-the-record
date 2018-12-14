@@ -1,4 +1,0 @@
-"SessionId";"GameId";"PlayerId";"PlayerName";"AIType"
-43315.6680981472;1;0;Emys;GREEDY
-43315.6680981472;1;1;Glin;COOPERATIVE
-43315.6680981472;1;2;Player;-

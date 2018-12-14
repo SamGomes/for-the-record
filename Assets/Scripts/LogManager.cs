@@ -81,8 +81,10 @@ public class FileLogManager : ILogManager
 
         string dateTime = DateTime.Now.ToString("yyyy/MM/dd/HH-mm-ss");
 
-        string directoryPath = Application.dataPath + "./Logs/" + dateTime;
+        string directoryPath = Application.dataPath + "/Logs/" + dateTime;
 		Directory.CreateDirectory (directoryPath);
+
+        Debug.Log(directoryPath);
 
 		albumStatsFileWritter = File.CreateText(directoryPath + "/albumGameStatsLog.txt");
 		playersLogFileWritter = File.CreateText(directoryPath + "/playerStatsLog.txt");
@@ -96,9 +98,6 @@ public class FileLogManager : ILogManager
         playerStatsFileWritter.WriteLine("\"SessionId\";\"GameId\";\"RoundId\";\"PlayerId\";\"PlayerName\";\"Money\"");
         gameStatsFileWritter.WriteLine("\"SessionId\";\"GameId\";\"Result\"");
         eventsLogFileWritter.WriteLine("\"SessionId\";\"GameId\";\"RoundId\";\"PlayerId\";\"PlayerName\";\"Event Type\";\"Instrument\";\"Value\"");
-        changeDecisionLogFileWritter.WriteLine("\"SessionId\";\"GameId\";\"RoundId\";\"PlayerId\";\"PlayerName\";\"Previous Decision\";\"New Decision\"");
-
-        FlushLogs();
 
         isInitialized = true;
     }
@@ -314,3 +313,6 @@ public class MySQLLogManager : ILogManager
         }
     }
 }
+        changeDecisionLogFileWritter.WriteLine("\"SessionId\";\"GameId\";\"RoundId\";\"PlayerId\";\"PlayerName\";\"Previous Decision\";\"New Decision\"");
+
+        FlushLogs();

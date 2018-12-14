@@ -1,0 +1,4 @@
+"SessionId";"GameId";"RoundId";"PlayerId";"PlayerName";"Money"
+2018/12/14/02-00-03;1;0;0;Emys;0
+2018/12/14/02-00-03;1;0;1;Glin;0
+2018/12/14/02-00-03;1;0;2;Player;0

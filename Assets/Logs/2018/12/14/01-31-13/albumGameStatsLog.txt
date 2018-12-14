@@ -1,0 +1,2 @@
+"SessionId";"GameId";"RoundId";"AlbumId";"AlbumName";"MState"
+2018/12/14/01-31-13;1;0;0;;FAIL
