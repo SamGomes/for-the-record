@@ -98,7 +98,9 @@ public class FileLogManager : ILogManager
         playerStatsFileWritter.WriteLine("\"SessionId\";\"GameId\";\"RoundId\";\"PlayerId\";\"PlayerName\";\"Money\"");
         gameStatsFileWritter.WriteLine("\"SessionId\";\"GameId\";\"Result\"");
         eventsLogFileWritter.WriteLine("\"SessionId\";\"GameId\";\"RoundId\";\"PlayerId\";\"PlayerName\";\"Event Type\";\"Instrument\";\"Value\"");
+        changeDecisionLogFileWritter.WriteLine("\"SessionId\";\"GameId\";\"RoundId\";\"PlayerId\";\"PlayerName\";\"Previous Decision\";\"New Decision\"");
 
+        FlushLogs();
         isInitialized = true;
     }
     public void WritePlayerToLog(string sessionId, string currGameId, string playerId, string playername, string type)
@@ -313,6 +315,3 @@ public class MySQLLogManager : ILogManager
         }
     }
 }
-        changeDecisionLogFileWritter.WriteLine("\"SessionId\";\"GameId\";\"RoundId\";\"PlayerId\";\"PlayerName\";\"Previous Decision\";\"New Decision\"");
-
-        FlushLogs();
