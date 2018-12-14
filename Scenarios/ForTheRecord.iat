@@ -360,6 +360,38 @@
 					"UtteranceId": "TTS-E19E46ED85C610B5C0B9CB465BA466AF"
 				}, 
 				{
+					"CurrentState": "PunishmentPhase",
+					"NextState": "-",
+					"Meaning": "-",
+					"Style": "Emys",
+					"Utterance": "<gaze(Player)>  A sério? Vais jogar assim? ",
+					"UtteranceId": "TTS-E19E46ED85C610B5C0B9CB465BA466AF"
+				}, 
+				{
+					"CurrentState": "PunishmentPhase",
+					"NextState": "-",
+					"Meaning": "-",
+					"Style": "Emys",
+					"Utterance": "<gaze(Player)> Se jogares assim, a nossa equipa nunca ganhará! ",
+					"UtteranceId": "TTS-E19E46ED85C610B5C0B9CB465BA466AF"
+				}, 
+				{
+					"CurrentState": "PunishmentPhase",
+					"NextState": "-",
+					"Meaning": "-",
+					"Style": "Emys",
+					"Utterance": "<gaze(Player)> Podias ajudar mais a nossa banda! ",
+					"UtteranceId": "TTS-E19E46ED85C610B5C0B9CB465BA466AF"
+				}, 
+				{
+					"CurrentState": "PunishmentPhase",
+					"NextState": "-",
+					"Meaning": "-",
+					"Style": "Emys",
+					"Utterance": "<gaze(Player)> Tens a certeza? Se perdermos a culpa é tua! ",
+					"UtteranceId": "TTS-E19E46ED85C610B5C0B9CB465BA466AF"
+				},
+				{
 					"CurrentState": "OtherRollInstrumentDice",
 					"NextState": "-",
 					"Meaning": "Luck",

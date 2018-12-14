@@ -152,7 +152,7 @@ public class EndScreenFunctionalities : MonoBehaviour
 
         GameGlobals.gameLogManager.WriteGameToLog(GameGlobals.currSessionId.ToString(),GameGlobals.currGameId.ToString(), GameGlobals.currGameState.ToString());
 
-        GameGlobals.gameLogManager.EndLogs();
+        //GameGlobals.gameLogManager.EndLogs();
 
         if (GameProperties.isSimulation)
         {
