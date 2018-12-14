@@ -116,6 +116,27 @@ public class EmotionalRoboticPlayer : MonoBehaviour
         }
     }
 
+    public void Punish()
+    {
+        Name currentState = (Name)"PunishmentPhase";
+        Name nextState = (Name)"-";
+        Name meaning = (Name)"-";
+        Name style = (Name)"Emys";
+
+        var possibleDialogs = iat.GetDialogueActions(currentState, nextState, meaning, style);
+        int randomUttIndex = UnityEngine.Random.Range(0, possibleDialogs.Count());
+        var dialog = possibleDialogs[randomUttIndex].Utterance;
+        if (thalamusConnector != null)
+        {
+            thalamusConnector.PerformUtterance(dialog, new string[] { }, new string[] { });
+            Debug.Log(name + " is performing " + dialog);
+        }
+        else
+        {
+            Debug.Log("ERROR: ThalamusConnector not defined yet.");
+        }
+    }
+
     private void UpdateCoroutine()
     {
         string currentBelief = rpc.GetBeliefValue("State(Game)");
@@ -158,7 +179,7 @@ public class EmotionalRoboticPlayer : MonoBehaviour
 
 public class RoboticPlayerCoopStrategy : AIPlayerCoopStrategy
 {
-    private EmotionalRoboticPlayer robot;
+    protected EmotionalRoboticPlayer robot;
     private bool playedForInstrument;
 
     public RoboticPlayerCoopStrategy(int id, string name) : base(name)
@@ -436,7 +457,7 @@ public class RoboticPlayerCoopStrategy : AIPlayerCoopStrategy
 
 public class RoboticPlayerGreedyStrategy : AIPlayerGreedyStrategy
 {
-    private EmotionalRoboticPlayer robot;
+    protected EmotionalRoboticPlayer robot;
     private bool playedForInstrument;
 
     public RoboticPlayerGreedyStrategy(int id, string name) : base(name)
@@ -708,6 +729,38 @@ public class RoboticPlayerGreedyStrategy : AIPlayerGreedyStrategy
             EventHelper.PropertyChange("State(Career)", "Middle", name) });
             }
             robot.Decide();
+        }
+    }
+}
+
+public class RoboticPlayerCoopStrategyPunisher:RoboticPlayerCoopStrategy
+{
+    public RoboticPlayerCoopStrategyPunisher(int id, string name):base(id, name)
+    {
+        this.comportement = GameProperties.AIPlayerComportement.PUNISHING;
+    }
+
+    public override void InformPlayingSelfish(Player player)
+    {
+        if (player.GetName().Equals("Player"))
+        {
+            this.robot.Punish();
+        }
+    }
+}
+
+public class RoboticPlayerGreedyStrategyPunisher : RoboticPlayerGreedyStrategy
+{
+    public RoboticPlayerGreedyStrategyPunisher(int id, string name) : base(id, name)
+    {
+        this.comportement = GameProperties.AIPlayerComportement.PUNISHING;
+    }
+
+    public override void InformPlayingSelfish(Player player)
+    {
+        if (player.GetName().Equals("Player"))
+        {
+            this.robot.Punish();
         }
     }
 }

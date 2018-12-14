@@ -4,6 +4,7 @@ using UnityEngine;
 public abstract class AIPlayer : UIPlayer
 {
     protected GameProperties.AIPlayerType type;
+    protected GameProperties.AIPlayerComportement comportement;
 
     protected float choosePreferredInstrumentDelay;
     protected float levelUpThinkingDelay;
@@ -31,16 +32,17 @@ public abstract class AIPlayer : UIPlayer
         informGameResultDelay = 1.0f;
 
         sendResponsesDelay = 1.0f;
+        this.comportement = GameProperties.AIPlayerComportement.NON_PUNISHING;
     }
 
     public override void RegisterMeOnPlayersLog()
     {
-        GameGlobals.gameLogManager.WritePlayerToLog(GameGlobals.currSessionId.ToString(), GameGlobals.currGameId.ToString(), this.id.ToString(), this.name, this.type.ToString());
+        GameGlobals.gameLogManager.WritePlayerToLog(GameGlobals.currSessionId.ToString(), GameGlobals.currGameId.ToString(), this.id.ToString(), this.name, this.type.ToString() + "_"+this.comportement.ToString());
     }
 
-    public override void InitUI(GameObject playerUIPrefab, GameObject sureUIPrefab, GameObject canvas, PoppupScreenFunctionalities warningScreenRef)
+    public override void InitUI(GameObject playerUIPrefab, GameObject surePopUpPrefab, GameObject canvas, PoppupScreenFunctionalities warningScreenRef)
     {
-        base.InitUI(playerUIPrefab, sureUIPrefab, canvas, warningScreenRef);
+        base.InitUI(playerUIPrefab, surePopUpPrefab, canvas, warningScreenRef);
         this.DisableAllInputs();
     }
 

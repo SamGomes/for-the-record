@@ -733,6 +733,13 @@ public class GameManager : MonoBehaviour {
     }
     public void LevelUpResponse(Player invoker)
     {
+        if(invoker.lastInstrumentToken == GameProperties.Instrument.MARKETING)
+        {
+            foreach (var player in GameGlobals.players)
+            {
+                player.InformPlayingSelfish(invoker);
+            }
+        }
         invoker.AskBeSure();
     }
     public void PlayerPlayForInstrumentResponse(Player invoker)

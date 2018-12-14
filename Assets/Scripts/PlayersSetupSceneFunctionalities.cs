@@ -104,6 +104,32 @@ public class PlayersSetupSceneFunctionalities : MonoBehaviour {
                         GameGlobals.numberOfSpeakingPlayers = 2;
                         RoboticPlayerGreedyStrategy emys = new RoboticPlayerGreedyStrategy(0, "Emys");
                         GameGlobals.players.Add(emys);
+                        RoboticPlayerCoopStrategyPunisher glin = new RoboticPlayerCoopStrategyPunisher(1, "Glin");
+                        GameGlobals.players.Add(glin);
+                        GameGlobals.players.Add(new UIPlayer("Player"));
+                        GameGlobals.gameDiceNG = new LossDiceNG();
+                        emys.FlushRobotUtterance("<gaze(Player)> Eu sou o émys!");
+                        Thread.Sleep(1000);
+                        glin.FlushRobotUtterance("<gaze(Player)> E eu sou o Glin! Vamos lá formar uma banda e ver se conseguimos triunfar!");
+                    }
+                    else if (button.gameObject.name.EndsWith("4"))
+                    {
+                        GameGlobals.numberOfSpeakingPlayers = 2;
+                        RoboticPlayerGreedyStrategyPunisher emys = new RoboticPlayerGreedyStrategyPunisher(0, "Emys");
+                        GameGlobals.players.Add(emys);
+                        RoboticPlayerCoopStrategy glin = new RoboticPlayerCoopStrategy(1, "Glin");
+                        GameGlobals.players.Add(glin);
+                        GameGlobals.players.Add(new UIPlayer("Player"));
+                        GameGlobals.gameDiceNG = new LossDiceNG();
+                        emys.FlushRobotUtterance("<gaze(Player)> Eu sou o émys!");
+                        Thread.Sleep(1000);
+                        glin.FlushRobotUtterance("<gaze(Player)> E eu sou o Glin! Vamos lá formar uma banda e ver se conseguimos triunfar!");
+                    }
+                    /*else if (button.gameObject.name.EndsWith("3"))
+                    {
+                        GameGlobals.numberOfSpeakingPlayers = 2;
+                        RoboticPlayerGreedyStrategy emys = new RoboticPlayerGreedyStrategy(0, "Emys");
+                        GameGlobals.players.Add(emys);
                         RoboticPlayerCoopStrategy glin = new RoboticPlayerCoopStrategy(1, "Glin");
                         GameGlobals.players.Add(glin);
                         GameGlobals.players.Add(new UIPlayer("Player"));
@@ -124,7 +150,7 @@ public class PlayersSetupSceneFunctionalities : MonoBehaviour {
                         emys.FlushRobotUtterance("<gaze(Player)> Eu sou o émys!");
                         Thread.Sleep(1000);
                         glin.FlushRobotUtterance("<gaze(Player)> E eu sou o Glin! Vamos lá formar uma banda e ver se conseguimos triunfar!");
-                    }
+                    }*/
                     button.interactable = false;
                     CheckForAllPlayersRegistered();
                 });

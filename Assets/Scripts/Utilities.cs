@@ -62,6 +62,12 @@ public static class GameProperties
         BALANCED
     }
 
+    public enum AIPlayerComportement
+    {
+        PUNISHING,
+        NON_PUNISHING
+    }
+
     public static int tokenValue = 0; //1000;
     public static int marketingPointValue = 1000; //config the initial number of dices to roll
 

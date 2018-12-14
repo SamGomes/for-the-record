@@ -13,7 +13,7 @@ public abstract class Player
     private string actionLog;
     protected GameManager gameManagerRef;
 
-    private GameProperties.Instrument lastInstrumentToken;
+    public GameProperties.Instrument lastInstrumentToken;
 
     protected string name;
 
@@ -86,6 +86,10 @@ public abstract class Player
     public abstract void InformAlbumResult(int albumValue, int marketValue);
     public abstract void InformGameResult(GameProperties.GameState state);
     public abstract void InformNewAlbum();
+    public virtual void InformPlayingSelfish(Player player)
+    {
+
+    }
 
 
     public int GetId()
