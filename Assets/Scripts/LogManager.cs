@@ -16,6 +16,7 @@ public interface ILogManager
     void WriteAlbumResultsToLog(string sessionId, string currGameId, string currGameRoundId, string currAlbumId, string currAlbumName, string marktingState);
     void WritePlayerResultsToLog(string sessionId, string currGameId, string currGameRoundId, string playerId, string playerName, string money);
     void WriteEventToLog(string sessionId, string currGameId, string currGameRoundId, string playerId, string playerName, string eventType, string instrument, string coins);
+    void WriteChangeDecisionToLog(string sessionId, string currGameId, string currGameRoundId, string playerId, string playerName, string previousDecision, string nextDecision);
     void EndLogs();
 }
 
@@ -45,6 +46,10 @@ public class DebugLogManager : ILogManager
     public void WriteEventToLog(string sessionId, string currGameId, string currGameRoundId, string playerId, string playerName, string eventType, string skill, string coins)
     {
         Debug.Log("WriteEventToLog: " + sessionId + ";" + currGameId + ";" + currGameRoundId + ";" + playerId + ";" + playerName + ";" + eventType + ";" + skill + ";" + coins);
+    }
+    public void WriteChangeDecisionToLog(string sessionId, string currGameId, string currGameRoundId, string playerId, string playerName, string previousDecision, string nextDecision)
+    {
+        Debug.Log("ChangeDecisionLog: " + sessionId + ";" + currGameId + ";" + currGameRoundId + ";" + playerId + ";" + playerName + ";" + previousDecision + ";" + nextDecision);
     }
 
     public void EndLogs()
@@ -113,7 +118,7 @@ public class FileLogManager : ILogManager
         {
             gameStatsFileWritter.WriteLine(sessionId + ";" + currGameId + ";" + result);
         }
-        FlushLogs();
+        gameStatsFileWritter.Flush();
     }
     public void WriteAlbumResultsToLog(string sessionId, string currGameId, string currGameRoundId, string currAlbumId, string currAlbumName, string marktingState)
     {
@@ -122,7 +127,7 @@ public class FileLogManager : ILogManager
         {
             albumStatsFileWritter.WriteLine(sessionId + ";" + currGameId + ";" + currGameRoundId + ";" + currAlbumId + ";" + currAlbumName + ";" + marktingState);
         }
-        FlushLogs();
+        albumStatsFileWritter.Flush();
     }
     public void WritePlayerResultsToLog(string sessionId, string currGameId, string currGameRoundId, string playerId, string playerName, string money)
     {
@@ -131,7 +136,7 @@ public class FileLogManager : ILogManager
         {
             playerStatsFileWritter.WriteLine(sessionId + ";" + currGameId + ";" + currGameRoundId + ";" + playerId + ";" + playerName + ";" + money);
         }
-        FlushLogs();
+        playerStatsFileWritter.Flush();
     }
     public void WriteEventToLog(string sessionId, string currGameId, string currGameRoundId, string playerId, string playerName, string eventType, string skill, string coins)
     {
@@ -140,7 +145,7 @@ public class FileLogManager : ILogManager
         {
             eventsLogFileWritter.WriteLine(sessionId + ";" + currGameId + ";" + currGameRoundId + ";" + playerId + ";" + playerName + ";" + eventType + ";" + skill + ";" + coins);
         }
-        FlushLogs();
+        eventsLogFileWritter.Flush();
     }
     public void WriteChangeDecisionToLog(string sessionId, string currGameId, string currGameRoundId, string playerId, string playerName, string previousDecision, string nextDecision)
     {
@@ -149,7 +154,7 @@ public class FileLogManager : ILogManager
         {
             eventsLogFileWritter.WriteLine(sessionId + ";" + currGameId + ";" + currGameRoundId + ";" + playerId + ";" + playerName + ";" + previousDecision + ";" + nextDecision);
         }
-        FlushLogs();
+        changeDecisionLogFileWritter.Flush();
     }
 
     private void FlushLogs()
@@ -194,6 +199,10 @@ public class GoogleFormsLogManager : ILogManager
     public void WriteEventToLog(string sessionId, string currGameId, string currGameRoundId, string playerId, string playerName, string eventType, string skill, string coins)
     {
         Application.ExternalEval("(window.open(\"https://docs.google.com/forms/d/e/1FAIpQLScYaTNzROIoL4P6D40B_mcpM1xZuXdJBJz_neHCvCxf0qWpLA/formResponse?usp=pp_url&entry.1243275873="+ sessionId + "&entry.67037947="+currGameId+"&entry.1708403356="+currGameRoundId+"&entry.1264259345="+playerId+"&entry.416810127="+playerName+"&entry.724890801="+eventType+"&entry.1712145275="+skill+"&entry.877028457="+coins+"&submit=Submit\", \"_blank\")).close()");
+
+    }
+    public void WriteChangeDecisionToLog(string sessionId, string currGameId, string currGameRoundId, string playerId, string playerName, string previousDecision, string nextDecision)
+    {
 
     }
 
@@ -285,6 +294,12 @@ public class MySQLLogManager : ILogManager
         Debug.Log("php error: " + phpConnection.error);
 
     }
+
+    public void WriteChangeDecisionToLog(string sessionId, string currGameId, string currGameRoundId, string playerId, string playerName, string previousDecision, string nextDecision)
+    {
+
+    }
+
     public void EndLogs() { }
 
     private void PassTableArguments(WWWForm form, string keysTableName, string valuesTableName, string[] keys, string[] values)
