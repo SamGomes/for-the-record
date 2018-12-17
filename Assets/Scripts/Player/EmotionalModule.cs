@@ -62,18 +62,6 @@ public class EmotionalModule : MonoBehaviour
         rpc.Perceive(events);
     }
 
-    public IEnumerator DisplaySpeechBalloonForAWhile(string message, float delay)
-    {
-        speechBalloon.GetComponentInChildren<Text>().text = message;
-        speechBalloon.SetActive(true);
-        //yield return null;
-        yield return new WaitForSeconds(delay);
-        if (speechBalloon.GetComponentInChildren<Text>().text == message) //to compensate if the balloon is already spawned
-        {
-            speechBalloon.SetActive(false);
-        }
-    }
-
     public string StripSpeechSentence(string rawMessage)
     {
         Debug.Log("StripSpeechSentence - " + invoker.GetId() + "  " + invoker.GetPreferredInstrument());
@@ -165,7 +153,7 @@ public class EmotionalModule : MonoBehaviour
         {
             return;
         }
-        StartCoroutine(DisplaySpeechBalloonForAWhile(text, this.speechBalloonDelayInSeconds));
+        StartCoroutine(invoker.DisplaySpeechBalloonForAWhile(text, this.speechBalloonDelayInSeconds));
     }
 
     public void GazeAt(string target)
