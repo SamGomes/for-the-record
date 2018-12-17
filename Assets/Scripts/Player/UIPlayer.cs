@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -97,6 +98,19 @@ public class UIPlayer : Player
     public GameObject GetSpeechBaloonUI()
     {
         return this.UISpeechBalloon;
+    }
+
+    public IEnumerator DisplaySpeechBalloonForAWhile(string message, float delay)
+    {
+        GameObject speechBalloon = this.GetSpeechBaloonUI();
+        speechBalloon.GetComponentInChildren<Text>().text = message;
+        speechBalloon.SetActive(true);
+        //yield return null;
+        yield return new WaitForSeconds(delay);
+        if (speechBalloon.GetComponentInChildren<Text>().text == message) //to compensate if the balloon is already spawned
+        {
+            speechBalloon.SetActive(false);
+        }
     }
 
     public virtual void InitUI(GameObject playerUIPrefab, GameObject canvas, PoppupScreenFunctionalities warningScreenRef)

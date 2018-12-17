@@ -1,12 +1,12 @@
 ﻿using UnityEngine;
-
-
+using UnityEngine.UI;
 
 public class AIPlayerCoopStrategy : AIPlayer
 {
     public AIPlayerCoopStrategy(GameObject playerUIPrefab, GameObject canvas, MonoBehaviourFunctionalities playerMonoBehaviourFunctionalities, PoppupScreenFunctionalities warningScreenref, int id, string name, bool isSpeechAllowed) : this(playerUIPrefab, canvas, playerMonoBehaviourFunctionalities, warningScreenref, id, name, isSpeechAllowed, GameProperties.Instrument.NONE) { }
     public AIPlayerCoopStrategy(GameObject playerUIPrefab, GameObject canvas, MonoBehaviourFunctionalities playerMonoBehaviourFunctionalities, PoppupScreenFunctionalities warningScreenref, int id, string name, bool isSpeechAllowed, GameProperties.Instrument likedInstrument) : base(playerUIPrefab, canvas, playerMonoBehaviourFunctionalities, warningScreenref, id, name, isSpeechAllowed, likedInstrument)
     {
+        playerMonoBehaviourFunctionalities.StartCoroutine(DisplaySpeechBalloonForAWhile("I'm Cooperative", 2.0f));
         this.type = GameProperties.PlayerType.COOPERATIVE;
     }
 
