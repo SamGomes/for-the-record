@@ -604,12 +604,12 @@ public class UIPlayer : Player
         this.surePopup.SetActive(true);
         UIChangeDecisionNo.onClick.RemoveAllListeners();
         UIChangeDecisionNo.onClick.AddListener(delegate {
-            SendBeSureResponse(true);
+            SendBeSureResponse(false);
         });
 
         UIChangeDecisionYes.onClick.RemoveAllListeners();
         UIChangeDecisionYes.onClick.AddListener(delegate {
-            SendBeSureResponse(false);
+            SendBeSureResponse(true);
         });
 
 
