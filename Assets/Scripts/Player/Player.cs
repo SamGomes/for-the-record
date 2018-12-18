@@ -281,9 +281,6 @@ public abstract class Player
         }
 
         skillSet[newInstr]++;
-
-        GameGlobals.gameLogManager.WriteChangeDecisionToLog(GameGlobals.currSessionId.ToString(), GameGlobals.currGameId.ToString(), GameGlobals.currGameRoundId.ToString(), this.id.ToString(), this.name.ToString(), this.lastInstrumentToken.ToString(), newInstr.ToString());
-
         lastInstrumentToken = newInstr;
 
         return 0;

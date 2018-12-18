@@ -16,7 +16,7 @@ public interface ILogManager
     void WriteAlbumResultsToLog(string sessionId, string currGameId, string currGameRoundId, string currAlbumId, string currAlbumName, string marktingState);
     void WritePlayerResultsToLog(string sessionId, string currGameId, string currGameRoundId, string playerId, string playerName, string money);
     void WriteEventToLog(string sessionId, string currGameId, string currGameRoundId, string playerId, string playerName, string eventType, string instrument, string coins);
-    void WriteChangeDecisionToLog(string sessionId, string currGameId, string currGameRoundId, string playerId, string playerName, string previousDecision, string nextDecision);
+    void WriteChangeDecisionToLog(string sessionId, string currGameId, string currGameRoundId, string playerId, string playerName, string initialDecision, string state);
     void EndLogs();
 }
 
@@ -47,9 +47,9 @@ public class DebugLogManager : ILogManager
     {
         Debug.Log("WriteEventToLog: " + sessionId + ";" + currGameId + ";" + currGameRoundId + ";" + playerId + ";" + playerName + ";" + eventType + ";" + skill + ";" + coins);
     }
-    public void WriteChangeDecisionToLog(string sessionId, string currGameId, string currGameRoundId, string playerId, string playerName, string previousDecision, string nextDecision)
+    public void WriteChangeDecisionToLog(string sessionId, string currGameId, string currGameRoundId, string playerId, string playerName, string initialDecision, string state)
     {
-        Debug.Log("ChangeDecisionLog: " + sessionId + ";" + currGameId + ";" + currGameRoundId + ";" + playerId + ";" + playerName + ";" + previousDecision + ";" + nextDecision);
+        Debug.Log("ChangeDecisionLog: " + sessionId + ";" + currGameId + ";" + currGameRoundId + ";" + playerId + ";" + playerName + ";" + initialDecision + ";" + state);
     }
 
     public void EndLogs()
@@ -98,7 +98,7 @@ public class FileLogManager : ILogManager
         playerStatsFileWritter.WriteLine("\"SessionId\";\"GameId\";\"RoundId\";\"PlayerId\";\"PlayerName\";\"Money\"");
         gameStatsFileWritter.WriteLine("\"SessionId\";\"GameId\";\"Result\"");
         eventsLogFileWritter.WriteLine("\"SessionId\";\"GameId\";\"RoundId\";\"PlayerId\";\"PlayerName\";\"Event Type\";\"Instrument\";\"Value\"");
-        changeDecisionLogFileWritter.WriteLine("\"SessionId\";\"GameId\";\"RoundId\";\"PlayerId\";\"PlayerName\";\"Previous Decision\";\"New Decision\"");
+        changeDecisionLogFileWritter.WriteLine("\"SessionId\";\"GameId\";\"RoundId\";\"PlayerId\";\"PlayerName\";\"Initial Decision\";\"State\"");
 
         FlushLogs();
         isInitialized = true;
@@ -148,12 +148,12 @@ public class FileLogManager : ILogManager
         }
         eventsLogFileWritter.Flush();
     }
-    public void WriteChangeDecisionToLog(string sessionId, string currGameId, string currGameRoundId, string playerId, string playerName, string previousDecision, string nextDecision)
+    public void WriteChangeDecisionToLog(string sessionId, string currGameId, string currGameRoundId, string playerId, string playerName, string initialDecision, string state)
     {
         //prevent access after disposal
         if (changeDecisionLogFileWritter != null)
         {
-            changeDecisionLogFileWritter.WriteLine(sessionId + ";" + currGameId + ";" + currGameRoundId + ";" + playerId + ";" + playerName + ";" + previousDecision + ";" + nextDecision);
+            changeDecisionLogFileWritter.WriteLine(sessionId + ";" + currGameId + ";" + currGameRoundId + ";" + playerId + ";" + playerName + ";" + initialDecision + ";" + state);
         }
         changeDecisionLogFileWritter.Flush();
     }
@@ -202,7 +202,7 @@ public class GoogleFormsLogManager : ILogManager
         Application.ExternalEval("(window.open(\"https://docs.google.com/forms/d/e/1FAIpQLScYaTNzROIoL4P6D40B_mcpM1xZuXdJBJz_neHCvCxf0qWpLA/formResponse?usp=pp_url&entry.1243275873="+ sessionId + "&entry.67037947="+currGameId+"&entry.1708403356="+currGameRoundId+"&entry.1264259345="+playerId+"&entry.416810127="+playerName+"&entry.724890801="+eventType+"&entry.1712145275="+skill+"&entry.877028457="+coins+"&submit=Submit\", \"_blank\")).close()");
 
     }
-    public void WriteChangeDecisionToLog(string sessionId, string currGameId, string currGameRoundId, string playerId, string playerName, string previousDecision, string nextDecision)
+    public void WriteChangeDecisionToLog(string sessionId, string currGameId, string currGameRoundId, string playerId, string playerName, string initialDecision, string state)
     {
 
     }
@@ -296,7 +296,7 @@ public class MySQLLogManager : ILogManager
 
     }
 
-    public void WriteChangeDecisionToLog(string sessionId, string currGameId, string currGameRoundId, string playerId, string playerName, string previousDecision, string nextDecision)
+    public void WriteChangeDecisionToLog(string sessionId, string currGameId, string currGameRoundId, string playerId, string playerName, string initialDecision, string state)
     {
 
     }

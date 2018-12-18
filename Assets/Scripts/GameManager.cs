@@ -777,6 +777,13 @@ public class GameManager : MonoBehaviour {
 
     public void BeSureResponse(Player invoker, bool value)
     {
+        var state = "KEEP";
+        if (!value)
+        {
+            state = "CHANGED";
+        }
+        GameGlobals.gameLogManager.WriteChangeDecisionToLog(GameGlobals.currSessionId.ToString(), GameGlobals.currGameId.ToString(), GameGlobals.currGameRoundId.ToString(), invoker.GetId().ToString(), invoker.GetName().ToString(), invoker.lastInstrumentToken.ToString(), state);
+
         if (!value)
         {
             invoker.ToggleToken();

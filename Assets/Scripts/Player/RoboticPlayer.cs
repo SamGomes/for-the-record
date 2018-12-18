@@ -124,7 +124,8 @@ public class EmotionalRoboticPlayer : MonoBehaviour
         Name style = (Name)"Emys";
 
         var possibleDialogs = iat.GetDialogueActions(currentState, nextState, meaning, style);
-        int randomUttIndex = UnityEngine.Random.Range(0, possibleDialogs.Count());
+        int randomUttIndex = GameGlobals.currGameRoundId - 1;
+        //int randomUttIndex = UnityEngine.Random.Range(0, possibleDialogs.Count());
         var dialog = possibleDialogs[randomUttIndex].Utterance;
         if (thalamusConnector != null)
         {
