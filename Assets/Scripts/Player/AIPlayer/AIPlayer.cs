@@ -555,27 +555,54 @@ public abstract class AIPlayer : UIPlayer
         yield return new WaitForSeconds(delay);
         if (!isSendingResponse)
         {
+            string action = "";
+            bool isDecisionTransparent = GameGlobals.currGameRoundId == 2 || GameGlobals.currGameRoundId == 4;
 
             chosenLevelUpInstrument = LevelUpActions(currAlbum);
             if (emotionalModule != null)
             {
                 //Fatima call
                 if (chosenLevelUpInstrument == GameProperties.Instrument.MARKETING)
+                    if (this.type == GameProperties.PlayerType.GREEDY)
+                    {
+                        if (isDecisionTransparent)
+                        {
+                            action = "Defect_Transparent";
+                        }
+                        else
+                        {
+                            action = "Defect";
+                        }
+                    }
+                else if (this.type == GameProperties.PlayerType.COOPERATIVE)
                 {
-                    emotionalModule.Perceive(new Name[] {
-                        EventHelper.PropertyChange("CurrentPlayer(Name)", name, name),
-                        EventHelper.PropertyChange("Action(Game)", "Defect", name),
-                        EventHelper.PropertyChange("State(Game)", "LevelUp", name) });
-                    Debug.Log("DEFECT");
+                    if (isDecisionTransparent)
+                    {
+                        action = "Cooperative_Transparent";
+                    }
+                    else
+                    {
+                        action = "Cooperative";
+                    }
                 }
-                else
+                else if (this.type == GameProperties.PlayerType.TITFORTAT)
                 {
-                    emotionalModule.Perceive(new Name[] {
+                    if (isDecisionTransparent)
+                    {
+                        action = "Titfortat_Transparent";
+                    }
+                    else
+                    {
+                        action = "Titfortat";
+                    }
+                }
+                emotionalModule.Perceive(new Name[] {
                         EventHelper.PropertyChange("CurrentPlayer(Name)", name, name),
                         EventHelper.PropertyChange("Action(Game)", "Cooperate", name),
                         EventHelper.PropertyChange("State(Game)", "LevelUp", name) });
                     Debug.Log("COOPERATE");
                 }
+                Debug.Log("DEFECT");
                 emotionalModule.Decide();
             }
 
