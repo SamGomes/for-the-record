@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-
+using UnityEngine.UI;
 
 //this strategy always plays for markting except in the first play where it is cooperative. In the last decision it always trusts his markting.
 public class AIPlayerGreedyStrategy : AIPlayer
@@ -7,6 +7,7 @@ public class AIPlayerGreedyStrategy : AIPlayer
     public AIPlayerGreedyStrategy(GameObject playerUIPrefab, GameObject canvas, MonoBehaviourFunctionalities playerMonoBehaviourFunctionalities, PoppupScreenFunctionalities warningScreenref, int id, string name, bool isSpeechAllowed) : this(playerUIPrefab, canvas, playerMonoBehaviourFunctionalities, warningScreenref, id, name, isSpeechAllowed, GameProperties.Instrument.NONE) { }
     public AIPlayerGreedyStrategy(GameObject playerUIPrefab, GameObject canvas, MonoBehaviourFunctionalities playerMonoBehaviourFunctionalities, PoppupScreenFunctionalities warningScreenref, int id, string name, bool isSpeechAllowed, GameProperties.Instrument likedInstrument) : base(playerUIPrefab, canvas, playerMonoBehaviourFunctionalities, warningScreenref, id, name, isSpeechAllowed, likedInstrument)
     {
+        this.GetSpeechBaloonUI().GetComponentInChildren<Text>().text = "I'm using market strategy";
         this.type = GameProperties.PlayerType.GREEDY;
     }
 

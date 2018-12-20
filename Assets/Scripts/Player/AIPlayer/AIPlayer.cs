@@ -556,7 +556,7 @@ public abstract class AIPlayer : UIPlayer
         if (!isSendingResponse)
         {
             string action = "";
-            bool isDecisionTransparent = GameGlobals.currGameRoundId == 2 || GameGlobals.currGameRoundId == 4;
+            bool isDecisionTransparent = GameGlobals.currGameRoundId == 1 || GameGlobals.currGameRoundId == 3;
 
             chosenLevelUpInstrument = LevelUpActions(currAlbum);
             if (emotionalModule != null)
@@ -601,7 +601,6 @@ public abstract class AIPlayer : UIPlayer
                         EventHelper.PropertyChange("Action(Game)", "Cooperate", name),
                         EventHelper.PropertyChange("State(Game)", "LevelUp", name) });
                     Debug.Log("COOPERATE");
-                }
                 Debug.Log("DEFECT");
                 emotionalModule.Decide();
             }
