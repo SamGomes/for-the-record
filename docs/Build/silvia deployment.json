@@ -1,0 +1,13 @@
+{
+"companyName": "DefaultCompany",
+"productName": "TheBandGame",
+"dataUrl": "silvia deployment.data.unityweb",
+"asmCodeUrl": "silvia deployment.asm.code.unityweb",
+"asmMemoryUrl": "silvia deployment.asm.memory.unityweb",
+"asmFrameworkUrl": "silvia deployment.asm.framework.unityweb",
+"TOTAL_MEMORY": 268435456,
+"graphicsAPI": ["WebGL 2.0", "WebGL 1.0"],
+"webglContextAttributes": {"preserveDrawingBuffer": false},
+"splashScreenStyle": "Dark",
+"backgroundColor": "#231F20"
+}
