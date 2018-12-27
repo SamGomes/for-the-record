@@ -53,7 +53,7 @@ public abstract class AIPlayer : UIPlayer
     public void InitDelays()
     {
         choosePreferredInstrumentDelay = 2.0f;
-        levelUpThinkingDelay = 2.0f;
+        levelUpThinkingDelay = 2.5f;
         playForInstrumentThinkingDelay = 0.5f;
         lastDecisionThinkingDelay = 1.0f;
 
@@ -556,55 +556,44 @@ public abstract class AIPlayer : UIPlayer
         if (!isSendingResponse)
         {
             string action = "";
-            bool isDecisionTransparent = GameGlobals.currGameRoundId == 1 || GameGlobals.currGameRoundId == 3;
 
             chosenLevelUpInstrument = LevelUpActions(currAlbum);
             if (emotionalModule != null)
             {
-                //Fatima call
+                //regular Fatima call
                 if (chosenLevelUpInstrument == GameProperties.Instrument.MARKETING)
-                    if (this.type == GameProperties.PlayerType.GREEDY)
-                    {
-                        if (isDecisionTransparent)
-                        {
-                            action = "Defect_Transparent";
-                        }
-                        else
-                        {
-                            action = "Defect";
-                        }
-                    }
-                else if (this.type == GameProperties.PlayerType.COOPERATIVE)
                 {
-                    if (isDecisionTransparent)
-                    {
-                        action = "Cooperative_Transparent";
-                    }
-                    else
-                    {
-                        action = "Cooperative";
-                    }
+                    action = "Defect";
                 }
-                else if (this.type == GameProperties.PlayerType.TITFORTAT)
+                else
                 {
-                    if (isDecisionTransparent)
+                    action = "Cooperate";
+                }
+
+                //check if transparency call is needed
+                bool isDecisionTransparent = GameGlobals.currGameRoundId == 1 || GameGlobals.currGameRoundId == 3;
+                if (isDecisionTransparent)
+                {
+                    switch (this.type)
                     {
-                        action = "Titfortat_Transparent";
-                    }
-                    else
-                    {
-                        action = "Titfortat";
+                        case GameProperties.PlayerType.GREEDY:
+                            action = "Greedy_Transparent";
+                            break;
+                        case GameProperties.PlayerType.COOPERATIVE:
+                            action = "Cooperate_Transparent";
+                            break;
+                        case GameProperties.PlayerType.TITFORTAT:
+                            action = "Titfortat_Transparent";
+                            break;
                     }
                 }
                 emotionalModule.Perceive(new Name[] {
                         EventHelper.PropertyChange("CurrentPlayer(Name)", name, name),
-                        EventHelper.PropertyChange("Action(Game)", "Cooperate", name),
-                        EventHelper.PropertyChange("State(Game)", "LevelUp", name) });
-                    Debug.Log("COOPERATE");
-                Debug.Log("DEFECT");
+                        EventHelper.PropertyChange("Action(Game)", action, name),
+                        EventHelper.PropertyChange("State(Game)", "LevelUp", name)
+                });
                 emotionalModule.Decide();
             }
-
 
             playerMonoBehaviourFunctionalities.StartCoroutine(ThinkBeforeLevelingUp(currAlbum, sendResponsesDelay, chosenLevelUpInstrument, true));
         }
@@ -659,20 +648,23 @@ public abstract class AIPlayer : UIPlayer
                 {
                     emotionalModule.NumDices = skillSet[GameProperties.Instrument.MARKETING];
                     emotionalModule.Perceive(new Name[] {
-                EventHelper.PropertyChange("State(Game)", "LastDecisionsPhase", name),
-                EventHelper.PropertyChange("Album(Result)", "Success", name) });
+                        EventHelper.PropertyChange("State(Game)", "LastDecisionsPhase", name),
+                        EventHelper.PropertyChange("Album(Result)", "Success", name)
+                    });
                 }
                 else
                 {
                     emotionalModule.Perceive(new Name[] {
-                EventHelper.PropertyChange("State(Game)", "LastDecisionsPhase", name),
-                EventHelper.PropertyChange("Album(Result)", "Fail", name) });
+                        EventHelper.PropertyChange("State(Game)", "LastDecisionsPhase", name),
+                        EventHelper.PropertyChange("Album(Result)", "Fail", name)
+                    });
                 }
 
                 if (GameGlobals.albums.Count == GameProperties.configurableProperties.numberOfAlbumsPerGame)
                 {
                     emotionalModule.Perceive(new Name[] {
-                EventHelper.PropertyChange("Album(Last)", "True", name) });
+                        EventHelper.PropertyChange("Album(Last)", "True", name)
+                    });
                 }
                 emotionalModule.Decide();
             }

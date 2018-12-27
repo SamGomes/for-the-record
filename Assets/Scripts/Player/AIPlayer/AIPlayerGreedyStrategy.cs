@@ -7,7 +7,7 @@ public class AIPlayerGreedyStrategy : AIPlayer
     public AIPlayerGreedyStrategy(GameObject playerUIPrefab, GameObject canvas, MonoBehaviourFunctionalities playerMonoBehaviourFunctionalities, PoppupScreenFunctionalities warningScreenref, int id, string name, bool isSpeechAllowed) : this(playerUIPrefab, canvas, playerMonoBehaviourFunctionalities, warningScreenref, id, name, isSpeechAllowed, GameProperties.Instrument.NONE) { }
     public AIPlayerGreedyStrategy(GameObject playerUIPrefab, GameObject canvas, MonoBehaviourFunctionalities playerMonoBehaviourFunctionalities, PoppupScreenFunctionalities warningScreenref, int id, string name, bool isSpeechAllowed, GameProperties.Instrument likedInstrument) : base(playerUIPrefab, canvas, playerMonoBehaviourFunctionalities, warningScreenref, id, name, isSpeechAllowed, likedInstrument)
     {
-        this.GetSpeechBaloonUI().GetComponentInChildren<Text>().text = "I'm using market strategy";
+        //this.GetSpeechBaloonUI().GetComponentInChildren<Text>().text = "I'm using market strategy";
         this.type = GameProperties.PlayerType.GREEDY;
     }
 

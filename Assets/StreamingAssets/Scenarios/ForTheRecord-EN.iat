@@ -130,8 +130,8 @@
         "CurrentState": "LevelUp",
         "NextState": "-",
         "Meaning": "Me",
-        "Style": "Defect_Transparent",
-        "Utterance": "<gaze(screen)>My plan is to improve my instrument skill only when the album fails. Otherwise, I will decide to improve marketing.",
+        "Style": "Greedy_Transparent",
+        "Utterance": "<gaze(screen)> My plan is to improve my instrument skill only when the album fails. Otherwise, I will decide to improve marketing.",
         "UtteranceId": "TTS-0DE3A15FF759969BA3B1550127DA23AF"
       },
       {
@@ -146,8 +146,8 @@
         "CurrentState": "LevelUp",
         "NextState": "-",
         "Meaning": "Me",
-        "Style": "Defect_Transparent",
-        "Utterance": "<gaze(screen)>My plan is to improve my instrument skill only when the album fails. Otherwise, I will decide to improve marketing.",
+        "Style": "Greedy_Transparent",
+        "Utterance": "<gaze(screen)> My plan is to improve my instrument skill only when the album fails. Otherwise, I will decide to improve marketing.",
         "UtteranceId": "TTS-0DE3A15FF759969BA3B1550127DA23AF"
       },
       {
@@ -179,7 +179,7 @@
         "NextState": "-",
         "Meaning": "-",
         "Style": "Glin",
-        "Utterance": "<gaze(screen)> Let's see how many points I can get.",
+        "Utterance": "<gaze(screen)> Let's see how many points can I get.",
         "UtteranceId": "TTS-50EC14868F24F2AC062465D770ED131A"
       },
       {
@@ -427,8 +427,8 @@
         "NextState": "-",
         "Meaning": "Me",
         "Style": "Cooperate_Transparent",
-        "Utterance": "<gaze(screen)>My strategy is to always improve the instrument and never put points in marketing",
-        "UtteranceId": "TTS-32DD94078051560AE4CD737606CE80AA"
+        "Utterance": "<gaze(screen)> My strategy is to always improve the instrument and never put points in marketing",
+        "UtteranceId": "TTS-32DD94078051560AE4CD737606CE81AA"
       },
       {
         "CurrentState": "LevelUp",
@@ -436,14 +436,14 @@
         "Meaning": "Me",
         "Style": "Cooperate",
         "Utterance": "<gaze(screen)> I prefer to upgrade my instrument skill.",
-        "UtteranceId": "TTS-32DD94078051560AE4CD737606CE80AA"
+        "UtteranceId": "TTS-32DD94078051560AE4CD737606CE82AA"
       },
       {
         "CurrentState": "LastDecisionsPhase",
         "NextState": "-",
         "Meaning": "Success",
         "Style": "Glin",
-        "Utterance": "<gaze(screen)> Let me see how much I can make with my |numDices| dice in marketing.",
+        "Utterance": "<gaze(screen)> Let me see how much can I make with my |numDices| dice in marketing.",
         "UtteranceId": "TTS-BF821400F02406297C3F611C26C98450"
       },
       {
@@ -451,16 +451,16 @@
         "NextState": "-",
         "Meaning": "Me",
         "Style": "Titfortat_Transparent",
-        "Utterance": "<gaze(screen)>My strategy is to keep improving instrument unless you decide to improve marketing. In that case, I will improve marketing as well.",
-        "UtteranceId": "TTS-32DD94078051560AE4CD737606CE80AA"
+        "Utterance": "<gaze(screen)> My strategy is to keep improving instrument unless you decide to improve marketing. In that case, I will improve marketing as well.",
+        "UtteranceId": "TTS-32DD94078051560AE4CD737606CE83AA"
       },
       {
         "CurrentState": "LevelUp",
         "NextState": "-",
         "Meaning": "Me",
         "Style": "Titfortat_Transparent",
-        "Utterance": "<gaze(screen)>My strategy is to keep improving instrument unless you decide to improve marketing. In that case, I will improve marketing as well.",
-        "UtteranceId": "TTS-32DD94078051560AE4CD737606CE80AA"
+        "Utterance": "<gaze(screen)> My strategy is to keep improving instrument unless you decide to improve marketing. In that case, I will improve marketing as well.",
+        "UtteranceId": "TTS-32DD94078051560AE4CD737606CE84AA"
       },
       {
         "CurrentState": "LevelUp",
@@ -468,7 +468,7 @@
         "Meaning": "Me",
         "Style": "Titfortat",
         "Utterance": "<gaze(screen)> I prefer to upgrade my instrument skill.",
-        "UtteranceId": "TTS-32DD94078051560AE4CD737606CE80AA"
+        "UtteranceId": "TTS-32DD94078051560AE4CD737606CE85AA"
       },
       {
         "CurrentState": "LastDecisionsPhase",
