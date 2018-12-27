@@ -91,7 +91,7 @@
         "NextState": "-",
         "Meaning": "Luck",
         "Style": "Glin",
-        "Utterance": "<gaze(screen)> Wow, that is |dicesValue| points more! ",
+        "Utterance": "<gaze(screen)> Wow, |dicesValue| more points! ",
         "UtteranceId": "TTS-BF4B1DA88AC6F7EF0D5B03076384EB2E"
       },
       {

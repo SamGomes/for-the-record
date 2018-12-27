@@ -101,7 +101,6 @@ public class EmotionalModule : MonoBehaviour
         {
             //saveToFile();
 
-
             switch (chosenAction.Key.ToString())
             {
                 case "Speak":

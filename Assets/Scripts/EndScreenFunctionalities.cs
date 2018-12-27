@@ -71,7 +71,7 @@ public class EndScreenFunctionalities : MonoBehaviour
             if (GameGlobals.currGameId >= GameProperties.configurableProperties.numSessionGames - 1)
             {
                 //infoPoppupNeutralRef.DisplayPoppup("You reached the end of the experiment. You should now fill in the first questionnaire and you need to memorize the following code and also your score.");
-                infoPoppupNeutralRef.DisplayPoppup("You reached the end of the second game. Please write down your score, as well as the following gamecode, and fill the second questionnaire to finish the experiment.");
+                infoPoppupNeutralRef.DisplayPoppup("You reached the end of the game. Please write down your score, as well as the following gamecode, and fill the second questionnaire to finish the experiment.");
                 //UIEndGameButton.gameObject.SetActive(true);
                 //UIEndGameButton.interactable = true;
                 //UIEndGameButtonText.text = "Final Notes";
