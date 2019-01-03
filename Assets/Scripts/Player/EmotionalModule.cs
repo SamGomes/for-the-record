@@ -28,6 +28,8 @@ public class EmotionalModule : MonoBehaviour
     private UIPlayer invoker; //when no speech the object is passed so that text is displayed
     private GameObject speechBalloon;
 
+    private List<string> currSpeeches;
+
     private void Awake()
     {
         DontDestroyOnLoad(gameObject);
@@ -49,6 +51,11 @@ public class EmotionalModule : MonoBehaviour
         StartCoroutine(UpdateCoroutine());
 
         speechBalloonDelayPerWordInSeconds = 0.5f;
+        currSpeeches = new List<string>();
+
+
+        float speechCheckDelayInSeconds = 0.1f;
+        StartCoroutine(ConsumeSpeeches(speechCheckDelayInSeconds));
     }
 
     public void ReceiveInvoker(UIPlayer invoker)
@@ -81,7 +88,7 @@ public class EmotionalModule : MonoBehaviour
         strippedDialog = strippedDialog.Replace("|dicesValue|", DicesValue.ToString());
         strippedDialog = strippedDialog.Replace("|numDices|", NumDices.ToString());
         strippedDialog = strippedDialog.Replace("|instrument|", invoker.GetPreferredInstrument().ToString().ToLower());
-        strippedDialog = strippedDialog.Replace("|musicianRole|", Enum.GetName(typeof(GameProperties.MusicianRole), invoker.GetPreferredInstrument()).ToLower()); 
+        strippedDialog = strippedDialog.Replace("|musicianRole|", Enum.GetName(typeof(GameProperties.MusicianRole), invoker.GetPreferredInstrument()).ToLower());
         strippedDialog = Regex.Replace(strippedDialog, @"<.*?>\s+|\s+<.*?>|\s+<.*?>\s+", "");
         return strippedDialog;
     }
@@ -115,8 +122,7 @@ public class EmotionalModule : MonoBehaviour
                     int randomUttIndex = UnityEngine.Random.Range(0, possibleDialogs.Count());
                     var dialog = possibleDialogs[randomUttIndex].Utterance;
 
-                    speak(invoker.GetName() + ": \"" + StripSpeechSentence(dialog) + "\"");
-
+                    currSpeeches.Add(invoker.GetName() + ": \"" + StripSpeechSentence(dialog) + "\"");
                     break;
                 default:
                     break;
@@ -156,20 +162,26 @@ public class EmotionalModule : MonoBehaviour
 
     public void FlushUtterance(string text)
     {
-        speak(StripSpeechSentence(text));
-    }
-
-    public void speak(string text)
-    {
         if (!Speaks)
         {
             return;
         }
-        
-        Regex regex = new Regex("\\w+");
-        int countedWords = regex.Matches(text).Count;
+    }
 
-        StartCoroutine(DisplaySpeechBalloonForAWhile(text, countedWords*this.speechBalloonDelayPerWordInSeconds));
+    public IEnumerator ConsumeSpeeches(float checkSpeechDelay)
+    {
+        if (currSpeeches.Count > 0 && !speechBalloon.activeSelf)
+        {
+            string currSpeech = currSpeeches[0];
+            Regex regex = new Regex("\\w+");
+            int countedWords = regex.Matches(currSpeech).Count;
+
+            float displayingDelay = countedWords * this.speechBalloonDelayPerWordInSeconds;
+            StartCoroutine(DisplaySpeechBalloonForAWhile(currSpeech, displayingDelay));
+            currSpeeches.Remove(currSpeech);
+        }
+        yield return new WaitForSeconds(checkSpeechDelay);
+        StartCoroutine(ConsumeSpeeches(checkSpeechDelay));
     }
 
     public void GazeAt(string target)

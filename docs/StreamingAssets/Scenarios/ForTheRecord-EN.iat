@@ -19,7 +19,7 @@
         "NextState": "-",
         "Meaning": "Me",
         "Style": "Cooperate_Transparent",
-        "Utterance": "<gaze(screen)>My strategy is to always improve the instrument and never put points in marketing",
+        "Utterance": "<gaze(screen)> My strategy is to always improve the instrument.",
         "UtteranceId": "TTS-63E477216570678F422EC0C53A0D0A90"
       },
       {
@@ -131,7 +131,7 @@
         "NextState": "-",
         "Meaning": "Me",
         "Style": "Greedy_Transparent",
-        "Utterance": "<gaze(screen)> My plan is to improve my instrument skill only when the album fails. Otherwise, I will decide to improve marketing.",
+        "Utterance": "<gaze(screen)> My plan is to improve my instrument skill only when the album fails.",
         "UtteranceId": "TTS-0DE3A15FF759969BA3B1550127DA23AF"
       },
       {
@@ -147,7 +147,7 @@
         "NextState": "-",
         "Meaning": "Me",
         "Style": "Greedy_Transparent",
-        "Utterance": "<gaze(screen)> My plan is to improve my instrument skill only when the album fails. Otherwise, I will decide to improve marketing.",
+        "Utterance": "<gaze(screen)> My plan is to improve marketing only when the album success.",
         "UtteranceId": "TTS-0DE3A15FF759969BA3B1550127DA23AF"
       },
       {
@@ -427,7 +427,7 @@
         "NextState": "-",
         "Meaning": "Me",
         "Style": "Cooperate_Transparent",
-        "Utterance": "<gaze(screen)> My strategy is to always improve the instrument and never put points in marketing",
+        "Utterance": "<gaze(screen)> My strategy is to never put points in marketing",
         "UtteranceId": "TTS-32DD94078051560AE4CD737606CE81AA"
       },
       {
@@ -451,7 +451,7 @@
         "NextState": "-",
         "Meaning": "Me",
         "Style": "Titfortat_Transparent",
-        "Utterance": "<gaze(screen)> My strategy is to keep improving instrument unless you decide to improve marketing. In that case, I will improve marketing as well.",
+        "Utterance": "<gaze(screen)> My strategy is to keep improving instrument unless you decide to improve marketing.",
         "UtteranceId": "TTS-32DD94078051560AE4CD737606CE83AA"
       },
       {
@@ -459,7 +459,7 @@
         "NextState": "-",
         "Meaning": "Me",
         "Style": "Titfortat_Transparent",
-        "Utterance": "<gaze(screen)> My strategy is to keep improving instrument unless you decide to improve marketing. In that case, I will improve marketing as well.",
+        "Utterance": "<gaze(screen)> My strategy is to keep improving marketin unless you decide to improve instrument.",
         "UtteranceId": "TTS-32DD94078051560AE4CD737606CE84AA"
       },
       {
