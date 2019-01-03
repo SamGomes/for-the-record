@@ -15,7 +15,7 @@ using System.Text.RegularExpressions;
 
 public class EmotionalModule : MonoBehaviour
 {
-    private float speechBalloonDelayInSeconds;
+    private float speechBalloonDelayPerWordInSeconds;
 
     private RolePlayCharacterAsset rpc;
     private bool isStopped;
@@ -48,7 +48,7 @@ public class EmotionalModule : MonoBehaviour
         //start update thread
         StartCoroutine(UpdateCoroutine());
 
-        speechBalloonDelayInSeconds = 3.0f;
+        speechBalloonDelayPerWordInSeconds = 0.5f;
     }
 
     public void ReceiveInvoker(UIPlayer invoker)
@@ -82,7 +82,7 @@ public class EmotionalModule : MonoBehaviour
         strippedDialog = strippedDialog.Replace("|numDices|", NumDices.ToString());
         strippedDialog = strippedDialog.Replace("|instrument|", invoker.GetPreferredInstrument().ToString().ToLower());
         strippedDialog = strippedDialog.Replace("|musicianRole|", Enum.GetName(typeof(GameProperties.MusicianRole), invoker.GetPreferredInstrument()).ToLower()); 
-         strippedDialog = Regex.Replace(strippedDialog, @"<.*?>\s+|\s+<.*?>|\s+<.*?>\s+", "");
+        strippedDialog = Regex.Replace(strippedDialog, @"<.*?>\s+|\s+<.*?>|\s+<.*?>\s+", "");
         return strippedDialog;
     }
 
@@ -165,7 +165,11 @@ public class EmotionalModule : MonoBehaviour
         {
             return;
         }
-        StartCoroutine(DisplaySpeechBalloonForAWhile(text, this.speechBalloonDelayInSeconds));
+        
+        Regex regex = new Regex("\\w+");
+        int countedWords = regex.Matches(text).Count;
+
+        StartCoroutine(DisplaySpeechBalloonForAWhile(text, countedWords*this.speechBalloonDelayPerWordInSeconds));
     }
 
     public void GazeAt(string target)
