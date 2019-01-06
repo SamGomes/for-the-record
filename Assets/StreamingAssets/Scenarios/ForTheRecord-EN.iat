@@ -451,7 +451,7 @@
         "NextState": "-",
         "Meaning": "Me",
         "Style": "Titfortat_Transparent",
-        "Utterance": "<gaze(screen)> My strategy is to keep improving instrument unless you decide to improve marketing.",
+        "Utterance": "<gaze(screen)> My strategy is to improve my instrument skill only when you also improve your instrument.",
         "UtteranceId": "TTS-32DD94078051560AE4CD737606CE83AA"
       },
       {
@@ -459,7 +459,7 @@
         "NextState": "-",
         "Meaning": "Me",
         "Style": "Titfortat_Transparent",
-        "Utterance": "<gaze(screen)> My strategy is to keep improving marketin unless you decide to improve instrument.",
+        "Utterance": "<gaze(screen)> My strategy is to improve marketing only when you also improve your marketing.",
         "UtteranceId": "TTS-32DD94078051560AE4CD737606CE84AA"
       },
       {
