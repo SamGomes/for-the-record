@@ -13,9 +13,11 @@ using UnityEngine.UI;
 using System.Text.RegularExpressions;
 
 
+
 public class EmotionalModule : MonoBehaviour
 {
     private float speechBalloonDelayPerWordInSeconds;
+    private float strategySpeechBalloonDelayPerWordInSeconds;
 
     private RolePlayCharacterAsset rpc;
     private bool isStopped;
@@ -28,7 +30,18 @@ public class EmotionalModule : MonoBehaviour
     private UIPlayer invoker; //when no speech the object is passed so that text is displayed
     private GameObject speechBalloon;
 
-    private List<string> currSpeeches;
+    private class Speech
+    {
+        public string Utterance;
+        public bool IsStrategyRelated;
+
+        public Speech(string _utterance, bool _isStrategyRelated)
+        {
+            Utterance = _utterance;
+            IsStrategyRelated = _isStrategyRelated;
+        }
+    }
+    private List<Speech> currSpeeches;
 
     private void Awake()
     {
@@ -51,7 +64,8 @@ public class EmotionalModule : MonoBehaviour
         StartCoroutine(UpdateCoroutine());
 
         speechBalloonDelayPerWordInSeconds = 0.5f;
-        currSpeeches = new List<string>();
+        strategySpeechBalloonDelayPerWordInSeconds = 1.0f;
+        currSpeeches = new List<Speech>();
 
 
         float speechCheckDelayInSeconds = 0.1f;
@@ -121,8 +135,19 @@ public class EmotionalModule : MonoBehaviour
                     var possibleDialogs = GameGlobals.FAtiMAIat.GetDialogueActions(currentState, nextState, meaning, style);
                     int randomUttIndex = UnityEngine.Random.Range(0, possibleDialogs.Count());
                     var dialog = possibleDialogs[randomUttIndex].Utterance;
+                    string utterance = invoker.GetName() + ": \"" + StripSpeechSentence(dialog) + "\"";
 
-                    currSpeeches.Add(invoker.GetName() + ": \"" + StripSpeechSentence(dialog) + "\"");
+                    if (currentState.ToString() == "LevelUp" && meaning.ToString() == "Me")
+                    {
+                        Speech sp = new Speech(utterance, true);
+                        currSpeeches.Add(sp);
+                    }
+                    else
+                    {
+                        Speech sp = new Speech(utterance, false);
+                        currSpeeches.Add(sp);
+                    }
+
                     break;
                 default:
                     break;
@@ -172,12 +197,21 @@ public class EmotionalModule : MonoBehaviour
     {
         if (currSpeeches.Count > 0 && !speechBalloon.activeSelf)
         {
-            string currSpeech = currSpeeches[0];
+            Speech currSpeech = currSpeeches[0];
             Regex regex = new Regex("\\w+");
-            int countedWords = regex.Matches(currSpeech).Count;
+            int countedWords = regex.Matches(currSpeech.Utterance).Count;
 
-            float displayingDelay = countedWords * this.speechBalloonDelayPerWordInSeconds;
-            StartCoroutine(DisplaySpeechBalloonForAWhile(currSpeech, displayingDelay));
+            float displayingDelay;
+
+            if (currSpeech.IsStrategyRelated)
+            {
+                displayingDelay  = countedWords * this.strategySpeechBalloonDelayPerWordInSeconds;
+            }
+            else
+            {
+                displayingDelay  = countedWords * this.speechBalloonDelayPerWordInSeconds;
+            }
+            StartCoroutine(DisplaySpeechBalloonForAWhile(currSpeech.Utterance, displayingDelay));
             currSpeeches.Remove(currSpeech);
         }
         yield return new WaitForSeconds(checkSpeechDelay);

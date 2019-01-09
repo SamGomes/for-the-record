@@ -571,9 +571,24 @@ public abstract class AIPlayer : UIPlayer
                 }
 
                 //check if transparency call is needed
-                bool isDecisionTransparent = GameGlobals.currGameRoundId == 1 || GameGlobals.currGameRoundId == 3;
+                bool isDecisionTransparent = GameGlobals.currGameRoundId == 1 && gameManagerRef.GetCurrentPlayer().GetName() == "Glin";
                 if (isDecisionTransparent)
                 {
+                    switch (this.type)
+                    {
+                        case GameProperties.PlayerType.GREEDY:
+                            action = "Greedy_Transparent_01";
+                            break;
+                        case GameProperties.PlayerType.COOPERATIVE:
+                            action = "Cooperate_Transparent_01";
+                            break;
+                        case GameProperties.PlayerType.TITFORTAT:
+                            action = "Titfortat_Transparent_01";
+                            break;
+                    }
+                }
+                isDecisionTransparent = GameGlobals.currGameRoundId == 3 && gameManagerRef.GetCurrentPlayer().GetName() == "Glin";
+                if (isDecisionTransparent)
                     switch (this.type)
                     {
                         case GameProperties.PlayerType.GREEDY:
@@ -586,7 +601,34 @@ public abstract class AIPlayer : UIPlayer
                             action = "Titfortat_Transparent";
                             break;
                     }
-                }
+                isDecisionTransparent = GameGlobals.currGameRoundId == 1 && gameManagerRef.GetCurrentPlayer().GetName() == "Emys";
+                if (isDecisionTransparent)
+                    switch (this.type)
+                    {
+                        case GameProperties.PlayerType.GREEDY:
+                            action = "Greedy_Transparent";
+                            break;
+                        case GameProperties.PlayerType.COOPERATIVE:
+                            action = "Cooperate_Transparent";
+                            break;
+                        case GameProperties.PlayerType.TITFORTAT:
+                            action = "Titfortat_Transparent";
+                            break;
+                    }
+                isDecisionTransparent = GameGlobals.currGameRoundId == 3 && gameManagerRef.GetCurrentPlayer().GetName() == "Emys";
+                if (isDecisionTransparent)
+                    switch (this.type)
+                    {
+                        case GameProperties.PlayerType.GREEDY:
+                            action = "Greedy_Transparent_01";
+                            break;
+                        case GameProperties.PlayerType.COOPERATIVE:
+                            action = "Cooperate_Transparent_01";
+                            break;
+                        case GameProperties.PlayerType.TITFORTAT:
+                            action = "Titfortat_Transparent_01";
+                            break;
+                    }
                 emotionalModule.Perceive(new Name[] {
                         EventHelper.PropertyChange("CurrentPlayer(Name)", name, name),
                         EventHelper.PropertyChange("Action(Game)", action, name),

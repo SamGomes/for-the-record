@@ -146,7 +146,7 @@
         "CurrentState": "LevelUp",
         "NextState": "-",
         "Meaning": "Me",
-        "Style": "Greedy_Transparent",
+        "Style": "Greedy_Transparent_01",
         "Utterance": "<gaze(screen)> My plan is to improve marketing only when the album success.",
         "UtteranceId": "TTS-0DE3A15FF759969BA3B1550127DA23AF"
       },
@@ -426,7 +426,7 @@
         "CurrentState": "LevelUp",
         "NextState": "-",
         "Meaning": "Me",
-        "Style": "Cooperate_Transparent",
+        "Style": "Cooperate_Transparent_01",
         "Utterance": "<gaze(screen)> My strategy is to never put points in marketing",
         "UtteranceId": "TTS-32DD94078051560AE4CD737606CE81AA"
       },
@@ -458,7 +458,7 @@
         "CurrentState": "LevelUp",
         "NextState": "-",
         "Meaning": "Me",
-        "Style": "Titfortat_Transparent",
+        "Style": "Titfortat_Transparent_01",
         "Utterance": "<gaze(screen)> My strategy is to improve marketing only when you also improve your marketing.",
         "UtteranceId": "TTS-32DD94078051560AE4CD737606CE84AA"
       },
