@@ -576,6 +576,9 @@ public abstract class AIPlayer : UIPlayer
                 {
                     switch (this.type)
                     {
+                        case GameProperties.PlayerType.BALANCED:
+                            action = "Balanced_Transparent_01";
+                            break;
                         case GameProperties.PlayerType.GREEDY:
                             action = "Greedy_Transparent_01";
                             break;
@@ -591,6 +594,9 @@ public abstract class AIPlayer : UIPlayer
                 if (isDecisionTransparent)
                     switch (this.type)
                     {
+                        case GameProperties.PlayerType.BALANCED:
+                            action = "Balanced_Transparent";
+                            break;
                         case GameProperties.PlayerType.GREEDY:
                             action = "Greedy_Transparent";
                             break;
@@ -605,6 +611,9 @@ public abstract class AIPlayer : UIPlayer
                 if (isDecisionTransparent)
                     switch (this.type)
                     {
+                        case GameProperties.PlayerType.BALANCED:
+                            action = "Balanced_Transparent";
+                            break;
                         case GameProperties.PlayerType.GREEDY:
                             action = "Greedy_Transparent";
                             break;
@@ -619,6 +628,9 @@ public abstract class AIPlayer : UIPlayer
                 if (isDecisionTransparent)
                     switch (this.type)
                     {
+                        case GameProperties.PlayerType.BALANCED:
+                            action = "Balanced_Transparent_01";
+                            break;
                         case GameProperties.PlayerType.GREEDY:
                             action = "Greedy_Transparent_01";
                             break;
