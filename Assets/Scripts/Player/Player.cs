@@ -85,7 +85,7 @@ public abstract class Player
     public abstract void InformLevelUp(Player invoker, GameProperties.Instrument leveledUpInstrument);
     public abstract void InformPlayForInstrument(Player nextPlayer);
     public abstract void InformLastDecision(Player nextPlayer);
-    public abstract void InformRollDicesValue(Player invoker, int maxValue, int obtainedValue);
+    public abstract void InformRollDicesValue(Player invoker, GameProperties.Instrument instrument, int maxValue, int obtainedValue);
     public abstract void InformAlbumResult(int albumValue, int marketValue);
     public abstract void InformGameResult(GameProperties.GameState state);
     public abstract void InformNewAlbum();

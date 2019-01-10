@@ -288,7 +288,7 @@ public class GameManager : MonoBehaviour {
                 arrowText = "+ " + newAlbumInstrumentValue + " Album Value";
             }
 
-            StartCoroutine(PlayDiceUIs(currPlayer, newAlbumInstrumentValue, rolledDiceNumbers, 6, dice6UI, "Animations/RollDiceForInstrumentOverlay/dice6/sprites_3/endingAlternatives/", Color.yellow, arrowText, diceRollDelay));
+            StartCoroutine(PlayDiceUIs(currPlayer, instrument, newAlbumInstrumentValue, rolledDiceNumbers, 6, dice6UI, "Animations/RollDiceForInstrumentOverlay/dice6/sprites_3/endingAlternatives/", Color.yellow, arrowText, diceRollDelay));
         }
 
         GameGlobals.gameLogManager.WriteEventToLog(GameGlobals.currSessionId.ToString(), GameGlobals.currGameId.ToString(), GameGlobals.currGameRoundId.ToString(), currPlayer.GetId().ToString(), currPlayer.GetName().ToString(), "ROLLED_INSTRUMENT_DICES", "-", newAlbumInstrumentValue.ToString());
@@ -296,7 +296,7 @@ public class GameManager : MonoBehaviour {
     }
 
 
-    private IEnumerator PlayDiceUIs(Player diceThrower, int totalDicesValue, int[] rolledDiceNumbers, int diceNum, GameObject diceImagePrefab, string diceNumberSpritesPath, Color diceArrowColor, string diceArrowText, float delayToClose)
+    private IEnumerator PlayDiceUIs(Player diceThrower, GameProperties.Instrument instrument, int totalDicesValue, int[] rolledDiceNumbers, int diceNum, GameObject diceImagePrefab, string diceNumberSpritesPath, Color diceArrowColor, string diceArrowText, float delayToClose)
     //the sequence number aims to void dice overlaps as it represents the order for which this dice is going to be rolled. We do not want to roll a dice two times for the same place
     {
         InterruptGame();
@@ -344,7 +344,7 @@ public class GameManager : MonoBehaviour {
         currSpeakingPlayerId = Random.Range(0, GameGlobals.numberOfSpeakingPlayers);
         foreach (var player in GameGlobals.players)
         {
-            player.InformRollDicesValue(diceThrower, numDiceRolls * diceNum, totalDicesValue); //max value = the max dice number * number of rolls
+            player.InformRollDicesValue(diceThrower, instrument, numDiceRolls * diceNum, totalDicesValue); //max value = the max dice number * number of rolls
         }
 
         rollDiceForInstrumentOverlayAnimator.speed = 1;
@@ -410,7 +410,7 @@ public class GameManager : MonoBehaviour {
 
         if (!GameProperties.configurableProperties.isSimulation)
         {
-            StartCoroutine(PlayDiceUIs(GameGlobals.players[0], marketValue, rolledDiceNumbers, 20, dice20UI, "Animations/RollDiceForInstrumentOverlay/dice20/sprites/endingAlternatives/", Color.red, "Market Value: " + marketValue, diceRollDelay));
+            StartCoroutine(PlayDiceUIs(GameGlobals.players[0], GameProperties.Instrument.MARKETING, marketValue, rolledDiceNumbers, 20, dice20UI, "Animations/RollDiceForInstrumentOverlay/dice20/sprites/endingAlternatives/", Color.red, "Market Value: " + marketValue, diceRollDelay));
         }
 
         return marketValue;

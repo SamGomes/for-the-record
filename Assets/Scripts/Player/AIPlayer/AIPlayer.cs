@@ -125,15 +125,15 @@ public abstract class AIPlayer : UIPlayer
         }
     }
 
-    public override void InformRollDicesValue(Player invoker, int maxValue, int obtainedValue) {
+    public override void InformRollDicesValue(Player invoker, GameProperties.Instrument instrument, int maxValue, int obtainedValue) {
         //base.InformRollDicesValue(invoker, maxValue, obtainedValue, speakingRobotId);
         if (!GameProperties.configurableProperties.isSimulation)
         {
-            playerMonoBehaviourFunctionalities.StartCoroutine(DelayedInformRollDicesValueActions(invoker, maxValue, obtainedValue, informDiceRollDelay, true));
+            playerMonoBehaviourFunctionalities.StartCoroutine(DelayedInformRollDicesValueActions(invoker, instrument, maxValue, obtainedValue, informDiceRollDelay, true));
         }
         else
         {
-            InformRollDicesValueActions(invoker, maxValue, obtainedValue);
+            InformRollDicesValueActions(invoker, instrument, maxValue, obtainedValue);
         }
     }
     public override void InformAlbumResult(int albumValue, int marketValue) {
@@ -208,14 +208,14 @@ public abstract class AIPlayer : UIPlayer
         }
     }
 
-    protected virtual void InformRollDicesValueActions(Player invoker, int maxValue, int obtainedValue)
+    protected virtual void InformRollDicesValueActions(Player invoker, GameProperties.Instrument instrument, int maxValue, int obtainedValue)
     {
         if (emotionalModule != null)
         {
             //Fatima calls
             emotionalModule.GazeAt("screen");
             // rolling d6 dice
-            if (maxValue % 20 != 0)
+            if (maxValue % 20 != 0 && instrument != GameProperties.Instrument.MARKETING)
             {
                 int currSpeakingPlayerId = gameManagerRef.GetCurrSpeakingPlayerId();
                 if (invoker == this)
@@ -370,10 +370,10 @@ public abstract class AIPlayer : UIPlayer
         InformLastDecisionActions(nextPlayer);
     }
 
-    private IEnumerator DelayedInformRollDicesValueActions(Player invoker, int maxValue, int obtainedValue, float delay, bool isInformDelayed)
+    private IEnumerator DelayedInformRollDicesValueActions(Player invoker, GameProperties.Instrument instrument, int maxValue, int obtainedValue, float delay, bool isInformDelayed)
     {
         yield return new WaitForSeconds(delay);
-        InformRollDicesValueActions(invoker, maxValue, obtainedValue);
+        InformRollDicesValueActions(invoker, instrument, maxValue, obtainedValue);
         
     }
     private IEnumerator DelayedInformAlbumResultActions(int albumValue, int marketValue, float delay, bool isInformDelayed)
