@@ -1,6 +1,6 @@
 # For the Record
 
-![game logo](for-the-record/Assets/Resources/Textures/equalizerBackground.jpg)
+![game logo](Assets/Resources/Textures/equalizerBackground.jpg)
 
 “For the Record” is a collaborative game where a team of 3 musicians form a band. Their goal is to publish the maximum number of successful albums (mega-hits). 
 Each round constitutes the creation and release of an album on the market.
@@ -19,14 +19,13 @@ In case of a mega-hit, the marketing proficiency of each musician determines his
 
 During the 5 rounds, if the band achieves 3 failed albums, the band collapses and the game is over.Conversely, if the band achieves less than 3 failed albums during the 5 rounds, the band succeeds with a victory.
 
-
-##Work initially developed by:
+## Work initially developed by:
 - Samuel Gomes - [@SamGomes](https://github.com/SamGomes)
 - Filipa Correia - [@PipzCorreiaz](https://github.com/PipzCorreiaz)
 - Samuel Mascarenhas - [@samuelfm](https://github.com/samuelfm)
 
 
-##Several components were also developed, modified and adapted for several studies by:
+## Components were also developed, modified and adapted for several studies by:
 - Silvia Tulli - [@Silviatulli](https://github.com/Silviatulli)
 - Julien Charles-Nicolas - [@JuCN](https://github.com/JuCN)
 - Justin GALLY - [@MrJuju97351](https://github.com/MrJuju97351)
